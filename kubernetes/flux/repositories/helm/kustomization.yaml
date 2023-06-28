@@ -18,3 +18,4 @@ resources:
   - ./stakater.yaml
   - ./weave-gitops.yaml
   - ./traefik.yaml
+  - ./gandi-webhook.yaml
