@@ -7,7 +7,7 @@ resources:
 #  - ./flaresolverr/ks.yaml
 #  - ./recyclarr/ks.yaml
 #  - ./readarr/ks.yaml
-#  - ./radarr/ks.yaml
+  - ./radarr/ks.yaml
 #  - ./sonarr/ks.yaml
 #  - ./bazarr/ks.yaml
 #  - ./lidarr/ks.yaml
