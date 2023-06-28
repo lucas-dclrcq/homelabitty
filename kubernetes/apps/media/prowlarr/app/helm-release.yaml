@@ -1,27 +1,32 @@
 ---
+# yaml-language-server: $schema=https://kubernetes-schemas.devbu.io/helm.toolkit.fluxcd.io/helmrelease_v2beta1.json
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-  name: prowlarr
+  name: &app prowlarr
   namespace: media
 spec:
-  interval: 15m
+  interval: 30m
   chart:
     spec:
-      # renovate: registryUrl=https://k8s-at-home.com/charts/
-      version: 4.5.2
-      chart: prowlarr
+      chart: app-template
+      version: 1.5.1
       sourceRef:
         kind: HelmRepository
-        name: k8s-at-home
+        name: bjw-s
         namespace: flux-system
-      interval: 15m
+  maxHistory: 2
   install:
+    createNamespace: true
     remediation:
-      retries: 5
+      retries: 3
   upgrade:
+    cleanupOnFail: true
     remediation:
-      retries: 5
+      retries: 3
+  uninstall:
+    keepHistory: false
+
   values:
     controller:
       type: statefulset
@@ -29,21 +34,46 @@ spec:
         reloader.stakater.com/auto: "true"
 
     image:
-      repository: linuxserver/prowlarr
-      tag: 1.4.1-nightly
+      repository: ghcr.io/onedr0p/prowlarr-develop
+      tag: 1.6.3.3608@sha256:0295a5f8fab0440250fd3350c260eb43d9483dbd06376a4cc78c231bbe01f705
 
     env:
       TZ: "${TIMEZONE}"
+      PROWLARR__INSTANCE_NAME: Prowlarr
+      PROWLARR__PORT: &port 80
+      PROWLARR__LOG_LEVEL: info
+
+    envFrom:
+      - secretRef:
+          name: *app
+
+    service:
+      main:
+        ports:
+          http:
+            port: *port
+
+    probes:
+      liveness: &probes
+        enabled: true
+        custom: true
+        spec:
+          httpGet:
+            path: /ping
+            port: *port
+          initialDelaySeconds: 0
+          periodSeconds: 10
+          timeoutSeconds: 1
+          failureThreshold: 3
+      readiness: *probes
+      startup:
+        enabled: false
 
     ingress:
       main:
-        annotations:
-          hajimari.io/icon: mdi:movie-search
-          hajimari.io/enable: "true"
-          hajimari.io/appName: "Prowlarr"
         enabled: true
         hosts:
-          - host: &host "prowlarr.${SECRET_DOMAIN}"
+          - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
             paths:
               - path: /
                 pathType: Prefix
@@ -51,11 +81,20 @@ spec:
           - hosts:
               - *host
 
+    podSecurityContext:
+      runAsUser: 568
+      runAsGroup: 568
+      fsGroup: 568
+      fsGroupChangePolicy: OnRootMismatch
+
     persistence:
       config:
         enabled: true
-        name: prowlarr-config
-        type: configMap
-        readOnly: true
-        mountPath: /config/config.xml
-        subPath: config.xml
+        type: emptyDir
+
+    resources:
+      requests:
+        cpu: 10m
+        memory: 100Mi
+      limits:
+        memory: 500Mi
