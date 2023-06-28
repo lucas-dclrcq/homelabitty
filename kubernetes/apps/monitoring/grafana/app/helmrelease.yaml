@@ -28,7 +28,7 @@ spec:
   dependsOn:
     - name: local-path-provisioner
       namespace: kube-system
-    - name: ingress-nginx
+    - name: ingress-traefik
       namespace: networking
   values:
     admin:
