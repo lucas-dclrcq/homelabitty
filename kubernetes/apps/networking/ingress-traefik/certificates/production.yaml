@@ -9,7 +9,6 @@ spec:
   issuerRef:
     name: letsencrypt-gandi-production
     kind: ClusterIssuer
-  commonName: "${SECRET_DOMAIN}"
+  commonName: "*.${SECRET_DOMAIN}"
   dnsNames:
-    - "${SECRET_DOMAIN}"
     - "*.${SECRET_DOMAIN}"

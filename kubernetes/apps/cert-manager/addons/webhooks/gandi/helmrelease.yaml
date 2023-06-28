@@ -23,8 +23,8 @@ spec:
       retries: 5
   values:
     image:
-      repository: giolekva/cert-manager-webhook-gandi
-      tag: v0.2.0
+      repository: barsanet/cert-manager-webhook-gandi
+      tag: 0.2.0-go1.20
     certManager:
       namespace: cert-manager
     features:
