@@ -34,7 +34,6 @@ main() {
         verify_addressing
         verify_age
         verify_git_repository
-        verify_cloudflare
         verify_success
     else
         # generate sops configuration file
@@ -52,12 +51,6 @@ main() {
         envsubst < "${PROJECT_DIR}/tmpl/kubernetes/cert-manager-secret.sops.yaml" \
             > "${PROJECT_DIR}/kubernetes/apps/cert-manager/cert-manager/issuers/secret.sops.yaml"
         sops --encrypt --in-place "${PROJECT_DIR}/kubernetes/apps/cert-manager/cert-manager/issuers/secret.sops.yaml"
-        envsubst < "${PROJECT_DIR}/tmpl/kubernetes/cloudflared-secret.sops.yaml" \
-            > "${PROJECT_DIR}/kubernetes/apps/networking/cloudflared/app/secret.sops.yaml"
-        sops --encrypt --in-place "${PROJECT_DIR}/kubernetes/apps/networking/cloudflared/app/secret.sops.yaml"
-        envsubst < "${PROJECT_DIR}/tmpl/kubernetes/external-dns-secret.sops.yaml" \
-            > "${PROJECT_DIR}/kubernetes/apps/networking/external-dns/app/secret.sops.yaml"
-        sops --encrypt --in-place "${PROJECT_DIR}/kubernetes/apps/networking/external-dns/app/secret.sops.yaml"
         # generate ansible settings
         envsubst < "${PROJECT_DIR}/tmpl/ansible/supplemental.yml" \
             > "${PROJECT_DIR}/ansible/inventory/group_vars/kubernetes/supplemental.yml"
@@ -228,7 +221,6 @@ verify_binaries() {
     _has_binary "pip3"
     _has_binary "sops"
     _has_binary "ssh"
-    _has_binary "task"
     _has_binary "yq"
     if ! [[ "$(sops --version)" =~ 3\.[0-9]+\.[0-9]+ ]]; then
         _log "ERROR(${FUNCNAME[0]})" "Incompatible sops version, make sure you are using the latest release of github.com/mozilla/sops"
@@ -283,48 +275,12 @@ verify_master_count() {
             master_node_count=$((master_node_count+1))
         fi
     done
-    # Check for existance of master nodes and that their count is not an even number
+    # Check for existence of master nodes and that their count is not an even number
     if [[ ${master_node_count} -eq 0 || $((master_node_count%2)) -eq 0 ]]; then
       _log "ERROR(${FUNCNAME[0]})" "You must have 1, 3 or an odd number of master nodes >=3 inorder for etcd to have quorum"
       exit 1
     fi
     _log "INFO(${FUNCNAME[0]})" "Verified control plane node count"
-}
-
-verify_cloudflare() {
-    local errors=
-    local account_zone=
-    _has_envar "BOOTSTRAP_CLOUDFLARE_APITOKEN" "true"
-    _has_envar "BOOTSTRAP_CLOUDFLARE_DOMAIN" "true"
-    _has_envar "BOOTSTRAP_ACME_EMAIL" "true"
-    # Try to retrieve zone information from Cloudflare's API
-    account_zone=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones?name=${BOOTSTRAP_CLOUDFLARE_DOMAIN}&status=active" \
-        -H "Authorization: Bearer ${BOOTSTRAP_CLOUDFLARE_APITOKEN}" \
-        -H "Content-Type: application/json"
-    )
-    if [[ "$(echo "${account_zone}" | jq ".success")" == "true" ]]; then
-        _log "INFO(${FUNCNAME[0]})" "Verified Cloudflare Account and Zone information"
-    else
-        errors=$(echo "${account_zone}" | jq -c ".errors")
-        _log "ERROR(${FUNCNAME[0]})" "Unable to get Cloudflare Account and Zone information ${errors}"
-        exit 1
-    fi
-    local cloudflare_tunnel=
-    _has_envar "BOOTSTRAP_CLOUDFLARE_ACCOUNT_TAG" "true"
-    _has_envar "BOOTSTRAP_CLOUDFLARE_TUNNEL_SECRET" "true"
-    _has_envar "BOOTSTRAP_CLOUDFLARE_TUNNEL_ID" "true"
-    # Try to retrieve the Cloudflare Tunnel information from Cloudflare's API
-    cloudflare_tunnel=$(curl -s -X GET "https://api.cloudflare.com/client/v4/accounts/${BOOTSTRAP_CLOUDFLARE_ACCOUNT_TAG}/cfd_tunnel/${BOOTSTRAP_CLOUDFLARE_TUNNEL_ID}" \
-        -H "Authorization: Bearer ${BOOTSTRAP_CLOUDFLARE_APITOKEN}" \
-        -H "Content-Type: application/json"
-    )
-    if [[ "$(echo "${cloudflare_tunnel}" | jq ".success")" == "true" ]]; then
-        _log "INFO(${FUNCNAME[0]})" "Verified Cloudflare Tunnel information"
-    else
-        errors=$(echo "${cloudflare_tunnel}" | jq -c ".errors")
-        _log "ERROR(${FUNCNAME[0]})" "Unable to get Cloudflare Tunnel information ${errors}"
-        exit 1
-    fi
 }
 
 verify_ansible_hosts() {

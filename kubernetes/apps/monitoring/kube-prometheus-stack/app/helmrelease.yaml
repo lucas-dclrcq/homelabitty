@@ -88,7 +88,9 @@ spec:
     kubeControllerManager:
       enabled: true
       endpoints: &cp
-        - 127.0.0.1 # Replaced by configure
+        - 192.168.1.11
+        - 192.168.1.12
+        - 192.168.1.13
       serviceMonitor:
         metricRelabelings:
           # Remove duplicate metrics

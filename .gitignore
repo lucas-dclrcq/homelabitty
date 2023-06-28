@@ -11,3 +11,6 @@ kubeconfig
 *.key
 # Ansible
 xanmanning.k3s*
+
+.idea
+.quarkus
