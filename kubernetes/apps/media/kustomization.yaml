@@ -5,7 +5,7 @@ resources:
   - ./namespace.yaml
   - ./prowlarr/ks.yaml
 #  - ./flaresolverr/ks.yaml
-#  - ./recyclarr/ks.yaml
+  - ./recyclarr/ks.yaml
 #  - ./readarr/ks.yaml
   - ./radarr/ks.yaml
 #  - ./sonarr/ks.yaml
