@@ -114,7 +114,7 @@ spec:
     prometheus:
       ingress:
         enabled: true
-        ingressClassName: traefik
+        ingressClassName: ingress-traefik
         annotations:
           hajimari.io/appName: Prometheus
           hajimari.io/icon: simple-icons:prometheus
