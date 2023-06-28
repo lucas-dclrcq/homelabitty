@@ -1,0 +1,32 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: gandi-webhook
+  namespace: cert-manager
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: cert-manager-webhook-gandi
+      version: v0.2.0
+      sourceRef:
+        kind: HelmRepository
+        name: gandi-webhook
+        namespace: flux-system
+      interval: 15m
+  install:
+    remediation:
+      retries: 5
+  upgrade:
+    remediation:
+      retries: 5
+  values:
+    image:
+      repository: giolekva/cert-manager-webhook-gandi
+      tag: v0.2.0
+    certManager:
+      namespace: cert-manager
+    features:
+      apiPriorityAndFairness: true
+    logLevel: 2

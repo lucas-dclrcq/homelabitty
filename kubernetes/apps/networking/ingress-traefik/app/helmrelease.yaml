@@ -1,0 +1,130 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: ingress-traefik
+  namespace: networking
+spec:
+  interval: 15m
+  chart:
+    spec:
+      # renovate: registryUrl=https://traefik.github.io/charts
+      version: 22.1.0
+      chart: traefik
+      sourceRef:
+        kind: HelmRepository
+        name: traefik
+        namespace: flux-system
+  maxHistory: 2
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+
+  values:
+    providers:
+      kubernetesCRD:
+        allowExternalNameServices: true
+        allowCrossNamespace: true
+
+    deployment:
+      replicas: 1
+
+    ingressRoute:
+      dashboard:
+        enabled: true
+        matchRule: Host(`traefik.${SECRET_DOMAIN}`)
+        entryPoints: ["websecure"]
+#        middlewares:
+#          - name: sso
+
+    experimental:
+      plugins:
+        enabled: true
+
+    rollback:
+      recreate: true
+      force: true
+      cleanupOnFail: true
+
+    autoscaling:
+      enabled: true
+      minReplicas: 2
+      maxReplicas: 5
+
+    ports:
+      web:
+        redirectTo: websecure
+      websecure:
+        http3:
+          enabled: true
+        tls:
+          enabled: true
+          options: "default"
+      metrics:
+        port: 8082
+        expose: true
+        exposedPort: 8082
+
+    tlsOptions:
+      default:
+        minVersion: VersionTLS12
+        maxVersion: VersionTLS13
+
+    metrics:
+      service:
+        enabled: true
+
+    logs:
+      general:
+        level: ERROR
+      access:
+        enabled: false
+        filters:
+          statuscodes: 200,300-302
+          retryattempts: true
+          minduration: 450000ns
+        fields:
+          general:
+            names:
+              defaultmode: drop
+              ClientAddr: keep
+              RequestAddr: keep
+              RequestMethod: keep
+              RequestPath: keep
+              RequestCount: keep
+              RequestProtocol: keep
+              RequestScheme: keep
+              RetryAttempts: keep
+              RouterName: keep
+              Duration: keep
+          headers:
+            defaultmode: keep
+            names:
+              Authorization: drop
+
+    affinity:
+      podAntiAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                  - key: app.kubernetes.io/name
+                    operator: In
+                    values:
+                      - traefik
+              topologyKey: kubernetes.io/hostname
+
+    resources:
+      requests:
+        memory: 100Mi
+        cpu: 500m
+      limits:
+        memory: 500Mi
