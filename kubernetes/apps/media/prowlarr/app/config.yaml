@@ -1,0 +1,31 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prowlarr-config
+  namespace: media
+data:
+  config.xml: |
+    <Config>
+          <LogLevel>info</LogLevel>
+          <UrlBase></UrlBase>
+          <UpdateMechanism>Docker</UpdateMechanism>
+          <BindAddress>*</BindAddress>
+          <Port>9696</Port>
+          <SslPort>6969</SslPort>
+          <EnableSsl>False</EnableSsl>
+          <LaunchBrowser>True</LaunchBrowser>
+          <ApiKey>88f428cb9f534a1d94a731ccf896de5f</ApiKey>
+          <Branch>master</Branch>
+          <InstanceName>Prowlarr</InstanceName>
+          <PostgresUser>prowlarr</PostgresUser>
+          <PostgresPassword>akrMJH5NieZTjRsdx1QRZG9XO</PostgresPassword>
+          <PostgresPort>5432</PostgresPort>
+          <PostgresHost>192.168.1.221</PostgresHost>
+          <PostgresMainDb>prowlarr_main</PostgresMainDb>
+          <PostgresLogDb>prowlarr_log</PostgresLogDb>
+          <AuthenticationRequired>Enabled</AuthenticationRequired>
+          <AuthenticationMethod>Forms</AuthenticationMethod>
+          <SslCertPath></SslCertPath>
+          <SslCertPassword></SslCertPassword>
+    </Config>

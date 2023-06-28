@@ -1,0 +1,20 @@
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: registry
+  namespace: networking
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`registry.${SECRET_DOMAIN}`)
+      services:
+        - kind: Service
+          name: nas
+          passHostHeader: true
+          port: 15000
+          scheme: http
+  tls:
+    secretName: "${SECRET_DOMAIN/./-}-production-tls"

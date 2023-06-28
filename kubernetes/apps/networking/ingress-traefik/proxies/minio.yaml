@@ -1,0 +1,28 @@
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: minio
+  namespace: networking
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`minio.${SECRET_DOMAIN}`)
+      services:
+        - kind: Service
+          name: nas
+          passHostHeader: true
+          port: 39090
+          scheme: http
+    - kind: Rule
+      match: Host(`s3.lulice.online`)
+      services:
+        - kind: Service
+          name: nas
+          passHostHeader: true
+          port: 39000
+          scheme: http
+  tls:
+    secretName: "${SECRET_DOMAIN/./-}-production-tls"

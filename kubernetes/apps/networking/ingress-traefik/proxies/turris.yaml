@@ -1,0 +1,46 @@
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: router
+  namespace: networking
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`router.${SECRET_DOMAIN}`)
+      services:
+        - kind: Service
+          name: router
+          port: 81
+          scheme: http
+  tls:
+    secretName: tls-lulice
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: router
+  namespace: networking
+spec:
+  ports:
+    - name: webui
+      port: 81
+      protocol: TCP
+      targetPort: 81
+  clusterIP: None
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: router
+  namespace: networking
+subsets:
+  - addresses:
+      - ip: 192.168.1.1
+    ports:
+      - name: webui
+        port: 81
+        protocol: TCP

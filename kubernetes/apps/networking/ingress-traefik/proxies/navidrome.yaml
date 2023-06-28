@@ -1,0 +1,20 @@
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: navidrome
+  namespace: networking
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`navidrome.${SECRET_DOMAIN}`)
+      services:
+        - kind: Service
+          name: nas
+          passHostHeader: true
+          port: 4533
+          scheme: http
+  tls:
+    secretName: "${SECRET_DOMAIN/./-}-production-tls"

@@ -38,7 +38,7 @@ spec:
       - --token-ttl=43200
     ingress:
       enabled: true
-      className: traefik
+      className: ingress-traefik
       annotations:
         hajimari.io/icon: mdi:kubernetes
       hosts:
