@@ -55,8 +55,8 @@ spec:
 
     autoscaling:
       enabled: true
-      minReplicas: 2
-      maxReplicas: 5
+      minReplicas: 1
+      maxReplicas: 3
 
     ports:
       web:
@@ -83,7 +83,7 @@ spec:
 
     logs:
       general:
-        level: ERROR
+        level: WARN
       access:
         enabled: false
         filters:
