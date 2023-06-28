@@ -19,3 +19,5 @@ resources:
   - ./weave-gitops.yaml
   - ./traefik.yaml
   - ./gandi-webhook.yaml
+  - ./emberstack.yaml
+  - ./longhorn.yaml

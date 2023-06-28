@@ -32,7 +32,7 @@ spec:
       username: admin
     ingress:
       enabled: true
-      className: nginx
+      className: traefik
       annotations:
         hajimari.io/icon: sawtooth-wave
       hosts:
