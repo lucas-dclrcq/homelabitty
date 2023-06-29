@@ -1,0 +1,98 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: &app miniflux
+  namespace: default
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 1.5.1
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 5
+  upgrade:
+    remediation:
+      retries: 3
+  values:
+    image:
+      repository: miniflux/miniflux
+      tag: 2.0.43
+
+    env:
+      BASE_URL: "https://miniflux.${SECRET_DOMAIN}"
+      LOG_DATE_TIME: "1"
+      CREATE_ADMIN: "0"
+      POLLING_SCHEDULER: "entry_frequency"
+      POLLING_FREQUENCY: "15"
+      RUN_MIGRATIONS: "1"
+      OAUTH2_USER_CREATION: "1"
+      OAUTH2_PROVIDER: oidc
+      METRICS_COLLECTOR: "1"
+      METRICS_ALLOWED_NETWORKS: "${NET_POD_CIDR}"
+
+    envFrom:
+      - secretRef:
+          name: *app
+
+    podAnnotations:
+      secret.reloader.stakater.com/reload: *app
+
+    service:
+      main:
+        ports:
+          http:
+            port: 8080
+
+    ingress:
+      main:
+        annotations:
+          external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
+          hajimari.io/enable: "true"
+          hajimari.io/appName: "Miniflux"
+          hajimari.io/icon: "mdi:rss"
+        enabled: true
+        hosts:
+          - host: &host "miniflux.${SECRET_DOMAIN}"
+            paths:
+              - path: /
+        tls:
+          - hosts:
+              - *host
+
+    probes:
+      liveness:
+        enabled: true
+        custom: true
+        spec:
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 1
+          failureThreshold: 3
+          httpGet:
+            path: /healthcheck
+            port: 8080
+
+    serviceMonitor:
+      main:
+        enabled: true
+        endpoints:
+          - port: http
+            scheme: http
+            path: /metrics
+            interval: 1m
+            scrapeTimeout: 10s
+
+    resources:
+      requests:
+        cpu: 20m
+        memory: 256M
+      limits:
+        memory: 1028M

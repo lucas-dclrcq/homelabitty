@@ -7,3 +7,4 @@ resources:
   - ./hajimari/ks.yaml
   - ./cyberchef/ks.yaml
   - ./vaultwarden/ks.yaml
+  - ./miniflux/ks.yaml
