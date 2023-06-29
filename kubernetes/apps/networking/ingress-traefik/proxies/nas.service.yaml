@@ -6,4 +6,4 @@ metadata:
   namespace: networking
 spec:
   type: ExternalName
-  externalName: nas.${INTERNAL_DOMAIN}
+  externalName: "nas.${INTERNAL_DOMAIN}"

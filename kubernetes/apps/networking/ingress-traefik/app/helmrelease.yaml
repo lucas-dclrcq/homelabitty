@@ -32,6 +32,8 @@ spec:
       kubernetesCRD:
         allowExternalNameServices: true
         allowCrossNamespace: true
+      kubernetesIngress:
+        allowExternalNameServices: true
 
     deployment:
       replicas: 1

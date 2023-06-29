@@ -16,7 +16,7 @@ spec:
           port: 81
           scheme: http
   tls:
-    secretName: tls-lulice
+    secretName: "${SECRET_DOMAIN/./-}-production-tls"
 ---
 apiVersion: v1
 kind: Service
