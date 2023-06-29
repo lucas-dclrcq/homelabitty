@@ -1,20 +1,26 @@
 ---
-apiVersion: traefik.containo.us/v1alpha1
-kind: IngressRoute
+apiVersion: networking.k8s.io/v1
+kind: Ingress
 metadata:
+  annotations:
+    hajimari.io/enable: "true"
+    hajimari.io/icon: hammer-wrench
+    hajimari.io/name: Jellyfin
   name: jellyfin
   namespace: networking
 spec:
-  entryPoints:
-    - websecure
-  routes:
-    - kind: Rule
-      match: Host(`jellyfin.${SECRET_DOMAIN}`)
-      services:
-        - kind: Service
-          name: nas
-          passHostHeader: true
-          port: 8096
-          scheme: http
+  ingressClassName: ingress-traefik
+  rules:
+    - host: &host "jellyfin.${SECRET_DOMAIN}"
+      http:
+        paths:
+          - backend:
+              service:
+                name: nas
+                port:
+                  number: 8096
+            path: /
+            pathType: Prefix
   tls:
-    secretName: "${SECRET_DOMAIN/./-}-production-tls"
+    - hosts:
+        - *host
