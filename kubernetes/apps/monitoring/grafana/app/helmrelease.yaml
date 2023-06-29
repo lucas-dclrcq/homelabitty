@@ -85,6 +85,7 @@ spec:
       enabled: true
       ingressClassName: ingress-traefik
       annotations:
+        external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
         hajimari.io/icon: simple-icons:grafana
       hosts:
         - &host "grafana.${SECRET_DOMAIN}"
