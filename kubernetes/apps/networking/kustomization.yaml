@@ -6,3 +6,4 @@ resources:
   - ./ingress-traefik/ks.yaml
   - ./k8s-gateway/ks.yaml
   - ./metallb/ks.yaml
+  - ./external-dns/ks.yaml
