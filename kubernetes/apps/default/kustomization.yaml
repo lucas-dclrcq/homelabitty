@@ -8,3 +8,4 @@ resources:
   - ./cyberchef/ks.yaml
   - ./vaultwarden/ks.yaml
   - ./miniflux/ks.yaml
+  - ./minecraft/ks.yaml
