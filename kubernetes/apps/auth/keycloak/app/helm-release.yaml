@@ -69,7 +69,7 @@ spec:
 
     database:
       vendor: "postgres"
-      hostname: "${DATABASE_IP}"
+      hostname: "apps.postgresql.${INTERNAL_DOMAIN}"
       port: "5432"
       database: "keycloak"
       user: "keycloak"

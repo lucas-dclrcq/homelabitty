@@ -21,3 +21,4 @@ resources:
   - ./gandi-webhook.yaml
   - ./emberstack.yaml
   - ./longhorn.yaml
+  - ./codecentric.yaml

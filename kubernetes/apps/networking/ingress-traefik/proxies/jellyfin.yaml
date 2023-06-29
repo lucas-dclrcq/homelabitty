@@ -17,7 +17,7 @@ spec:
               service:
                 name: nas
                 port:
-                  number: 8096
+                  name: jellyfin
             path: /
             pathType: Prefix
   tls:

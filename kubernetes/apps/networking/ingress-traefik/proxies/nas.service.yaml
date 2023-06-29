@@ -7,3 +7,19 @@ metadata:
 spec:
   type: ExternalName
   externalName: "nas.${INTERNAL_DOMAIN}"
+  ports:
+    - name: jellyfin
+      protocol: TCP
+      port: 8096
+    - name: navidrome
+      protocol: TCP
+      port: 4533
+    - name: registry
+      protocol: TCP
+      port: 15000
+    - name: sabnzbd
+      protocol: TCP
+      port: 8088
+    - name: synology
+      protocol: TCP
+      port: 5000
