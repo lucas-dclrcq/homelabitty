@@ -30,6 +30,6 @@ spec:
       backupTargetCredentialSecret: minio-secret
     ingress:
       enabled: true
-#      annotations:
-#        traefik.ingress.kubernetes.io/router.middlewares: "traefik-sso@kubernetescrd"
+      annotations:
+        traefik.ingress.kubernetes.io/router.middlewares: "networking-sso@kubernetescrd"
       host: "longhorn.${SECRET_DOMAIN}"

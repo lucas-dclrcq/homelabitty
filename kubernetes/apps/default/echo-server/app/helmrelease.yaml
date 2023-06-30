@@ -58,6 +58,7 @@ spec:
       main:
         enabled: true
         annotations:
+          traefik.ingress.kubernetes.io/router.middlewares: "networking-sso@kubernetescrd"
           external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
           hajimari.io/icon: video-input-antenna
         hosts:
