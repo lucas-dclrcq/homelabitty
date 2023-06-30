@@ -23,7 +23,7 @@ spec:
         memory: 4G
     minecraftServer:
       eula: "TRUE"
-      version: "1.19.2"
+      version: "1.20.1"
       ops: Kashall
       spawnProtection: 16
       pvp: true
