@@ -1,0 +1,90 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: matrix-synapse
+  namespace: matrix
+spec:
+  interval: 5m
+  chart:
+    spec:
+      # renovate: registryUrl=https://ananace.gitlab.io/charts
+      chart: matrix-synapse
+      version: 3.4.0
+      sourceRef:
+        kind: HelmRepository
+        name: ananace-charts
+        namespace: flux-system
+      interval: 5m
+  dependsOn:
+    - name: longhorn
+      namespace: longhorn-system
+  values:
+    image:
+      repository: ghcr.io/matrix-org/synapse
+      tag: v1.86.0
+
+    serverName: &serverName "${SECRET_DOMAIN}"
+    publicServerName: &publicServerName "matrix.${SECRET_DOMAIN}"
+    wellknown:
+      enabled: true
+      image:
+        repository: ghcr.io/rtsp/docker-lighttpd
+        tag: 1.4.71
+
+    workers:
+      media_repository:
+        enabled: false
+
+    extraConfig:
+      enable_3pid_lookup: false
+      account_threepid_delegates:
+        msisdn: https://vector.im
+      oidc_providers:
+        - idp_id: keycloak
+          idp_name: "SSO"
+          issuer: "https://keycloak.${SECRET_DOMAIN}/auth/realms/hoohoot"
+          client_id: TBD
+          client_secret: TBD
+          scopes: ["openid", "profile"]
+          user_mapping_provider:
+            config:
+              localpart_template: "{{ user.preferred_username }}"
+              display_name_template: "{{ user.name }}"
+
+    ingress:
+      enabled: true
+      className: ingress-traefik
+      annotations:
+        external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
+      includeUnderscoreSynapse: true
+      includeServerName: true
+      tls:
+        - hosts:
+            - *serverName
+            - *publicServerName
+
+    postgresql:
+      enabled: false
+
+    externalPostgresql:
+      host: "matrix.postgresql.${INTERNAL_DOMAIN}"
+      port: 5432
+      username: TBD
+      password: TBD
+      database: TBD
+
+    redis:
+      enabled: true
+      auth:
+        enabled: true
+        password: ${SECRET_MATRIX_REDIS_PASSWORD}
+
+    signingkey:
+      job:
+        enabled: false
+      existingSecret: matrix-synapse-signingkey
+
+    persistence:
+      enabled: true
+      existingClaim: synapse-data
