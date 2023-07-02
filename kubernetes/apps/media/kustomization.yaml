@@ -8,3 +8,4 @@ resources:
   - ./recyclarr/ks.yaml
   - ./radarr/ks.yaml
   - ./sonarr/ks.yaml
+  - ./bazarr/ks.yaml
