@@ -18,24 +18,26 @@ spec:
 
   values:
     image:
-      repository: ghcr.io/onedr0p/readarr-develop
-      tag: 0.1.4.1596@sha256:b24967c6b0077a9c98e89305a266067e6548a46dd97678f8a860f4e1ca63c448
+      repository: linuxserver/readarr
+      tag: 0.2.0-develop@sha256:6bfe8c6bbb6eff807621551d4b1266514238e78f528cdbfead5b3d4f7c90bd8d
 
     podAnnotations:
       secret.reloader.stakater.com/reload: readarr
 
-    podSecurityContext:
-      runAsUser: 1026
-      runAsGroup: 100
-      fsGroup: 100
-      fsGroupChangePolicy: OnRootMismatch
-      supplementalGroups: [10000]
+#    podSecurityContext:
+#      runAsUser: 1026
+#      runAsGroup: 100
+#      fsGroup: 100
+#      fsGroupChangePolicy: OnRootMismatch
+#      supplementalGroups: [10000]
 
     env:
       READARR__INSTANCE_NAME: Readarr
       READARR__PORT: &port 8787
       READARR__APPLICATION_URL: "https://readarr.${SECRET_DOMAIN}"
       READARR__LOG_LEVEL: info
+      PUID: 1026
+      PGID: 100
 
     envFrom:
       - secretRef:
