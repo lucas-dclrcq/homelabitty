@@ -24,3 +24,4 @@ resources:
   - ./codecentric.yaml
   - ./minecraft.yaml
   - ./ananace.yaml
+  - ./openfaas.yaml
