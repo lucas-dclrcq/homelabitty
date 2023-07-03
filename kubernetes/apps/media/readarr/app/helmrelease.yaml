@@ -1,62 +1,61 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.trux.dev/helm.toolkit.fluxcd.io/helmrelease_v2beta1.json
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-  name: calibre-web
+  name: readarr
   namespace: media
 spec:
-  interval: 15m
+  interval: 30m
   chart:
     spec:
       chart: app-template
       version: 1.5.1
+      interval: 30m
       sourceRef:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
-  install:
-    createNamespace: true
-    remediation:
-      retries: 5
-  upgrade:
-    remediation:
-      retries: 5
 
   values:
     image:
-      repository: ghcr.io/linuxserver/calibre-web
-      tag: 0.6.20
+      repository: ghcr.io/onedr0p/readarr-develop
+      tag: 0.1.4.1596@sha256:b24967c6b0077a9c98e89305a266067e6548a46dd97678f8a860f4e1ca63c448
+
+    podAnnotations:
+      secret.reloader.stakater.com/reload: readarr
+
+    podSecurityContext:
+      runAsUser: 1026
+      runAsGroup: 100
+      fsGroup: 100
+      fsGroupChangePolicy: OnRootMismatch
+      supplementalGroups: [10000]
 
     env:
-      CALIBRE_PORT: 8083
-      CACHE_DIR: /cache
-      PUID: 1026
-      PGID: 100
+      READARR__INSTANCE_NAME: Readarr
+      READARR__PORT: &port 8787
+      READARR__APPLICATION_URL: "https://readarr.${SECRET_DOMAIN}"
+      READARR__LOG_LEVEL: info
 
-    enableServiceLinks: false
-
-#    podSecurityContext:
-#      runAsUser: 1026
-#      runAsGroup: 100
-#      fsGroup: 100
-#      fsGroupChangePolicy: OnRootMismatch
-#      supplementalGroups: [10000]
+    envFrom:
+      - secretRef:
+          name: readarr
 
     service:
       main:
         ports:
           http:
-            port: 8083
+            port: *port
 
     ingress:
       main:
         enabled: true
-        annotations:
-          external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
         ingressClassName: ingress-traefik
+        annotations:
+          traefik.ingress.kubernetes.io/router.middlewares: "networking-sso@kubernetescrd"
+          external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
         hosts:
-          - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
+          - host: &host "readarr.${SECRET_DOMAIN}"
             paths:
               - path: /
         tls:
@@ -67,7 +66,7 @@ spec:
       - name: config
         mountPath: /config
         accessMode: ReadWriteOnce
-        size: 1Gi
+        size: 15Gi
         storageClass: longhorn
 
     persistence:
@@ -77,14 +76,8 @@ spec:
         server: "nas.${INTERNAL_DOMAIN}"
         path: /volume1/Media
         mountPath: /media
-      cache:
-        enabled: true
-        type: emptyDir
-        mountPath: /cache
 
     resources:
       requests:
         cpu: 5m
-        memory: 470M
-      limits:
-        memory: 470M
+        memory: 224M
