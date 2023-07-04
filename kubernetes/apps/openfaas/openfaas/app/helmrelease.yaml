@@ -38,17 +38,3 @@ spec:
       create: false
     alertmanager:
       create: false
-    ingress:
-      enabled: true
-      hosts:
-        - host: &host "gateway.fn.${SECRET_DOMAIN}"
-          serviceName: gateway
-          servicePort: 8080
-          path: /
-      annotations:
-        traefik.ingress.kubernetes.io/router.middlewares: "networking-sso@kubernetescrd"
-        external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
-      tls:
-        - hosts:
-            - *host
-      ingressClassName: ingress-traefik
