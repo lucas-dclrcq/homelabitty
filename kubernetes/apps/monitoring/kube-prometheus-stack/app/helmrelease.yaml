@@ -116,6 +116,8 @@ spec:
         enabled: true
         ingressClassName: ingress-traefik
         annotations:
+          traefik.ingress.kubernetes.io/router.middlewares: "networking-sso@kubernetescrd"
+          external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
           hajimari.io/appName: Prometheus
           hajimari.io/icon: simple-icons:prometheus
         pathType: Prefix
