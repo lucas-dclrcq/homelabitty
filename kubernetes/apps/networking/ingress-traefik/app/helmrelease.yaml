@@ -43,8 +43,12 @@ spec:
         enabled: true
         matchRule: Host(`traefik.${SECRET_DOMAIN}`)
         entryPoints: ["websecure"]
-#        middlewares:
-#          - name: sso
+        middlewares:
+          - name: sso
+
+    service:
+      spec:
+        externalTrafficPolicy: Local
 
     experimental:
       plugins:
@@ -64,6 +68,12 @@ spec:
       web:
         redirectTo: websecure
       websecure:
+        forwardedHeaders:
+          trustedIPs:
+            - &lan "192.168.1.1/24"
+        proxyProtocol:
+          trustedIPs:
+            - *lan
         http3:
           enabled: true
         tls:
