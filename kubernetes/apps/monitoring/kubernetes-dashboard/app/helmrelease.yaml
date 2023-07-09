@@ -46,6 +46,13 @@ spec:
       tls:
         - hosts:
             - *host
+    nginx:
+      enabled: false
+    cert-manager:
+      enabled: false
+      installCRDs: false
+    metrics-server:
+      enabled: false
     metricsScraper:
       enabled: true
     serviceMonitor:
