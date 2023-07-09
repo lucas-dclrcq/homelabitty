@@ -31,7 +31,7 @@ spec:
       serviceType: LoadBalancer
       externalTrafficPolicy: Cluster
       externalIPs:
-        - "192.168.1.32"
+        - "${METALLB_MINECRAFT_ADDR}"
       motd: "Kubernetes now comes with Minecraft! On-demand!\nUwU >.<"
       onlineMode: false
       rcon:

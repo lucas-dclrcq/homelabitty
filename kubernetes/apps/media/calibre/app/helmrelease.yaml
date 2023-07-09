@@ -48,7 +48,7 @@ spec:
             targetPort: 8081
         type: LoadBalancer
         externalTrafficPolicy: Cluster
-        loadBalancerIP: &lbIp "192.168.1.33"
+        loadBalancerIP: &lbIp "${METALLB_CALIBRE_ADDR}"
         annotations:
           metallb.universe.tf/allow-shared-ip: *app
       wireless:
