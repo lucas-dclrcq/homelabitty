@@ -25,3 +25,4 @@ resources:
   - ./minecraft.yaml
   - ./ananace.yaml
   - ./openfaas.yaml
+  - ./redpanda.yaml
