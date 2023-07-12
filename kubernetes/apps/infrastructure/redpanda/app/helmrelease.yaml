@@ -33,17 +33,12 @@ spec:
         mechanism: SCRAM-SHA-512
         users: []
         secretRef: "redpanda-superusers"
+    tls:
+      enabled: false
     storage:
       persistentVolume:
         storageClass: local-path
     monitoring:
       enabled: true
     console:
-      enabled: true
-      config:
-        console:
-          redpanda:
-            adminApi:
-              enabled: true
-              urls:
-                - http://redpanda-0.redpanda.redpanda.svc.cluster.local.:9644
+      enabled: false

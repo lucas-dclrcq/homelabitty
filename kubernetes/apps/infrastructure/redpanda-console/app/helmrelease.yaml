@@ -1,0 +1,55 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: redpanda-console
+  namespace: infrastructure
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: console
+      version: 0.6.6
+      sourceRef:
+        kind: HelmRepository
+        name: redpanda
+        namespace: flux-system
+
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+
+  values:
+    console:
+      config:
+        kafka:
+          brokers:
+            - redpanda-0:9092
+            - redpanda-1:9092
+            - redpanda-2:9092
+          sasl:
+            enabled: true
+            username: admin
+            password: "M%RyBJX2y4pU5Cb^3b^E"
+            mechanism: SCRAM-SHA-512
+    ingress:
+      main:
+        enabled: true
+        ingressClassName: ingress-traefik
+        annotations:
+          external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
+        hosts:
+          - host: &host "kafka.${SECRET_DOMAIN}"
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - *host
