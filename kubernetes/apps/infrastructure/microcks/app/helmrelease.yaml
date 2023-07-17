@@ -35,8 +35,10 @@ spec:
     keycloak:
       install: false
       realm: lulice
-      url: "auth.${SECRET_DOMAIN}"
-      privateUrl: http://keycloak-keycloakx-http.auth.svc.cluster.local
+      url: "auth.${SECRET_DOMAIN}/auth"
+      privateUrl: http://keycloak-keycloakx-http.auth.svc.cluster.local:80/auth
+      serviceAccount: microcks-serviceaccount
+      serviceAccountCredentials: "${MICROCKS_SA_SECRET}"
     mongodb:
       storageClassName: longhorn
       image: mongo:3.4
