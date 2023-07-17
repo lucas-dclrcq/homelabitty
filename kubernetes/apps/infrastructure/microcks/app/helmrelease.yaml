@@ -29,19 +29,21 @@ spec:
   values:
     microcks:
       url: "microcks.${SECRET_DOMAIN}"
+      ingressSecretRef: "${SECRET_DOMAIN/./-}-production-tls"
+      generateCert: false
       ingressAnnotations:
         external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
         kubernetes.io/ingress.class: "ingress-traefik"
+      logLevel: DEBUG
     keycloak:
       install: false
       realm: lulice
       url: "auth.${SECRET_DOMAIN}/auth"
-      privateUrl: http://keycloak-keycloakx-http.auth.svc.cluster.local:80/auth
       serviceAccount: microcks-serviceaccount
       serviceAccountCredentials: "${MICROCKS_SA_SECRET}"
     mongodb:
       install: false
-      url: microcks-mongo.infrastructure.svc.cluster.local:27017
+      uri: microcks-mongo:27017
       database: microcks
       secretRef:
         secret: microcks-secret

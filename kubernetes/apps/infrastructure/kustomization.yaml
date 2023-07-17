@@ -4,5 +4,4 @@ kind: Kustomization
 resources:
   - ./namespace.yaml
   - ./redpanda/ks.yaml
-  - ./redpanda-console/ks.yaml
   - ./microcks/ks.yaml
