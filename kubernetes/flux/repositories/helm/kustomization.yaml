@@ -2,28 +2,28 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
+  - ./ananace.yaml
   - ./bitnami.yaml
   - ./bjw-s.yaml
   - ./cilium.yaml
+  - ./codecentric.yaml
+  - ./emberstack.yaml
   - ./external-dns.yaml
+  - ./gandi-webhook.yaml
   - ./grafana.yaml
   - ./hajimari.yaml
   - ./ingress-nginx.yaml
   - ./jetstack.yaml
   - ./k8s-gateway.yaml
   - ./kubernetes-dashboard.yaml
+  - ./longhorn.yaml
   - ./metallb.yaml
   - ./metrics-server.yaml
-  - ./prometheus-community.yaml
-  - ./stakater.yaml
-  - ./weave-gitops.yaml
-  - ./traefik.yaml
-  - ./gandi-webhook.yaml
-  - ./emberstack.yaml
-  - ./longhorn.yaml
-  - ./codecentric.yaml
-  - ./minecraft.yaml
-  - ./ananace.yaml
-  - ./openfaas.yaml
-  - ./redpanda.yaml
   - ./microcks.yaml
+  - ./minecraft.yaml
+  - ./openfaas.yaml
+  - ./prometheus-community.yaml
+  - ./redpanda.yaml
+  - ./stakater.yaml
+  - ./traefik.yaml
+  - ./weave-gitops.yaml

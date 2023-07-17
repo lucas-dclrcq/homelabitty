@@ -40,8 +40,9 @@ spec:
       serviceAccount: microcks-serviceaccount
       serviceAccountCredentials: "${MICROCKS_SA_SECRET}"
     mongodb:
-      storageClassName: longhorn
-      image: mongo:3.4
+      install: false
+      url: microcks-mongo.infrastructure.svc.cluster.local:27017
+      database: microcks
       secretRef:
         secret: microcks-secret
         usernameKey: database-user
