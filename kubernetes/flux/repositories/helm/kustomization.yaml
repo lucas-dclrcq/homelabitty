@@ -26,3 +26,4 @@ resources:
   - ./ananace.yaml
   - ./openfaas.yaml
   - ./redpanda.yaml
+  - ./microcks.yaml
