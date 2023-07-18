@@ -9,3 +9,4 @@ resources:
   - ./vaultwarden/ks.yaml
   - ./miniflux/ks.yaml
   - ./minecraft/ks.yaml
+  - ./trilium/ks.yaml
