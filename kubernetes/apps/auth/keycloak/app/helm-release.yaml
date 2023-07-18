@@ -19,7 +19,7 @@ spec:
   values:
     image:
       repository: quay.io/keycloak/keycloak
-      tag: "21.1.2"
+      tag: "22.0.1"
 
     command:
       - "/opt/keycloak/bin/kc.sh"
