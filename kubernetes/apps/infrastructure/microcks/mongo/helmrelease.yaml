@@ -21,7 +21,7 @@ spec:
 
     image:
       repository: docker.io/library/mongo
-      tag: 3.6
+      tag: 3.7
 
     env:
       MONGO_INITDB_ROOT_USERNAME:
