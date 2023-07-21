@@ -27,12 +27,6 @@ spec:
     keepHistory: false
 
   values:
-    auth:
-      sasl:
-        enable: true
-        mechanism: SCRAM-SHA-512
-        users: []
-        secretRef: "redpanda-superusers"
     tls:
       enabled: false
     storage:
@@ -41,4 +35,11 @@ spec:
     monitoring:
       enabled: true
     console:
-      enabled: false
+      enabled: true
+      config:
+        console:
+          redpanda:
+            adminApi:
+              enabled: true
+              urls:
+                - http://redpanda-0.redpanda.redpanda.svc.cluster.local.:9644
