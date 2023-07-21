@@ -30,6 +30,9 @@ spec:
           http:
             port: 80
 
+    env:
+      DEFAULT_SERVERS: "jellyfin.${SECRET_DOMAIN}"
+
     ingress:
       main:
         enabled: true
