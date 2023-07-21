@@ -2,7 +2,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-  name: matrix-synapse
+  name: &app matrix-synapse
   namespace: matrix
 spec:
   interval: 5m
@@ -26,6 +26,7 @@ spec:
 
     serverName: &serverName "${SECRET_DOMAIN}"
     publicServerName: &publicServerName "matrix.${SECRET_DOMAIN}"
+
     wellknown:
       enabled: true
       image:
@@ -36,6 +37,10 @@ spec:
       media_repository:
         enabled: false
 
+    synapse:
+      strategy:
+        type: Recreate
+
     extraConfig:
       enable_3pid_lookup: false
       account_threepid_delegates:
@@ -43,9 +48,9 @@ spec:
       oidc_providers:
         - idp_id: keycloak
           idp_name: "SSO"
-          issuer: "https://keycloak.${SECRET_DOMAIN}/auth/realms/hoohoot"
-          client_id: TBD
-          client_secret: TBD
+          issuer: "https://auth.${SECRET_DOMAIN}/auth/realms/lulice"
+          client_id: synapse
+          client_secret: "${SYNAPSE_KEYCLOAK_SECRET}"
           scopes: ["openid", "profile"]
           user_mapping_provider:
             config:
@@ -55,6 +60,7 @@ spec:
     ingress:
       enabled: true
       className: ingress-traefik
+      traefikPaths: true
       annotations:
         external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
       includeUnderscoreSynapse: true
@@ -68,22 +74,21 @@ spec:
       enabled: false
 
     externalPostgresql:
-      host: "matrix.postgresql.${INTERNAL_DOMAIN}"
+      host: "apps.postgresql.${INTERNAL_DOMAIN}"
       port: 5432
-      username: TBD
-      password: TBD
-      database: TBD
+      username: synapse
+      existingSecret: matrix-synapse-secret
+      existingSecretPasswordKey: pgPassword
 
     redis:
       enabled: true
       auth:
         enabled: true
-        password: ${SECRET_MATRIX_REDIS_PASSWORD}
+        existingSecret: matrix-synapse-secret
 
     signingkey:
       job:
-        enabled: false
-      existingSecret: matrix-synapse-signingkey
+        enabled: true
 
     persistence:
       enabled: true

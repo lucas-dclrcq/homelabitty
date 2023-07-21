@@ -6,7 +6,7 @@ metadata:
   name: cluster-apps-matrix-synapse
   namespace: flux-system
 spec:
-  path: ./cluster/apps/matrix/matrix-synapse/app
+  path: ./kubernetes/apps/matrix/matrix-synapse/app
   prune: true
   sourceRef:
     kind: GitRepository
