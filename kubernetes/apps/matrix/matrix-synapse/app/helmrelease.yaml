@@ -79,10 +79,13 @@ spec:
       existingSecretPasswordKey: pgPassword
 
     redis:
-      enabled: true
-      auth:
-        enabled: true
-        existingSecret: matrix-synapse-secret
+      enabled: false
+
+    externalRedis:
+      host: redis.infrastructure.svc.cluster.local
+      port: 6379
+      dbid: 1
+      password: "changeme!"
 
     signingkey:
       job:

@@ -31,8 +31,9 @@ spec:
 
   values:
     auth:
-      enabled: false
-      sentinel: false
+      enabled: true
+      sentinel: true
+      password: "changeme!"
     master:
       persistence:
         enabled: false
