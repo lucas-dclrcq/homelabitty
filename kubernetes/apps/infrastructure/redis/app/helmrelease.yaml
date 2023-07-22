@@ -30,6 +30,7 @@ spec:
     keepHistory: false
 
   values:
+    architecture: replication
     auth:
       enabled: true
       sentinel: true
@@ -41,7 +42,7 @@ spec:
       persistence:
         enabled: false
     sentinel:
-      enabled: true
+      enabled: false
       masterSet: redis-master
       getMasterTimeout: 10
       startupProbe:
