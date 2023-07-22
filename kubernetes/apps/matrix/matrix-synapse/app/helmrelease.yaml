@@ -40,6 +40,11 @@ spec:
     synapse:
       strategy:
         type: Recreate
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: /_synapse/metrics
+        prometheus.io/port: 9090
+
 
     extraConfig:
       enable_3pid_lookup: false
