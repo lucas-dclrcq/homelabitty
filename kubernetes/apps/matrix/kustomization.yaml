@@ -7,3 +7,4 @@ resources:
   - ./matrix-synapse/ks.yaml
   - ./element/ks.yaml
   - ./synapse-admin/ks.yaml
+  - ./matrix-whatsapp/ks.yaml
