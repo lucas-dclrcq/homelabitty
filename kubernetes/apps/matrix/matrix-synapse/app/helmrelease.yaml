@@ -42,8 +42,8 @@ spec:
         type: Recreate
       annotations:
         prometheus.io/scrape: "true"
-        prometheus.io/path: /_synapse/metrics
-        prometheus.io/port: 9090
+        prometheus.io/path: "/_synapse/metrics"
+        prometheus.io/port: "9090"
 
 
     extraConfig:
