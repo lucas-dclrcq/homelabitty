@@ -5,3 +5,4 @@ resources:
   - ./namespace.yaml
   - ./matrix-chatgpt/ks.yaml
   - ./matrix-synapse/ks.yaml
+  - ./element/ks.yaml

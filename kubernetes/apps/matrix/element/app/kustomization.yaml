@@ -1,0 +1,12 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ./helmrelease.yaml
+namespace: matrix
+configMapGenerator:
+  - name: element
+    files:
+      - config.json=config/config.json
+generatorOptions:
+  disableNameSuffixHash: true
