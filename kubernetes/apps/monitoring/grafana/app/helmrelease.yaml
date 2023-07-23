@@ -81,6 +81,9 @@ spec:
         speedtest:
           url: https://raw.githubusercontent.com/lucas-dclrcq/homelabitty/main/dashboards/speedtest.json
           datasource: Prometheus
+        synapse:
+          url: https://raw.githubusercontent.com/lucas-dclrcq/homelabitty/main/dashboards/synapse.json
+          datasource: Prometheus
         longhorn:
           gnetId: 17626
           revision: 1
