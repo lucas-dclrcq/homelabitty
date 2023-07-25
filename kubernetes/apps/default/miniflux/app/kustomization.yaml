@@ -4,3 +4,13 @@ kind: Kustomization
 resources:
   - ./helm-release.yaml
   - ./secret.sops.yaml
+namespace: default
+configMapGenerator:
+  - name: miniflux-gatus-ep
+    files:
+      - config.yaml=config/gatus.yaml
+    options:
+      labels:
+        gatus.io/enabled: "true"
+generatorOptions:
+  disableNameSuffixHash: true

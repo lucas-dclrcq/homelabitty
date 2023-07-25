@@ -1,0 +1,8 @@
+---
+endpoints:
+  - name: miniflux
+    group: default
+    url: "https://miniflux.${SECRET_DOMAIN}"
+    interval: 1m
+    conditions:
+      - "[STATUS] == 200"
