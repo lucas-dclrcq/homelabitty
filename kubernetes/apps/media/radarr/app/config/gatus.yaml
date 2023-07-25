@@ -1,11 +1,8 @@
 ---
 endpoints:
   - name: radarr
-    group: guarded
-    url: 1.1.1.1
+    group: oauth
+    url: "https://miniflux.${SECRET_DOMAIN}"
     interval: 1m
-    dns:
-      query-name: "radarr.${SECRET_DOMAIN}"
-      query-type: A
     conditions:
-      - "len([BODY]) == 0"
+      - "[STATUS] == 307"
