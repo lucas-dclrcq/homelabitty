@@ -13,3 +13,4 @@ resources:
   - ./calibre-web/ks.yaml
   - ./readarr/ks.yaml
   - ./jellyfin-vue/ks.yaml
+  - ./sabnzbd/ks.yaml
