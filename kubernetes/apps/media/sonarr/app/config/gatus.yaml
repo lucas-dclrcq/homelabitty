@@ -1,8 +1,13 @@
 ---
 endpoints:
   - name: sonarr
-    group: oauth
+    group: media
     url: "https://miniflux.${SECRET_DOMAIN}"
     interval: 1m
+    client:
+      oauth2:
+        token-url: "${GATUS_TOKEN_URL}"
+        client-id: "${GATUS_OAUTH_CLIENT_ID}"
+        client-secret: "${GATUS_OAUTH_CLIENT_SECRET}"
     conditions:
-      - "[STATUS] == 307"
+      - "[STATUS] == 200"
