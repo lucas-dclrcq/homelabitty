@@ -28,6 +28,7 @@ spec:
   values:
     fullnameOverride: k8s-gateway
     domain: "${SECRET_DOMAIN}"
+    watchedResources: ["Ingress"]
     ttl: 1
     service:
       type: LoadBalancer
