@@ -61,6 +61,8 @@ spec:
             access: proxy
             url: http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090
             isDefault: true
+    plugins:
+      - grafana-piechart-panel
     dashboards:
       default:
         cert-manager:
@@ -89,7 +91,7 @@ spec:
           revision: 1
           datasource: Prometheus
         traefik:
-          gnetId: 11462
+          gnetId: 12250
           revision: 1
           datasource: Prometheus
 
