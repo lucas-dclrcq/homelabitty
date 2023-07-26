@@ -4,3 +4,4 @@ kind: Kustomization
 resources:
   - ./superusers-secret.sops.yaml
   - ./helmrelease.yaml
+  - ./console-ingress.yaml
