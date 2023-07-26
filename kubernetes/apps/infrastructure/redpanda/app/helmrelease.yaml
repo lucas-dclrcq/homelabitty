@@ -34,6 +34,13 @@ spec:
         storageClass: local-path
     monitoring:
       enabled: true
+    external:
+      enabled: true
+      domain: "k8s.${INTERNAL_DOMAIN}"
+      addresses:
+        - worker1
+        - worker4
+        - worker3
     console:
       enabled: true
       config:
