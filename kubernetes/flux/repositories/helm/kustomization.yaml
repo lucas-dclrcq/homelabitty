@@ -27,3 +27,4 @@ resources:
   - ./stakater.yaml
   - ./traefik.yaml
   - ./weave-gitops.yaml
+  - ./external-secrets.yaml
