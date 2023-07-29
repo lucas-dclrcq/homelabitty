@@ -35,10 +35,12 @@ spec:
 
     image:
       repository: ghcr.io/onedr0p/sabnzbd
-      tag: 4.0.3@sha256:aff676e3c234f7a4493c75813e296c347c02b6e5374acd1858f8244ea44f2b4a
+      tag: 4.0.3
 
     env:
       TZ: "${TIMEZONE}"
+      PUID: 1026
+      PGID: 100
       SABNZBD__PORT: &port 80
       SABNZBD__HOST_WHITELIST_ENTRIES: >-
         sabnzbd,
@@ -95,6 +97,7 @@ spec:
       runAsGroup: 100
       fsGroup: 100
       fsGroupChangePolicy: OnRootMismatch
+      supplementalGroups: [568]
 
     volumeClaimTemplates:
       - name: config
@@ -116,7 +119,7 @@ spec:
 
     resources:
       requests:
-        cpu: 10m
+        cpu: 50m
         memory: 250Mi
       limits:
-        memory: 8000Mi
+        memory: 2Gi
