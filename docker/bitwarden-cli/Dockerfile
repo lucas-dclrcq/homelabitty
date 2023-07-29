@@ -1,11 +1,10 @@
-FROM node:20-alpine3.17 as build
+FROM node:20.5-bookworm as build
 
-RUN npm install -g @bitwarden/cli
-RUN npm list -g
+WORKDIR /app
 
-FROM alpine:3.18
+COPY package.json /app
+RUN npm install
 
-COPY --from=build /usr/local/lib/node_modules/@bitwarden/cli/build/bw.js /usr/local/bin/bw
 COPY entrypoint.sh /
 
 ENTRYPOINT ["/entrypoint.sh"]
