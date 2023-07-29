@@ -44,30 +44,11 @@ spec:
         matchNames:
           - default
           - monitoring
-      customApps:
-        - group: media
-          apps:
-            - name: Jellyfin
-              url: 'https://jellyfin.${SECRET_DOMAIN}'
-              icon: 'mdi:television'
-            - name: Betanin
-              url: 'https://betanin.${SECRET_DOMAIN}'
-              icon: 'mdi:television'
-            - name: Navidrome
-              url: 'https://navidrome.${SECRET_DOMAIN}'
-              icon: 'mdi:music-circle'
-            - name: NZBget
-              url: 'https://nzbget.${SECRET_DOMAIN}'
-              icon: 'mdi:download-box'
-        - group: homelab
-          apps:
-            - name: Turris
-              url: 'https://router.${SECRET_DOMAIN}'
-              icon: 'mdi:router-network'
-            - name: Synology NAS
-              url: 'https://synology.${SECRET_DOMAIN}'
-              icon: 'mdi:nas'
-
+          - media
+          - networking
+          - infrastructure
+          - matrix
+          - auth
     ingress:
       main:
         enabled: true

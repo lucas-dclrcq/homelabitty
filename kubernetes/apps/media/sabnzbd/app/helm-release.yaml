@@ -83,6 +83,7 @@ spec:
         ingressClassName: "ingress-traefik"
         annotations:
           external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
+          hajimari.io/disable: false
         hosts:
           - host: &host "sab.${SECRET_DOMAIN}"
             paths:

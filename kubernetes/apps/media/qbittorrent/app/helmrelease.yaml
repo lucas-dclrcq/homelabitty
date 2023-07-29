@@ -67,6 +67,7 @@ spec:
         ingressClassName: "ingress-traefik"
         annotations:
           external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
+          hajimari.io/icon: cloud-download
         hosts:
           - host: &host "qbittorrent.${SECRET_DOMAIN}"
             paths:

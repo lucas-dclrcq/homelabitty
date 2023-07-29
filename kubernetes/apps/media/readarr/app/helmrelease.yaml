@@ -49,6 +49,7 @@ spec:
         annotations:
           traefik.ingress.kubernetes.io/router.middlewares: "networking-sso@kubernetescrd"
           external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
+          hajimari.io/icon: book-open-variant
         hosts:
           - host: &host "readarr.${SECRET_DOMAIN}"
             paths:

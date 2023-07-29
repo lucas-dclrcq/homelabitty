@@ -28,3 +28,4 @@ resources:
   - ./traefik.yaml
   - ./weave-gitops.yaml
   - ./external-secrets.yaml
+  - ./descheduler.yaml
