@@ -5,12 +5,12 @@ resources:
   - ./helm-release.yaml
   - ./secret.sops.yaml
 namespace: media
-configMapGenerator:
-  - name: sonarr-gatus-ep
-    files:
-      - config.yaml=config/gatus.yaml
-    options:
-      labels:
-        gatus.io/enabled: "true"
-generatorOptions:
-  disableNameSuffixHash: true
+#configMapGenerator:
+#  - name: sonarr-gatus-ep
+#    files:
+#      - config.yaml=config/gatus.yaml
+#    options:
+#      labels:
+#        gatus.io/enabled: "true"
+#generatorOptions:
+#  disableNameSuffixHash: true
