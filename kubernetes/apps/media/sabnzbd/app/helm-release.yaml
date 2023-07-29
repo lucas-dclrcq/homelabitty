@@ -89,7 +89,7 @@ spec:
         tls:
           - hosts:
               - *host
-              -
+
     podSecurityContext:
       runAsUser: 1026
       runAsGroup: 100
