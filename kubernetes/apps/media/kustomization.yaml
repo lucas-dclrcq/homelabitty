@@ -16,3 +16,4 @@ resources:
   - ./sabnzbd/ks.yaml
   - ./media-browser/ks.yaml
   - ./qbittorrent/ks.yaml
+  - ./lidarr/ks.yaml
