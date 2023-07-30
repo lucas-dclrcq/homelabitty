@@ -1,0 +1,65 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: tdarr-node
+  namespace: media
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 1.5.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  maxHistory: 3
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    controller:
+      type: daemonset
+
+    image:
+      repository: docker.io/haveagitgat/tdarr_node
+      tag: 2.00.22
+
+    env:
+      TZ: "${TIMEZONE}"
+      serverIP: tdarr.media.svc.cluster.local
+      serverPort: 8266
+      PUID: 1026
+      PGID: 100
+      nodeName:
+        valueFrom:
+          fieldRef:
+            fieldPath: spec.nodeName
+
+    service:
+      main:
+        enabled: false
+        ports:
+          enabled: false
+          http:
+            port: 8265
+
+    persistence:
+      media:
+        enabled: true
+        type: nfs
+        server: "nas.${INTERNAL_DOMAIN}"
+        path: /volume1/Media
+        mountPath: /media
+
+    resources:
+      requests:
+        cpu: 10m
+        memory: 250Mi
