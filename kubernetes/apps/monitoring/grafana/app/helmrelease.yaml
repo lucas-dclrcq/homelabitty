@@ -65,34 +65,14 @@ spec:
       - grafana-piechart-panel
     dashboards:
       default:
-        cert-manager:
-          url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/cert-manager/dashboards/cert-manager.json
-          datasource: Prometheus
-        flux-cluster:
-          url: https://raw.githubusercontent.com/fluxcd/flux2/main/manifests/monitoring/monitoring-config/dashboards/cluster.json
-          datasource: Prometheus
-        flux-control-plane:
-          url: https://raw.githubusercontent.com/fluxcd/flux2/main/manifests/monitoring/monitoring-config/dashboards/control-plane.json
-          datasource: Prometheus
         arr:
           url: https://raw.githubusercontent.com/onedr0p/exportarr/master/examples/grafana/dashboard2.json
           datasource: Prometheus
         radarr:
           url: https://raw.githubusercontent.com/onedr0p/exportarr/master/examples/grafana/dashboard.json
           datasource: Prometheus
-        speedtest:
-          url: https://raw.githubusercontent.com/lucas-dclrcq/homelabitty/main/dashboards/speedtest.json
-          datasource: Prometheus
         synapse:
           url: https://raw.githubusercontent.com/lucas-dclrcq/homelabitty/main/dashboards/synapse.json
-          datasource: Prometheus
-        longhorn:
-          gnetId: 17626
-          revision: 1
-          datasource: Prometheus
-        traefik:
-          gnetId: 12250
-          revision: 1
           datasource: Prometheus
         redpanda:
           gnetId: 18135
@@ -101,15 +81,40 @@ spec:
         miniflux:
           url: https://raw.githubusercontent.com/miniflux/v2/main/contrib/grafana/dashboard.json
           datasource: Prometheus
-        node-exporter-full:
-          gnetId: 1860 # https://grafana.com/grafana/dashboards/1860?tab=revisions
-          revision: 31
+      networking:
+        traefik:
+          gnetId: 12250
+          revision: 1
+          datasource: Prometheus
+        cert-manager:
+          url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/cert-manager/dashboards/cert-manager.json
           datasource: Prometheus
         external-dns:
           gnetId: 15038 # https://grafana.com/grafana/dashboards/15038?tab=revisions
           revision: 1
           datasource: Prometheus
-
+        speedtest:
+          url: https://raw.githubusercontent.com/lucas-dclrcq/homelabitty/main/dashboards/speedtest.json
+          datasource: Prometheus
+      system:
+        node-exporter-full:
+          gnetId: 1860 # https://grafana.com/grafana/dashboards/1860?tab=revisions
+          revision: 31
+          datasource: Prometheus
+        external-secrets:
+          url: https://raw.githubusercontent.com/external-secrets/external-secrets/main/docs/snippets/dashboard.json
+          datasource: Prometheus
+        longhorn:
+          gnetId: 17626
+          revision: 1
+          datasource: Prometheus
+      flux:
+        flux-cluster:
+          url: https://raw.githubusercontent.com/fluxcd/flux2/main/manifests/monitoring/monitoring-config/dashboards/cluster.json
+          datasource: Prometheus
+        flux-control-plane:
+          url: https://raw.githubusercontent.com/fluxcd/flux2/main/manifests/monitoring/monitoring-config/dashboards/control-plane.json
+          datasource: Prometheus
     sidecar:
       dashboards:
         enabled: true
