@@ -61,7 +61,7 @@ spec:
       enabled: true
       className: ingress-traefik
       annotations:
-        hajimari.io/enable: false
+        hajimari.io/enable: "false"
       traefikPaths: true
       includeUnderscoreSynapse: true
       includeServerName: true
