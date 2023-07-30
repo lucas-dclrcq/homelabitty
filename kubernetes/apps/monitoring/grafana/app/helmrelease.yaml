@@ -98,6 +98,17 @@ spec:
           gnetId: 18135
           revision: 1
           datasource: Prometheus
+        miniflux:
+          url: https://raw.githubusercontent.com/miniflux/v2/main/contrib/grafana/dashboard.json
+          datasource: Prometheus
+        node-exporter-full:
+          gnetId: 1860 # https://grafana.com/grafana/dashboards/1860?tab=revisions
+          revision: 31
+          datasource: Prometheus
+        external-dns:
+          gnetId: 15038 # https://grafana.com/grafana/dashboards/15038?tab=revisions
+          revision: 1
+          datasource: Prometheus
 
     sidecar:
       dashboards:
