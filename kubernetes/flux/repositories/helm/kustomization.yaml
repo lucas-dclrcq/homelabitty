@@ -29,3 +29,4 @@ resources:
   - ./weave-gitops.yaml
   - ./external-secrets.yaml
   - ./descheduler.yaml
+  - ./kubernetes-sigs-nfd.yaml

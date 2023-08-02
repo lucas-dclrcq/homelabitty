@@ -10,3 +10,4 @@ resources:
   - ./reflector/ks.yaml
   - ./external-secrets/ks.yaml
   - ./descheduler/ks.yaml
+  - ./node-feature-discovery/ks.yaml
