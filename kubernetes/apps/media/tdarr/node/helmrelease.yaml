@@ -30,7 +30,7 @@ spec:
 
     image:
       repository: docker.io/haveagitgat/tdarr_node
-      tag: 2.00.23
+      tag: 2.00.24
 
     env:
       TZ: "${TIMEZONE}"
