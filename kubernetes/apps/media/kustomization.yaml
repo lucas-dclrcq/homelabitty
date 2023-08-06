@@ -18,3 +18,4 @@ resources:
   - ./qbittorrent/ks.yaml
   - ./lidarr/ks.yaml
   - ./tdarr/ks.yaml
+  - ./slskd/ks.yaml
