@@ -34,6 +34,8 @@ spec:
       SLSKD_DOWNLOADS_DIR: "/media/Downloads/nicotine/complete"
       SLSKD_INCOMPLETE_DIR: "/incomplete"
       SLSKD_SHARED_DIR: "/media/Music"
+      SLSKD_METRICS: true
+      SLSKD_METRICS_NO_AUTH: true
 
     envFrom:
       - secretRef:
@@ -90,3 +92,13 @@ spec:
         tls:
           - hosts:
               - *host
+
+    serviceMonitor:
+      main:
+        enabled: true
+        endpoints:
+          - port: http
+            scheme: http
+            path: /metrics
+            interval: 1m
+            scrapeTimeout: 10s
