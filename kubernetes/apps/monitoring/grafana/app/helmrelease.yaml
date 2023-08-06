@@ -81,7 +81,6 @@ spec:
         miniflux:
           url: https://raw.githubusercontent.com/miniflux/v2/main/contrib/grafana/dashboard.json
           datasource: Prometheus
-      networking:
         traefik:
           gnetId: 12250
           revision: 1
@@ -96,7 +95,6 @@ spec:
         speedtest:
           url: https://raw.githubusercontent.com/lucas-dclrcq/homelabitty/main/dashboards/speedtest.json
           datasource: Prometheus
-      system:
         node-exporter-full:
           gnetId: 1860 # https://grafana.com/grafana/dashboards/1860?tab=revisions
           revision: 31
@@ -108,7 +106,6 @@ spec:
           gnetId: 17626
           revision: 1
           datasource: Prometheus
-      flux:
         flux-cluster:
           url: https://raw.githubusercontent.com/fluxcd/flux2/main/manifests/monitoring/monitoring-config/dashboards/cluster.json
           datasource: Prometheus
