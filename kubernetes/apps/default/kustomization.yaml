@@ -6,7 +6,6 @@ resources:
   - ./echo-server/ks.yaml
   - ./hajimari/ks.yaml
   - ./cyberchef/ks.yaml
-  - ./vaultwarden/ks.yaml
   - ./miniflux/ks.yaml
   - ./minecraft/ks.yaml
   - ./trilium/ks.yaml
