@@ -37,7 +37,7 @@ spec:
 
     envFrom:
       - secretRef:
-          name: slskd-secret
+          name: slskd-login
 
     service:
       main:
