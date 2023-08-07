@@ -41,6 +41,7 @@ spec:
       className: ingress-traefik
       annotations:
         hajimari.io/icon: mdi:kubernetes
+        app.kubernetes.io/appName: "Kubernetes Dashboard"
       hosts:
         - &host "kubernetes.${SECRET_DOMAIN}"
       tls:
