@@ -27,7 +27,7 @@ spec:
 
     image:
       repository: ghcr.io/recyclarr/recyclarr
-      tag: 5.1.1
+      tag: 5.2.0
 
     command: ["/app/recyclarr/recyclarr"]
     args: ["sync"]
