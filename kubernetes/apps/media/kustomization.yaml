@@ -21,3 +21,4 @@ resources:
   - ./slskd/ks.yaml
 #  - ./betanin/ks.yaml
   - ./jellyseerr/ks.yaml
+  - ./wizarr/ks.yaml
