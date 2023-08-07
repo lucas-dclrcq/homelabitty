@@ -30,3 +30,4 @@ resources:
   - ./external-secrets.yaml
   - ./descheduler.yaml
   - ./kubernetes-sigs-nfd.yaml
+  - ./pact.yaml
