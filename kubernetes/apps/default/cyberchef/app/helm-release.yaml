@@ -16,6 +16,9 @@ spec:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
+  dependsOn:
+    - name: ingress-traefik
+      namespace: networking
   values:
     controller:
       replicas: 1

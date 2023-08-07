@@ -16,6 +16,9 @@ spec:
         name: codecentric
         namespace: flux-system
       interval: 15m
+  dependsOn:
+    - name: ingress-traefik
+      namespace: networking
   values:
     image:
       repository: quay.io/keycloak/keycloak

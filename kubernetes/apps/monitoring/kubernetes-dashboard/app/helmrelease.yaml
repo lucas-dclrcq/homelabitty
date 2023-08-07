@@ -36,18 +36,20 @@ spec:
       - --disable-settings-authorizer
       - --enable-insecure-login
       - --token-ttl=43200
-    ingress:
-      enabled: true
-      className: ingress-traefik
-      annotations:
-        hajimari.io/icon: mdi:kubernetes
-        app.kubernetes.io/appName: "Kubernetes Dashboard"
-      hosts:
-        - &host "kubernetes.${SECRET_DOMAIN}"
-      tls:
-        - hosts:
-            - *host
-          secretName: "${SECRET_DOMAIN/./-}-production-tls"
+    app:
+      ingress:
+        enabled: true
+        ingressClassName: "ingress-traefik"
+        secretName: "${SECRET_DOMAIN/./-}-production-tls"
+        annotations:
+          hajimari.io/icon: mdi:kubernetes
+          app.kubernetes.io/appName: "Kubernetes Dashboard"
+          external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
+        issuer:
+          name: letsencrypt-gandi-production
+          scope: cluster
+        hosts:
+          - "kubernetes.${SECRET_DOMAIN}"
     nginx:
       enabled: false
     cert-manager:
