@@ -19,4 +19,4 @@ resources:
   - ./lidarr/ks.yaml
   - ./tdarr/ks.yaml
   - ./slskd/ks.yaml
-  - ./betanin/ks.yaml
+#  - ./betanin/ks.yaml
