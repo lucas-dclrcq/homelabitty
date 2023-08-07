@@ -34,18 +34,31 @@ spec:
       registry: docker.io
       repository: pactfoundation/pact-broker
       tag: 2.110.0-pactbroker2.107.1-multi
+    broker:
+      config:
+        basicAuth:
+          enabled: true
+          readUser:
+            existingSecret: &pactSecret "pact-secret"
+            existingSecretUsernameKey: "PACT_READ_USER_USERNAME"
+            existingSecretPasswordKey: "PACT_READ_USER_PASSWORD"
+          writeUser:
+            existingSecret: *pactSecret
+            existingSecretUsernameKey: "PACT_WRITE_USER_USERNAME"
+            existingSecretPasswordKey: "PACT_WRITE_USER_PASSWORD"
     postgresql:
       enabled: false
     externalDatabase:
       enabled: true
       config:
+
         adapter: "postgres"
         databaseName: "pact"
         host: "apps.postgresql.${INTERNAL_DOMAIN}"
         port: "5432"
         auth:
           username: "pact"
-          existingSecret: "pact-secret"
+          existingSecret: *pactSecret
           existingSecretPasswordKey: "DB_PASSWORD"
     ingress:
       enabled: true
