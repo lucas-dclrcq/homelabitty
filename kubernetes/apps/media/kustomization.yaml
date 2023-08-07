@@ -20,3 +20,4 @@ resources:
   - ./tdarr/ks.yaml
   - ./slskd/ks.yaml
 #  - ./betanin/ks.yaml
+  - ./jellyseerr/ks.yaml
