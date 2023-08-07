@@ -36,6 +36,8 @@ spec:
       annotations:
         external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
         hajimari.io/icon: sawtooth-wave
+        hajimari.io/group: "homelab"
+        hajimari.io/appName: "Flux Dashboard"
       hosts:
         - host: &host "gitops.${SECRET_DOMAIN}"
           paths:

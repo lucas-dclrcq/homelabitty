@@ -31,5 +31,8 @@ spec:
     ingress:
       enabled: true
       annotations:
+        hajimari.io/group: "homelab"
+        hajimari.io/appName: "Longhorn Dashboard"
+        external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
         traefik.ingress.kubernetes.io/router.middlewares: "networking-sso@kubernetescrd"
       host: "longhorn.${SECRET_DOMAIN}"

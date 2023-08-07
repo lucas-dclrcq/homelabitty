@@ -33,13 +33,16 @@ spec:
       title: Apps
       darkTheme: espresso
       alwaysTargetBlank: true
-      showGreeting: false
+      showGreeting: true
       showAppGroups: true
-      showAppStatus: false
+      showAppStatus: true
+      showAppUrls: true
+      showAppInfo: true
+      showBookmarks: false
       showBookmarkGroups: false
       showGlobalBookmarks: false
-      showAppUrls: false
       defaultEnable: true
+      defaultSearchProvider: DuckDuckGo
       namespaceSelector:
         matchNames:
           - default
@@ -49,6 +52,9 @@ spec:
           - infrastructure
           - matrix
           - auth
+          - longhorn-system
+          - flux-system
+          - kube-system
     ingress:
       main:
         enabled: true
