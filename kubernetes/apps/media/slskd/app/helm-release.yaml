@@ -36,6 +36,9 @@ spec:
       SLSKD_SHARED_DIR: "/media/Music"
       SLSKD_METRICS: true
       SLSKD_METRICS_NO_AUTH: true
+      SLSKD_UPLOAD_SLOTS: 2
+      SLSKD_UPLOAD_SPEED_LIMIT: 10000
+
 
     envFrom:
       - secretRef:
