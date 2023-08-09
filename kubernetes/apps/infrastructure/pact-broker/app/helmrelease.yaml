@@ -33,7 +33,7 @@ spec:
     image:
       registry: docker.io
       repository: pactfoundation/pact-broker
-      tag: 2.110.0-pactbroker2.107.1-multi
+      tag: 2.111.0-pactbroker2.107.1-multi
     broker:
       config:
         basicAuth:
