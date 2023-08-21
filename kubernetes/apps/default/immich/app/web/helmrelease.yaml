@@ -80,7 +80,9 @@ spec:
     persistence:
       library:
         enabled: true
-        existingClaim: immich-nfs
+        type: nfs
+        server: "nas.${INTERNAL_DOMAIN}"
+        path: /volume1/Media
         mountPath: /usr/src/app/upload
 
     topologySpreadConstraints:
