@@ -14,5 +14,5 @@ data:
   TYPESENSE_DATA_DIR: /config
   TYPESENSE_HOST: immich-typesense.default.svc.cluster.local
   REDIS_HOSTNAME: "redis-master.infrastructure.svc.cluster.local"
-  REDIS_PORT: 6379
-  REDIS_DBINDEX: 2
+  REDIS_PORT: "6379"
+  REDIS_DBINDEX: "2"
