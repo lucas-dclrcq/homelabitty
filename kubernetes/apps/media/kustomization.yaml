@@ -17,7 +17,6 @@ resources:
   - ./media-browser/ks.yaml
   - ./qbittorrent/ks.yaml
   - ./lidarr/ks.yaml
-  - ./tdarr/ks.yaml
   - ./slskd/ks.yaml
 #  - ./betanin/ks.yaml
   - ./jellyseerr/ks.yaml
