@@ -51,26 +51,6 @@ spec:
           http:
             port: 3000
 
-    ingress:
-      main:
-        enabled: true
-        ingressClassName: "ingress-traefik"
-        annotations:
-          external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
-        hosts:
-          - host: &host "photos.${SECRET_DOMAIN}"
-            paths:
-              - path: /
-                pathType: Prefix
-              - path: /api
-                pathType: Prefix
-                service:
-                  name: immich-server
-                  port: 3001
-        tls:
-          - hosts:
-              - *host
-
     podSecurityContext:
       runAsUser: 1026
       runAsGroup: 100
