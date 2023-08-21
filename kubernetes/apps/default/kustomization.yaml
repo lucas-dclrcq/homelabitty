@@ -8,5 +8,4 @@ resources:
   - ./cyberchef/ks.yaml
   - ./miniflux/ks.yaml
   - ./minecraft/ks.yaml
-  - ./trilium/ks.yaml
   - ./immich/ks.yaml
