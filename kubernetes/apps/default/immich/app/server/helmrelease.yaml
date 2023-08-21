@@ -65,7 +65,7 @@ spec:
         enabled: true
         type: nfs
         server: "nas.${INTERNAL_DOMAIN}"
-        path: /volume1/Media
+        path: /volume1/Photos
         mountPath: /usr/src/app/upload
       geocoding-dump:
         enabled: true
