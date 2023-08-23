@@ -46,6 +46,8 @@ spec:
         ingressClassName: "ingress-traefik"
         annotations:
           external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
+          hajimari.io/icon: heroicons:photo
+          hajimari.io/name: Immich
         hosts:
           - host: &host photos.${SECRET_DOMAIN}
             paths:
