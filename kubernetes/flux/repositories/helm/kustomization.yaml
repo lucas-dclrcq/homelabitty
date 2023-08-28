@@ -31,3 +31,4 @@ resources:
   - ./descheduler.yaml
   - ./kubernetes-sigs-nfd.yaml
   - ./pact.yaml
+  - ./kyberno.yaml
