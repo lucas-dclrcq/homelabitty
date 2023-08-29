@@ -47,5 +47,8 @@
       ],
       "datasourceTemplate": "{{#if datasource}}{{{datasource}}}{{else}}github-releases{{/if}}"
     }
+  ],
+  ignorePaths: [
+    "kubernetes/archive/**"
   ]
 }
