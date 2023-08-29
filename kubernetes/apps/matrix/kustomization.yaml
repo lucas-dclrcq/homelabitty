@@ -8,3 +8,4 @@ resources:
   - ./element/ks.yaml
   - ./synapse-admin/ks.yaml
   - ./matrix-whatsapp/ks.yaml
+  - ./maubot/ks.yaml

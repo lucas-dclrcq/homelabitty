@@ -33,3 +33,5 @@ resources:
   - ./pact.yaml
   - ./kyberno.yaml
   - ./tekton.yaml
+  - ./jenkinsx.yaml
+  - ./banzaicloud.yaml
