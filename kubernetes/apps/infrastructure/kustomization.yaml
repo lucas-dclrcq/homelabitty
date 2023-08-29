@@ -6,4 +6,3 @@ resources:
   - ./redpanda/ks.yaml
   - ./redis/ks.yaml
   - ./pact-broker/ks.yaml
-  - ./tekton/ks.yaml

@@ -48,6 +48,7 @@ data:
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
+  name: test
   generateName: clone-read-run-
 spec:
   pipelineRef:
