@@ -32,3 +32,4 @@ resources:
   - ./kubernetes-sigs-nfd.yaml
   - ./pact.yaml
   - ./kyberno.yaml
+  - ./tekton.yaml
