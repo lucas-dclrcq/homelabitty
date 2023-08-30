@@ -71,6 +71,8 @@ spec:
         defaultMode: 0775
         readOnly: true
 
+    command: ["while true; do sleep 30; done;"]
+
     ingress:
       main:
         enabled: true
