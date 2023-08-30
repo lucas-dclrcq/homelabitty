@@ -26,8 +26,8 @@ spec:
 
     env:
       TZ: ${TIMEZONE}
-      PUID: 1026
-      PGID: 100
+      UID: 1026
+      GID: 100
 
     service:
       main:
@@ -62,12 +62,6 @@ spec:
         mountPath: /b/.config/beets/config.yaml
         defaultMode: 0775
         readOnly: true
-
-    podSecurityContext:
-      runAsUser: 1026
-      runAsGroup: 100
-      fsGroup: 100
-      fsGroupChangePolicy: OnRootMismatch
 
     ingress:
       main:
