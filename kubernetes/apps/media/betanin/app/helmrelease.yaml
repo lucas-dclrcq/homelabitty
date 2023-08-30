@@ -57,9 +57,17 @@ spec:
       beets:
         enabled: true
         type: configMap
-        name: betanin-config
+        name: beets-config
         subPath: config.yaml
         mountPath: /b/.config/beets/config.yaml
+        defaultMode: 0775
+        readOnly: true
+      config:
+        enabled: true
+        type: configMap
+        name: betanin-config
+        subPath: config.toml
+        mountPath: /b/.config/betanin/config.toml
         defaultMode: 0775
         readOnly: true
 
