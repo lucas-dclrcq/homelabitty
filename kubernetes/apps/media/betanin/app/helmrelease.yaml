@@ -33,11 +33,11 @@ spec:
       main:
         ports:
           http:
-            port: 4030
+            port: 9393
 
     volumeClaimTemplates:
       - name: config
-        mountPath: /b/.config
+        mountPath: /b/.config/betanin
         accessMode: ReadWriteOnce
         size: 1Gi
         storageClass: longhorn
@@ -54,6 +54,20 @@ spec:
         server: "nas.${INTERNAL_DOMAIN}"
         path: /volume1/Media
         mountPath: /media
+      beets:
+        enabled: true
+        type: configMap
+        name: betanin-config
+        subPath: config.yaml
+        mountPath: /b/.config/beets/config.yaml
+        defaultMode: 0775
+        readOnly: true
+
+    podSecurityContext:
+      runAsUser: 1026
+      runAsGroup: 100
+      fsGroup: 100
+      fsGroupChangePolicy: OnRootMismatch
 
     ingress:
       main:
