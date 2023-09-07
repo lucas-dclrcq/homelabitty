@@ -19,7 +19,7 @@ spec:
   values:
     image:
       repository: linuxserver/readarr
-      tag: 0.3.3-develop@sha256:f2096afc80fff04b9dcf1329a04aecc552df23a418cb57cd7361977feadc6d46
+      tag: 0.3.3-develop@sha256:cbc1bb963e51ffc0ef78353db6622a4772a76e1f91163d8bfbe24680ba76ab39
 
     podAnnotations:
       secret.reloader.stakater.com/reload: readarr
