@@ -38,7 +38,7 @@ spec:
 
     image:
       repository: ghcr.io/lldap/lldap
-      tag: latest-alpine@sha256:945ed88137cd3654c24ea92e0516f74d6cb2c37cf047bbd05878c6f4be7ea142
+      tag: latest-alpine@sha256:8587712c0b1294ffacd4867b1130b4362a072b40f52cba3e6285e9a47362c4bd
 
     env:
       TZ: America/New_York
