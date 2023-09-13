@@ -23,3 +23,6 @@ spec:
     - name: synology
       protocol: TCP
       port: 5000
+    - name: betanin
+      protocol: TCP
+      port: 9393

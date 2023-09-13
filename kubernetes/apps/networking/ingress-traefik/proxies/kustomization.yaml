@@ -10,3 +10,4 @@ resources:
   - ./minio.yaml
   - ./registry.yaml
   - ./sabnzbd.yaml
+  - ./betanin.yaml
