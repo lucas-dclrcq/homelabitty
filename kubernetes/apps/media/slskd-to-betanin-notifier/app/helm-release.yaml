@@ -1,0 +1,51 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: slskd-to-betanin-notifier
+  namespace: media
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 1.5.1
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+
+  values:
+    controller:
+      type: cronjob
+      cronjob:
+        schedule: "@hourly"
+        ttlSecondsAfterFinished: 600
+
+    restartPolicy: OnFailure
+
+    image:
+      repository: ghcr.io/lucas-dclrcq/slskd-to-betanin-notifier
+      tag: latest@sha256:667360a71a1e1032040eb15a82d4320f39e2b4212f5b405fe008a847934b1ac7
+
+    env:
+      COMPLETE_FOLDER_PATH: /complete
+      BETANIN_URL: "https://betanin.${SECRET_DOMAIN}"
+      BETANIN_COMPLETE_FOLDER: /downloads
+
+    envFrom:
+      - secretRef:
+          name: slskd-to-betanin-notifier
+
+    service:
+      main:
+        enabled: false
+
+    persistence:
+      media:
+        enabled: true
+        type: nfs
+        server: "nas.${INTERNAL_DOMAIN}"
+        path: /volume1/Media/Downloads/nicotine/complete
+        mountPath: /complete
