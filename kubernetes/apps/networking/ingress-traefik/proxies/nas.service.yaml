@@ -22,7 +22,7 @@ spec:
       port: 8088
     - name: synology
       protocol: TCP
-      port: 5000
+      port: 5999
     - name: betanin
       protocol: TCP
       port: 9393
