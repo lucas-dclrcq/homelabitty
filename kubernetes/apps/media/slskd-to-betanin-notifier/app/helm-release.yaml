@@ -20,14 +20,14 @@ spec:
     controller:
       type: cronjob
       cronjob:
-        schedule: "@hourly"
-        ttlSecondsAfterFinished: 600
+        schedule: "*/15 * * * *"
+        ttlSecondsAfterFinished: 3600
 
     restartPolicy: OnFailure
 
     image:
       repository: ghcr.io/lucas-dclrcq/slskd-to-betanin-notifier
-      tag: latest@sha256:667360a71a1e1032040eb15a82d4320f39e2b4212f5b405fe008a847934b1ac7
+      tag: latest@sha256:632d4be6a2273d53e324da1c6e1e3f5852996b9b7fd4eb2c3144153ee4c50a89
 
     env:
       COMPLETE_FOLDER_PATH: /complete
