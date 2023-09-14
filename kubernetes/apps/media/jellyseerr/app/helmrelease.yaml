@@ -22,7 +22,7 @@ spec:
   values:
     image:
       repository: "fallenbagel/jellyseerr"
-      tag: "1.6.0"
+      tag: "1.7.0"
 
     env:
       PUID: "${NAS_PUID}"
