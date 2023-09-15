@@ -27,7 +27,7 @@ spec:
 
     image:
       repository: ghcr.io/lucas-dclrcq/slskd-to-betanin-notifier
-      tag: latest@sha256:632d4be6a2273d53e324da1c6e1e3f5852996b9b7fd4eb2c3144153ee4c50a89
+      tag: latest@sha256:0daabcd35e81aa1c4f6e7fa62e4221acc47253e20af9131550bda9433858554c
 
     env:
       COMPLETE_FOLDER_PATH: /complete
