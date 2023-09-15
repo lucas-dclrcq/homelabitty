@@ -48,6 +48,7 @@ spec:
 
     service:
       spec:
+        loadBalancerIp: "${METALLB_INGRESS_ADDR}"
         externalTrafficPolicy: Local
 
     experimental:
