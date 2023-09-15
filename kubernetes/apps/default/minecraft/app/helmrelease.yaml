@@ -30,8 +30,7 @@ spec:
       memory: 3000M
       serviceType: LoadBalancer
       externalTrafficPolicy: Cluster
-      externalIPs:
-        - "${METALLB_MINECRAFT_ADDR}"
+      loadBalancerIP: "${METALLB_MINECRAFT_ADDR}"
       motd: "Kubernetes now comes with Minecraft! On-demand!\nUwU >.<"
       onlineMode: false
       rcon:
