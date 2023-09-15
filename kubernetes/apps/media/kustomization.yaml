@@ -18,6 +18,5 @@ resources:
   - ./qbittorrent/ks.yaml
   - ./lidarr/ks.yaml
   - ./slskd/ks.yaml
-  - ./betanin/ks.yaml
   - ./jellyseerr/ks.yaml
   - ./slskd-to-betanin-notifier/ks.yaml

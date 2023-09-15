@@ -31,8 +31,6 @@ spec:
     watchedResources: ["Ingress"]
     ttl: 1
     service:
-      annotations:
-        metallb.universe.tf/loadBalancerIPs: "${METALLB_K8S_GATEWAY_ADDR}"
       type: LoadBalancer
       port: 53
       loadBalancerIP: "${METALLB_K8S_GATEWAY_ADDR}"
