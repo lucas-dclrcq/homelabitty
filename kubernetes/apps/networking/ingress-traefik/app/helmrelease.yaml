@@ -47,6 +47,8 @@ spec:
           - name: sso
 
     service:
+      annotations:
+        metallb.universe.tf/loadBalancerIPs: "${METALLB_INGRESS_ADDR}"
       spec:
         loadBalancerIp: "${METALLB_INGRESS_ADDR}"
         externalTrafficPolicy: Local

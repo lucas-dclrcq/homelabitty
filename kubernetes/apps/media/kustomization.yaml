@@ -9,8 +9,8 @@ resources:
   - ./radarr/ks.yaml
   - ./sonarr/ks.yaml
   - ./bazarr/ks.yaml
-  - ./calibre/ks.yaml
-  - ./calibre-web/ks.yaml
+#  - ./calibre/ks.yaml
+#  - ./calibre-web/ks.yaml
   - ./readarr/ks.yaml
   - ./jellyfin-vue/ks.yaml
   - ./sabnzbd/ks.yaml
