@@ -27,7 +27,7 @@ spec:
   values:
     image:
       repository: miniflux/miniflux
-      tag: 2.0.47
+      tag: 2.0.48
 
     env:
       BASE_URL: "https://miniflux.${SECRET_DOMAIN}"
