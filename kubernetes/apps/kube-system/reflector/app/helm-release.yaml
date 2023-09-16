@@ -13,7 +13,7 @@ spec:
         kind: HelmRepository
         name: emberstack
         namespace: flux-system
-      version: "7.0.193"
+      version: "7.0.199"
 
   interval: 1h0m0s
   install:
