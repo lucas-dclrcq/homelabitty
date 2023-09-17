@@ -4,7 +4,7 @@ kind: Kustomization
 resources:
   - ./namespace.yaml
   - ./matrix-chatgpt/ks.yaml
-  - ./matrix-synapse/ks.yaml
+#  - ./matrix-synapse/ks.yaml
   - ./element/ks.yaml
   - ./synapse-admin/ks.yaml
   - ./matrix-whatsapp/ks.yaml
