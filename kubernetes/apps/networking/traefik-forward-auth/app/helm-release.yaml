@@ -49,6 +49,7 @@ spec:
       LOG_FORMAT: pretty
       LIFETIME: "604800"
       DEFAULT_PROVIDER: oidc
+      CONFIG: "/config"
 
     envFrom:
       - secretRef:
@@ -81,6 +82,15 @@ spec:
         memory: 10Mi
       limits:
         memory: 50Mi
+
+    persistence:
+      config:
+        enabled: true
+        name: traefik-forward-auth-config
+        readOnly: true
+        mountPath: /config/traefik-forward-auth.ini
+        subPath: traefik-forward-auth.ini
+        type: configMap
 
     podAnnotations:
       secret.reloader.stakater.com/reload: *secret
