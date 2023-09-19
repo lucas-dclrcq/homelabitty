@@ -34,8 +34,8 @@ spec:
       SLSKD_SLSK_LISTEN_PORT: &soulseekPort 50300
       SLSKD_REMOTE_CONFIGURATION: true
       SLSKD_DOWNLOADS_DIR: "/media/Downloads/nicotine/complete"
-      SLSKD_INCOMPLETE_DIR: "/incomplete"
-      SLSKD_SHARED_DIR: "/media/Downloads/nicotine/incomplete"
+      SLSKD_INCOMPLETE_DIR: "/media/Downloads/nicotine/incomplete"
+      SLSKD_SHARED_DIR: "/media/Music"
       SLSKD_METRICS: true
       SLSKD_METRICS_NO_AUTH: true
       SLSKD_UPLOAD_SLOTS: 2
