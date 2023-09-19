@@ -23,22 +23,23 @@ spec:
         reloader.stakater.com/auto: "true"
 
     image:
-      repository: docker.io/slskd/slskd
+      repository: ghcr.io/slskd/slskd
       tag: 0.18.3
 
     env:
       TZ: ${TIMEZONE}
       PUID: 1026
       PGID: 100
-      SLSKD_REMOTE_CONFIGURATION: false
+      SLSKD_HTTP_PORT: &port 80
+      SLSKD_SLSK_LISTEN_PORT: &soulseekPort 50300
+      SLSKD_REMOTE_CONFIGURATION: true
       SLSKD_DOWNLOADS_DIR: "/media/Downloads/nicotine/complete"
       SLSKD_INCOMPLETE_DIR: "/incomplete"
-      SLSKD_SHARED_DIR: "/media/Music"
+      SLSKD_SHARED_DIR: "/media/Downloads/nicotine/incomplete"
       SLSKD_METRICS: true
       SLSKD_METRICS_NO_AUTH: true
       SLSKD_UPLOAD_SLOTS: 2
       SLSKD_UPLOAD_SPEED_LIMIT: 10000
-
 
     envFrom:
       - secretRef:
@@ -48,15 +49,15 @@ spec:
       main:
         ports:
           http:
-            port: 5030
-      incoming:
+            port: *port
+      soulseek:
         enabled: true
         ports:
           incoming:
             enabled: true
-            port: 50300
+            port: *soulseekPort
             protocol: TCP
-            targetPort: 50300
+            targetPort: *soulseekPort
         type: LoadBalancer
         externalTrafficPolicy: Cluster
         loadBalancerIP: "${METALLB_SLSKD_ADDR}"
@@ -69,9 +70,6 @@ spec:
         storageClass: longhorn
 
     persistence:
-      incomplete:
-        enabled: true
-        type: emptyDir
       media:
         enabled: true
         type: nfs
@@ -105,3 +103,10 @@ spec:
             path: /metrics
             interval: 1m
             scrapeTimeout: 10s
+
+    resources:
+      requests:
+        cpu: 10m
+        memory: 250Mi
+      limits:
+        memory: 1500Mi
