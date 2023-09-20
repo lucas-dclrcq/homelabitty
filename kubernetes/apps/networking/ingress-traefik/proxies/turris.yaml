@@ -26,6 +26,28 @@ spec:
     - hosts:
         - *host
 ---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: adguard-home
+  namespace: networking
+spec:
+  ingressClassName: ingress-traefik
+  rules:
+    - host: &host "adguard.${SECRET_DOMAIN}"
+      http:
+        paths:
+          - backend:
+              service:
+                name: router
+                port:
+                  name: adguard-home
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - *host
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -37,6 +59,9 @@ spec:
       port: 81
       protocol: TCP
       targetPort: 81
+    - name: adguard-home
+      port: 8080
+      protocol: TCP
   clusterIP: None
   type: ClusterIP
 ---
@@ -51,4 +76,7 @@ subsets:
     ports:
       - name: webui
         port: 81
+        protocol: TCP
+      - name: adguard-home
+        port: 8080
         protocol: TCP
