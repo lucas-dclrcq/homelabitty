@@ -1,28 +1,48 @@
 ---
-apiVersion: traefik.containo.us/v1alpha1
-kind: IngressRoute
+apiVersion: networking.k8s.io/v1
+kind: Ingress
 metadata:
-  name: minio
+  annotations:
+    external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
+  name: minio-ui
   namespace: networking
 spec:
-  entryPoints:
-    - websecure
-  routes:
-    - kind: Rule
-      match: Host(`minio.${SECRET_DOMAIN}`)
-      services:
-        - kind: Service
-          name: nas
-          passHostHeader: true
-          port: 39090
-          scheme: http
-    - kind: Rule
-      match: Host(`s3.lulice.online`)
-      services:
-        - kind: Service
-          name: nas
-          passHostHeader: true
-          port: 39000
-          scheme: http
+  ingressClassName: ingress-traefik
+  rules:
+    - host: &host-ui "minio.${SECRET_DOMAIN}"
+      http:
+        paths:
+          - backend:
+              service:
+                name: nas
+                port:
+                  name: minio-ui
+            path: /
+            pathType: Prefix
   tls:
-    secretName: "${SECRET_DOMAIN/./-}-production-tls"
+    - hosts:
+        - *host-ui
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
+  name: minio-s3
+  namespace: networking
+spec:
+  ingressClassName: ingress-traefik
+  rules:
+    - host: &host-s3 "s3.${SECRET_DOMAIN}"
+      http:
+        paths:
+          - backend:
+              service:
+                name: nas
+                port:
+                  name: minio-s3
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - *host-s3

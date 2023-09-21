@@ -11,6 +11,12 @@ spec:
     - name: jellyfin
       protocol: TCP
       port: 8096
+    - name: minio-ui
+      protocol: TCP
+      port: 39000
+    - name: minio-s3
+      protocol: TCP
+      port: 39090
     - name: navidrome
       protocol: TCP
       port: 4533
