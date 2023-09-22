@@ -125,7 +125,7 @@ spec:
       enabled: true
       ingressClassName: ingress-traefik
       annotations:
-        external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
+        traefik.ingress.kubernetes.io/router.middlewares: "networking-lan-only@kubernetescrd"
         hajimari.io/icon: simple-icons:grafana
       hosts:
         - &host "grafana.${SECRET_DOMAIN}"
