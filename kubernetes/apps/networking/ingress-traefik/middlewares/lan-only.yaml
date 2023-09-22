@@ -1,0 +1,10 @@
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: lan-only
+  namespace: networking
+spec:
+  ipWhiteList:
+    sourceRange:
+      - 192.168.1.1/24

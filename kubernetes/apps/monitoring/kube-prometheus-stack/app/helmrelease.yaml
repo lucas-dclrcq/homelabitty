@@ -42,7 +42,7 @@ spec:
         ingressClassName: "ingress-traefik"
         annotations:
           external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
-          traefik.ingress.kubernetes.io/router.middlewares: "networking-sso@kubernetescrd"
+          traefik.ingress.kubernetes.io/router.middlewares: "networking-sso@kubernetescrd,networking-lan-only@kubernetescrd"
           app.kubernetes.io/appName: Alertmanager
         hosts:
           - &host "alertmanager.${SECRET_DOMAIN}"
