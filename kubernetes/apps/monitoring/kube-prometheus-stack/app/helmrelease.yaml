@@ -42,7 +42,7 @@ spec:
         ingressClassName: "ingress-traefik"
         annotations:
           traefik.ingress.kubernetes.io/router.middlewares: "networking-sso@kubernetescrd,networking-lan-only@kubernetescrd"
-          app.kubernetes.io/appName: Alertmanager
+          hajimari.io/appName: Alertmanager
         hosts:
           - &host "alertmanager.${SECRET_DOMAIN}"
         tls:

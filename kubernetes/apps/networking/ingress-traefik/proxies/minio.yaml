@@ -3,7 +3,9 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   annotations:
-    external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
+    hajimari.io/appName: Minio
+    hajimari.io/group: Infrastructure
+    traefik.ingress.kubernetes.io/router.middlewares: "networking-lan-only@kubernetescrd"
   name: minio-ui
   namespace: networking
 spec:
@@ -27,7 +29,8 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   annotations:
-    external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
+    hajimari.io/enable: false
+    traefik.ingress.kubernetes.io/router.middlewares: "networking-lan-only@kubernetescrd"
   name: minio-s3
   namespace: networking
 spec:
