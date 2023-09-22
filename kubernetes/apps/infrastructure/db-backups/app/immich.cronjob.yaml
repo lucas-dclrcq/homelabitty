@@ -1,0 +1,44 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: db-backup-immich
+  namespace: infrastructure
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 1.5.1
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+
+  values:
+    controller:
+      type: cronjob
+      cronjob:
+        schedule: "@daily"
+        ttlSecondsAfterFinished: 86400
+
+    restartPolicy: OnFailure
+
+    image:
+      repository: eeshugerman/postgres-backup-s3
+      tag: 14@sha256:92bd91ca57c476302dc615a20fe28fac84158a72ab3772fab57a237e4684aa64
+
+    env:
+      BACKUP_KEEP_DAYS: 7
+      POSTGRES_DATABASE: &db immich
+      S3_PREFIX: *db
+      S3_BUCKET: "db-backups"
+      S3_ENDPOINT: "http://192.168.1.80:39000"
+    envFrom:
+      - secretRef:
+          name: db-backups-secret
+
+    service:
+      main:
+        enabled: false

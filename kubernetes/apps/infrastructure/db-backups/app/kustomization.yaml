@@ -4,3 +4,6 @@ kind: Kustomization
 resources:
   - ./externalsecret.yaml
   - ./miniflux.cronjob.yaml
+  - ./keycloak.cronjob.yaml
+  - ./paperless.cronjob.yaml
+  - ./immich.cronjob.yaml
