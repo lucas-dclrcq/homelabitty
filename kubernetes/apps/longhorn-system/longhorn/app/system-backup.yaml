@@ -1,0 +1,8 @@
+---
+apiVersion: longhorn.io/v1beta2
+kind: SystemBackup
+metadata:
+  name: system
+  namespace: longhorn-system
+spec:
+  volumeBackupPolicy: if-not-present

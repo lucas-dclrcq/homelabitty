@@ -6,3 +6,4 @@ resources:
   - ./storageclass.local.yaml
   - ./servicemonitor.yaml
   - ./minio-secret.sops.yaml
+  - ./system-backup.yaml
