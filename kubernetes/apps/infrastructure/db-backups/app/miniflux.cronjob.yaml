@@ -27,7 +27,7 @@ spec:
 
     image:
       repository: eeshugerman/postgres-backup-s3
-      tag: 14@sha256:aeda835e2246055c7013989cf25bc059917e697ba12917662ba33246fcb2d989
+      tag: 14@sha256:92bd91ca57c476302dc615a20fe28fac84158a72ab3772fab57a237e4684aa64
 
     env:
       BACKUP_KEEP_DAYS: 7
