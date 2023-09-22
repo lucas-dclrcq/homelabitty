@@ -31,8 +31,10 @@ spec:
 
     env:
       BACKUP_KEEP_DAYS: 7
-      POSTGRES_DATABASE: miniflux
-
+      POSTGRES_DATABASE: &db miniflux
+      S3_PREFIX: *db
+      S3_BUCKET: "homelab-databases-backup"
+      S3_ENDPOINT: "https://s3.${SECRET_DOMAIN}"
     envFrom:
       - secretRef:
           name: db-backups-secret
