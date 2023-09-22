@@ -7,3 +7,4 @@ resources:
   - ./redis/ks.yaml
   - ./pact-broker/ks.yaml
   - ./tekton/ks.yaml
+  - ./db-backups/ks.yaml
