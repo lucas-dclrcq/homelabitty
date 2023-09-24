@@ -7,5 +7,5 @@ resources:
   - ./hajimari/ks.yaml
   - ./cyberchef/ks.yaml
   - ./miniflux/ks.yaml
-  - ./minecraft/ks.yaml
+#  - ./minecraft/ks.yaml
   - ./immich/ks.yaml
