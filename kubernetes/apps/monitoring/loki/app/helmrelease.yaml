@@ -110,6 +110,8 @@ spec:
       ingress:
         enabled: true
         ingressClassName: "ingress-traefik"
+        annotations:
+          hajimari.io/enable: false
         hosts:
           - host: &host "loki.${SECRET_DOMAIN}"
             paths:
