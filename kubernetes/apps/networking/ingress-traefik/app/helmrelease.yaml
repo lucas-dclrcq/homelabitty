@@ -98,11 +98,11 @@ spec:
 
     logs:
       general:
+        format: json
         level: WARN
       access:
-        enabled: false
+        enabled: true
         filters:
-          statuscodes: 200,300-302
           retryattempts: true
           minduration: 450000ns
         fields:
