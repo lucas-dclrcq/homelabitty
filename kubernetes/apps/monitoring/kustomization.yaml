@@ -8,3 +8,4 @@ resources:
   - ./gatus/ks.yaml
   - ./speedtest/ks.yaml
 #  - ./thanos/ks.yaml
+  - ./loki/ks.yaml
