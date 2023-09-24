@@ -82,7 +82,7 @@ spec:
           url: https://raw.githubusercontent.com/miniflux/v2/main/contrib/grafana/dashboard.json
           datasource: Prometheus
         traefik:
-          gnetId: 12250
+          gnetId: 11462
           revision: 1
           datasource: Prometheus
         cert-manager:
