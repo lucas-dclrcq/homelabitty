@@ -52,9 +52,7 @@ spec:
     service:
       main:
         type: LoadBalancer
-        annotations:
-          external-dns.alpha.kubernetes.io/hostname: vector.devbu.io
-          io.cilium/lb-ipam-ips: 192.168.42.201
+        loadBalancerIP: "${METALLB_VECTOR_ADDR}"
         externalTrafficPolicy: Cluster
         ports:
           http:
@@ -65,10 +63,6 @@ spec:
           kubernetes:
             enabled: true
             port: 6010
-          vyos:
-            enabled: true
-            port: 6020
-            # protocol: UDP
     persistence:
       config:
         enabled: true
