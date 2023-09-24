@@ -28,6 +28,9 @@ spec:
     keepHistory: false
 
   values:
+    env:
+      - name: TZ
+        value: "${TIMEZONE}"
     providers:
       kubernetesCRD:
         allowExternalNameServices: true
