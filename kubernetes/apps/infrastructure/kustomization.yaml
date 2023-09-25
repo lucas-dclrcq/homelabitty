@@ -8,3 +8,4 @@ resources:
   - ./pact-broker/ks.yaml
   - ./tekton/ks.yaml
   - ./db-backups/ks.yaml
+  - ./elasticsearch/ks.yaml
