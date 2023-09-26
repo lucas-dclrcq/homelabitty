@@ -33,7 +33,7 @@ spec:
       tag: v1.5.3
 
     env:
-      URL: "http://nas.${INTERNAL_DOMAIN}:8088"
+      URL: "http://sabnzbd.media.svc.cluster.local"
       PORT: &port 9709
       APIKEY:
         valueFrom:
