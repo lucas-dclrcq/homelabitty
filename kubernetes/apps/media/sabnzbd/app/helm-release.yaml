@@ -83,7 +83,6 @@ spec:
         ingressClassName: "ingress-traefik"
         annotations:
           external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
-          hajimari.io/disable: false
         hosts:
           - host: &host "sab.${SECRET_DOMAIN}"
             paths:
@@ -98,7 +97,7 @@ spec:
       runAsGroup: 100
       fsGroup: 100
       fsGroupChangePolicy: OnRootMismatch
-      supplementalGroups: [568]
+      supplementalGroups: [65537]
 
     volumeClaimTemplates:
       - name: config
@@ -123,4 +122,4 @@ spec:
         cpu: 50m
         memory: 250Mi
       limits:
-        memory: 2Gi
+        memory: 4Gi
