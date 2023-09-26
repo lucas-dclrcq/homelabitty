@@ -36,7 +36,7 @@ spec:
               name: babybuddy-secret
 
       02-migrations:
-        image: docker.io/linuxserver/babybuddy:2.0.4@sha256:4c5c8941e133b23a68262fc35018d892f304fec0d9305717a71ba557e3250019
+        image: docker.io/linuxserver/babybuddy:2.0.4@sha256:54d08d071ca07b823facdd6a3892ee110695db01dc55ef51e79bf9c413b53412
         imagePullPolicy: IfNotPresent
         envFrom: *envFrom
         command:
@@ -57,7 +57,7 @@ spec:
 
     image:
       repository: docker.io/linuxserver/babybuddy
-      tag: 2.0.4@sha256:4c5c8941e133b23a68262fc35018d892f304fec0d9305717a71ba557e3250019
+      tag: 2.0.4@sha256:54d08d071ca07b823facdd6a3892ee110695db01dc55ef51e79bf9c413b53412
 
     service:
       main:
