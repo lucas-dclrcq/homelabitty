@@ -22,7 +22,7 @@ spec:
   values:
     image:
       repository: ghcr.io/matrix-org/synapse
-      tag: v1.92.3
+      tag: v1.93.0
 
     serverName: &serverName "${SECRET_DOMAIN}"
     publicServerName: &publicServerName "matrix.${SECRET_DOMAIN}"
