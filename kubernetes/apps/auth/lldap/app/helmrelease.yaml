@@ -41,7 +41,7 @@ spec:
       tag: latest-alpine@sha256:8f56ec7ab8a2e1aac5c488ebab6f46bb016a8efd3de4993ed8a4b3c5ee8522a4
 
     env:
-      TZ: America/New_York
+      TZ: "${TIMEZONE}"
       LLDAP_HTTP_PORT: &port 80
       LLDAP_HTTP_URL: "https://ldap.${SECRET_DOMAIN}"
       LLDAP_LDAP_PORT: &ldapPort 389

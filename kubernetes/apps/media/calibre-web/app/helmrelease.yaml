@@ -23,6 +23,10 @@ spec:
     remediation:
       retries: 5
 
+  dependsOn:
+    - name: longhorn
+      namespace: longhorn-system
+
   values:
     image:
       repository: ghcr.io/linuxserver/calibre-web

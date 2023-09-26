@@ -16,6 +16,10 @@ spec:
         namespace: flux-system
       interval: 15m
 
+  dependsOn:
+    - name: longhorn
+      namespace: longhorn-system
+
   values:
     controller:
       type: statefulset

@@ -32,6 +32,13 @@ spec:
     recreate: true
     force: true
     cleanupOnFail: true
+
+  dependsOn:
+    - name: ingress-traefik
+      namespace: networking
+    - name: keycloak
+      namespace: auth
+
   values:
     controller:
       strategy: RollingUpdate

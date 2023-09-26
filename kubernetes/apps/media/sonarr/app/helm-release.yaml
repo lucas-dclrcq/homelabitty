@@ -26,9 +26,11 @@ spec:
       retries: 3
   uninstall:
     keepHistory: false
+
   dependsOn:
     - name: longhorn
       namespace: longhorn-system
+
   values:
     controller:
       type: statefulset

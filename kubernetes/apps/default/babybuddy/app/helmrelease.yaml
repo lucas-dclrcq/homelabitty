@@ -26,38 +26,21 @@ spec:
       retries: 3
   uninstall:
     keepHistory: false
+
+  dependsOn:
+    - name: longhorn
+      namespace: longhorn-system
+    - name: ingress-traefik
+      namespace: networking
+
   values:
-    initContainers:
-      01-init-db:
-        image: ghcr.io/onedr0p/postgres-init:14.8
-        imagePullPolicy: IfNotPresent
-        envFrom: &envFrom
-          - secretRef:
-              name: babybuddy-secret
-
-      02-migrations:
-        image: docker.io/linuxserver/babybuddy:2.0.4@sha256:4c5c8941e133b23a68262fc35018d892f304fec0d9305717a71ba557e3250019
-        imagePullPolicy: IfNotPresent
-        envFrom: *envFrom
-        command:
-          - "/bin/bash"
-          - "-c"
-          - |
-            #!/bin/bash
-
-            set -o errexit
-            set -o nounset
-
-            python3 www/public/manage.py migrate --noinput
-            python3 www/public/manage.py createcachetable
-
     controller:
       annotations:
         reloader.stakater.com/auto: "true"
 
     image:
-      repository: docker.io/linuxserver/babybuddy
-      tag: 2.0.4@sha256:4c5c8941e133b23a68262fc35018d892f304fec0d9305717a71ba557e3250019
+      repository: lscr.io/linuxserver/babybuddy
+      tag: 2.0.4
 
     service:
       main:
@@ -67,8 +50,13 @@ spec:
 
     env:
       TZ: "${TIMEZONE}"
+      TIME_ZONE: "${TIMEZONE}"
+      DB_ENGINE: "django.db.backends.postgresql"
+      CSRF_TRUSTED_ORIGINS: &host "babybuddy.${SECRET_DOMAIN}"
 
-    envFrom: *envFrom
+    envFrom:
+      - secretRef:
+          name: babybuddy-secret
 
     volumeClaimTemplates:
       - name: config
@@ -84,7 +72,7 @@ spec:
         annotations:
           hajimari.io/icon: mdi:baby-face-outline
         hosts:
-          - host: &host "babybuddy.${SECRET_DOMAIN}"
+          - host: *host
             paths:
               - path: /
                 pathType: Prefix
