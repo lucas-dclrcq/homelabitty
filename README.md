@@ -18,6 +18,19 @@ _... managed with Ansible, Terraform, Flux, Renovate and GitHub Actions_
 | Odroid HC2  | 2     | 32GB (SD)    | 240 GB (SSD)   | 2GB | Armbian             | Postgresql Servers  |
 | DS1520+     | 1     |              | 5x4TB          | 8GB | Synology OS         | NFS + Backup Server |
 
+## Storage
+
+- Local Data: https://longhorn.io/
+- Media: NAS via NFS
+
+## Auth
+
+- IAM: https://www.keycloak.org/
+- LDAP: https://github.com/lldap/lldap
+- SSO: https://github.com/thomseddon/traefik-forward-auth
+
+![SSO Diagram](./docs/assets/sso-diagram.png)
+
 ## Setup
 
 [Here](docs/SETUP.md)
