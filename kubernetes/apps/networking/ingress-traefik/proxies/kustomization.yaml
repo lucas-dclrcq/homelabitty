@@ -9,5 +9,4 @@ resources:
   - ./navidrome.yaml
   - ./minio.yaml
   - ./registry.yaml
-  - ./sabnzbd.yaml
   - ./betanin.yaml

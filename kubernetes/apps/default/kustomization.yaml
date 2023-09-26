@@ -9,4 +9,4 @@ resources:
   - ./miniflux/ks.yaml
 #  - ./minecraft/ks.yaml
   - ./immich/ks.yaml
-  - ./babybuddy/ks.yaml
+#  - ./babybuddy/ks.yaml

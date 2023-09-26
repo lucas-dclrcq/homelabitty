@@ -49,7 +49,7 @@ spec:
         sabnzbd.media.svc.cluster,
         sabnzbd.media.svc.cluster.local,
         sabnzbd.${SECRET_DOMAIN},
-        sab.${SECRET_DOMAIN}
+        sabnzbd.${SECRET_DOMAIN}
 
     envFrom:
       - secretRef:
@@ -83,8 +83,9 @@ spec:
         ingressClassName: "ingress-traefik"
         annotations:
           external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
+          traefik.ingress.kubernetes.io/router.middlewares: "networking-sso@kubernetescrd"
         hosts:
-          - host: &host "sab.${SECRET_DOMAIN}"
+          - host: &host "sabnzbd.${SECRET_DOMAIN}"
             paths:
               - path: /
                 pathType: Prefix
