@@ -8,3 +8,4 @@ spec:
   ipWhiteList:
     sourceRange:
       - 192.168.1.1/24
+      - 10.111.111.1/24
