@@ -12,7 +12,7 @@ spec:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
-      version: 1.5.1
+      version: 2.0.1
 
   interval: 1h0m0s
   install:
