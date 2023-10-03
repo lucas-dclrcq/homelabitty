@@ -18,6 +18,8 @@ _... managed with Ansible, Terraform, Flux, Renovate and GitHub Actions_
 | Odroid HC2  | 2     | 32GB (SD)    | 240 GB (SSD)   | 2GB | Armbian             | Postgresql Servers  |
 | DS1520+     | 1     |              | 5x4TB          | 8GB | Synology OS         | NFS + Backup Server |
 
+![Cluster Tower](docs/assets/cluster-tower.png)
+
 ## Storage
 
 - Local Data: https://longhorn.io/
