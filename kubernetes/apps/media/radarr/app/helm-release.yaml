@@ -10,11 +10,12 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 2.0.0
       sourceRef:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
+
   maxHistory: 2
   install:
     createNamespace: true
@@ -26,54 +27,127 @@ spec:
       retries: 3
   uninstall:
     keepHistory: false
+
   dependsOn:
     - name: longhorn
       namespace: longhorn-system
+    - name: ingress-traefik
+      namespace: networking
 
   values:
-    controller:
-      type: statefulset
-      annotations:
-        reloader.stakater.com/auto: "true"
+    controllers:
+      main:
+        type: statefulset
 
-    image:
-      repository: ghcr.io/onedr0p/radarr-develop
-      tag: 5.0.3.8107@sha256:2c4fca668420dfa87b286da9b0a43f6dc64fd26329f9e914bc2de58887091eaf
+        annotations:
+          reloader.stakater.com/auto: "true"
 
-    env:
-      TZ: "${TIMEZONE}"
-      RADARR__INSTANCE_NAME: Radarr
-      RADARR__PORT: &port 80
-      RADARR__APPLICATION_URL: "https://{{ .Release.Name }}.${SECRET_DOMAIN}"
-      RADARR__LOG_LEVEL: info
-      RADARR__AUTHENTICATION_METHOD: External
-      RADARR__AUTHENTICATION_REQUIRED: DisabledForLocalAddresses
+        pod:
+          securityContext:
+            runAsUser: 1026
+            runAsGroup: 100
+            fsGroup: 100
+            fsGroupChangePolicy: OnRootMismatch
+            supplementalGroups: [10000]
 
-    envFrom:
-      - secretRef:
-          name: radarr
+        statefulset:
+          volumeClaimTemplates:
+            - name: config
+              mountPath: /config
+              accessMode: ReadWriteOnce
+              size: 15Gi
+              storageClass: longhorn
+
+        containers:
+          main:
+            image:
+              repository: ghcr.io/onedr0p/radarr-develop
+              tag: 5.0.3.8107@sha256:2c4fca668420dfa87b286da9b0a43f6dc64fd26329f9e914bc2de58887091eaf
+
+            env:
+              TZ: "${TIMEZONE}"
+              RADARR__INSTANCE_NAME: Radarr
+              RADARR__PORT: &port 80
+              RADARR__APPLICATION_URL: "https://{{ .Release.Name }}.${SECRET_DOMAIN}"
+              RADARR__LOG_LEVEL: info
+              RADARR__AUTHENTICATION_METHOD: External
+              RADARR__AUTHENTICATION_REQUIRED: DisabledForLocalAddresses
+
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /ping
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+              startup:
+                enabled: false
+
+            envFrom:
+              - secretRef:
+                  name: radarr
+
+            resources:
+              requests:
+                cpu: 10m
+                memory: 250Mi
+              limits:
+                memory: 2000Mi
+
+          exporter:
+            image:
+              repository: ghcr.io/onedr0p/exportarr
+              tag: v1.5.3
+
+            args:
+              - radarr
+
+            env:
+              URL: "http://radarr.media.svc.cluster.local:80"
+              PORT: &exporterPort 9709
+              APIKEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: radarr
+                    key: RADARR__API_KEY
+
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  initialDelaySeconds: 30
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 5
+                  httpGet:
+                    path: /healthz
+                    port: *exporterPort
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  initialDelaySeconds: 30
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 5
+                  httpGet:
+                    path: /healthz
+                    port: *exporterPort
 
     service:
       main:
         ports:
           http:
             port: *port
-
-    probes:
-      liveness: &probes
-        enabled: true
-        custom: true
-        spec:
-          httpGet:
-            path: /ping
-            port: *port
-          initialDelaySeconds: 0
-          periodSeconds: 10
-          timeoutSeconds: 1
-          failureThreshold: 3
-      readiness: *probes
-      startup:
-        enabled: false
+          exporter:
+            port: *exporterPort
 
     ingress:
       main:
@@ -88,23 +162,12 @@ spec:
             paths:
               - path: /
                 pathType: Prefix
+                service:
+                  name: main
+                  port: http
         tls:
           - hosts:
               - *host
-
-    podSecurityContext:
-      runAsUser: 1026
-      runAsGroup: 100
-      fsGroup: 100
-      fsGroupChangePolicy: OnRootMismatch
-      supplementalGroups: [10000]
-
-    volumeClaimTemplates:
-      - name: config
-        mountPath: /config
-        accessMode: ReadWriteOnce
-        size: 15Gi
-        storageClass: longhorn
 
     persistence:
       media:
@@ -112,11 +175,17 @@ spec:
         type: nfs
         server: "nas.${INTERNAL_DOMAIN}"
         path: /volume1/Media
-        mountPath: /media
+        globalMounts:
+          - path: /media
 
-    resources:
-      requests:
-        cpu: 10m
-        memory: 250Mi
-      limits:
-        memory: 2000Mi
+    serviceMonitor:
+      exporter:
+        enabled: true
+        endpoints:
+          - service:
+              name: exporter
+              port: http
+            scheme: http
+            path: /metrics
+            interval: 1m
+            scrapeTimeout: 10s
