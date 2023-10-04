@@ -29,7 +29,7 @@ spec:
   values:
     image:
       repository: docker.io/opsdockerimage/node-problem-detector-node-problem-detector
-      tag: v0.8.14@sha256:ff09c30c213f62c2606fffeced7e2099d0d42c31f51647fe64f3d358e5fdfcdc
+      tag: v0.8.14@sha256:76da9ce953a0d50e9e14fa29acdc44852a828710c49af6df04ee131cf3c0c7e2
     metrics:
       enabled: true
       serviceMonitor:
