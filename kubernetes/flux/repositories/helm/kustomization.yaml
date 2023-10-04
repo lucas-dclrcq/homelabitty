@@ -35,3 +35,4 @@ resources:
   - ./tekton.yaml
   - ./jenkinsx.yaml
   - ./banzaicloud.yaml
+  - ./deliveryhero.yaml
