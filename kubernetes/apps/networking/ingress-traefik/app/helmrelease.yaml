@@ -105,6 +105,7 @@ spec:
         level: WARN
       access:
         enabled: true
+        format: json
         filters:
           retryattempts: true
           minduration: 450000ns
