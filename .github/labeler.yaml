@@ -7,3 +7,5 @@ area/kubernetes:
   - "kubernetes/**/*"
 area/templates:
   - "tmpl/**/*"
+area/terraform:
+  - "terraform/**/*"
