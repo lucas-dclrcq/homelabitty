@@ -10,3 +10,4 @@ resources:
 #  - ./thanos/ks.yaml
   - ./loki/ks.yaml
   - ./vector/ks.yaml
+  - ./node-problem-detector/ks.yaml
