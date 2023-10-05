@@ -7,3 +7,4 @@ resources:
   - ./redis/ks.yaml
   - ./db-backups/ks.yaml
   - ./elasticsearch/ks.yaml
+  - ./renovate/ks.yaml
