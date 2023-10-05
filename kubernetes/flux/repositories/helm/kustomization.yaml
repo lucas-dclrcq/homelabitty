@@ -36,3 +36,4 @@ resources:
   - ./jenkinsx.yaml
   - ./banzaicloud.yaml
   - ./deliveryhero.yaml
+  - ./emqx.yaml

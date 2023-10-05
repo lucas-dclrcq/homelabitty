@@ -8,3 +8,4 @@ resources:
   - ./db-backups/ks.yaml
   - ./elasticsearch/ks.yaml
   - ./renovate/ks.yaml
+  - ./emqx/ks.yaml
