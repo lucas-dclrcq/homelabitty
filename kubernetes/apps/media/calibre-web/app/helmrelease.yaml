@@ -30,7 +30,7 @@ spec:
   values:
     image:
       repository: ghcr.io/linuxserver/calibre-web
-      tag: 0.6.20
+      tag: 2021.12.16
 
     env:
       CALIBRE_PORT: 8083
