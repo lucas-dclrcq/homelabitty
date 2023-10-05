@@ -10,3 +10,4 @@ resources:
 #  - ./minecraft/ks.yaml
   - ./immich/ks.yaml
 #  - ./babybuddy/ks.yaml
+  - ./homeassistant/ks.yaml
