@@ -26,7 +26,7 @@ spec:
 
     image:
       repository: renovate/renovate
-      tag: 37.6.1@sha256:e43ab62e0254ea3e3494cbd75628a9b224738d6210bd9d9f94e7663b353af35d
+      tag: 37.6.2@sha256:734da7b574a60067dae0a6d5490ffab689323234e0a4a0050f9ed6558022fb48
 
     env:
       RENOVATE_BASE_DIR: &baseDir "/tmp/renovate"
