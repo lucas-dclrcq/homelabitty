@@ -1,0 +1,54 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: renovate
+  namespace: infrastructure
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 1.5.1
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+
+  values:
+    controller:
+      type: cronjob
+      cronjob:
+        schedule: "@hourly"
+        concurrencyPolicy: Forbid
+    restartPolicy: OnFailure
+
+    image:
+      repository: renovate/renovate
+      tag: 35.14.4
+
+    env:
+      RENOVATE_BASE_DIR: &baseDir "/tmp/renovate"
+      RENOVATE_CONFIG_FILE: &configFile "/opt/renovate/config.json"
+
+    envFrom:
+      - secretRef:
+          name: renovate-secret
+
+    service:
+      main:
+        enabled: false
+
+    persistence:
+      config:
+        enabled: true
+        name: renovate-config
+        readOnly: true
+        mountPath: *configFile
+        subPath: config.json
+        type: configMap
+      data:
+        enabled: true
+        type: emptyDir
+        mountPath: *baseDir
