@@ -11,3 +11,4 @@ resources:
   - ./immich/ks.yaml
 #  - ./babybuddy/ks.yaml
   - ./homeassistant/ks.yaml
+  - ./zigbee2mqtt/ks.yaml
