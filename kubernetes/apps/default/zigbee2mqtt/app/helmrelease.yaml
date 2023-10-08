@@ -32,7 +32,7 @@ spec:
     fullnameOverride: *app
 
     image:
-      repository: koenkk/zigbee2mqtt
+      repository: ghcr.io/koenkk/zigbee2mqtt
       tag: 1.33.1
 
     env:
@@ -49,6 +49,8 @@ spec:
       ZIGBEE2MQTT_CONFIG_ADVANCED_LOG_OUTPUT: '["console"]'
       ZIGBEE2MQTT_CONFIG_AVAILABILITY_ACTIVE_TIMEOUT: 60
       ZIGBEE2MQTT_CONFIG_AVAILABILITY_PASSIVE_TIMEOUT: 2000
+      ZIGBEE2MQTT_CONFIG_FRONTEND_PORT: "8080"
+      ZIGBEE2MQTT_CONFIG_FRONTEND_URL: "https://zigbee.${SECRET_DOMAIN}"
       ZIGBEE2MQTT_CONFIG_DEVICE_OPTIONS_LEGACY: "false"
       ZIGBEE2MQTT_CONFIG_DEVICE_OPTIONS_RETAIN: "true"
       ZIGBEE2MQTT_CONFIG_EXPERIMENTAL_NEW_API: "true"
@@ -69,7 +71,8 @@ spec:
             name: zigbee2mqtt-secret
             key: MQTT_PASSWORD
       ZIGBEE2MQTT_CONFIG_PERMIT_JOIN: "false"
-      ZIGBEE2MQTT_CONFIG_SERIAL_PORT: &serial-port /dev/serial/by-id/usb-ITEAD_SONOFF_Zigbee_3.0_USB_Dongle_Plus_V2_20230829135617-if00
+      ZIGBEE2MQTT_CONFIG_SERIAL_PORT: &serial-port /dev/ttyACM0
+      ZIGBEE2MQTT_CONFIG_SERIAL_ADAPTER: ezsp
 
     service:
       main:
@@ -114,6 +117,7 @@ spec:
         enabled: true
         type: hostPath
         hostPath: /dev/serial/by-id/usb-ITEAD_SONOFF_Zigbee_3.0_USB_Dongle_Plus_V2_20230829135617-if00
+        mountPath: *serial-port
         hostPathType: CharDevice
 
     nodeSelector:
