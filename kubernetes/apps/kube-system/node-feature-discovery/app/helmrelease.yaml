@@ -33,7 +33,7 @@ spec:
         configmap.reloader.stakater.com/reload: node-feature-discovery-worker-conf
       config:
         core:
-          sources:
+          labelSources:
             - "custom"
             - "pci"
             - "usb"
@@ -52,8 +52,11 @@ spec:
               - device
           custom:
             - name: "zigbee"
-              matchOn:
-                - usbId:
-                    class: ["ff"]
-                    vendor: ["1a86"]
-                    device: ["55d4"]
+              labels:
+                "zigbee-adapter": "true"
+              matchFeatures:
+                - feature: usb.device
+                  matchExpressions:
+                    class: {op: In, value: ["ff"]}
+                    vendor: {op: In, value: ["1a86"]}
+                    device: {op: In, value: ["55d4"]}
