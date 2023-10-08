@@ -127,6 +127,7 @@ spec:
 
     nodeSelector:
       feature.node.kubernetes.io/custom-zigbee: "true"
+      feature.node.kubernetes.io/usb-02_1a86_55d4.present: "true"
 
     resources:
       requests:
