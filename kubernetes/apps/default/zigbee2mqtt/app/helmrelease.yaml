@@ -108,14 +108,13 @@ spec:
     securityContext:
       privileged: true
 
-    volumeClaimTemplates:
-      - name: data
+    persistence:
+      config:
+        enabled: true
         mountPath: /data
+        storageClass: longhorn
         accessMode: ReadWriteOnce
         size: 1Gi
-        storageClass: longhorn
-
-    persistence:
       usb:
         enabled: true
         type: hostPath
