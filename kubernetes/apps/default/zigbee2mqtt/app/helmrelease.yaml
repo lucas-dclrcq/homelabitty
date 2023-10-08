@@ -69,7 +69,7 @@ spec:
             name: zigbee2mqtt-secret
             key: MQTT_PASSWORD
       ZIGBEE2MQTT_CONFIG_PERMIT_JOIN: "false"
-      ZIGBEE2MQTT_CONFIG_SERIAL_PORT: /dev/serial/by-id/usb-ITEAD_SONOFF_Zigbee_3.0_USB_Dongle_Plus_V2_20230829135617-if00
+      ZIGBEE2MQTT_CONFIG_SERIAL_PORT: &serial-port /dev/serial/by-id/usb-ITEAD_SONOFF_Zigbee_3.0_USB_Dongle_Plus_V2_20230829135617-if00
 
     service:
       main:
@@ -100,6 +100,8 @@ spec:
       runAsGroup: 568
       fsGroup: 568
       fsGroupChangePolicy: OnRootMismatch
+      supplementalGroups:
+        - 20
 
     persistence:
       config:
