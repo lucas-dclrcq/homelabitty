@@ -86,6 +86,7 @@ spec:
         ingressClassName: "ingress-traefik"
         annotations:
           hajimari.io/icon: mdi:zigbee
+          traefik.ingress.kubernetes.io/router.middlewares: "networking-sso@kubernetescrd"
         hosts:
           - host: &host "zigbee.${SECRET_DOMAIN}"
             paths:
