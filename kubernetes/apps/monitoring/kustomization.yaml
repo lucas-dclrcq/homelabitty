@@ -7,7 +7,7 @@ resources:
   - ./kube-prometheus-stack/ks.yaml
   - ./gatus/ks.yaml
   - ./speedtest/ks.yaml
-#  - ./thanos/ks.yaml
+  - ./thanos/ks.yaml
   - ./loki/ks.yaml
   - ./vector/ks.yaml
   - ./node-problem-detector/ks.yaml
