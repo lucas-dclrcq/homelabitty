@@ -54,6 +54,22 @@ spec:
             editable: true
             options:
               path: /var/lib/grafana/dashboards/default
+          - name: core
+            orgId: 1
+            folder: Core
+            type: file
+            disableDeletion: false
+            editable: true
+            options:
+              path: /var/lib/grafana/dashboards/core
+          - name: apps
+            orgId: 1
+            folder: Apps
+            type: file
+            disableDeletion: false
+            editable: true
+            options:
+              path: /var/lib/grafana/dashboards/apps
           - name: flux
             orgId: 1
             folder: Flux
@@ -86,6 +102,14 @@ spec:
             editable: true
             options:
               path: /var/lib/grafana/dashboards/networking
+          - name: infrastructure
+            orgId: 1
+            folder: Infrastructure
+            type: file
+            disableDeletion: false
+            editable: true
+            options:
+              path: /var/lib/grafana/dashboards/infrastructure
     datasources:
       datasources.yaml:
         apiVersion: 1
@@ -120,29 +144,32 @@ spec:
       - grafana-piechart-panel
     dashboards:
       default:
+        node-exporter-full:
+          gnetId: 1860 # https://grafana.com/grafana/dashboards/1860?tab=revisions
+          revision: 31
+          datasource: Prometheus
+      infrastructure:
+        redpanda:
+          gnetId: 18135
+          revision: 1
+          datasource: Prometheus
+      apps:
+        miniflux:
+          url: https://raw.githubusercontent.com/miniflux/v2/main/contrib/grafana/dashboard.json
+          datasource: Prometheus
         arr:
           url: https://raw.githubusercontent.com/onedr0p/exportarr/master/examples/grafana/dashboard2.json
           datasource: Prometheus
         synapse:
           url: https://raw.githubusercontent.com/lucas-dclrcq/homelabitty/main/dashboards/synapse.json
           datasource: Prometheus
-        redpanda:
-          gnetId: 18135
-          revision: 1
-          datasource: Prometheus
-        miniflux:
-          url: https://raw.githubusercontent.com/miniflux/v2/main/contrib/grafana/dashboard.json
-          datasource: Prometheus
-        node-exporter-full:
-          gnetId: 1860 # https://grafana.com/grafana/dashboards/1860?tab=revisions
-          revision: 31
-          datasource: Prometheus
-        external-secrets:
-          url: https://raw.githubusercontent.com/external-secrets/external-secrets/main/docs/snippets/dashboard.json
-          datasource: Prometheus
+      core:
         longhorn:
           gnetId: 17626
           revision: 1
+          datasource: Prometheus
+        external-secrets:
+          url: https://raw.githubusercontent.com/external-secrets/external-secrets/main/docs/snippets/dashboard.json
           datasource: Prometheus
       networking:
         traefik:
