@@ -44,6 +44,8 @@ spec:
       ingress:
         enabled: true
         ingressClassName: "ingress-traefik"
+        annotations:
+          traefik.ingress.kubernetes.io/router.middlewares: "networking-sso@kubernetescrd,networking-lan-only@kubernetescrd"
         hostname: &host "thanos-query-frontend.${SECRET_DOMAIN}"
         tls: true
         extraTls:
