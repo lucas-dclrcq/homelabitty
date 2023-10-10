@@ -133,6 +133,9 @@ spec:
     kubeProxy:
       enabled: false # Disabled because eBPF
 
+    nodeExporter:
+      enabled: false
+
     kubeScheduler:
       enabled: true
       endpoints: *cp
