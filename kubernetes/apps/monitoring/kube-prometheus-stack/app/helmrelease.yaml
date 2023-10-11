@@ -136,6 +136,9 @@ spec:
     nodeExporter:
       enabled: false
 
+    kubeStateMetrics:
+      enabled: false
+
     kubeScheduler:
       enabled: true
       endpoints: *cp
