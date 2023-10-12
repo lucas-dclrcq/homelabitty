@@ -46,6 +46,8 @@ spec:
         ingressClassName: "ingress-traefik"
         annotations:
           traefik.ingress.kubernetes.io/router.middlewares: "networking-sso@kubernetescrd,networking-lan-only@kubernetescrd"
+          hajimari.io/icon: mdi:shelves
+          hajimari.io/appName: "Thanos"
         hostname: &host "thanos-query-frontend.${SECRET_DOMAIN}"
         tls: true
         extraTls:
