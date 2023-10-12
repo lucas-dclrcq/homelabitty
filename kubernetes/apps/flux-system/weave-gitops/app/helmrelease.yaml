@@ -37,7 +37,7 @@ spec:
       enabled: true
       className: ingress-traefik
       annotations:
-        external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
+        traefik.ingress.kubernetes.io/router.middlewares: "networking-lan-only@kubernetescrd"
         hajimari.io/icon: sawtooth-wave
         hajimari.io/group: "homelab"
         hajimari.io/appName: "Flux Dashboard"

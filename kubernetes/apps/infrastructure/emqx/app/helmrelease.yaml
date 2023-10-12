@@ -53,6 +53,8 @@ spec:
       dashboard:
         enabled: true
         ingressClassName: ingress-traefik
+        annotations:
+          traefik.ingress.kubernetes.io/router.middlewares: "networking-lan-only@kubernetescrd"
         path: /
         pathType: Prefix
         hosts:
