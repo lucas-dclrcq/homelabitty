@@ -39,7 +39,7 @@ spec:
 
     image:
       repository: lscr.io/linuxserver/babybuddy
-      tag: 2.1.1
+      tag: 2.1.2
 
     service:
       main:
