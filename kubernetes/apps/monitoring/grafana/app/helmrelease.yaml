@@ -163,6 +163,10 @@ spec:
         synapse:
           url: https://raw.githubusercontent.com/lucas-dclrcq/homelabitty/main/dashboards/synapse.json
           datasource: Prometheus
+        emqx:
+          gnetId: 17446
+          revision: 1
+          datasource: Prometheus
       core:
         longhorn:
           gnetId: 17626
