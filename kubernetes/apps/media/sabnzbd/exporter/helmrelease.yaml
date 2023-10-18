@@ -30,7 +30,7 @@ spec:
   values:
     image:
       repository: ghcr.io/onedr0p/exportarr
-      tag: v1.5.5
+      tag: v1.6.0
 
     env:
       URL: "http://sabnzbd.media.svc.cluster.local"
