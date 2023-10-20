@@ -151,8 +151,8 @@ spec:
       infrastructure:
         redpanda:
           # renovate: depName="Redpanda Ops Dashboard"
-          gnetId: 18135
-          revision: 1
+          gnetId: 28235
+          revision: 2
           datasource: Prometheus
       apps:
         miniflux:
