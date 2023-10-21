@@ -12,3 +12,4 @@ resources:
 #  - ./babybuddy/ks.yaml
   - ./homeassistant/ks.yaml
   - ./zigbee2mqtt/ks.yaml
+  - ./changedetection/ks.yaml

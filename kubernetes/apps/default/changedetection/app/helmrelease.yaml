@@ -1,0 +1,88 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: changedetection-io
+  namespace: default
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: app-template
+      version: 1.5.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 5
+  upgrade:
+    remediation:
+      retries: 5
+  values:
+    image:
+      repository: ghcr.io/dgtlmoon/changedetection.io
+      tag: "0.41"
+
+    env:
+      TZ: "${TIMEZONE}"
+      PORT: &port 5000
+      USE_X_SETTINGS: 1
+      PLAYWRIGHT_DRIVER_URL: ws://localhost:3000/?stealth=1&--disable-web-security=true&--user-data-dir=~/browserless-cache-123
+
+    service:
+      main:
+        ports:
+          http:
+            port: *port
+
+    ingress:
+      main:
+        enabled: true
+        ingressClassName: "ingress-traefik"
+        annotations:
+          traefik.ingress.kubernetes.io/router.middlewares: "networking-sso@kubernetescrd"
+          hajimari.io/icon: mdi:web-sync
+          hajimari.io/enable: "true"
+          hajimari.io/appName: "Change Detection IO"
+        hosts:
+          - host: &host "changedetection.${SECRET_DOMAIN}"
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - *host
+
+    persistence:
+      config:
+        enabled: true
+        storageClass: longhorn
+        mountPath: /datastore
+        size: 1Gi
+        accessMode: ReadWriteOnce
+
+    resources:
+      requests:
+        cpu: 10m
+        memory: 100Mi
+      limits:
+        memory: 250Mi
+
+    sidecars:
+      chrome-browser:
+        name: browser
+        image: browserless/chrome
+        tag: 1.53.0-chrome-stable
+        env:
+          SCREEN_WIDTH: 1920
+          SCREEN_HEIGHT: 1024
+          SCREEN_DEPTH: 16
+          ENABLE_DEBUGGER: false
+          PREBOOT_CHROME: true
+          CONNECTION_TIMEOUT: 300000
+          MAX_CONCURRENT_SESSIONS: 10
+          CHROME_REFRESH_TIME: 600000
+          DEFAULT_BLOCK_ADS: true
+          DEFAULT_STEALTH: true
