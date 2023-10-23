@@ -20,3 +20,4 @@ resources:
   - ./slskd/ks.yaml
   - ./jellyseerr/ks.yaml
   - ./slskd-to-betanin-notifier/ks.yaml
+  - ./podgrab/ks.yaml
