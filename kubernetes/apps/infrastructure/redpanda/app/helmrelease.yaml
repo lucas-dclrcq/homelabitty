@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: redpanda
-      version: 5.6.25
+      version: 5.6.27
       sourceRef:
         kind: HelmRepository
         name: redpanda
