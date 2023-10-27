@@ -28,7 +28,7 @@ spec:
 
     image:
       repository: ghcr.io/slskd/slskd
-      tag: 0.18.3
+      tag: 0.19.1
 
     env:
       TZ: ${TIMEZONE}
