@@ -33,7 +33,7 @@ spec:
 
     image:
       repository: ghcr.io/matrixgpt/matrix-chatgpt-bot
-      tag: 3.1.2
+      tag: 3.1.4
 
     env:
       CHATGPT_CONTEXT: thread
