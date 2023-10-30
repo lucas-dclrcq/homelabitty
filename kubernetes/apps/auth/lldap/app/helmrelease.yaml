@@ -38,7 +38,7 @@ spec:
 
     image:
       repository: ghcr.io/lldap/lldap
-      tag: latest-alpine@sha256:4f5bd03f2646033a73333fa197e6b530e888e98f9e7274012cdebc24cf57fd5f
+      tag: latest-alpine@sha256:17eaa1126fe2cec92462e6b281c013548ed2b70569ca126423fc519d14c389a4
 
     env:
       TZ: "${TIMEZONE}"
