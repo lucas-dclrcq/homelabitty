@@ -13,3 +13,4 @@ resources:
   - ./homeassistant/ks.yaml
   - ./zigbee2mqtt/ks.yaml
   - ./changedetection/ks.yaml
+  - ./node-red/ks.yaml
