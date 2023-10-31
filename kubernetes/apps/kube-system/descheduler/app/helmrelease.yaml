@@ -29,6 +29,7 @@ spec:
     kind: Deployment
     schedule: "*/5 * * * *"
     deschedulerPolicy:
+      nodeSelector: "node-role.kubernetes.io/master!=true"
       strategies:
         RemovePodsHavingTooManyRestarts:
           enabled: true
@@ -78,10 +79,12 @@ spec:
             nodeResourceUtilizationThresholds:
               thresholds:
                 cpu: 35
-                memory: 35
-              targetThresholds:
-                cpu: 40
                 memory: 40
+                pods: 40
+              targetThresholds:
+                cpu: 50
+                memory: 50
+                pods: 50
     service:
       enabled: true
     serviceMonitor:
