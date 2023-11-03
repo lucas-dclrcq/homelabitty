@@ -31,7 +31,7 @@ spec:
 
     image:
       repository: elasticsearch
-      tag: 8.10.2
+      tag: 8.10.4
 
     service:
       main:
