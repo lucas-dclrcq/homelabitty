@@ -40,22 +40,15 @@ spec:
       - secretRef:
           name: plex-secret
 
+
     service:
       main:
+        type: LoadBalancer
+        loadBalancerIP: "${METALLB_PLEX_ADDR}"
+        externalTrafficPolicy: Local
         ports:
           http:
-            port: &port 32400
-      external:
-        enabled: true
-        type: LoadBalancer
-        ports:
-          external:
-            enabled: true
-            port: 32999
-            protocol: TCP
-            targetPort: *port
-        externalTrafficPolicy: Local
-        loadBalancerIP: "${METALLB_PLEX_ADDR}"
+            port: 32400
 
     ingress:
       main:
