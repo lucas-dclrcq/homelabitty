@@ -44,7 +44,18 @@ spec:
       main:
         ports:
           http:
-            port: 32400
+            port: &port 32400
+      external:
+        enabled: true
+        type: LoadBalancer
+        ports:
+          external:
+            enabled: true
+            port: 32999
+            protocol: TCP
+            targetPort: *port
+        externalTrafficPolicy: Local
+        loadBalancerIP: "${METALLB_PLEX_ADDR}"
 
     ingress:
       main:
