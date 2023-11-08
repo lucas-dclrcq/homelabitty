@@ -9,3 +9,16 @@ area/templates:
   - "tmpl/**/*"
 area/terraform:
   - "terraform/**/*"
+category/system:
+  - "kubernetes/apps/kube-system/**/*"
+  - "kubernetes/app/monitoring/**/*"
+  - "kubernetes/app/networking/**/*"
+  - "kubernetes/app/longhorn-system/**/*"
+  - "kubernetes/app/system-upgrade/**/*"
+  - "kubernetes/app/kyverno/**/*"
+  - "kubernetes/app/flux-system/**/*"
+  - "kubernetes/app/cert-manager/**/*"
+category/apps:
+  - "kubernetes/apps/default/**/*"
+  - "kubernetes/apps/media/**/*"
+  - "kubernetes/apps/matrix/**/*"

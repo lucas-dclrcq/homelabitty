@@ -58,3 +58,7 @@
   color: "cc317c"
 - name: community
   color: "0e8a16"
+- name: category/system
+  color: "fb2c00"
+- name: category/apps
+  color: "0400fb"
