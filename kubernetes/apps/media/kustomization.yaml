@@ -21,4 +21,5 @@ resources:
   - ./jellyseerr/ks.yaml
   - ./slskd-to-betanin-notifier/ks.yaml
   - ./podgrab/ks.yaml
-  - ./plex/ks.yaml
+#  - ./plex/ks.yaml
+  - ./autobrr/ks.yaml
