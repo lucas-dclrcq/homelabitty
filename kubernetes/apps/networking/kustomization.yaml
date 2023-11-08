@@ -8,3 +8,4 @@ resources:
   - ./metallb/ks.yaml
   - ./external-dns/ks.yaml
   - ./traefik-forward-auth/ks.yaml
+  - ./crowdsec/ks.yaml

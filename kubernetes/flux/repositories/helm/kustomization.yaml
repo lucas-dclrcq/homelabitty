@@ -21,7 +21,6 @@ resources:
   - ./metrics-server.yaml
   - ./microcks.yaml
   - ./minecraft.yaml
-  - ./openfaas.yaml
   - ./prometheus-community.yaml
   - ./redpanda.yaml
   - ./stakater.yaml
@@ -37,3 +36,4 @@ resources:
   - ./banzaicloud.yaml
   - ./deliveryhero.yaml
   - ./emqx.yaml
+  - ./crowdsec.yaml
