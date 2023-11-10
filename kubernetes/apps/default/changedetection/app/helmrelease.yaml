@@ -68,13 +68,13 @@ spec:
         cpu: 10m
         memory: 100Mi
       limits:
-        memory: 250Mi
+        memory: 500Mi
 
     sidecars:
       chrome-browser:
         name: browser
-        image: browserless/chrome
-        tag: 1.53.0-chrome-stable
+        image: docker.io/browserless/chrome
+        tag: 1.61-puppeteer-1.20.0
         env:
           SCREEN_WIDTH: 1920
           SCREEN_HEIGHT: 1024
