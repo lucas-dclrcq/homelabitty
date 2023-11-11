@@ -9,8 +9,6 @@ resources:
   - ./radarr/ks.yaml
   - ./sonarr/ks.yaml
   - ./bazarr/ks.yaml
-#  - ./calibre/ks.yaml
-#  - ./calibre-web/ks.yaml
   - ./readarr/ks.yaml
   - ./jellyfin-vue/ks.yaml
   - ./sabnzbd/ks.yaml
@@ -21,5 +19,5 @@ resources:
   - ./jellyseerr/ks.yaml
   - ./slskd-to-betanin-notifier/ks.yaml
   - ./podgrab/ks.yaml
-#  - ./plex/ks.yaml
   - ./autobrr/ks.yaml
+  - ./mylarr/ks.yaml
