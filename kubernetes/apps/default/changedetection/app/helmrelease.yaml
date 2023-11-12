@@ -23,7 +23,7 @@ spec:
   values:
     image:
       repository: ghcr.io/dgtlmoon/changedetection.io
-      tag: "0.45.7.1"
+      tag: "0.45.7.3"
 
     env:
       TZ: "${TIMEZONE}"
