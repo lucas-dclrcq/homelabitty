@@ -37,3 +37,4 @@ resources:
   - ./deliveryhero.yaml
   - ./emqx.yaml
   - ./crowdsec.yaml
+  - ./influxdb.yaml
