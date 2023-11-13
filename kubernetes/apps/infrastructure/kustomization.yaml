@@ -9,3 +9,4 @@ resources:
 #  - ./elasticsearch/ks.yaml
   - ./renovate/ks.yaml
   - ./emqx/ks.yaml
+  - ./influxdb/ks.yaml
