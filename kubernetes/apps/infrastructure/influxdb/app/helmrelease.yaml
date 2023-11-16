@@ -31,7 +31,7 @@ spec:
   values:
     image:
       repository: influxdb
-      tag: 2.7.3
+      tag: 2.7.4
 
     pdb:
       create: false
