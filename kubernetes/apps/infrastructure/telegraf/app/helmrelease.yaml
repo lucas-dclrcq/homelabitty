@@ -1,0 +1,46 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: telegraf
+  namespace: infrastructure
+spec:
+  chart:
+    spec:
+      chart: app-template
+      version: 1.5.x
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  interval: 15m
+  timeout: 5m
+  values:
+    image:
+      repository: telegraf
+      tag: 1.28-alpine
+      PullPolicy: IfNotPresent
+
+    service:
+      main:
+        ports:
+          http:
+            port: 9283
+
+    serviceMonitor:
+      main:
+        enabled: true
+        endpoints:
+          - port: http
+            scheme: http
+            path: /metrics
+            interval: 30s
+            scrapeTimeout: 10s
+
+    persistence:
+      config:
+        enabled: true
+        name: telegraph-config
+        readOnly: true
+        mountPath: /etc/telegraf/telegraf.conf
+        subPath: telegraf.conf
+        type: configMap

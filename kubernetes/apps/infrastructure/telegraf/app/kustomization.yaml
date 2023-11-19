@@ -1,0 +1,12 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ./helmrelease.yaml
+namespace: infrastructure
+configMapGenerator:
+  - name: telegraph-config
+    files:
+      - telegraf.conf=config/config.toml
+generatorOptions:
+  disableNameSuffixHash: true
