@@ -43,6 +43,7 @@ spec:
     mountPoints:
       - name: telegraf-config
         mountPath: /etc/telegraf/telegraf.conf
+        subPath: telegraf.conf
 
     config:
       outputs:
