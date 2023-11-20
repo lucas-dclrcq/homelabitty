@@ -28,6 +28,8 @@ spec:
     env:
       TZ: "${TIMEZONE}"
 
+    envFromSecret: telegraf-secret
+
     resources:
       requests:
         cpu: 1
@@ -36,14 +38,15 @@ spec:
         memory: 500Mi
 
     volumes:
-      - name: telegraf-config
-        configMap:
-          name: telegraph-config
+      - name: telegraf-global-config
+        projected:
+          sources:
+            configMap:
+              name: telegraf-global-config
 
     mountPoints:
-      - name: telegraf-config
-        mountPath: /etc/telegraf/telegraf.conf
-        subPath: telegraf.conf
+      - name: telegraf-global-config
+        mountPath: /etc/telegraf/conf.d
 
     config:
       outputs:

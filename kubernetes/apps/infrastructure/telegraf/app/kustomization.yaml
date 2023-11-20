@@ -6,9 +6,9 @@ resources:
   - ./helmrelease.yaml
 namespace: infrastructure
 configMapGenerator:
-  - name: telegraph-config
+  - name: telegraf-global-config
     files:
-      - telegraf.conf=config/config.toml
+      - global.conf=config/config.toml
 generatorOptions:
   disableNameSuffixHash: true
   annotations:
