@@ -37,20 +37,24 @@ spec:
       limits:
         memory: 500Mi
 
-    volumes:
-      - name: telegraf-global-config
-        projected:
-          sources:
-            configMap:
-              name: telegraf-global-config
-
-    mountPoints:
-      - name: telegraf-global-config
-        mountPath: /etc/telegraf/conf.d
-
     config:
       outputs:
+        - influxdb_v2:
+            urls:
+              - "http://influxdb-influxdb2.infrastructure.svc.cluster.local"
+            token: "$INFLUXDB_TOKEN"
+            bucket: "sensors"
+            organization: "homelab"
       inputs:
+        - mqtt_consumer:
+            client_id: "telegraf_linky"
+            servers:
+              - "tcp://emqx-headless.infrastructure.svc.cluster.local:1883"
+            topics:
+              - "zigbee2mqtt/ LIXEE-ZLINKY-TIC"
+            username: "$MQTT_USERNAME"
+            password: "$MQTT_PASSWORD"
+            data_format: "json"
     metrics:
       health:
         enabled: true
