@@ -14,11 +14,34 @@ spec:
         namespace: flux-system
   interval: 15m
   timeout: 5m
+
   values:
     image:
       repository: telegraf
       tag: 1.28-alpine
       PullPolicy: IfNotPresent
+
+    env:
+      TZ: "${TIMEZONE}"
+
+    envFrom:
+      - secretRef:
+          name: telegraf-secret
+
+    probes:
+      liveness: &probes
+        enabled: true
+        custom: true
+        spec:
+          httpGet:
+            path: /health
+            port: 80
+          initialDelaySeconds: 0
+          periodSeconds: 10
+          timeoutSeconds: 1
+          failureThreshold: 3
+      readiness: *probes
+      startup: *probes
 
     service:
       main:
