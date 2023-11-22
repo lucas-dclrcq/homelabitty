@@ -8,7 +8,7 @@ spec:
   interval: 60m
   chart:
     spec:
-      chart: influxdb2
+      chart: flagsmith
       version: 0.22.2
       sourceRef:
         kind: HelmRepository
