@@ -64,7 +64,12 @@ spec:
         enabled: true
         hosts:
           - *host
-
+        tls:
+          - hosts:
+              - *host
+    api:
+      extraEnv:
+        LOG_LEVEL: DEBUG
     frontend:
       extraEnv:
         FLAGSMITH_API_URL: "https://flagsmith.${SECRET_DOMAIN}/api/v1/"
