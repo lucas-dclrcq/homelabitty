@@ -35,3 +35,6 @@ _... managed with Ansible, Terraform, Flux, Renovate and GitHub Actions_
 
 [Here](docs/SETUP.md)
 
+## IOT
+
+![IOT Diagram](docs/assets/iot-diagram.png)
