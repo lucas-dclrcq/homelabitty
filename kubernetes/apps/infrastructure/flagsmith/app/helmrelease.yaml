@@ -56,19 +56,14 @@ spec:
       frontend:
         enabled: true
         hosts:
-          - host: &host "flagsmith.${SECRET_DOMAIN}"
-            paths:
-              - /
+          - &host "flagsmith.${SECRET_DOMAIN}"
         tls:
           - hosts:
               - *host
       api:
         enabled: true
         hosts:
-          - host: *host
-            paths:
-              - /api/
-              - /health/
+          - *host
 
     frontend:
       extraEnv:
