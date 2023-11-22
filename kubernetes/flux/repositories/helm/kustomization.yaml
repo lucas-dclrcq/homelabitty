@@ -38,3 +38,4 @@ resources:
   - ./emqx.yaml
   - ./crowdsec.yaml
   - ./influxdb.yaml
+  - ./flagsmith.yaml
