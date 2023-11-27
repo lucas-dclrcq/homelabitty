@@ -39,3 +39,4 @@ resources:
   - ./crowdsec.yaml
   - ./influxdb.yaml
   - ./flagsmith.yaml
+  - ./cert-manager-webhook-ovh.yaml
