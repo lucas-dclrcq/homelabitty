@@ -19,7 +19,7 @@ spec:
       strategy: RollingUpdate
 
     podAnnotations:
-      reloader.stakater.com/search: "true"
+      secret.reloader.stakater.com/reload: &secret telegraf-secret
 
     image:
       repo: "docker.io/library/telegraf"
@@ -28,7 +28,7 @@ spec:
     env:
       TZ: "${TIMEZONE}"
 
-    envFromSecret: telegraf-secret
+    envFromSecret: *secret
 
     resources:
       requests:
@@ -52,6 +52,18 @@ spec:
               - "tcp://emqx-headless.infrastructure.svc.cluster.local:1883"
             topics:
               - "zigbee2mqtt/ LIXEE-ZLINKY-TIC"
+            username: "$MQTT_USERNAME"
+            password: "$MQTT_PASSWORD"
+            data_format: "json"
+        - mqtt_consumer:
+            client_id: "telegraf_tuya"
+            servers:
+              - "tcp://emqx-headless.infrastructure.svc.cluster.local:1883"
+            topics:
+              - "zigbee2mqtt/tuya_office_lucas"
+              - "zigbee2mqtt/tuya_chambre_ami"
+              - "zigbee2mqtt/tuya_cuisine"
+              - "zigbee2mqtt/tuya_chambre_lulice"
             username: "$MQTT_USERNAME"
             password: "$MQTT_PASSWORD"
             data_format: "json"

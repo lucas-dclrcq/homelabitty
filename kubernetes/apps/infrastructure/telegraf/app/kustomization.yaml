@@ -5,11 +5,3 @@ resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
 namespace: infrastructure
-configMapGenerator:
-  - name: telegraf-global-config
-    files:
-      - global.conf=config/config.toml
-generatorOptions:
-  disableNameSuffixHash: true
-  annotations:
-    kustomize.toolkit.fluxcd.io/substitute: disabled
