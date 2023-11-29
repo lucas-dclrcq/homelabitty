@@ -51,8 +51,10 @@ spec:
         image:
           repository: loancrate/metabase
           tag: "enterprise-v1.46.6.1"
-        ingressClassName: ingress-traefik
-        host: "crowdsec.${SECRET_DOMAIN}"
+        ingress:
+          enabled: true
+          ingressClassName: ingress-traefik
+          host: "crowdsec.${SECRET_DOMAIN}"
 
       metrics:
         enabled: true
