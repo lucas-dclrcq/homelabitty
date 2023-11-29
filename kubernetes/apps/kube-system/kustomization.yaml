@@ -11,3 +11,4 @@ resources:
   - ./external-secrets/ks.yaml
   - ./descheduler/ks.yaml
   - ./node-feature-discovery/ks.yaml
+  - ./system-upgrade-controller/ks.yaml
