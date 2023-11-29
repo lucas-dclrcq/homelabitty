@@ -48,6 +48,9 @@ spec:
     lapi:
       dashboard:
         enabled: true
+        image:
+          repository: loancrate/metabase
+          tag: "enterprise-v1.46.6.1"
         ingressClassName: ingress-traefik
         host: "crowdsec.${SECRET_DOMAIN}"
 
