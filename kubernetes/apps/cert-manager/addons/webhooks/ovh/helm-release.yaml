@@ -35,7 +35,7 @@ spec:
       serviceAccountName: cert-manager
     issuers:
       - name: letsencrypt-ovh-staging
-        create: false
+        create: true
         kind: ClusterIssuer
         acmeServerUrl: https://acme-staging-v02.api.letsencrypt.org/directory
         email: "${SECRET_ACME_EMAIL}"
@@ -51,7 +51,7 @@ spec:
             name: ovh-credentials
             key: consumerKey
       - name: letsencrypt-ovh-production
-        create: false
+        create: true
         kind: ClusterIssuer
         acmeServerUrl: https://acme-v02.api.letsencrypt.org/directory
         email: "${SECRET_ACME_EMAIL}"
