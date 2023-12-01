@@ -1,0 +1,54 @@
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-ovh-production
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: "${SECRET_ACME_EMAIL}"
+    privateKeySecretRef:
+      name: letsencrypt-ovh-production
+    solvers:
+      - dns01:
+          webhook:
+            groupName: cocogitto.io
+            solverName: ovh
+            config:
+              endpoint: ovh-eu
+              applicationKeyRef:
+                key: applicationKey
+                name: ovh-credentials
+              applicationSecretRef:
+                key: applicationSecret
+                name: ovh-credentials
+              consumerKeyRef:
+                key: consumerKey
+                name: ovh-credentials
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-ovh-staging
+spec:
+  acme:
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    email: "${SECRET_ACME_EMAIL}"
+    privateKeySecretRef:
+      name: letsencrypt-ovh-staging
+    solvers:
+      - dns01:
+          webhook:
+            groupName: cocogitto.io
+            solverName: ovh
+            config:
+              endpoint: ovh-eu
+              applicationKeyRef:
+                key: applicationKey
+                name: ovh-credentials
+              applicationSecretRef:
+                key: applicationSecret
+                name: ovh-credentials
+              consumerKeyRef:
+                key: consumerKey
+                name: ovh-credentials

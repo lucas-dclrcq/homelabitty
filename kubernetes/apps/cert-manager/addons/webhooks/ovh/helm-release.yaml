@@ -29,16 +29,16 @@ spec:
   values:
     image:
       tag: "v0.4.2-alpha.1"
-    groupName: "${SECRET_DOMAIN}"
+    groupName: "cocogitto.io"
     certManager:
       namespace: cert-manager
       serviceAccountName: cert-manager
     issuers:
-      - name: letsencrypt-staging
-        create: true
+      - name: letsencrypt-ovh-staging
+        create: false
         kind: ClusterIssuer
         acmeServerUrl: https://acme-staging-v02.api.letsencrypt.org/directory
-        email: "${EMAIL}"
+        email: "${SECRET_ACME_EMAIL}"
         ovhEndpointName: ovh-eu
         ovhAuthenticationRef:
           applicationKeyRef:
@@ -50,11 +50,11 @@ spec:
           consumerKeyRef:
             name: ovh-credentials
             key: consumerKey
-      - name: letsencrypt-production
-        create: true
+      - name: letsencrypt-ovh-production
+        create: false
         kind: ClusterIssuer
         acmeServerUrl: https://acme-v02.api.letsencrypt.org/directory
-        email: "${EMAIL}"
+        email: "${SECRET_ACME_EMAIL}"
         ovhEndpointName: ovh-eu
         ovhAuthenticationRef:
           applicationKeyRef:
