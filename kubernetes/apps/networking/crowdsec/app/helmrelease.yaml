@@ -84,3 +84,25 @@ spec:
         enabled: true
         serviceMonitor:
           enabled: true
+      env:
+        - name: TZ
+          value: "${TIMEZONE}"
+        # # default disable local API on the agent pod --> this is set in agent-daemonset helm template
+        # - name: DISABLE_ONLINE_API
+        #   value: "false"
+        # - name: LEVEL_TRACE
+        #   value: "false"
+        # - name: LEVEL_DEBUG
+        #   value: "false"
+        # - name: LEVEL_INFO
+        #   value: "false"
+
+        ### "Parsers and Scenarios must be present on the agents. It's not useful to deploy them on LAPI"
+        # COLLECTIONS are bundles of PARSERS and SCENARIOS
+        - name: COLLECTIONS
+          value: >-
+            crowdsecurity/linux
+            crowdsecurity/traefik
+            crowdsecurity/http-logs
+            crowdsecurity/base-http-scenarios
+            crowdsecurity/http-cve
