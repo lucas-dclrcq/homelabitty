@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-  name: &app cocogitto-bot
+  name: cocogitto-bot
   namespace: okno
 spec:
   interval: 15m
