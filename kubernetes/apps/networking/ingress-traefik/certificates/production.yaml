@@ -26,7 +26,7 @@ spec:
   secretName: tls-cocogitto
   issuerRef:
     kind: ClusterIssuer
-    name: letsencrypt-production
+    name: letsencrypt-ovh-production
   commonName: "*.cocogitto.io"
   dnsNames:
     - "*.cocogitto.io"
