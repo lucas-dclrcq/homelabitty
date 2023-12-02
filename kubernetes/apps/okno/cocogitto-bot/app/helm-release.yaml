@@ -34,7 +34,7 @@ spec:
         reloader.stakater.com/auto: "true"
     image:
       repository: ghcr.io/cocogitto/cocogitto-bot
-      tag: latest@sha256:601609cc300ad0a40be2378dbfed425e82c30242920b4edf4e49a8d95cfc8753
+      tag: latest@sha256:f2d206f99054e5a6b53def6f57ec2e248ba7eb230660ba020e1f3c050ec6c7fd
     env:
       NO_COLOR: true
     envFrom:
