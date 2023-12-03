@@ -32,19 +32,24 @@ spec:
       strategy: RollingUpdate
       annotations:
         reloader.stakater.com/auto: "true"
+
     image:
       repository: ghcr.io/cocogitto/cocogitto-bot
       tag: latest@sha256:f2d206f99054e5a6b53def6f57ec2e248ba7eb230660ba020e1f3c050ec6c7fd
+
     env:
       NO_COLOR: true
+
     envFrom:
       - secretRef:
           name: cocogitto-bot-app
+
     service:
       main:
         ports:
           http:
             port: &port 8080
+
     ingress:
       main:
         enabled: true
@@ -60,6 +65,14 @@ spec:
           - secretName: tls-cocogitto
             hosts:
               - *host
+
+    resources:
+      requests:
+        cpu: 10m
+        memory: 30Mi
+      limits:
+        memory: 300Mi
+
     probes:
       liveness: &probes
         enabled: true
