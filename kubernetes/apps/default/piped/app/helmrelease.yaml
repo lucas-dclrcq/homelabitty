@@ -48,7 +48,7 @@ spec:
         HTTP_WORKERS: 2
         PROXY_PART: "https://ytproxy.${SECRET_DOMAIN}"
         COMPROMISED_PASSWORD_CHECK: true
-        DISABLE_REGISTRATION: false
+        DISABLE_REGISTRATION: true
         database:
           connection_url: jdbc:postgresql://apps.postgresql.lulice.lan:5432/piped
           driver_class: org.postgresql.Driver
