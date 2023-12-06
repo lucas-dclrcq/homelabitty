@@ -58,6 +58,7 @@ spec:
         enabled: true
         ingressClassName: "ingress-traefik"
         annotations:
+          external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
           hajimari.io/appName: Piped
           hajimari.io/icon: mdi:youtube
         hosts:
@@ -71,6 +72,8 @@ spec:
       backend:
         enabled: true
         ingressClassName: "ingress-traefik"
+        annotations:
+          external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
         hosts:
           - host: *pipedapi
             paths:
@@ -82,6 +85,8 @@ spec:
       ytproxy:
         enabled: true
         ingressClassName: "ingress-traefik"
+        annotations:
+          external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
         hosts:
           - host: &proxy "ytproxy.${SECRET_DOMAIN}"
             paths:
