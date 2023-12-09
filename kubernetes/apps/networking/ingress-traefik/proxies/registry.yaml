@@ -4,8 +4,8 @@ kind: Ingress
 metadata:
   annotations:
     ingress.kubernetes.io/preserve-host: "true"
-    external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
-    hajimari.io/enable: false
+    traefik.ingress.kubernetes.io/router.middlewares: "networking-lan-only@kubernetescrd"
+    hajimari.io/enable: "false"
   name: registry
   namespace: networking
 spec:
