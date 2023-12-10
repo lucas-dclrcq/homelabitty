@@ -37,7 +37,7 @@ spec:
 
     image:
       repository: ghcr.io/lucas-dclrcq/bitwarden-cli
-      tag: latest@sha256:5be5ffbbb81d4e4e434f4aadbbd1d1cad67f5e512620bfae0da53bcbfa3f9224
+      tag: latest@sha256:dc74e4b201d63a9f99dc911caa0ada9beeb9cde1d3863d7359b9edab1e58f219
 
     env:
       TZ: "${TIMEZONE}"
