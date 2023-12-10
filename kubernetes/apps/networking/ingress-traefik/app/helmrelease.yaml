@@ -58,7 +58,7 @@ spec:
 
     experimental:
       plugins:
-        enabled: true
+        enabled: false
 
     rollback:
       recreate: true
