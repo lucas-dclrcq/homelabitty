@@ -56,10 +56,6 @@ spec:
         loadBalancerIp: "${METALLB_INGRESS_ADDR}"
         externalTrafficPolicy: Local
 
-    experimental:
-      plugins:
-        enabled: false
-
     rollback:
       recreate: true
       force: true
