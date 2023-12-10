@@ -35,7 +35,7 @@ spec:
 
     image:
       repository: ghcr.io/onedr0p/prowlarr-develop
-      tag: 1.10.5.4116@sha256:0205e00216218935300a88c150c78bef5afe2eb82239882836536b07c514bcb8
+      tag: 1.11.0.4128@sha256:ba780ee620a5fc505d8d8d5cbaa4f2a6a22520d4ec727cffda40b8e3754beacd
 
     env:
       TZ: "${TIMEZONE}"
