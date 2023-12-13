@@ -98,6 +98,14 @@ spec:
           - hosts:
               - *host
 
+    podSecurityContext:
+      runAsUser: 1026
+      runAsGroup: 100
+      runAsNonRoot: true
+      fsGroup: 100
+      fsGroupChangePolicy: OnRootMismatch
+      supplementalGroups: [10000]
+
     serviceMonitor:
       main:
         enabled: true
