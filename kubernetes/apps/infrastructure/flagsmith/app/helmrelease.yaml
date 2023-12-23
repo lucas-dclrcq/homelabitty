@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: flagsmith
-      version: 0.22.2
+      version: 0.22.3
       sourceRef:
         kind: HelmRepository
         name: flagsmith
