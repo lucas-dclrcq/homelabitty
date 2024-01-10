@@ -10,8 +10,17 @@
       "matchPackagePatterns": [
         "ghcr.io/bjw-s",
         "ghcr.io/onedr0p",
-        "lucas-dclrcq/slskd-to-betanin-notifier",
-//        "lucas-dclrcq/homelabitty"
+        "ghcr.io/lucas-dclrcq/slskd-to-betanin-notifier"
+      ]
+    },
+    {
+      "description": "Auto-merge renovate except for major",
+      "matchDatasources": ["docker"],
+      "automerge": true,
+      "automergeType": "branch",
+      "matchUpdateTypes": ["digest", "patch", "minor"],
+      "matchPackagePatterns": [
+        "renovate/renovate"
       ]
     },
     {
