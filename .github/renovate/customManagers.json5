@@ -5,6 +5,7 @@
       "customType": "regex",
       "description": "Process custom dependencies",
       "fileMatch": [
+        "(^|/).taskfiles/.+\\.ya?ml$",
         "(^|/)ansible/.+\\.ya?ml(\\.j2)?$",
         "(^|/)kubernetes/.+\\.ya?ml(\\.j2)?$"
       ],
@@ -24,15 +25,15 @@
     },
     {
       "customType": "regex",
-      "description": "Process Grafana dashboards",
+      "description": "Process CloudnativePG Postgresql version",
       "fileMatch": [
         "(^|/)kubernetes/.+\\.ya?ml(\\.j2)?$"
       ],
       "matchStrings": [
-        "depName=\"(?<depName>.*)\"\\n\\s+gnetId:\\s+(?<packageName>.*?)\\n\\s+revision:\\s+(?<currentValue>.*)"
+        "imageName: (?<depName>\\S+):(?<currentValue>.*\\-.*)"
       ],
-      "datasourceTemplate": "custom.grafana-dashboards",
-      "versioningTemplate": "regex:^(?<major>\\d+)$"
+      "datasourceTemplate": "docker",
+      "versioningTemplate": "redhat"
     }
   ]
 }

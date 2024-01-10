@@ -2,12 +2,25 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "packageRules": [
     {
-      "description": "Auto merge GitHub Actions",
-      "matchManagers": ["github-actions"],
+      "description": "Auto-merge container digests updates for trusted containers",
+      "matchDatasources": ["docker"],
       "automerge": true,
       "automergeType": "branch",
-      "ignoreTests": true,
-      "matchUpdateTypes": ["minor", "patch", "digest"]
+      "matchUpdateTypes": ["digest"],
+      "matchPackagePatterns": [
+        "ghcr.io/bjw-s",
+        "ghcr.io/onedr0p",
+        "lucas-dclrcq/slskd-to-betanin-notifier",
+//        "lucas-dclrcq/homelabitty"
+      ]
+    },
+    {
+      "description": "Auto-merge GitHub Actions for minor and patch",
+      "matchManagers": ["github-actions"],
+      "matchDatasources": ["github-tags"],
+      "automerge": true,
+      "automergeType": "branch",
+      "matchUpdateTypes": ["minor", "patch"]
     }
   ]
 }

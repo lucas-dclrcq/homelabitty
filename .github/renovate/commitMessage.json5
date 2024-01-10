@@ -14,8 +14,7 @@
     },
     {
       "matchDatasources": ["custom.grafana-dashboards"],
-      "commitMessageTopic": "dashboard {{depName}}",
-      "commitMessageExtra": "to v{{newVersion}}"
+      "commitMessageTopic": "dashboard {{depName}}"
     }
   ]
 }
