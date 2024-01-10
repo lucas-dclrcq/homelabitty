@@ -12,4 +12,3 @@ resources:
   - ./zigbee2mqtt/ks.yaml
   - ./changedetection/ks.yaml
   - ./node-red/ks.yaml
-  - ./piped/ks.yaml
