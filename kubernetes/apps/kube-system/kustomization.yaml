@@ -12,3 +12,4 @@ resources:
   - ./descheduler/ks.yaml
   - ./node-feature-discovery/ks.yaml
   - ./system-upgrade-controller/ks.yaml
+  - ./spegel/ks.yaml
