@@ -1,0 +1,8 @@
+apiVersion: dbman.hef.sh/v1alpha1
+kind: DatabaseServer
+metadata:
+  name: apps
+  namespace: infrastructure
+spec:
+  conn_string: "host=apps.postgresql.lulice.lan"
+  superuser_secret: dbman-superuser-secret

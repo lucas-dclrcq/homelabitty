@@ -26,6 +26,9 @@ spec:
   uninstall:
     keepHistory: false
   values:
+    image:
+      repository: ghcr.io/hef/dbman
+      tag: 0.116.0
     env:
       - name: RUST_LOG
         value: info
