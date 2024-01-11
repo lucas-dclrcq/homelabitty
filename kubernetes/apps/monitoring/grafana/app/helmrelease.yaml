@@ -152,7 +152,7 @@ spec:
       infrastructure:
         redpanda:
           # renovate: depName="Redpanda Ops Dashboard"
-          gnetId: 28235
+          gnetId: 18135
           revision: 2
           datasource: Prometheus
         redis:
