@@ -42,3 +42,4 @@ resources:
   - ./cert-manager-webhook-ovh.yaml
   - ./piped.yaml
   - ./xenitab.yaml
+  - ./dbman.yaml

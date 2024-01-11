@@ -10,3 +10,4 @@ resources:
   - ./emqx/ks.yaml
   - ./influxdb/ks.yaml
   - ./telegraf/ks.yaml
+  - ./dbman/ks.yaml
