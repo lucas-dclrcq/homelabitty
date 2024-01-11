@@ -37,6 +37,8 @@ spec:
         allowCrossNamespace: true
       kubernetesIngress:
         allowExternalNameServices: true
+        publishedService:
+          enabled: true
 
     deployment:
       replicas: 1
