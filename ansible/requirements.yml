@@ -16,3 +16,6 @@ roles:
   - name: xanmanning.k3s
     src: https://github.com/PyratLabs/ansible-role-k3s.git
     version: v3.4.3
+  - name: geerlingguy.postgresql
+    version: master
+    src: https://github.com/geerlingguy/ansible-role-postgresql.git
