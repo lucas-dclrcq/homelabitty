@@ -9,3 +9,7 @@
       ansible.builtin.include_role:
         name: geerlingguy.postgresql
         public: true
+    - name: Install Node Exporter
+      ansible.builtin.include_role:
+        name: prometheus.prometheus.node_exporter
+        public: true

@@ -10,6 +10,8 @@ collections:
     version: 3.0.0
   - name: kubernetes.core
     version: 3.0.0
+  - name: prometheus.prometheus
+    version: 0.10.1
 roles:
   - name: githubixx.cilium_cli
     version: 2.7.0+0.15.8

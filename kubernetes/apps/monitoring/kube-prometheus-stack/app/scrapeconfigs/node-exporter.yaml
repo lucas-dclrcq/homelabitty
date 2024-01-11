@@ -8,4 +8,5 @@ spec:
   staticConfigs:
     - targets:
         - nas.lulice.lan:9100
+        - apps.postgresql.lulice.lan:9100
   metricsPath: /metrics
