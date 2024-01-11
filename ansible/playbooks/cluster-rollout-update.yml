@@ -43,8 +43,6 @@
               ignore_daemonsets: true
               terminate_grace_period: 600
               wait_timeout: 900
-            pod_selectors:
-              - app!=rook-ceph-osd
           delegate_to: "{{ groups['master'][0] }}"
 
         - name: Update
