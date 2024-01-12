@@ -2,8 +2,8 @@
 apiVersion: dbman.hef.sh/v1alpha2
 kind: Database
 metadata:
-  name: db1
-  namespace: database
+  name: firefly-iii
+  namespace: default
 spec:
   credentials_secret: firefly-iii-secret
   database_name: firefly_iii
