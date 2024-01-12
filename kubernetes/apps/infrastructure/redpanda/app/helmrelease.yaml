@@ -29,11 +29,14 @@ spec:
   values:
     tls:
       enabled: false
+
     storage:
       persistentVolume:
         storageClass: local-path
+
     monitoring:
       enabled: true
+
     external:
       enabled: true
       domain: "k8s.${INTERNAL_DOMAIN}"
@@ -41,6 +44,7 @@ spec:
         - worker1
         - worker4
         - worker3
+
     console:
       enabled: true
       config:
