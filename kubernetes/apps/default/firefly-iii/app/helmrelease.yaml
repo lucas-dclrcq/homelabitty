@@ -1,0 +1,116 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2beta2.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: firefly-iii
+  namespace: default
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: app-template
+      version: 2.4.0
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+      interval: 15m
+  install:
+    remediation:
+      retries: 5
+  upgrade:
+    remediation:
+      retries: 5
+
+  values:
+    controllers:
+      main:
+        containers:
+          main:
+            image:
+              repository: fireflyiii/core
+              tag: version-6.1.6
+
+            resources:
+              requests:
+                cpu: 15m
+                memory: 164Mi
+              limits:
+                memory: 175Mi
+
+            envFrom:
+              - secretRef:
+                  name: firefly-iii-secret
+
+            env:
+              DB_CONNECTION: pgsql
+              DB_HOST: "apps.postgresql.lulice.lan"
+              DB_PORT: "5432"
+              DB_DATABASE: "firefly_iii"
+              DB_USERNAME:
+                valueFrom:
+                  secretKeyRef:
+                    name: firefly-iii-secret
+                    key: username
+              DB_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: firefly-iii-secret
+                    key: password
+
+          cronjob:
+            image:
+              repository: alpine
+              tag: 3.19.0
+            imagePullPolicy: IfNotPresent
+            command:
+              - sh
+            args:
+              - -c
+              - >-
+                echo "0 */3 * * * wget -qO- http://firefly-iii:8080/api/v1/cron/$(STATIC_CRON_TOKEN)"
+                | crontab -
+                && crond -f -L /dev/stdout
+            env:
+              - name: STATIC_CRON_TOKEN
+                valueFrom:
+                  secretKeyRef:
+                    name: firefly-iii-secret
+                    key: STATIC_CRON_TOKEN
+
+    service:
+      main:
+        ports:
+          http:
+            port: 8080
+
+    ingress:
+      main:
+        enabled: true
+        primary: true
+        className: "ingress-traefik"
+        annotations:
+          external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
+        hosts:
+          - host: &host "firefly.${SECRET_DOMAIN}"
+            paths:
+              - path: /
+                pathType: Prefix
+                service:
+                  name: main
+                  port: http
+        tls:
+          - hosts:
+              - *host
+
+    persistence:
+      data:
+        enabled: true
+        size: 1Gi
+        storageClass: longhorn
+        accessMode: ReadWriteOnce
+        advancedMounts:
+          main:
+            main:
+              - path: /var/www/html/firefly-iii/storage/upload
