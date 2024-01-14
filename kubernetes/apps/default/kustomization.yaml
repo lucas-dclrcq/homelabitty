@@ -13,3 +13,4 @@ resources:
   - ./changedetection/ks.yaml
   - ./node-red/ks.yaml
   - ./firefly-iii/ks.yaml
+  - ./atuin/ks.yaml
