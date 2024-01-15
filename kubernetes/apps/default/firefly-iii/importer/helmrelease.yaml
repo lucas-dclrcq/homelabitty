@@ -37,8 +37,8 @@ spec:
         containers:
           main:
             image:
-              repository: registry.samipsolutions.fi/docker/fireflyiii/data-importer
-              tag: version-1.3.12
+              repository: fireflyiii/data-importer
+              tag: version-1.4.1
 
             env:
               FIREFLY_III_URL: "http://firefly-iii.default.svc.cluster.local:8080"
@@ -65,6 +65,7 @@ spec:
         annotations:
           hajimari.io/enable: "true"
           hajimari.io/icon: "foundation:page-export-csv"
+          traefik.ingress.kubernetes.io/router.middlewares: "networking-sso@kubernetescrd"
         hosts:
           - host: &host "firefly-importer.${SECRET_DOMAIN}"
             paths:
