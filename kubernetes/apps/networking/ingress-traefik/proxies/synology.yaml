@@ -4,7 +4,7 @@ kind: Ingress
 metadata:
   annotations:
     ingress.kubernetes.io/preserve-host: "true"
-    traefik.ingress.kubernetes.io/router.middlewares: "networking-lan-only@kubernetescrd"
+    external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
     hajimari.io/group: "homelab"
   name: synology
   namespace: networking
