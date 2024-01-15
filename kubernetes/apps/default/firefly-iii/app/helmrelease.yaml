@@ -26,6 +26,10 @@ spec:
   values:
     controllers:
       main:
+        pod:
+          annotations:
+            reloader.stakater.com/auto: "true"
+
         containers:
           main:
             image:
