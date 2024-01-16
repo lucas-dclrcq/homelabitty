@@ -11,5 +11,3 @@ resources:
   - ./loki/ks.yaml
   - ./vector/ks.yaml
   - ./node-problem-detector/ks.yaml
-  - ./node-exporter/ks.yaml
-  - ./kube-state-metrics/ks.yaml
