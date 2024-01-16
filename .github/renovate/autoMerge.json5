@@ -16,12 +16,11 @@
     {
       "description": "Auto-merge renovate except for major",
       "matchDatasources": ["docker"],
-      "automerge": true,
-      "automergeType": "branch",
-      "matchUpdateTypes": ["digest", "patch", "minor"],
+      "matchUpdateTypes": ["digest", "patch"],
       "matchPackagePatterns": [
         "renovate/renovate"
-      ]
+      ],
+      "enabled": false
     },
     {
       "description": "Auto-merge GitHub Actions for minor and patch",
