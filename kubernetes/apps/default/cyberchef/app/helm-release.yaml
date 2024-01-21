@@ -25,8 +25,8 @@ spec:
       strategy: RollingUpdate
 
     image:
-      repository: docker.io/mpepping/cyberchef
-      tag: v10.5.2
+      repository: ghcr.io/lucas-dclrcq/cyberchef
+      tag: v10.5.2@sha256:dcb5175c36f78e222ec7cac0838e10df65a1cfb2ad7d67b4f914d24ddb97a5ed
 
     env:
       TZ: ${TIMEZONE}
