@@ -30,6 +30,9 @@ spec:
       namespace: kube-system
 
   values:
+    image:
+      repository: ghcr.io/lucas-dclrcq/emqx
+
     emqxConfig:
       EMQX_ALLOW_ANONYMOUS: "false"
       EMQX_AUTH__MNESIA__PASSWORD_HASH: plain
