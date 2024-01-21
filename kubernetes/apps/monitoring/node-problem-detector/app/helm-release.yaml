@@ -28,8 +28,8 @@ spec:
     keepHistory: false
   values:
     image:
-      repository: docker.io/opsdockerimage/node-problem-detector-node-problem-detector
-      tag: v0.8.14@sha256:76da9ce953a0d50e9e14fa29acdc44852a828710c49af6df04ee131cf3c0c7e2
+      repository: registry.k8s.io/node-problem-detector/node-problem-detector
+      tag: v0.8.14
     metrics:
       enabled: true
       serviceMonitor:
