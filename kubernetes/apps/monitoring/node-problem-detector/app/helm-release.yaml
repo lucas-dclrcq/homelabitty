@@ -29,7 +29,7 @@ spec:
   values:
     image:
       repository: ghcr.io/lucas-dclrcq/node-problem-detector
-      tag: v0.8.14@sha256:2a557413b146518e768982583ca5997b25800a2ec8c5f44f98272c5d7fd46301
+      tag: v0.8.15@sha256:e941835e7cc7eadfa6907f945e0134a4e772fce205940b6aa88244bb5715cff0
     metrics:
       enabled: true
       serviceMonitor:
