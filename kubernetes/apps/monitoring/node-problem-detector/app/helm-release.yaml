@@ -28,8 +28,8 @@ spec:
     keepHistory: false
   values:
     image:
-      repository: registry.k8s.io/node-problem-detector/node-problem-detector
-      tag: v0.8.14
+      repository: ghcr.io/lucas-dclrcq/node-problem-detector
+      tag: v0.8.14@sha256:2a557413b146518e768982583ca5997b25800a2ec8c5f44f98272c5d7fd46301
     metrics:
       enabled: true
       serviceMonitor:
