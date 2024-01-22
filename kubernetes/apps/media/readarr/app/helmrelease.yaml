@@ -17,12 +17,14 @@ spec:
         namespace: flux-system
 
   values:
+    controller:
+      type: statefulset
+      annotations:
+        reloader.stakater.com/auto: "true"
+
     image:
       repository: linuxserver/readarr
       tag: 0.3.15-develop@sha256:82b18ca8dc2a399d056d977fe4d02e854851427cf5afb5b941ec1ecaf0369a8b
-
-    podAnnotations:
-      secret.reloader.stakater.com/reload: readarr
 
     env:
       READARR__INSTANCE_NAME: Readarr
