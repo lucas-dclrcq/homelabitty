@@ -44,8 +44,8 @@ spec:
       strategy: RollingUpdate
 
     image:
-      repository: ghcr.io/kitos9112/traefik-forward-auth
-      tag: v2.6.6
+      repository: ghcr.io/jordemort/traefik-forward-auth
+      tag: latest@sha256:4be71afba0d0136734efd212d8f6d5c568a5ae530764719313ae9ee2698af8f8
 
     env:
       AUTH_HOST: &host "forward.${SECRET_DOMAIN}"
