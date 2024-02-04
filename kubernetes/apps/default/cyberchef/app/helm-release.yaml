@@ -26,7 +26,7 @@ spec:
 
     image:
       repository: ghcr.io/lucas-dclrcq/cyberchef
-      tag: v10.5.2@sha256:dcb5175c36f78e222ec7cac0838e10df65a1cfb2ad7d67b4f914d24ddb97a5ed
+      tag: v10.6.0@sha256:9169e7da58ae26bfc49b19af192a3071468ad9a40c1dc6876b017604d58fa3b4
 
     env:
       TZ: ${TIMEZONE}
