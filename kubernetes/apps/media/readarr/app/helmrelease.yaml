@@ -24,7 +24,7 @@ spec:
 
     image:
       repository: linuxserver/readarr
-      tag: 0.3.17-develop@sha256:25d29da0919e2d3aa8f17d8c1c687e7e11971eade7b4be70221841acc8de2cbd
+      tag: 0.3.18-develop@sha256:565d0eed52c1899dbaa5e6a62e193aca8af60d0509d7ca6d65219c97b7c335c7
 
     env:
       READARR__INSTANCE_NAME: Readarr
