@@ -95,6 +95,8 @@ spec:
       main:
         enabled: true
         className: "ingress-traefik"
+        annotations:
+          external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
         hosts:
           - host: &host "atuin.${SECRET_DOMAIN}"
             paths:
