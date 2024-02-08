@@ -28,7 +28,7 @@ spec:
 
     image:
       repository: awesometechnologies/synapse-admin
-      tag: 0.8.7
+      tag: 0.9.1
 
     service:
       main:
