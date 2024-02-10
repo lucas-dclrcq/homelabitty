@@ -11,6 +11,5 @@ resources:
   - ./homeassistant/ks.yaml
   - ./zigbee2mqtt/ks.yaml
   - ./changedetection/ks.yaml
-  - ./node-red/ks.yaml
   - ./firefly-iii/ks.yaml
   - ./atuin/ks.yaml
