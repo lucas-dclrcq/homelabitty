@@ -1,1 +1,1 @@
-FROM docker.io/mpepping/cyberchef:v10.6.0
+FROM docker.io/mpepping/cyberchef:v10.7.0
