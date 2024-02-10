@@ -28,7 +28,7 @@ spec:
   values:
     image:
       repository: ghcr.io/hef/dbman
-      tag: 0.122.1
+      tag: 0.123.1
     env:
       - name: RUST_LOG
         value: info
