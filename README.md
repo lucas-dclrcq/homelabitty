@@ -14,7 +14,7 @@ _... managed with Flux, Renovate, and GitHub Actions_ 🤖
 
 1. Setup talos nodes: `task talos:bootstrap`
 2. Push private key: `task flux:github-deploy-key`
-3. Setup Flux : `flux:bootstrap`
+3. Setup Flux : `task flux:bootstrap`
 
 ## 🔧 Hardware
 
