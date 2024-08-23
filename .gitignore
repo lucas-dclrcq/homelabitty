@@ -20,6 +20,7 @@ talosconfig
 Brewfile.lock.json
 # intellij
 .idea
+.idea/**
 # wiki
 wiki
 # Bootstrap

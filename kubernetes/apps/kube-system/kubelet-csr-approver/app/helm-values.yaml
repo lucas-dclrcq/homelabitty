@@ -1,0 +1,3 @@
+---
+providerRegex: ^(fitz|nighteyes|chade)$
+bypassDnsResolution: true

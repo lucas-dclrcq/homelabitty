@@ -1,0 +1,20 @@
+---
+machine:
+  customization:
+    systemExtensions:
+      officialExtensions:
+        - siderolabs/iscsi-tools
+        - siderolabs/util-linux-tools
+  kubelet:
+    extraMounts:
+      - destination: /var/lib/longhorn
+        type: bind
+        source: /var/lib/longhorn
+        options:
+          - bind
+          - rshared
+          - rw
+  disks:
+    - device: /dev/sdb
+      partitions:
+        - mountpoint: /var/lib/longhorn

@@ -10,17 +10,19 @@ _... managed with Flux, Renovate, and GitHub Actions_ 🤖
 
 </div>
 
+## 🚀 Bootstrap
 
-## Overview
-
+1. Setup talos nodes: `task talos:bootstrap`
+2. Push private key: `task flux:github-deploy-key`
+3. Setup Flux : `flux:bootstrap`
 
 ## 🔧 Hardware
 
 | Name      | Device                   | CPU       | OS Disk    | Data Disk(s) | RAM  | OS          | Purpose           |
-|-----------| ------------------------ | --------- | ---------- | ------------ | ---- | ----------- | ----------------- |
-| Fitz      | Dell Optiplex 3080 Micro | i5-10500T | 256GB SSD  | 1TB SSD      | 32GB | Talos       | K8S Control Plane |
+|-----------| ------------------------ | --------- |------------| ------------ | ---- | ----------- | ----------------- |
+| Fitz      | Dell Optiplex 3080 Micro | i5-10500T | 256GB NVMe | 1TB SSD      | 32GB | Talos       | K8S Control Plane |
 | Nighteyes | Dell Optiplex 3080 Micro | i7-10700T | 256GB NVMe | 1TB SSD      | 32GB | Talos       | K8S Control Plane |
-| Chade     | Dell Optiplex 3080 Micro | i5-10500T | 256GB NVME | 1TB SSD      | 32GB | Talos       | K8S Control Plane |
+| Chade     | Dell Optiplex 3080 Micro | i5-10500T | 256GB NVMe | 1TB SSD      | 32GB | Talos       | K8S Control Plane |
 | NAS       | Synology DS1520          |           |            | 5*4TB        | 8GB  | Synology OS | NAS (NFS/Backup)  |
 | MOX       | Turris MOX               |           | 32GB       | N/A          | 1GB  | Turris OS   | Router            |
 

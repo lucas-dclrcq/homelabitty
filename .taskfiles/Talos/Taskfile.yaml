@@ -13,7 +13,16 @@ env:
   TALOSCONFIG: "{{.TALOSCONFIG_FILE}}"
 
 tasks:
-
+  generate:
+    desc: Generate Talos config files
+    dir: "{{.KUBERNETES_DIR}}/bootstrap/talos"
+    cmds:
+      - |
+        if [ ! -f "{{.TALHELPER_SECRET_FILE}}" ]; then
+            talhelper gensecret > {{.TALHELPER_SECRET_FILE}}
+            sops --encrypt --in-place {{.TALHELPER_SECRET_FILE}}
+        fi
+      - talhelper genconfig --config-file {{.TALHELPER_CONFIG_FILE}} --secret-file {{.TALHELPER_SECRET_FILE}} --out-dir {{.TALHELPER_CLUSTER_DIR}}
   bootstrap:
     desc: Bootstrap the Talos cluster
     dir: "{{.KUBERNETES_DIR}}/bootstrap/talos"
