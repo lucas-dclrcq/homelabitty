@@ -9,4 +9,3 @@ resources:
   - ./reloader/ks.yaml
   - ./kubelet-csr-approver/ks.yaml
   - ./spegel/ks.yaml
-  - ./bitwarden-operator/ks.yaml
