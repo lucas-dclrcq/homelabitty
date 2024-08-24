@@ -15,3 +15,4 @@ resources:
   - ./stakater.yaml
   - ./ingress-nginx.yaml
   - ./external-dns.yaml
+  - ./hashicorp.yaml
