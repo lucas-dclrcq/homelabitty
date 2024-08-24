@@ -17,3 +17,4 @@ resources:
   - ./external-dns.yaml
   - ./hashicorp.yaml
   - ./rook-ceph.yaml
+  - ./grafana.yaml
