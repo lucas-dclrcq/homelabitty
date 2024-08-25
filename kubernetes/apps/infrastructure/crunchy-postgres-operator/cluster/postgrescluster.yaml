@@ -94,3 +94,17 @@ spec:
             matchLabels:
               postgres-operator.crunchydata.com/cluster: *name
               postgres-operator.crunchydata.com/role: "pgbouncer"
+
+  backups:
+    pgbackrest:
+      image: registry.developers.crunchydata.com/crunchydata/crunchy-pgbackrest:ubi8-2.51-1
+      repos:
+        - name: repo1
+          volume:
+            volumeClaimSpec:
+              storageClassName: ceph-filesystem
+              accessModes:
+                - "ReadWriteOnce"
+              resources:
+                requests:
+                  storage: 1Gi
