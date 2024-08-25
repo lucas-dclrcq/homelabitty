@@ -35,7 +35,7 @@ spec:
 
     image:
       repository: ghcr.io/cocogitto/cocogitto-bot
-      tag: latest@sha256:f2d206f99054e5a6b53def6f57ec2e248ba7eb230660ba020e1f3c050ec6c7fd
+      tag: latest@sha256:26d55e13e7080096801d836dc39b8bc00a84427a1237756b6b0d088124329bfe
 
     env:
       NO_COLOR: true
