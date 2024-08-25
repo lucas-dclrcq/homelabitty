@@ -19,3 +19,4 @@ resources:
   - ./rook-ceph.yaml
   - ./grafana.yaml
   - ./crunchydata.yaml
+  - ./kyverno.yaml

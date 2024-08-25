@@ -16,7 +16,6 @@ spec:
     type: LoadBalancer
     metadata:
       annotations:
-        external-dns.alpha.kubernetes.io/hostname: "postgres.${SECRET_DOMAIN}"
         io.cilium/lb-ipam-ips: 192.168.1.32
 
   patroni: # turn on sync writes to at least 1 other replica
