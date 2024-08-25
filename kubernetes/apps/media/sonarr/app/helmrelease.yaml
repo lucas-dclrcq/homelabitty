@@ -1,0 +1,125 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: sonarr
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.3.2
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  dependsOn:
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+  values:
+    controllers:
+      sonarr:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/onedr0p/sonarr-develop
+              tag: 4.0.8.2223@sha256:f4d8a1203d2f0cf4f1ab69b9682896ef1e73eaf04021edb4ce2a479af961e420
+            env:
+              SONARR__APP__INSTANCENAME: Sonarr
+              SONARR__AUTH__METHOD: External
+              SONARR__AUTH__REQUIRED: DisabledForLocalAddresses
+              SONARR__LOG__DBENABLED: "False"
+              SONARR__LOG__LEVEL: info
+              SONARR__SERVER__PORT: &port 80
+              SONARR__UPDATE__BRANCH: develop
+              TZ: "${TIMEZONE}"
+              SONARR__POSTGRES__HOST: "postgres-pgbouncer.infrastructure.svc.cluster.local"
+              SONARR__POSTGRES__PORT: "5432"
+              SONARR__POSTGRES__MAINDB: "sonarr_main"
+              SONARR__POSTGRES__PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: postgres-pguser-sonarr
+                    key: password
+              SONARR__POSTGRES__USER:
+                valueFrom:
+                  secretKeyRef:
+                    name: postgres-pguser-sonarr
+                    key: user
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /ping
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+
+            resources:
+              requests:
+                cpu: 100m
+              limits:
+                memory: 4Gi
+
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1026
+        runAsGroup: 100
+        fsGroup: 100
+        fsGroupChangePolicy: OnRootMismatch
+        supplementalGroups: [10000]
+        seccompProfile: { type: RuntimeDefault }
+
+    service:
+      app:
+        controller: sonarr
+        ports:
+          http:
+            port: *port
+
+    ingress:
+      app:
+        annotations:
+          external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
+        className: external
+        hosts:
+          - host: "{{ .Release.Name }}.${SECRET_DOMAIN}"
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: http
+
+    persistence:
+      config:
+        existingClaim: sonarr
+      tmp:
+        type: emptyDir
+      media:
+        type: nfs
+        server: "nas.${INTERNAL_DOMAIN}"
+        path: /volume1/Media
+        globalMounts:
+          - path: /media

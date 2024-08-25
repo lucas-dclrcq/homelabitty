@@ -71,6 +71,7 @@ spec:
       databases: ["sonarr_main"]
       password:
         type: AlphaNumeric
+
   monitoring:
     pgmonitor:
       exporter:
