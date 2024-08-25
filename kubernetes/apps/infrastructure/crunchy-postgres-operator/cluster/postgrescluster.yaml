@@ -51,19 +51,26 @@ spec:
 
   users:
     # Superuser
-    - name: postgres
+    - name: "postgres"
       databases:
-        - postgres
+        - "postgres"
       options: "SUPERUSER"
       password:
         type: AlphaNumeric
     # Applications
-    - name: prowlarr
+    - name: "prowlarr"
       databases:
-        - prowlarr
+        - "prowlarr_main"
       password:
         type: AlphaNumeric
-
+    - name: "radarr"
+      databases: ["radarr_main"]
+      password:
+        type: AlphaNumeric
+    - name: "sonarr"
+      databases: ["sonarr_main"]
+      password:
+        type: AlphaNumeric
   monitoring:
     pgmonitor:
       exporter:
