@@ -21,3 +21,4 @@ resources:
   - ./crunchydata.yaml
   - ./kyverno.yaml
   - ./emberstack.yaml
+  - ./userinit-controller.yaml
