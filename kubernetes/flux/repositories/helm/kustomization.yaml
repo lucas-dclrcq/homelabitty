@@ -20,3 +20,4 @@ resources:
   - ./grafana.yaml
   - ./crunchydata.yaml
   - ./kyverno.yaml
+  - ./emberstack.yaml
