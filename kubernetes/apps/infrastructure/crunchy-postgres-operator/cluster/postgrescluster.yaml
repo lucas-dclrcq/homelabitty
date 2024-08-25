@@ -1,0 +1,96 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/postgres-operator.crunchydata.com/postgrescluster_v1beta1.json
+apiVersion: postgres-operator.crunchydata.com/v1beta1
+kind: PostgresCluster
+metadata:
+  name: &name postgres
+spec:
+  postgresVersion: 16
+
+  metadata:
+    labels:
+      crunchy-userinit.ramblurr.github.com/enabled: "true"
+      crunchy-userinit.ramblurr.github.com/superuser: "postgres"
+
+  service:
+    type: LoadBalancer
+    metadata:
+      annotations:
+        external-dns.alpha.kubernetes.io/hostname: "postgres.${SECRET_DOMAIN}"
+        io.cilium/lb-ipam-ips: 192.168.1.32
+
+  patroni: # turn on sync writes to at least 1 other replica
+    dynamicConfiguration:
+      synchronous_mode: true
+      postgresql:
+        max_wal_size: 5GB
+        synchronous_commit: "on"
+        pg_hba:
+          - hostssl all all all md5
+
+  instances:
+    - name: postgres
+      metadata:
+        labels:
+          app.kubernetes.io/name: crunchy-postgres
+      replicas: &replica 3
+      dataVolumeClaimSpec:
+        storageClassName: openebs-hostpath
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 20Gi
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: "kubernetes.io/hostname"
+          whenUnsatisfiable: "DoNotSchedule"
+          labelSelector:
+            matchLabels:
+              postgres-operator.crunchydata.com/cluster: *name
+              postgres-operator.crunchydata.com/data: postgres
+
+  users:
+    # Superuser
+    - name: postgres
+      databases:
+        - postgres
+      options: "SUPERUSER"
+      password:
+        type: AlphaNumeric
+    # Applications
+    - name: prowlarr
+      databases:
+        - prowlarr
+      password:
+        type: AlphaNumeric
+
+  monitoring:
+    pgmonitor:
+      exporter:
+        resources:
+          requests:
+            cpu: 10m
+            memory: 64M
+          limits:
+            memory: 512M
+
+  proxy:
+    pgBouncer:
+      port: 5432
+      replicas: *replica
+      metadata:
+        labels:
+          app.kubernetes.io/name: crunchy-postgres-pgbouncer
+      config:
+        global:
+          pool_mode: "transaction" # pgBouncer is set to transaction for Authentik. Grafana requires session https://github.com/grafana/grafana/issues/74260#issuecomment-1702795311. Everything else is happy with transaction
+          client_tls_sslmode: prefer
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: "kubernetes.io/hostname"
+          whenUnsatisfiable: "DoNotSchedule"
+          labelSelector:
+            matchLabels:
+              postgres-operator.crunchydata.com/cluster: *name
+              postgres-operator.crunchydata.com/role: "pgbouncer"
