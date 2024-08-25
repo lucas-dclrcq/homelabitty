@@ -18,3 +18,4 @@ resources:
   - ./hashicorp.yaml
   - ./rook-ceph.yaml
   - ./grafana.yaml
+  - ./crunchydata.yaml
