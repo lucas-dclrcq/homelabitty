@@ -25,3 +25,4 @@ resources:
   - ./k8s-gateway.yaml
   - ./piraeus.yaml
   - ./backube.yaml
+  - ./node-feature-discovery.yaml

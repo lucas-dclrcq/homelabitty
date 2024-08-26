@@ -10,3 +10,4 @@ resources:
   - ./kubelet-csr-approver/ks.yaml
   - ./spegel/ks.yaml
   - ./reflector/ks.yaml
+  - ./node-feature-discovery/ks.yaml
