@@ -5,3 +5,4 @@ metadata:
   name: infrastructure
   labels:
     kustomize.toolkit.fluxcd.io/prune: disabled
+    volsync.backube/privileged-movers: "true"
