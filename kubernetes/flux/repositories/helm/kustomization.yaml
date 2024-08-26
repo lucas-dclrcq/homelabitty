@@ -23,3 +23,5 @@ resources:
   - ./emberstack.yaml
   - ./userinit-controller.yaml
   - ./k8s-gateway.yaml
+  - ./piraeus.yaml
+  - ./backube.yaml
