@@ -86,11 +86,6 @@ spec:
               path: /var/lib/grafana/dashboards/default
     dashboards:
       default:
-        apc-ups:
-          # renovate: depName="APC UPS (SNMP)"
-          gnetId: 12340
-          revision: 1
-          datasource: Prometheus
         ceph-cluster:
           # renovate: depName="Ceph Cluster"
           gnetId: 2842
@@ -222,9 +217,7 @@ spec:
       enabled: true
     ingress:
       enabled: true
-      annotations:
-        external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
-      ingressClassName: external
+      ingressClassName: internal
       hosts: ["grafana.${SECRET_DOMAIN}"]
     persistence:
       enabled: false

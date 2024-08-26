@@ -34,9 +34,7 @@ spec:
       createPrometheusRules: true
     ingress:
       dashboard:
-        annotations:
-          external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
-        ingressClassName: external
+        ingressClassName: internal
         host:
           name: "rook.${SECRET_DOMAIN}"
           path: /
@@ -219,10 +217,9 @@ spec:
         ingress:
           enabled: true
           annotations:
-            external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
             nginx.ingress.kubernetes.io/proxy-body-size: "0"
             nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
-          ingressClassName: external
+          ingressClassName: internal
           host:
             name: "rgw.${SECRET_DOMAIN}"
             path: /
