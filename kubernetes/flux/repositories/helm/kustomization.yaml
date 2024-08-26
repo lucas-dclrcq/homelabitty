@@ -27,3 +27,4 @@ resources:
   - ./backube.yaml
   - ./node-feature-discovery.yaml
   - ./emqx.yaml
+  - ./bank-vaults.yaml
