@@ -1,8 +1,0 @@
----
-endpoints:
-  - name: radarr
-    group: oauth
-    url: "https://miniflux.${SECRET_DOMAIN}"
-    interval: 1m
-    conditions:
-      - "[STATUS] == 307"
