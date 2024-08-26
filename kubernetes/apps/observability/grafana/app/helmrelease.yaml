@@ -172,6 +172,11 @@ spec:
           gnetId: 19105
           revision: 3
           datasource: Prometheus
+        vault:
+          # renovate: depName="Hashicorp Vault"
+          gnetId: 12904
+          revision: 2
+          datasource: Prometheus
         crunchy-pgbackrest: #https://github.com/CrunchyData/postgres-operator-examples/issues/264
           url: https://raw.githubusercontent.com/CrunchyData/postgres-operator-examples/main/kustomize/monitoring/grafana/dashboards/pgbackrest.json
           datasource: Prometheus
