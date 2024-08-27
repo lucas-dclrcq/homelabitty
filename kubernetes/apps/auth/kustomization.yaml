@@ -4,3 +4,4 @@ kind: Kustomization
 resources:
   - ./namespace.yaml
   - ./keycloak/ks.yaml
+  - ./openldap/ks.yaml

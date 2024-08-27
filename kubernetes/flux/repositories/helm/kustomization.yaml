@@ -30,3 +30,4 @@ resources:
   - ./bank-vaults.yaml
   - ./external-secrets.yaml
   - ./codecentric.yaml
+  - ./jpgouin.yaml
