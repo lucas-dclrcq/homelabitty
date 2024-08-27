@@ -28,4 +28,4 @@ resources:
   - ./node-feature-discovery.yaml
   - ./emqx.yaml
   - ./bank-vaults.yaml
-  - ./ricoberger-charts.yaml
+  - ./external-secrets.yaml
