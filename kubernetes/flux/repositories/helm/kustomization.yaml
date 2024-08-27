@@ -29,3 +29,4 @@ resources:
   - ./emqx.yaml
   - ./bank-vaults.yaml
   - ./external-secrets.yaml
+  - ./codecentric.yaml

@@ -71,6 +71,10 @@ spec:
       databases: ["sonarr_main"]
       password:
         type: AlphaNumeric
+    - name: "keycloak"
+      databases: ["keycloak"]
+      password:
+        type: AlphaNumeric
 
   monitoring:
     pgmonitor:
