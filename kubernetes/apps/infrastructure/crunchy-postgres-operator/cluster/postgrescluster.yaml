@@ -79,6 +79,7 @@ spec:
       databases: ["miniflux"]
       password:
         type: AlphaNumeric
+
   monitoring:
     pgmonitor:
       exporter:
