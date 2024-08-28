@@ -75,7 +75,10 @@ spec:
       databases: ["keycloak"]
       password:
         type: AlphaNumeric
-
+    - name: "miniflux"
+      databases: ["miniflux"]
+      password:
+        type: AlphaNumeric
   monitoring:
     pgmonitor:
       exporter:
