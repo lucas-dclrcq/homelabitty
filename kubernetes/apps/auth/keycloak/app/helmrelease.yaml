@@ -66,7 +66,8 @@ spec:
 
     database:
       vendor: "postgres"
-      hostname: "postgres-pgbouncer.infrastructure.svc.cluster.local"
+      # Cannot use pgbouncer svc here, Keycloak doesn't support it
+      hostname: "postgres-primary.infrastructure.svc.cluster.local"
       port: "5432"
       database: "keycloak"
       user: "keycloak"
