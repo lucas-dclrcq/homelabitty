@@ -8,3 +8,4 @@ resources:
   - ./grafana/ks.yaml
   - ./loki/ks.yaml
   - ./promtail/ks.yaml
+  - ./kromgo/ks.yaml
