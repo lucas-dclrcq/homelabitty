@@ -64,8 +64,8 @@ spec:
               ZIGBEE2MQTT_CONFIG_MQTT_SERVER: mqtt://emqx-listeners.database.svc.cluster.local:1883
               ZIGBEE2MQTT_CONFIG_MQTT_VERSION: 5
               ZIGBEE2MQTT_CONFIG_PERMIT_JOIN: "false"
-              ZIGBEE2MQTT_CONFIG_SERIAL_PORT: &serial-port /dev/ttyACM0
-              ZIGBEE2MQTT_CONFIG_SERIAL_ADAPTER: ezsp
+              ZIGBEE2MQTT_CONFIG_SERIAL_PORT: &usb-device /dev/ttyACM0
+              ZIGBEE2MQTT_CONFIG_SERIAL_ADAPTER: ember
 
             envFrom:
               - secretRef:
@@ -83,9 +83,7 @@ spec:
                   periodSeconds: 10
 
             securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
+              privileged: true
 
             resources:
               requests:
@@ -95,13 +93,8 @@ spec:
 
 
     defaultPodOptions:
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 1026
-        runAsGroup: 100
-        fsGroup: 100
-        fsGroupChangePolicy: OnRootMismatch
-        seccompProfile: { type: RuntimeDefault }
+      nodeSelector:
+        zigbee.feature.node.kubernetes.io/adapter: "true"
 
     service:
       app:
@@ -128,5 +121,6 @@ spec:
         enabled: true
         type: hostPath
         hostPath: /dev/serial/by-id/usb-ITEAD_SONOFF_Zigbee_3.0_USB_Dongle_Plus_V2_20230829135617-if00
-        mountPath: *serial-port
         hostPathType: CharDevice
+        globalMounts:
+          - path: *usb-device
