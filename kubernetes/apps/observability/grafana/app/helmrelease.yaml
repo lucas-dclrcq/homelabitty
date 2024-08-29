@@ -58,13 +58,13 @@ spec:
             jsonData:
               timeInterval: 1m
             isDefault: true
-#          - name: Loki
-#            type: loki
-#            uid: loki
-#            access: proxy
-#            url: http://loki-headless.observability.svc.cluster.local:3100
-#            jsonData:
-#              maxLines: 250
+          - name: Loki
+            type: loki
+            uid: loki
+            access: proxy
+            url: http://loki-headless.observability.svc.cluster.local:3100
+            jsonData:
+              maxLines: 250
           - name: Alertmanager
             type: alertmanager
             uid: alertmanager
