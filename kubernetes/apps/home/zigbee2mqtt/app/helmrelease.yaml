@@ -64,9 +64,13 @@ spec:
               ZIGBEE2MQTT_CONFIG_MQTT_SERVER: mqtt://emqx-listeners.database.svc.cluster.local:1883
               ZIGBEE2MQTT_CONFIG_MQTT_VERSION: 5
               ZIGBEE2MQTT_CONFIG_PERMIT_JOIN: "false"
+              ZIGBEE2MQTT_CONFIG_SERIAL_PORT: &serial-port /dev/ttyACM0
+              ZIGBEE2MQTT_CONFIG_SERIAL_ADAPTER: ezsp
+
             envFrom:
               - secretRef:
                   name: zigbee2mqtt-secret
+
             probes:
               liveness:
                 enabled: true
@@ -77,15 +81,18 @@ spec:
                 spec:
                   failureThreshold: 30
                   periodSeconds: 10
+
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
+
             resources:
               requests:
                 cpu: 10m
               limits:
                 memory: 1Gi
+
 
     defaultPodOptions:
       securityContext:
@@ -117,3 +124,9 @@ spec:
     persistence:
       config:
         existingClaim: zigbee2mqtt
+      usb:
+        enabled: true
+        type: hostPath
+        hostPath: /dev/serial/by-id/usb-ITEAD_SONOFF_Zigbee_3.0_USB_Dongle_Plus_V2_20230829135617-if00
+        mountPath: *serial-port
+        hostPathType: CharDevice
