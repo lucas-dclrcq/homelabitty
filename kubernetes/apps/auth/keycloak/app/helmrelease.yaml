@@ -71,5 +71,5 @@ spec:
       port: "5432"
       database: "keycloak"
       user: "keycloak"
-      existingSecret: "postgres-pguser-keycloak"
-      existingSecretKey: "password"
+      existingSecret: "keycloak-db-secret"
+      existingSecretKey: "KEYCLOAK_DB_PASSWORD"

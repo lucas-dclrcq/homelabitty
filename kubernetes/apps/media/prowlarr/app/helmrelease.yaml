@@ -44,16 +44,13 @@ spec:
               PROWLARR__SERVER__PORT: &port 80
               PROWLARR__UPDATE__BRANCH: develop
               TZ: "${TIMEZONE}"
-              PROWLARR__POSTGRES__PASSWORD:
-                valueFrom:
-                  secretKeyRef:
-                    name: postgres-pguser-prowlarr
-                    key: password
-              PROWLARR__POSTGRES__USER:
-                valueFrom:
-                  secretKeyRef:
-                    name: postgres-pguser-prowlarr
-                    key: user
+
+            envFrom:
+              - secretRef:
+                  name: prowlarr-secret
+              - secretRef:
+                  name: prowlarr-db-secret
+
             probes:
               liveness: &probes
                 enabled: true

@@ -47,16 +47,13 @@ spec:
               SONARR__POSTGRES__HOST: "postgres-pgbouncer.infrastructure.svc.cluster.local"
               SONARR__POSTGRES__PORT: "5432"
               SONARR__POSTGRES__MAINDB: "sonarr_main"
-              SONARR__POSTGRES__PASSWORD:
-                valueFrom:
-                  secretKeyRef:
-                    name: postgres-pguser-sonarr
-                    key: password
-              SONARR__POSTGRES__USER:
-                valueFrom:
-                  secretKeyRef:
-                    name: postgres-pguser-sonarr
-                    key: user
+
+            envFrom:
+              - secretRef:
+                  name: sonarr-db-secret
+              - secretRef:
+                  name: sonarr-secret
+
             probes:
               liveness: &probes
                 enabled: true

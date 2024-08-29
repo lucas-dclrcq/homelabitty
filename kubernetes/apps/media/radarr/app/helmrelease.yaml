@@ -49,20 +49,12 @@ spec:
               RADARR__POSTGRES__HOST: "postgres-pgbouncer.infrastructure.svc.cluster.local"
               RADARR__POSTGRES__PORT: "5432"
               RADARR__POSTGRES__MAINDB: "radarr_main"
-              RADARR__POSTGRES__PASSWORD:
-                valueFrom:
-                  secretKeyRef:
-                    name: postgres-pguser-radarr
-                    key: password
-              RADARR__POSTGRES__USER:
-                valueFrom:
-                  secretKeyRef:
-                    name: postgres-pguser-radarr
-                    key: user
 
             envFrom:
               - secretRef:
                   name: radarr-secret
+              - secretRef:
+                  name: radarr-db-secret
 
             probes:
               liveness: &probes
