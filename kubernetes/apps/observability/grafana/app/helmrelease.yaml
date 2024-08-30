@@ -198,6 +198,9 @@ spec:
         crunchy-query-statistics:
           url: https://raw.githubusercontent.com/CrunchyData/postgres-operator-examples/main/kustomize/monitoring/grafana/dashboards/query_statistics.json
           datasource: Prometheus
+        minio:
+          url: https://raw.githubusercontent.com/lucas-dclrcq/homelabitty/main/grafana/dashboards/minio.json
+          datasource: Prometheus
     sidecar:
       dashboards:
         enabled: true
