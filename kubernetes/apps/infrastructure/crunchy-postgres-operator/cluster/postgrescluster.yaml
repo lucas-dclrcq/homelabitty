@@ -79,6 +79,10 @@ spec:
       databases: ["miniflux"]
       password:
         type: AlphaNumeric
+    - name: "openfga"
+      databases: ["openfga"]
+      password:
+        type: AlphaNumeric
 
   monitoring:
     pgmonitor:

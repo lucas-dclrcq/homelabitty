@@ -5,3 +5,4 @@ resources:
   - ./namespace.yaml
   - ./keycloak/ks.yaml
   - ./openldap/ks.yaml
+  - ./openfga/ks.yaml
