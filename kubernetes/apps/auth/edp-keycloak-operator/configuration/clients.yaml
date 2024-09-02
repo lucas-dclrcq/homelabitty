@@ -10,7 +10,7 @@ spec:
   clientId: miniflux
   directAccess: true
   public: false
-  secret: keycloak-clients-secret:MINIFLUX_CLIENT_SECRET
+  secret: $keycloak-clients-secret:MINIFLUX_CLIENT_SECRET
   webUrl: https://argocd.example.com
   defaultClientScopes:
     - groups
