@@ -37,11 +37,10 @@ spec:
             image:
               repository: ghcr.io/onedr0p/bazarr
               tag: 1.4.3@sha256:d2b70813f7d636fb1ab3448e13ca4074630b63216c6c6d02d034cd5d9e938ea3
+
             env:
               TZ: "${TIMEZONE}"
-            envFrom:
-              - secretRef:
-                  name: bazarr-secret
+
             probes:
               liveness: &probes
                 enabled: true
@@ -55,10 +54,12 @@ spec:
                   timeoutSeconds: 1
                   failureThreshold: 3
               readiness: *probes
-            securityContext: &securityContext
+
+            securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
+
             resources:
               requests:
                 cpu: 10m
