@@ -25,14 +25,18 @@ spec:
   values:
     deploymentStrategy:
       type: Recreate
-    admin:
-      existingSecret: grafana-admin-secret
+
     env:
       GF_DATE_FORMATS_USE_BROWSER_LOCALE: true
       GF_EXPLORE_ENABLED: true
       GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS: natel-discrete-panel,pr0ps-trackmap-panel,panodata-map-panel
       GF_SECURITY_ANGULAR_SUPPORT_ENABLED: true
       GF_SERVER_ROOT_URL: "https://grafana.${SECRET_DOMAIN}"
+
+    ldap:
+      enabled: true
+      existingSecret: grafana-ldap-secret
+
     grafana.ini:
       analytics:
         check_for_updates: false
@@ -40,8 +44,12 @@ spec:
         reporting_enabled: false
       auth.anonymous:
         enabled: false
+      auth.ldap:
+        enabled: true
+        allow_sign_up: true
       news:
         news_feed_enabled: false
+
     datasources:
       datasources.yaml:
         apiVersion: 1
