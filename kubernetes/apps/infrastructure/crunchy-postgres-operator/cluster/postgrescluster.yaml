@@ -87,6 +87,10 @@ spec:
       databases: ["bazarr"]
       password:
         type: AlphaNumeric
+    - name: "lldap"
+      databases: ["lldap"]
+      password:
+        type: AlphaNumeric
 
   monitoring:
     pgmonitor:

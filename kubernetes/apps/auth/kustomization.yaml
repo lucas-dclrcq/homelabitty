@@ -5,5 +5,5 @@ resources:
   - ./namespace.yaml
   - ./keycloak/ks.yaml
   - ./edp-keycloak-operator/ks.yaml
-  - ./openldap/ks.yaml
+  - ./lldap/ks.yaml
 #  - ./openfga/ks.yaml
