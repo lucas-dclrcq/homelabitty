@@ -4,5 +4,6 @@ kind: Kustomization
 resources:
   - ./namespace.yaml
   - ./keycloak/ks.yaml
+  - ./edp-keycloak-operator/ks.yaml
   - ./openldap/ks.yaml
 #  - ./openfga/ks.yaml

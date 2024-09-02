@@ -32,3 +32,4 @@ resources:
   - ./codecentric.yaml
   - ./jpgouin.yaml
   - ./bitnami.yaml
+  - ./epamedb.yaml
