@@ -4,3 +4,6 @@ kind: Kustomization
 resources:
   - ./externalsecret.yaml
   - ./keycloak.yaml
+  - ./realm.yaml
+  - ./clients-externalsecret.yaml
+  - ./clients.yaml
