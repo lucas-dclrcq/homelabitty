@@ -41,6 +41,9 @@ spec:
             env:
               TZ: "${TIMEZONE}"
 
+            envFrom:
+              - secretRef:
+                  name: bazarr-db-secret
             probes:
               liveness: &probes
                 enabled: true
