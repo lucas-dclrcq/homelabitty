@@ -25,6 +25,30 @@ spec:
       ldapDomain: "${SECRET_DOMAIN}"
       existingSecret: openldap-secret
 
+    env:
+      LDAP_SKIP_DEFAULT_TREE: "no"
+      LDAP_ENABLE_TLS: "yes"
+      LDAPTLS_REQCERT: "never"
+      LDAP_TLS_ENFORCE: "false"
+      LDAP_CONFIG_ADMIN_ENABLED: "yes"
+
+    customSchemaFiles:
+      #enable memberOf ldap search functionality, users automagically track groups they belong to
+      00-memberof.ldif: |-
+        # Load memberof module
+        dn: cn=module,cn=config
+        cn: module
+        objectClass: olcModuleList
+        olcModuleLoad: memberof
+        olcModulePath: /opt/bitnami/openldap/lib/openldap
+
+        dn: olcOverlay=memberof,olcDatabase={2}mdb,cn=config
+        changetype: add
+        objectClass: olcOverlayConfig
+        objectClass: olcMemberOf
+        olcOverlay: memberof
+        olcMemberOfRefint: TRUE
+
     customTLS:
       enabled: false
 
@@ -36,11 +60,15 @@ spec:
       enabled: true
       existingClaim: openldap
 
+    service:
+      annotations:
+        io.cilium/lb-ipam-ips: 192.168.1.37
+      type: LoadBalancer
+
     phpldapadmin:
       enabled: true
       env:
         PHPLDAPADMIN_LDAP_CLIENT_TLS_REQCERT: "never"
-        LDAP_SKIP_DEFAULT_TREE: "yes"
 
       ingress:
         annotations:
