@@ -8,7 +8,7 @@ metadata:
 spec:
   targetNamespace: network
   dependsOn:
-    - name: ingress-nginx-certificates
+    - name: certificates
     - name: nginx-external
   commonMetadata:
     labels:
