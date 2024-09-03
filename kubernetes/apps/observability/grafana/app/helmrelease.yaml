@@ -80,6 +80,7 @@ spec:
             url: http://alertmanager-operated.observability.svc.cluster.local:9093
             jsonData:
               implementation: prometheus
+
     dashboardProviders:
       dashboardproviders.yaml:
         apiVersion: 1
@@ -92,8 +93,41 @@ spec:
             editable: true
             options:
               path: /var/lib/grafana/dashboards/default
+          - name: ceph
+            orgId: 1
+            folder: Ceph
+            type: file
+            disableDeletion: false
+            editable: true
+            options:
+              path: /var/lib/grafana/dashboards/ceph
+          - name: flux
+            orgId: 1
+            folder: Flux
+            type: file
+            disableDeletion: false
+            editable: true
+            options:
+              path: /var/lib/grafana/dashboards/flux
+          - name: network
+            orgId: 1
+            folder: Network
+            type: file
+            disableDeletion: false
+            editable: true
+            options:
+              path: /var/lib/grafana/dashboards/network
+          - name: postgresql
+            orgId: 1
+            folder: PostgreSQL
+            type: file
+            disableDeletion: false
+            editable: true
+            options:
+              path: /var/lib/grafana/dashboards/postgresql
+
     dashboards:
-      default:
+      ceph:
         ceph-cluster:
           # renovate: depName="Ceph Cluster"
           gnetId: 2842
@@ -109,6 +143,8 @@ spec:
           gnetId: 5342
           revision: 9
           datasource: Prometheus
+
+      network:
         cert-manager:
           url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/cert-manager/dashboards/cert-manager.json
           datasource: Prometheus
@@ -117,12 +153,45 @@ spec:
           gnetId: 15038
           revision: 3
           datasource: Prometheus
+        nginx:
+          url: https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/grafana/dashboards/nginx.json
+          datasource: Prometheus
+        nginx-request-handling-performance:
+          url: https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/grafana/dashboards/request-handling-performance.json
+          datasource: Prometheus
+
+      flux:
         flux-cluster:
           url: https://raw.githubusercontent.com/fluxcd/flux2-monitoring-example/main/monitoring/configs/dashboards/cluster.json
           datasource: Prometheus
         flux-control-plane:
           url: https://raw.githubusercontent.com/fluxcd/flux2-monitoring-example/main/monitoring/configs/dashboards/control-plane.json
           datasource: Prometheus
+
+      postgresql:
+        crunchy-pgbackrest: #https://github.com/CrunchyData/postgres-operator-examples/issues/264
+          url: https://raw.githubusercontent.com/CrunchyData/postgres-operator-examples/main/kustomize/monitoring/grafana/dashboards/pgbackrest.json
+          datasource: Prometheus
+        crunchy-pod-details:
+          url: https://raw.githubusercontent.com/CrunchyData/postgres-operator-examples/main/kustomize/monitoring/grafana/dashboards/pod_details.json
+          datasource: Prometheus
+        crunchy-postgresql-details:
+          url: https://raw.githubusercontent.com/CrunchyData/postgres-operator-examples/main/kustomize/monitoring/grafana/dashboards/postgresql_details.json
+          datasource: Prometheus
+        crunchy-postgresql-overview:
+          url: https://raw.githubusercontent.com/CrunchyData/postgres-operator-examples/main/kustomize/monitoring/grafana/dashboards/postgresql_overview.json
+          datasource: Prometheus
+        crunchy-postgresql-service_health:
+          url: https://raw.githubusercontent.com/CrunchyData/postgres-operator-examples/main/kustomize/monitoring/grafana/dashboards/postgresql_service_health.json
+          datasource: Prometheus
+        crunchy-prometheus-alerts:
+          url: https://raw.githubusercontent.com/CrunchyData/postgres-operator-examples/main/kustomize/monitoring/grafana/dashboards/prometheus_alerts.json
+          datasource: Prometheus
+        crunchy-query-statistics:
+          url: https://raw.githubusercontent.com/CrunchyData/postgres-operator-examples/main/kustomize/monitoring/grafana/dashboards/query_statistics.json
+          datasource: Prometheus
+
+      default:
         kubernetes-api-server:
           # renovate: depName="Kubernetes / System / API Server"
           gnetId: 15761
@@ -161,12 +230,6 @@ spec:
         miniflux:
           url: https://raw.githubusercontent.com/miniflux/v2/main/contrib/grafana/dashboard.json
           datasource: Prometheus
-        nginx:
-          url: https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/grafana/dashboards/nginx.json
-          datasource: Prometheus
-        nginx-request-handling-performance:
-          url: https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/grafana/dashboards/request-handling-performance.json
-          datasource: Prometheus
         node-exporter-full:
           # renovate: depName="Node Exporter Full"
           gnetId: 1860
@@ -185,30 +248,10 @@ spec:
           gnetId: 12904
           revision: 2
           datasource: Prometheus
-        crunchy-pgbackrest: #https://github.com/CrunchyData/postgres-operator-examples/issues/264
-          url: https://raw.githubusercontent.com/CrunchyData/postgres-operator-examples/main/kustomize/monitoring/grafana/dashboards/pgbackrest.json
-          datasource: Prometheus
-        crunchy-pod-details:
-          url: https://raw.githubusercontent.com/CrunchyData/postgres-operator-examples/main/kustomize/monitoring/grafana/dashboards/pod_details.json
-          datasource: Prometheus
-        crunchy-postgresql-details:
-          url: https://raw.githubusercontent.com/CrunchyData/postgres-operator-examples/main/kustomize/monitoring/grafana/dashboards/postgresql_details.json
-          datasource: Prometheus
-        crunchy-postgresql-overview:
-          url: https://raw.githubusercontent.com/CrunchyData/postgres-operator-examples/main/kustomize/monitoring/grafana/dashboards/postgresql_overview.json
-          datasource: Prometheus
-        crunchy-postgresql-service_health:
-          url: https://raw.githubusercontent.com/CrunchyData/postgres-operator-examples/main/kustomize/monitoring/grafana/dashboards/postgresql_service_health.json
-          datasource: Prometheus
-        crunchy-prometheus-alerts:
-          url: https://raw.githubusercontent.com/CrunchyData/postgres-operator-examples/main/kustomize/monitoring/grafana/dashboards/prometheus_alerts.json
-          datasource: Prometheus
-        crunchy-query-statistics:
-          url: https://raw.githubusercontent.com/CrunchyData/postgres-operator-examples/main/kustomize/monitoring/grafana/dashboards/query_statistics.json
-          datasource: Prometheus
         minio:
           url: https://raw.githubusercontent.com/lucas-dclrcq/homelabitty/main/grafana/dashboards/minio.json
           datasource: Prometheus
+
     sidecar:
       dashboards:
         enabled: true
@@ -222,6 +265,7 @@ spec:
         enabled: true
         searchNamespace: ALL
         labelValue: ""
+
     plugins:
       - grafana-clock-panel
       - grafana-piechart-panel
@@ -229,13 +273,17 @@ spec:
       - natel-discrete-panel
       - pr0ps-trackmap-panel
       - vonage-status-panel
+
     serviceMonitor:
       enabled: true
+
     ingress:
       enabled: true
       ingressClassName: internal
       hosts: ["grafana.${SECRET_DOMAIN}"]
+
     persistence:
       enabled: false
+
     testFramework:
       enabled: false
