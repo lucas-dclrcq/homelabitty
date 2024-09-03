@@ -92,35 +92,6 @@ spec:
       password:
         type: AlphaNumeric
 
-  monitoring:
-    pgmonitor:
-      exporter:
-        resources:
-          requests:
-            cpu: 10m
-            memory: 64M
-          limits:
-            memory: 512M
-
-  proxy:
-    pgBouncer:
-      port: 5432
-      replicas: *replica
-      metadata:
-        labels:
-          app.kubernetes.io/name: crunchy-postgres-pgbouncer
-      config:
-        global:
-          pool_mode: "transaction" # pgBouncer is set to transaction for Authentik. Grafana requires session https://github.com/grafana/grafana/issues/74260#issuecomment-1702795311. Everything else is happy with transaction
-          client_tls_sslmode: prefer
-      topologySpreadConstraints:
-        - maxSkew: 1
-          topologyKey: "kubernetes.io/hostname"
-          whenUnsatisfiable: "DoNotSchedule"
-          labelSelector:
-            matchLabels:
-              postgres-operator.crunchydata.com/cluster: *name
-              postgres-operator.crunchydata.com/role: "pgbouncer"
 
   backups:
     pgbackrest:
@@ -155,11 +126,32 @@ spec:
             differential: "0 1 * * 1-6" # Mon-Sat at 01:00
             incremental: "0 2-23 * * *" # Every hour except 01:00
 
-  dataSource:
-    pgbackrest:
-      stanza: "db"
-      configuration: *backupConfig
-      global: *backupFlag
-      repo:
-        name: "repo1"
-        s3: *minio
+  monitoring:
+    pgmonitor:
+      exporter:
+        resources:
+          requests:
+            cpu: 10m
+            memory: 64M
+          limits:
+            memory: 512M
+
+  proxy:
+    pgBouncer:
+      port: 5432
+      replicas: *replica
+      metadata:
+        labels:
+          app.kubernetes.io/name: crunchy-postgres-pgbouncer
+      config:
+        global:
+          pool_mode: "transaction" # pgBouncer is set to transaction for Authentik. Grafana requires session https://github.com/grafana/grafana/issues/74260#issuecomment-1702795311. Everything else is happy with transaction
+          client_tls_sslmode: prefer
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: "kubernetes.io/hostname"
+          whenUnsatisfiable: "DoNotSchedule"
+          labelSelector:
+            matchLabels:
+              postgres-operator.crunchydata.com/cluster: *name
+              postgres-operator.crunchydata.com/role: "pgbouncer"
