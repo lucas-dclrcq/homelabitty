@@ -69,6 +69,9 @@ spec:
 
     service:
       main:
+        type: LoadBalancer
+        annotations:
+          io.cilium/lb-ipam-ips: "192.168.1.38"
         controller: main
         ports:
           http:
