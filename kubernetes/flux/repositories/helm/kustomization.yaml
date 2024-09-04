@@ -33,3 +33,4 @@ resources:
   - ./jpgouin.yaml
   - ./bitnami.yaml
   - ./epamedb.yaml
+  - ./crowdsec.yaml
