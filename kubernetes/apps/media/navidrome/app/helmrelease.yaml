@@ -1,0 +1,110 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: navidrome
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.4.0
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+      interval: 15m
+  maxHistory: 3
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    controllers:
+      main:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          main:
+            image:
+              repository: ghcr.io/navidrome/navidrome
+              tag: 0.52.5@sha256:b154aebe8b33bae82c500ad0a3eb743e31da54c3bfb4e7cc3054b9a919b685c7
+            env:
+              TZ: "${TIMEZONE}"
+              ND_AUTHREQUESTLIMIT: 0
+              ND_DATAFOLDER: /config
+              ND_ENABLEGRAVATAR: true
+              ND_ENABLESHARING: true
+              ND_LOGLEVEL: info
+              ND_MUSICFOLDER: /media/Music
+              ND_PORT: &port 8080
+              ND_PROMETHEUS_ENABLED: true
+              ND_REVERSEPROXYUSERHEADER: Remote-User
+              ND_REVERSEPROXYWHITELIST: 10.0.0.0/8
+              ND_SCANSCHEDULE: "@every 1h"
+
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /ping
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+              startup:
+                enabled: false
+
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1026
+        runAsGroup: 100
+        fsGroup: 100
+        fsGroupChangePolicy: OnRootMismatch
+        supplementalGroups: [10000]
+        seccompProfile: { type: RuntimeDefault }
+
+    service:
+      main:
+        controller: main
+        ports:
+          http:
+            port: *port
+
+    ingress:
+      main:
+        enabled: true
+        className: internal
+        hosts:
+          - host: "music.${SECRET_DOMAIN}"
+            paths:
+              - path: /
+                service:
+                  identifier: main
+                  port: http
+
+    persistence:
+      config:
+        existingClaim: navidrome
+        advancedMounts:
+          main:
+            main:
+              - path: /config
+      media:
+        type: nfs
+        server: "nas.${INTERNAL_DOMAIN}"
+        path: /volume1/Media
+        globalMounts:
+          - path: /media
