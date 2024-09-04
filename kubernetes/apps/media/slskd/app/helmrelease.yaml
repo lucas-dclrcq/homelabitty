@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: sonarr
+  name: slskd
 spec:
   interval: 30m
   chart:
@@ -27,32 +27,30 @@ spec:
       namespace: rook-ceph
   values:
     controllers:
-      sonarr:
+      slskd:
+        type: statefulset
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
           app:
             image:
-              repository: ghcr.io/onedr0p/sonarr-develop
+              repository: ghcr.io/slskd/slskd
               tag: 4.0.9.2342@sha256:e638ab3ece6488d4b19b205c3e268c94c7e02a01d10a0cf73783b18124444db5
             env:
-              SONARR__APP__INSTANCENAME: Sonarr
-              SONARR__AUTH__METHOD: External
-              SONARR__AUTH__REQUIRED: DisabledForLocalAddresses
-              SONARR__LOG__DBENABLED: "False"
-              SONARR__LOG__LEVEL: info
-              SONARR__SERVER__PORT: &port 80
-              SONARR__UPDATE__BRANCH: develop
-              TZ: "${TIMEZONE}"
-              SONARR__POSTGRES__HOST: "postgres-pgbouncer.infrastructure.svc.cluster.local"
-              SONARR__POSTGRES__PORT: "5432"
-              SONARR__POSTGRES__MAINDB: "sonarr_main"
+              SLSKD_HTTP_PORT: &port 80
+              SLSKD_SLSK_LISTEN_PORT: &soulseekPort 50300
+              SLSKD_REMOTE_CONFIGURATION: true
+              SLSKD_DOWNLOADS_DIR: "/media/Downloads/nicotine/complete"
+              SLSKD_INCOMPLETE_DIR: "/media/Downloads/nicotine/incomplete"
+              SLSKD_SHARED_DIR: "/media/Music"
+              SLSKD_METRICS: true
+              SLSKD_METRICS_NO_AUTH: true
+              SLSKD_UPLOAD_SLOTS: 2
+              SLSKD_UPLOAD_SPEED_LIMIT: 10000
 
             envFrom:
               - secretRef:
-                  name: sonarr-db-secret
-              - secretRef:
-                  name: sonarr-secret
+                  name: slskd-secret
 
             probes:
               liveness: &probes
@@ -91,10 +89,18 @@ spec:
 
     service:
       app:
-        controller: sonarr
+        controller: slskd
         ports:
           http:
             port: *port
+      soulseek:
+        controller: slskd
+        ports:
+          incoming:
+            port: *soulseekPort
+        type: LoadBalancer
+        annotations:
+          io.cilium/lb-ipam-ips: "192.168.1.39"
 
     ingress:
       app:
@@ -108,10 +114,8 @@ spec:
                   port: http
 
     persistence:
-      config:
-        existingClaim: sonarr
-      tmp:
-        type: emptyDir
+      app:
+        existingClaim: slskd
       media:
         type: nfs
         server: "nas.${INTERNAL_DOMAIN}"
