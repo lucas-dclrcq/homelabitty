@@ -1,0 +1,117 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: betanin
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.4.0
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    controllers:
+      betanin:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/profmoo/betanin
+              tag: latest@sha256:334ff437b1e4f0995cf979d5f98f6a1ac93e00ab77a9930017c5dee6f9b405dc
+            env:
+              UID: "1026"
+              GUID: "100"
+            probes:
+              liveness:
+                enabled: false
+              readiness:
+                enabled: false
+              startup:
+                enabled: false
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 5
+
+            command:
+              - "betanin"
+
+            resources:
+              requests:
+                cpu: 200m
+                memory: 500Mi
+              limits:
+                memory: 1Gi
+
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1026
+        runAsGroup: 100
+        fsGroup: 100
+        fsGroupChangePolicy: OnRootMismatch
+        supplementalGroups: [10000]
+        seccompProfile: { type: RuntimeDefault }
+
+    service:
+      app:
+        controller: betanin
+        ports:
+          http:
+            port: 9393
+
+    ingress:
+      betanin:
+        className: internal
+        hosts:
+          - host: "betanin.${SECRET_DOMAIN}"
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: http
+
+    persistence:
+      media:
+        type: nfs
+        server: "nas.${INTERNAL_DOMAIN}"
+        path: /volume1/Media
+        globalMounts:
+          - path: /media
+
+      # These configs need to mounted as specific locations:
+      # https://github.com/sentriz/betanin/blob/master/docker-entry
+      # NOTE: This config is the complex config.yaml that defines beets behavior.
+      beets-config:
+        type: secret
+        name: betanin-beets-secret
+        globalMounts:
+          - path: /b/.config/beets/
+
+      # NOTE: This config is the simple config.toml that defines betanin behavior.
+      betanin-config:
+        type: secret
+        name: betanin-secret
+        globalMounts:
+          - path: /b/.config/betanin/
+
+      # NOTE: This data is the smaller betanin DB which keeps information about the individual imports.
+      # This populates the betanin GUI.
+      data:
+        existingClaim: betanin
+        globalMounts:
+          - path: /b/.local/share/betanin/

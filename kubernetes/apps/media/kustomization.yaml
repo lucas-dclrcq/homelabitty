@@ -11,3 +11,4 @@ resources:
   - ./qbittorrent/ks.yaml
   - ./bazarr/ks.yaml
   - ./slskd/ks.yaml
+  - ./betanin/ks.yaml
