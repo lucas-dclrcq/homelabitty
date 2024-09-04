@@ -19,13 +19,9 @@ spec:
                 - /bin/sh
               args:
                 - -ec
-                # The offical vault docker image actually doesn't come with `jq`. You can
-                # - install it during runtime (not a good idea and your security team may not like it)
-                # - ship `jq` static binary in a standalone image and mount it using a shared volume from `initContainers`
-                # - build your custom `vault` image
                 - |
-                  curl -sS https://webinstall.dev/jq | sh
-                  export VAULT_TOKEN=$(vault write auth/approle/login role_id=$VAULT_APPROLE_ROLE_ID secret_id=$VAULT_APPROLE_SECRET_ID -format=json | /jq/jq -r .auth.client_token);
+                  apk add curl jq
+                  export VAULT_TOKEN=$(vault write auth/approle/login role_id=$VAULT_APPROLE_ROLE_ID secret_id=$VAULT_APPROLE_SECRET_ID -format=json | jq -r .auth.client_token);
                   vault operator raft snapshot save /share/vault-raft.snap;
               envFrom:
                 - secretRef:
@@ -50,7 +46,7 @@ spec:
                 - name: MINIO_BUCKET
                   value: vault-backup
                 - name: MINIO_URL
-                  value: http://minio.default.svc.cluster.local:9000
+                  value: http://minio.infrastructure.svc.cluster.local:9000
               envFrom:
                 - secretRef:
                     name: vault-snapshot-s3
