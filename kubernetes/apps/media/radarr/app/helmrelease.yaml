@@ -38,7 +38,6 @@ spec:
               tag: 5.10.1.9125@sha256:cc4aa3bbcf90671ebc85c086a1139868f613e750eb757b103ed7bdf13481c37c
             env:
               RADARR__APP__INSTANCENAME: Radarr
-              RADARR__APP__THEME: dark
               RADARR__AUTH__METHOD: External
               RADARR__AUTH__REQUIRED: DisabledForLocalAddresses
               RADARR__LOG__DBENABLED: "False"
@@ -114,6 +113,14 @@ spec:
         existingClaim: radarr
       tmp:
         type: emptyDir
+      scripts:
+        type: configMap
+        name: radarr-configmap
+        defaultMode: 0775
+        globalMounts:
+          - path: /scripts/pushover-notify.sh
+            subPath: pushover-notify.sh
+            readOnly: true
       media:
         type: nfs
         server: "nas.${INTERNAL_DOMAIN}"
