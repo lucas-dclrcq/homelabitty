@@ -10,6 +10,8 @@ PUSHOVER_PRIORITY="${PUSHOVER_PRIORITY:-"-2"}"
 
 if [[ "${sonarr_eventtype:-}" == "Test" ]]; then
     PUSHOVER_PRIORITY="1"
+    PUSHOVER_URL=""
+    PUSHOVER_URL_TITLE=""
     printf -v PUSHOVER_TITLE \
         "Test Notification"
     printf -v PUSHOVER_MESSAGE \
