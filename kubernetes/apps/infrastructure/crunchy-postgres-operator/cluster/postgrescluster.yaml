@@ -50,14 +50,12 @@ spec:
               postgres-operator.crunchydata.com/data: postgres
 
   users:
-    # Superuser
     - name: "postgres"
       databases:
         - "postgres"
       options: "SUPERUSER"
       password:
         type: AlphaNumeric
-    # Applications
     - name: "prowlarr"
       databases:
         - "prowlarr_main"
@@ -91,8 +89,8 @@ spec:
       databases: ["lldap"]
       password:
         type: AlphaNumeric
-    - name: "authentik"
-      databases: ["authentik"]
+    - name: "sso"
+      databases: ["sso"]
       password:
         type: AlphaNumeric
 
