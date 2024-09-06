@@ -34,3 +34,4 @@ resources:
   - ./bitnami.yaml
   - ./epamedb.yaml
   - ./crowdsec.yaml
+  - ./intel.yaml
