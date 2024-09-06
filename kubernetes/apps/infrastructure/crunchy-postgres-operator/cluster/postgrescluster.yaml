@@ -91,7 +91,10 @@ spec:
       databases: ["lldap"]
       password:
         type: AlphaNumeric
-
+    - name: "authentik"
+      databases: ["authentik"]
+      password:
+        type: AlphaNumeric
 
   backups:
     pgbackrest:

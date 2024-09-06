@@ -6,4 +6,5 @@ resources:
   - ./keycloak/ks.yaml
   - ./edp-keycloak-operator/ks.yaml
   - ./lldap/ks.yaml
+  - ./authentik/ks.yaml
 #  - ./openfga/ks.yaml
