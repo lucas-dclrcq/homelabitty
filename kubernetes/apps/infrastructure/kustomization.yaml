@@ -7,3 +7,4 @@ resources:
   - ./crunchy-postgres-operator/ks.yaml
   - ./emqx/ks.yaml
   - ./minio/ks.yaml
+  - ./obsidian-couchdb/ks.yaml
