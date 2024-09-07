@@ -19,6 +19,7 @@ spec:
     global:
       podAnnotations:
         reloader.stakater.com/auto: "true"
+
       envFrom:
         - secretRef:
             name: authentik-secret
@@ -33,13 +34,7 @@ spec:
         enabled: true
         serviceMonitor:
           enabled: true
-      volumeMounts:
-        - name: media
-          mountPath: /media
-      volumes:
-        - name: media
-          persistentVolumeClaim:
-            claimName: authentik
+
       ingress:
         enabled: true
         ingressClassName: external
