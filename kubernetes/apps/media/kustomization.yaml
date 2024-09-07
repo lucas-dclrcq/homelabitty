@@ -13,4 +13,3 @@ resources:
   - ./slskd/ks.yaml
   - ./betanin/ks.yaml
   - ./navidrome/ks.yaml
-  - ./tdarr/ks.yaml
