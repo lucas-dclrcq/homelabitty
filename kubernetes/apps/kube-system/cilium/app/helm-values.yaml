@@ -16,7 +16,7 @@ cni:
 endpointRoutes:
   enabled: true
 envoy:
-  enabled: false
+  enabled: falsed
 hubble:
   enabled: true
   relay:
