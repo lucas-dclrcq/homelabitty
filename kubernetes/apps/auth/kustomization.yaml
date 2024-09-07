@@ -3,8 +3,6 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - ./namespace.yaml
-  - ./keycloak/ks.yaml
-  - ./edp-keycloak-operator/ks.yaml
   - ./lldap/ks.yaml
   - ./authentik/ks.yaml
 #  - ./openfga/ks.yaml
