@@ -93,6 +93,10 @@ spec:
       databases: ["sso"]
       password:
         type: AlphaNumeric
+    - name: "linkwarden"
+      databases: ["linkwarden"]
+      password:
+        type: AlphaNumeric
 
   backups:
     pgbackrest:
