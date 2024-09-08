@@ -18,16 +18,7 @@ endpointRoutes:
 envoy:
   enabled: false
 hubble:
-  enabled: true
-  relay:
-    enabled: false
-  ui:
-    enabled: true
-    ingress:
-      enabled: true
-      className: internal
-      hosts:
-        - "hubble.${SECRET_DOMAIN}"
+  enabled: false
 ipam:
   mode: kubernetes
 ipv4NativeRoutingCIDR: "10.69.0.0/16"
