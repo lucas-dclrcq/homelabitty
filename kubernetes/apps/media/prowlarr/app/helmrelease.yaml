@@ -73,6 +73,7 @@ spec:
                 cpu: 100m
               limits:
                 memory: 1Gi
+
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
@@ -81,15 +82,20 @@ spec:
         fsGroup: 568
         fsGroupChangePolicy: OnRootMismatch
         seccompProfile: { type: RuntimeDefault }
+
     service:
       app:
         controller: prowlarr
         ports:
           http:
             port: *port
+
     ingress:
       app:
-        className: internal
+        className: external
+        annotations:
+          authentik.home.arpa/enabled: "true"
+          external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
         hosts:
           - host: "{{ .Release.Name }}.${SECRET_DOMAIN}"
             paths:
@@ -97,6 +103,7 @@ spec:
                 service:
                   identifier: app
                   port: http
+
     persistence:
       config:
         type: emptyDir
