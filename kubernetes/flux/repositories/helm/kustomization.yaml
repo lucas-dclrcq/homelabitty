@@ -35,4 +35,5 @@ resources:
   - ./epamedb.yaml
   - ./crowdsec.yaml
   - ./intel.yaml
+  - ./nextcloud.yaml
   - ./authentik.yaml

@@ -8,3 +8,4 @@ resources:
   - ./emqx/ks.yaml
   - ./minio/ks.yaml
   - ./obsidian-couchdb/ks.yaml
+  - ./dragonfly/ks.yaml

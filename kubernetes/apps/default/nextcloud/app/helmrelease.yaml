@@ -1,0 +1,131 @@
+---
+# yaml-language-server: $schema=https://github.com/fluxcd-community/flux2-schemas/raw/main/helmrelease-helm-v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: nextcloud
+spec:
+  timeout: 15m
+  interval: 30m
+  chart:
+    spec:
+      chart: nextcloud
+      version: 5.5.4
+      sourceRef:
+        kind: HelmRepository
+        name: nextcloud
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  values:
+    image:
+      flavor: fpm-alpine
+
+    nginx:
+      enabled: true
+
+    nextcloud:
+      datadir: /var/www/data
+      extraEnv:
+        - name: REDIS_HOST
+          value: dragonfly.infrastructure.svc.cluster.local
+        - name: REDIS_HOST_PORT
+          value: "6379"
+      existingSecret:
+        enabled: true
+        secretName: nextcloud-secret
+      host: "nextcloud.${SECRET_DOMAIN}"
+      mail:
+        enabled: false
+      securityContext:
+        runAsUser: 1026
+        runAsGroup: 100
+        runAsNonRoot: true
+      configs:
+        proxy.config.php: |-
+          <?php
+          $CONFIG = array (
+            'trusted_proxies' => array(
+              0 => '127.0.0.1',
+              1 => '${NETWORK_K8S_POD_CIDR}',
+              2 => '${NETWORK_K8S_POD_CIDR_V6}',
+            ),
+            'forwarded_for_headers' => array('HTTP_X_FORWARDED_FOR'),
+          ); ?>
+        misc.config.php: |-
+          <?php
+          $CONFIG = array (
+            'default_phone_region' => 'CA',
+            'maintenance_window_start' => 2,
+          ); ?>
+
+    internalDatabase:
+      enabled: false
+    externalDatabase:
+      enabled: true
+      type: postgresql
+      host: postgres-pgbouncer.infrastructure.svc.cluster.local
+      database: nextcloud
+      existingSecret:
+        enabled: true
+        secretName: nextcloud-db-secret
+        usernameKey: POSTGRES_USER
+        passwordKey: POSTGRES_PASS
+
+    ingress:
+      enabled: true
+      className: external
+      annotations:
+        external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
+        nginx.ingress.kubernetes.io/proxy-body-size: "10G"
+        nginx.ingress.kubernetes.io/proxy-buffering: "off"
+        nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
+        nginx.ingress.kubernetes.io/server-snippet: |-
+          server_tokens off;
+          proxy_hide_header X-Powered-By;
+
+          rewrite ^/.well-known/webfinger /public.php?service=webfinger last;
+          rewrite ^/.well-known/host-meta /public.php?service=host-meta last;
+          rewrite ^/.well-known/host-meta.json /public.php?service=host-meta-json;
+          location = /.well-known/carddav {
+            return 301 $scheme://$host/remote.php/dav;
+          }
+          location = /.well-known/caldav {
+            return 301 $scheme://$host/remote.php/dav;
+          }
+          location = /robots.txt {
+            allow all;
+            log_not_found off;
+            access_log off;
+          }
+          location ~ ^/(?:build|tests|config|lib|3rdparty|templates|data)/ {
+            deny all;
+          }
+          location ~ ^/(?:autotest|occ|issue|indie|db_|console) {
+            deny all;
+          }
+      path: /
+      pathType: Prefix
+
+    persistence:
+      enabled: true
+      existingClaim: ${VOLSYNC_CLAIM}
+      nextcloudData:
+        enabled: true
+        existingClaim: nextcloud-nfs
+        accessMode: ReadWriteMany
+
+    # this seems to be required for nextcloud initialization which takes a long time
+    startupProbe:
+      enabled: true
+      initialDelaySeconds: 10
+      periodSeconds: 20
+      timeoutSeconds: 5
+      failureThreshold: 30
+      successThreshold: 1
