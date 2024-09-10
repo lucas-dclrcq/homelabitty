@@ -113,6 +113,16 @@ spec:
                   identifier: app
                   port: http
 
+    serviceMonitor:
+      app:
+        serviceName: slskd
+        endpoints:
+          - port: http
+            scheme: http
+            path: /metrics
+            interval: 1m
+            scrapeTimeout: 10s
+
     persistence:
       config:
         existingClaim: slskd
