@@ -112,7 +112,8 @@ spec:
         enabled: true
 
       enable_3pid_lookup: false
-
+      app_service_config_files:
+        - "/discord/registration.yml"
       oidc_providers:
         - idp_id: authentik
           idp_name: Hoohoot SSO
@@ -167,6 +168,14 @@ spec:
           memory: 2500Mi
         limits:
           memory: 2500Mi
+      extraVolumes:
+        - name: discord-registration
+          secret:
+            secretName: matrix-bridge-discord-secret
+      extraVolumeMounts:
+        - name: discord-registration
+          mountPath: /discord
+          readOnly: true
 
     signingkey:
       job:
@@ -176,12 +185,3 @@ spec:
     persistence:
       enabled: true
       existingClaim: *app
-
-  extraVolumes:
-    - name: discord-registration
-      configMap:
-        name: "matrix-discord-config"
-  extraVolumeMounts:
-    - name: discord-registration
-      mountPath: /discord
-      readOnly: true

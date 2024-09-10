@@ -1,49 +1,81 @@
-apiVersion: apps/v1
-kind: Deployment
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2beta2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
 metadata:
   name: matrix-bridge-discord
 spec:
-  replicas: 1
-  strategy:
-    rollingUpdate:
-      maxUnavailable: 1
-      maxSurge: 0
-    type: RollingUpdate
-  selector:
-    matchLabels:
-      app.kubernetes.io/name: matrix-bridge-discord
-  template:
-    metadata:
-      labels:
-        app.kubernetes.io/name: matrix-bridge-discord
+  interval: 30m
+  chart:
     spec:
-      initContainers:
-        - name: "load-config"
-          image: halfshot/matrix-appservice-discord:latest
-          imagePullPolicy: IfNotPresent
-          command: ["sh"]
-          args: ["-c", "ls /load; cp /load/registration.yml /data/discord-registration.yaml; cp /load/config.yml /data/config.yaml; ls /data;"]
-          volumeMounts:
-            - name: data
-              mountPath: /data
-            - name: config
-              mountPath: /load
-              readOnly: true
-      containers:
-        - name: "bridge-discord"
-          image: halfshot/matrix-appservice-discord:latest
-          imagePullPolicy: IfNotPresent
-          ports:
-            - name: bridge
-              containerPort: 9005
-              protocol: TCP
-          volumeMounts:
-            - name: data
-              mountPath: /data
-      volumes:
-        - name: data
-          persistentVolumeClaim:
-            claimName: "matrix-bridge-discord"
-        - name: config
-          secret:
-            secretName: matrix-bridge-discord-secret
+      chart: app-template
+      version: 3.4.0
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    controllers:
+      matrix-bridge-discord:
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+        initContainers:
+          load-config:
+            image:
+              repository: halfshot/matrix-appservice-discord
+              tag: latest
+            command: ["-c", "ls /load; cp /load/registration.yml /data/discord-registration.yaml; cp /load/config.yml /data/config.yaml; ls /data;"]
+
+        containers:
+          app:
+            image:
+              repository: halfshot/matrix-appservice-discord
+              tag: latest
+
+            probes:
+              liveness:
+                enabled: false
+              readiness:
+                enabled: false
+              startup:
+                enabled: false
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 5
+
+            resources:
+              requests:
+                cpu: 48m
+                memory: 146M
+              limits:
+                memory: 512Mi
+
+    service:
+      app:
+        controller: matrix-bridge-discord
+        ports:
+          http:
+            port: 9005
+
+    persistence:
+      config:
+        enabled: true
+        type: secret
+        name: matrix-bridge-discord-secret
+        advancedMounts:
+          matrix-bridge-discord:
+            init-config:
+              - path: /load
+      data:
+        enabled: true
+        existingClaim: matrix-bridge-discord

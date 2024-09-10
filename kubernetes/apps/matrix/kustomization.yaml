@@ -4,4 +4,4 @@ kind: Kustomization
 resources:
   - ./namespace.yaml
   - ./synapse/ks.yaml
-#  - ./bridge-discord/ks.yaml
+  - ./bridge-discord/ks.yaml
