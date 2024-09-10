@@ -15,9 +15,6 @@ spec:
         name: ananace-charts
         namespace: flux-system
       interval: 5m
-  dependsOn:
-    - name: authentik
-      namespace: security
   values:
     image:
       repository: ghcr.io/element-hq/synapse
@@ -41,7 +38,7 @@ spec:
             memory: 512Mi
 
       media_repository:
-        enabled: true
+        enabled: false
         strategy:
           type: Recreate
 
@@ -169,7 +166,7 @@ spec:
     signingkey:
       job:
         enabled: false
-      existingSecret: matrix-synapse-signingkey
+      existingSecret: synapse-secret
 
     persistence:
       enabled: true

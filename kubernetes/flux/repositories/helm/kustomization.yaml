@@ -37,3 +37,4 @@ resources:
   - ./intel.yaml
   - ./nextcloud.yaml
   - ./authentik.yaml
+  - ./ananace.yaml
