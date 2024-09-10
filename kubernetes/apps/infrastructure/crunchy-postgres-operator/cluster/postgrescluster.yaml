@@ -105,6 +105,10 @@ spec:
       databases: ["synapse"]
       password:
         type: AlphaNumeric
+    - name: "matrixbridge"
+      databases: ["matrixbridge"]
+      password:
+        type: AlphaNumeric
 
   backups:
     pgbackrest:

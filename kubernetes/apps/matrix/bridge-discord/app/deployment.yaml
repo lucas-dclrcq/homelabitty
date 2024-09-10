@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: matrix-bridge-discord
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 0
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: matrix-bridge-discord
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: matrix-bridge-discord
+    spec:
+      initContainers:
+        - name: "load-config"
+          image: halfshot/matrix-appservice-discord:latest
+          imagePullPolicy: IfNotPresent
+          command: ["sh"]
+          args: ["-c", "ls /load; cp /load/registration.yml /data/discord-registration.yaml; cp /load/config.yml /data/config.yaml; ls /data;"]
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: config
+              mountPath: /load
+              readOnly: true
+      containers:
+        - name: "bridge-discord"
+          image: halfshot/matrix-appservice-discord:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: bridge
+              containerPort: 9005
+              protocol: TCP
+          volumeMounts:
+            - name: data
+              mountPath: /data
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: "matrix-bridge-discord"
+        - name: config
+          secret:
+            secretName: matrix-bridge-discord-secret

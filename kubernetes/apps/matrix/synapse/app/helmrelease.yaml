@@ -176,3 +176,12 @@ spec:
     persistence:
       enabled: true
       existingClaim: *app
+
+  extraVolumes:
+    - name: discord-registration
+      configMap:
+        name: "matrix-discord-config"
+  extraVolumeMounts:
+    - name: discord-registration
+      mountPath: /discord
+      readOnly: true
