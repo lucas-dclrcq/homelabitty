@@ -15,16 +15,14 @@ spec:
         name: ananace-charts
         namespace: flux-system
       interval: 5m
-  dependsOn:
-    - name: authentik
-      namespace: security
   values:
     image:
-      repository: ghcr.io/element-hq/synapse
+#      repository: ghcr.io/element-hq/synapse
+      repository: matrixdotorg/synapse
       tag: v1.76.0
 
     serverName: "${SECRET_DOMAIN}"
-    publicServerName: "matrix.cloud.${SECRET_DOMAIN}"
+    publicServerName: "matrix.${SECRET_DOMAIN}"
 
     wellknown:
       enabled: true
@@ -41,7 +39,7 @@ spec:
             memory: 512Mi
 
       media_repository:
-        enabled: true
+        enabled: false
         strategy:
           type: Recreate
 
@@ -120,8 +118,8 @@ spec:
           idp_name: Hoohoot SSO
           discover: true
           issuer: "https://sso.${SECRET_DOMAIN}/application/o/matrix/"
-          client_id: "matrix" #TODO
-          client_secret: ${SECRET_AUTHENTIK_MATRIX_CLIENT} #TODO
+          client_id: "${MATRIX_CLIENT_ID}"
+          client_secret: "${MATRIX_CLIENT_SECRET}"
           scopes:
             - "openid"
             - "profile"
@@ -141,8 +139,11 @@ spec:
     postgresql:
       enabled: false
 
+    redis:
+      enabled: false
+
     externalPostgresql:
-      host: "postgres-pgbouncer.infrastructure.svc.cluster.local"
+      host: "postgres-primary.infrastructure.svc.cluster.local"
       port: 5432
       username: "synapse"
       existingSecret: "synapse-db-secret"
@@ -169,7 +170,7 @@ spec:
     signingkey:
       job:
         enabled: false
-      existingSecret: matrix-synapse-signingkey
+      existingSecret: synapse-secret
 
     persistence:
       enabled: true
