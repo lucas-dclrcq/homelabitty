@@ -101,6 +101,10 @@ spec:
       databases: ["nextcloud"]
       password:
         type: AlphaNumeric
+    - name: "synapse"
+      databases: ["synapse"]
+      password:
+        type: AlphaNumeric
 
   backups:
     pgbackrest:

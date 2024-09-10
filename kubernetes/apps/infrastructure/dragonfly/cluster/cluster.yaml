@@ -13,11 +13,17 @@ spec:
         resourceFieldRef:
           resource: limits.memory
           divisor: 1Mi
+    - name: REDIS_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: dragonfly-secret
+          key: REDIS_PASSWORD
   args:
     - --maxmemory=$(MAX_MEMORY)Mi
     - --proactor_threads=2
     - --cluster_mode=emulated
     - --lock_on_hashtags
+    - --requirepass=$(REDIS_PASSWORD)
   resources:
     requests:
       cpu: 50m
