@@ -135,6 +135,7 @@ spec:
       annotations:
         nginx.ingress.kubernetes.io/use-regex: "true"
         nginx.ingress.kubernetes.io/proxy-body-size: 10m
+        external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
 
     postgresql:
       enabled: false
