@@ -3,10 +3,11 @@
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
-  name: dragonfly
+  name: matrix-synapse
 spec:
   selector:
     matchLabels:
-      app: dragonfly
+      app.kubernetes.io/name: matrix-synapse
+  podTargetLabels: ["app"]
   podMetricsEndpoints:
-    - port: admin
+    - port: metrics

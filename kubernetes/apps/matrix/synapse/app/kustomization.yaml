@@ -6,4 +6,5 @@ namespace: flux-system
 resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
+  - ./podmonitor.yaml
   - ../../../../templates/volsync
