@@ -34,7 +34,10 @@ spec:
             image:
               repository: halfshot/matrix-appservice-discord
               tag: latest
-            command: ["-c", "ls /load; cp /load/registration.yml /data/discord-registration.yaml; cp /load/config.yml /data/config.yaml; ls /data;"]
+            command:
+              - "/bin/sh"
+              - "-c"
+              - "ls /config; cp /config/registration.yml /data/discord-registration.yaml; cp /config/config.yml /data/config.yaml; ls /data;"
 
         containers:
           app:
@@ -72,10 +75,6 @@ spec:
         enabled: true
         type: secret
         name: matrix-bridge-discord-secret
-        advancedMounts:
-          matrix-bridge-discord:
-            init-config:
-              - path: /load
       data:
         enabled: true
         existingClaim: matrix-bridge-discord
