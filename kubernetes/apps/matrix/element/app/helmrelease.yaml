@@ -32,7 +32,7 @@ spec:
           app:
             image:
               repository: vectorim/element-web
-              tag: v1.11.49
+              tag: v1.11.77
 
     service:
       app:
