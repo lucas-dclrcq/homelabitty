@@ -5,3 +5,4 @@ resources:
   - ./namespace.yaml
   - ./synapse/ks.yaml
   - ./bridge-discord/ks.yaml
+  - ./sliding-sync/ks.yaml

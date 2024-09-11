@@ -1,0 +1,58 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/common-3.0.1/charts/library/common/values.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: matrix-sliding-sync
+spec:
+  interval: 15m
+  chart:
+    spec:
+      # renovate: registryUrl=https://bjw-s.github.io/helm-charts
+      chart: app-template
+      version: 3.4.0
+      interval: 15m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  values:
+    controllers:
+      main:
+        strategy: Recreate
+        containers:
+          main:
+            image:
+              repository: ghcr.io/matrix-org/sliding-sync
+              pullPolicy: IfNotPresent
+              tag: v0.99.19@sha256:b940cab564355b15a604d5522d9db3615f889d8e9870989d8f17e189aecb4c18
+            env:
+              TZ: "${TIMEZONE}"
+              SYNCV3_SERVER: "https://matrix.${SECRET_DOMAIN}"
+
+            envFrom:
+              - secretRef:
+                  name: sliding-sync-secret
+              - secretRef:
+                  name: sliding-sync-db-secret
+    service:
+      main:
+        controller: main
+        ports:
+          http:
+            port: 8008
+
+    ingress:
+      main:
+        enabled: true
+        className: external
+        annotations:
+          external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
+        hosts:
+          - host: syncv3.${SECRET_DOMAIN}
+            paths:
+              - path: /
+                pathType: Prefix
+                service:
+                  identifier: main
+                  port: http

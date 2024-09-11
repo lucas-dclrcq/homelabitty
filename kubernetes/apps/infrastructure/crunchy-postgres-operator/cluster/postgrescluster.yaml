@@ -109,6 +109,10 @@ spec:
       databases: ["matrixbridge"]
       password:
         type: AlphaNumeric
+    - name: "matrixslidingsync"
+      databases: ["matrixslidingsync"]
+      password:
+        type: AlphaNumeric
 
   backups:
     pgbackrest:
