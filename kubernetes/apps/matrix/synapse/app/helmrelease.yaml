@@ -17,9 +17,8 @@ spec:
       interval: 5m
   values:
     image:
-#      repository: ghcr.io/element-hq/synapse
-      repository: matrixdotorg/synapse
-      tag: v1.98.0
+      repository: ghcr.io/element-hq/synapse
+      tag: v1.105.1
 
     serverName: "${SECRET_DOMAIN}"
     publicServerName: "matrix.${SECRET_DOMAIN}"
