@@ -19,7 +19,7 @@ spec:
     image:
 #      repository: ghcr.io/element-hq/synapse
       repository: matrixdotorg/synapse
-      tag: v1.76.0
+      tag: v1.82.0
 
     serverName: "${SECRET_DOMAIN}"
     publicServerName: "matrix.${SECRET_DOMAIN}"
@@ -168,6 +168,10 @@ spec:
           memory: 2500Mi
         limits:
           memory: 2500Mi
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/_synapse/metrics"
+        prometheus.io/port: "9090"
       extraVolumes:
         - name: discord-registration
           secret:
