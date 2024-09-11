@@ -1,0 +1,69 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2beta2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: element
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.4.0
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    controllers:
+      element:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: vectorim/element-web
+              tag: v1.11.77@sha256:d8e91adc921296c32fee926fa47189208b1784792176a39d49bc80de9d7f8b26
+
+    service:
+      app:
+        controller: element
+        ports:
+          http:
+            port: 80
+
+    ingress:
+      app:
+        className: external
+        annotations:
+          nginx.ingress.kubernetes.io/configuration-snippet: |
+            add_header X-Frame-Options SAMEORIGIN;
+            add_header X-Content-Type-Options nosniff;
+            add_header X-XSS-Protection "1; mode=block";
+            add_header Content-Security-Policy "frame-ancestors 'none'";
+          external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
+        hosts:
+          - host: "{{ .Release.Name }}.${SECRET_DOMAIN}"
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: http
+
+    persistence:
+      config:
+        enabled: true
+        type: configMap
+        name: element-config
+        globalMounts:
+          - path: /app/config.json
+            subPath: config.json
