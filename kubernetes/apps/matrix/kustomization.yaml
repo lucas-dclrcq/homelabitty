@@ -7,3 +7,4 @@ resources:
   - ./bridge-discord/ks.yaml
   - ./sliding-sync/ks.yaml
   - ./element/ks.yaml
+  - ./synapse-admin/ks.yaml
