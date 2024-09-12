@@ -238,6 +238,9 @@ spec:
         node-feature-discovery:
           url: https://raw.githubusercontent.com/kubernetes-sigs/node-feature-discovery/master/examples/grafana-dashboard.json
           datasource: Prometheus
+        matrix-synapse:
+          url: https://raw.githubusercontent.com/element-hq/synapse/master/contrib/grafana/synapse.json
+          datasource: Prometheus
         prometheus:
           # renovate: depName="Prometheus"
           gnetId: 19105
