@@ -33,20 +33,30 @@ spec:
             image:
               repository: docker.io/caronc/apprise
               tag: 1.1.6
+
             env:
               TZ: "${TIMEZONE}"
+
             probes:
-              liveness:
+              liveness: &probes
                 enabled: true
-              readiness:
-                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /status
+                    port: &port 8000
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
 
     service:
       app:
         controller: apprise
         ports:
           http:
-            port: 8000
+            port: *port
 
     ingress:
       app:
