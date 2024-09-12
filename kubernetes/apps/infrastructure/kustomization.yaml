@@ -9,3 +9,4 @@ resources:
   - ./minio/ks.yaml
   - ./obsidian-couchdb/ks.yaml
   - ./dragonfly/ks.yaml
+  - ./apprise/ks.yaml
