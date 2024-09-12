@@ -28,6 +28,8 @@ spec:
   values:
     controllers:
       jellyseerr:
+        annotations:
+          reloader.stakater.com/auto: "true"
         containers:
           app:
             image:
@@ -50,6 +52,9 @@ spec:
                   periodSeconds: 10
                   timeoutSeconds: 1
                   failureThreshold: 3
+              readiness: *probes
+              startup:
+                enabled: false
 
             resources:
               requests:
@@ -70,7 +75,7 @@ spec:
 
     service:
       main:
-        controller: main
+        controller: jellyseerr
         ports:
           http:
             port: *port
@@ -94,8 +99,6 @@ spec:
         existingClaim: jellyseerr
         globalMounts:
           - path: /app/config
-      cache:
-        existingClaim: jellyseerr-cache
       logs:
         type: emptyDir
         globalMounts:
