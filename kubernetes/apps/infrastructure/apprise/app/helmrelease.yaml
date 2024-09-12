@@ -38,29 +38,24 @@ spec:
               TZ: "${TIMEZONE}"
 
             probes:
-              liveness: &probes
+              liveness:
                 enabled: true
-                custom: true
-                spec:
-                  httpGet:
-                    path: /status
-                    port: &port 8000
-                  initialDelaySeconds: 0
-                  periodSeconds: 10
-                  timeoutSeconds: 1
-                  failureThreshold: 3
-              readiness: *probes
+              readiness:
+                enabled: true
 
     service:
       app:
         controller: apprise
         ports:
           http:
-            port: *port
+            port: 8000
 
     ingress:
       app:
-        className: internal
+        className: external
+        annotations:
+          authentik.home.arpa/enabled: "true"
+          external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
         hosts:
           - host: apprise.${SECRET_DOMAIN}
             paths:
