@@ -8,4 +8,3 @@ resources:
   - ./nginx/ks.yaml
   - ./k8s-gateway/ks.yaml
   - ./nas-services/ks.yaml
-#  - ./crowdsec/ks.yaml
