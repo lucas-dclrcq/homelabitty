@@ -14,9 +14,17 @@ _... managed with Flux, Renovate, and GitHub Actions_ 🤖
 
 <div align="center">
 
+
+[![Talos](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.hoohoot.org%2Ftalos_version&style=flat-square&label=Talos)](https://github.com/kashalls/kromgo)&nbsp;&nbsp;
+[![k8s](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.hoohoot.org%2Fkubernetes_version&style=flat-square&label=K8S)](https://github.com/kashalls/kromgo)&nbsp;&nbsp;
 [![Age-Days](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.hoohoot.org%2Fcluster_age_days&style=flat-square&label=Age)](https://github.com/kashalls/kromgo)&nbsp;&nbsp;
 [![Uptime-Days](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.hoohoot.org%2Fcluster_uptime_days&style=flat-square&label=Uptime)](https://github.com/kashalls/kromgo)&nbsp;&nbsp;
+
+</div>
+<div align="center">
+
 [![Node-Count](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.hoohoot.org%2Fcluster_node_count&style=flat-square&label=Nodes)](https://github.com/kashalls/kromgo)&nbsp;&nbsp;
+[![Nodes-Memory](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.hoohoot.org%2Fcluster_total_ram&style=flat-square&label=RAM)](https://github.com/kashalls/kromgo)&nbsp;&nbsp;
 [![Pod-Count](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.hoohoot.org%2Fcluster_pod_count&style=flat-square&label=Pods)](https://github.com/kashalls/kromgo)&nbsp;&nbsp;
 [![CPU-Usage](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.hoohoot.org%2Fcluster_cpu_usage&style=flat-square&label=CPU)](https://github.com/kashalls/kromgo)&nbsp;&nbsp;
 [![Memory-Usage](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.hoohoot.org%2Fcluster_memory_usage&style=flat-square&label=Memory)](https://github.com/kashalls/kromgo)&nbsp;&nbsp;
@@ -31,13 +39,13 @@ _... managed with Flux, Renovate, and GitHub Actions_ 🤖
 ## 🔧 Hardware
 
 | Name      | Device                   | CPU       | OS Disk    | Data Disk(s) | RAM  | OS          | Purpose           |
-|-----------|--------------------------|-----------|------------| ------------ | ---- | ----------- | ----------------- |
+|-----------|--------------------------|-----------|------------| ------------ | ---- | ----------- |-------------------|
 | Fitz      | Dell Optiplex 3080 Micro | i5-10500T | 256GB NVMe | 1TB SSD      | 32GB | Talos       | K8S Control Plane |
 | Nighteyes | Dell Optiplex 3080 Micro | i5-10500T | 256GB NVMe | 1TB SSD      | 32GB | Talos       | K8S Control Plane |
 | Chade     | Dell Optiplex 3080 Micro | i5-10500T | 256GB NVMe | 1TB SSD      | 32GB | Talos       | K8S Control Plane |
-| Fool      | Dell Optiplex 3090 Micro | i5-10500T | 256GB NVMe | 1TB SSD      | 32GB | Talos       | K8S Control Plane |
-| Burrich   | Dell Optiplex 3090 Micro | i5-10500T | 256GB NVMe | 1TB SSD      | 32GB | Talos       | K8S Control Plane |
-| Bee       | Dell Optiplex 3090 Micro | i5-10500T | 256GB NVMe | 1TB SSD      | 32GB | Talos       | K8S Control Plane |
+| Fool      | Dell Optiplex 3090 Micro | i5-10500T | 256GB NVMe | 1TB SSD      | 32GB | Talos       | K8S Worker        |
+| Burrich   | Dell Optiplex 3090 Micro | i5-10500T | 256GB NVMe | 1TB SSD      | 32GB | Talos       | K8S Worker        |
+| Bee       | Dell Optiplex 3090 Micro | i5-10500T | 256GB NVMe | 1TB SSD      | 32GB | Talos       | K8S Worker        |
 | NAS       | Synology DS1520          |           |            | 5*4TB        | 8GB  | Synology OS | NAS (NFS/Backup)  |
 | MOX       | Turris MOX               |           | 32GB       | N/A          | 1GB  | Turris OS   | Router            |
 
