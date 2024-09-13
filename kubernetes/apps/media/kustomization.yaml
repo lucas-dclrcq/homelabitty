@@ -16,4 +16,3 @@ resources:
   - ./recyclarr/ks.yaml
   - ./jellyseerr/ks.yaml
   - ./calibre-web/ks.yaml
-  - ./calibre/ks.yaml
