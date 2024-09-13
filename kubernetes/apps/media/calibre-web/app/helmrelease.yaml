@@ -1,0 +1,96 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: calibre-web
+spec:
+  chart:
+    spec:
+      chart: app-template
+      version: 3.4.0
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  interval: 30m
+  values:
+    controllers:
+      calibre-web:
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+        pod:
+          securityContext:
+            runAsUser: 1026
+            runAsGroup: 100
+            fsGroup: 100
+            fsGroupChangePolicy: "OnRootMismatch"
+            supplementalGroups: [10000]
+
+        containers:
+          app:
+            image:
+              repository: ghcr.io/bjw-s/calibre-web
+              tag: 0.6.23@sha256:eeb6ff160ef756f2f94173204f2bc7ca7c57af5ad915021f9044ea2f99822654
+
+            env:
+              CACHE_DIR: /cache
+
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 5
+
+            resources:
+              requests:
+                cpu: 5m
+                memory: 470M
+              limits:
+                memory: 470M
+
+    service:
+      app:
+        controller: calibre-web
+        ports:
+          http:
+            port: 8083
+
+    ingress:
+      app:
+        className: external
+        annotations:
+          authentik.home.arpa/enabled: "true"
+          external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
+        hosts:
+          - host: "calibre-web.${SECRET_DOMAIN}"
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: http
+
+    persistence:
+      config:
+        existingClaim: calibre-web
+        advancedMounts:
+          calibre-web:
+            app:
+              - path: /config
+      media:
+        type: nfs
+        server: "nas.${INTERNAL_DOMAIN}"
+        path: /volume1/Media
+        globalMounts:
+          - path: /media
+      cache:
+        type: emptyDir
+        globalMounts:
+          - path: /cache
