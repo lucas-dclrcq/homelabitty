@@ -157,6 +157,11 @@ spec:
           gnetId: 5342
           revision: 9
           datasource: Prometheus
+        volsync:
+          # renovate: depName="VolSync Dashboard"
+          gnetId: 21356
+          revision: 3
+          datasource: Prometheus
 
       network:
         cert-manager:
