@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: nextcloud
+  name: &app nextcloud
 spec:
   timeout: 15m
   interval: 30m
@@ -32,45 +32,49 @@ spec:
 
     nextcloud:
       datadir: /var/www/data
+
       extraEnv:
         - name: REDIS_HOST
           value: dragonfly.infrastructure.svc.cluster.local
         - name: REDIS_HOST_PORT
           value: "6379"
+
       existingSecret:
         enabled: true
         secretName: nextcloud-secret
+
       host: "nextcloud.${SECRET_DOMAIN}"
+
       mail:
         enabled: false
-      securityContext:
-        runAsUser: 1026
-        runAsGroup: 100
-        runAsNonRoot: true
+
       configs:
         proxy.config.php: |-
           <?php
           $CONFIG = array (
             'trusted_proxies' => array(
               0 => '127.0.0.1',
-              1 => '${NETWORK_K8S_POD_CIDR}',
-              2 => '${NETWORK_K8S_POD_CIDR_V6}',
+              1 => '10.0.0.0/8',
+            ),
+            'trusted_domains' => array (
+              2 => 'nextcloud.${SECRET_DOMAIN}',
             ),
             'forwarded_for_headers' => array('HTTP_X_FORWARDED_FOR'),
           ); ?>
         misc.config.php: |-
           <?php
           $CONFIG = array (
-            'default_phone_region' => 'CA',
+            'default_phone_region' => 'FR',
             'maintenance_window_start' => 2,
           ); ?>
 
     internalDatabase:
       enabled: false
+
     externalDatabase:
       enabled: true
       type: postgresql
-      host: postgres-pgbouncer.infrastructure.svc.cluster.local
+      host: postgres-primary.infrastructure.svc.cluster.local
       database: nextcloud
       existingSecret:
         enabled: true
@@ -115,7 +119,7 @@ spec:
 
     persistence:
       enabled: true
-      existingClaim: ${VOLSYNC_CLAIM}
+      existingClaim: *app
       nextcloudData:
         enabled: true
         existingClaim: nextcloud-nfs
