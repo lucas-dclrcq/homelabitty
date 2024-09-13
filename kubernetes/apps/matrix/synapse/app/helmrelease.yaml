@@ -118,6 +118,7 @@ spec:
       enable_3pid_lookup: false
       app_service_config_files:
         - "/discord/registration.yml"
+      use_appservice_legacy_authorization: true
       oidc_providers:
         - idp_id: authentik
           idp_name: Hoohoot SSO
