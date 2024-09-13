@@ -166,9 +166,7 @@ spec:
           revision: 9
           datasource: Prometheus
         volsync:
-          # renovate: depName="VolSync Dashboard"
-          gnetId: 21356
-          revision: 3
+          url: https://raw.githubusercontent.com/lucas-dclrcq/homelabitty/main/grafana/dashboards/volsync.json
           datasource: Prometheus
 
       network:
