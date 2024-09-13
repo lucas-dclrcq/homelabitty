@@ -113,6 +113,10 @@ spec:
       databases: ["matrixslidingsync"]
       password:
         type: AlphaNumeric
+    - name: "gatus"
+      databases: ["gatus"]
+      password:
+        type: AlphaNumeric
 
   backups:
     pgbackrest:
