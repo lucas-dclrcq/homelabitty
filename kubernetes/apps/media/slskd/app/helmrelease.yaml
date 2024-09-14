@@ -34,7 +34,7 @@ spec:
           app:
             image:
               repository: ghcr.io/slskd/slskd
-              tag: 0.21.3@sha256:71f1e3a355d9f9194227e0f88eee91537e7d4cad41f09f2c93c94232c1b27012
+              tag: 0.21.4@sha256:3df44ec4e913abca91e2514503618e3dee972085484d74d9f164a04246f0a9cf
             env:
               COMPlus_EnableDiagnostics: "0"
               DOTNET_BUNDLE_EXTRACT_BASE_DIR: /tmp/.net
