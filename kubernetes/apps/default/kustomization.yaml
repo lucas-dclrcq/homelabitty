@@ -8,4 +8,5 @@ resources:
   - ./miniflux/ks.yaml
   - ./linkwarden/ks.yaml
   - ./filebrowser/ks.yaml
+  - ./changedetection/ks.yaml
 #  - ./nextcloud/ks.yaml
