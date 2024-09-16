@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: sabnzbd
+  name: &app sabnzbd
 spec:
   interval: 30m
   chart:
@@ -35,8 +35,8 @@ spec:
         containers:
           app:
             image:
-              repository: ghcr.io/onedr0p/sabnzbd
-              tag: 4.3.3@sha256:4ad73733ae11eb03852ba99d6e49bff93f8087f9f77b9b193a1063c3f6f31482
+              repository: ghcr.io/onedr0p/exportarr
+              tag: v2.0.1@sha256:9126280c89e194e668b2667bdaa054a772f8793923135b5c74f4f3870a71c059
             env:
               TZ: "${TIMEZONE}"
               SABNZBD__PORT: &port 80
@@ -72,6 +72,29 @@ spec:
                 cpu: 100m
               limits:
                 memory: 8Gi
+          exporter:
+            repository: ghcr.io/onedr0p/sabnzbd
+            tag: 4.3.3@sha256:4ad73733ae11eb03852ba99d6e49bff93f8087f9f77b9b193a1063c3f6f31482
+            args:
+              - sabnzbd
+            env:
+              PORT: &metrics_port 9090
+              URL: http://localhost
+              API_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    key: "SABNZBD__API_KEY"
+                    name: sabnzbd-secret
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+              resources:
+                requests:
+                  cpu: 10m
+                limits:
+                  memory: 128Mi
 
     defaultPodOptions:
       securityContext:
@@ -89,6 +112,18 @@ spec:
         ports:
           http:
             port: *port
+          exporter:
+            port: *metrics_port
+
+    serviceMonitor:
+      app:
+        serviceName: *app
+        endpoints:
+          - port: http
+            scheme: http
+            path: /metrics
+            interval: 30s
+            scrapeTimeout: 10s
 
     ingress:
       app:
