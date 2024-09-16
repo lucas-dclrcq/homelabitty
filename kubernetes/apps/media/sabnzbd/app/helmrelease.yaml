@@ -35,8 +35,9 @@ spec:
         containers:
           app:
             image:
-              repository: ghcr.io/onedr0p/exportarr
-              tag: v2.0.1@sha256:9126280c89e194e668b2667bdaa054a772f8793923135b5c74f4f3870a71c059
+              repository: ghcr.io/onedr0p/sabnzbd
+              tag: 4.3.3@sha256:4ad73733ae11eb03852ba99d6e49bff93f8087f9f77b9b193a1063c3f6f31482
+
             env:
               TZ: "${TIMEZONE}"
               SABNZBD__PORT: &port 80
@@ -75,10 +76,12 @@ spec:
 
           exporter:
             image:
-              repository: ghcr.io/onedr0p/sabnzbd
-              tag: 4.3.3@sha256:4ad73733ae11eb03852ba99d6e49bff93f8087f9f77b9b193a1063c3f6f31482
+              repository: ghcr.io/onedr0p/exportarr
+              tag: v2.0.1@sha256:9126280c89e194e668b2667bdaa054a772f8793923135b5c74f4f3870a71c059
+
             args:
               - sabnzbd
+
             env:
               PORT: &metrics_port 9090
               URL: http://localhost
@@ -92,11 +95,12 @@ spec:
                 enabled: true
               readiness:
                 enabled: true
-              resources:
-                requests:
-                  cpu: 10m
-                limits:
-                  memory: 128Mi
+
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 128Mi
 
     defaultPodOptions:
       securityContext:
@@ -121,7 +125,7 @@ spec:
       app:
         serviceName: *app
         endpoints:
-          - port: http
+          - port: exporter
             scheme: http
             path: /metrics
             interval: 30s
