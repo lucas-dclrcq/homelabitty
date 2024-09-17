@@ -117,6 +117,10 @@ spec:
       databases: ["gatus"]
       password:
         type: AlphaNumeric
+    - name: "autobrr"
+      databases: ["autobrr"]
+      password:
+        type: AlphaNumeric
 
   backups:
     pgbackrest:
