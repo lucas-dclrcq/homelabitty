@@ -11,3 +11,6 @@ Recommend using /media/data/downloads
 
 Recommend seeding limits for when seeding ratio hits "0". It is under Tools > Options > BitTorrent > Seeding Limits
 
+3/ Set torrent download/upload limits
+
+Recommended to keep 6 active torrents/downloads and 0 uploads. It is under Tools > Options > BitTorrent > Torrent Queueing
