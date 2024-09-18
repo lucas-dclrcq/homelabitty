@@ -38,3 +38,4 @@ resources:
   - ./nextcloud.yaml
   - ./authentik.yaml
   - ./ananace.yaml
+  - ./minecraft.yaml
