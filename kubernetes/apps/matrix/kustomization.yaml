@@ -8,3 +8,4 @@ resources:
   - ./sliding-sync/ks.yaml
   - ./element/ks.yaml
   - ./synapse-admin/ks.yaml
+  - ./baibot/ks.yaml
