@@ -37,7 +37,7 @@ spec:
 
             env:
               BAIBOT_PERSISTENCE_DATA_DIR_PATH: /data
-
+              BAIBOT_CONFIG_FILE_PATH: /config/config.yml
             probes:
               liveness:
                 enabled: false
@@ -48,12 +48,6 @@ spec:
                 spec:
                   failureThreshold: 30
                   periodSeconds: 5
-            securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
-              seccompProfile:
-                type: RuntimeDefault
 
             resources:
               requests:
@@ -61,13 +55,6 @@ spec:
                 memory: 146M
               limits:
                 memory: 512Mi
-
-    defaultPodOptions:
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 65534
-        runAsGroup: 65534
-        seccompProfile: { type: RuntimeDefault }
 
     service:
       app:
@@ -81,9 +68,6 @@ spec:
         enabled: true
         type: secret
         name: baibot-secret
-        globalMounts:
-          - path: /var/app/config.yml
-            subPath: config.yml
       data:
         enabled: true
         existingClaim: baibot
