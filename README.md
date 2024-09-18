@@ -43,7 +43,7 @@ _... managed with Flux, Renovate, and GitHub Actions_ 🤖
 | Fitz      | Dell Optiplex 3080 Micro | i5-10500T | 256GB NVMe | 1TB SSD      | 32GB | Talos       | K8S Control Plane |
 | Nighteyes | Dell Optiplex 3080 Micro | i5-10500T | 256GB NVMe | 1TB SSD      | 32GB | Talos       | K8S Control Plane |
 | Chade     | Dell Optiplex 3080 Micro | i5-10500T | 256GB NVMe | 1TB SSD      | 32GB | Talos       | K8S Control Plane |
-| Fool      | Dell Optiplex 3090 Micro | i5-10500T | 256GB NVMe | 1TB SSD      | 32GB | Talos       | K8S Worker        |
+| Fool      | Dell Optiplex 3090 Micro | i5-10500T | 512GB NVMe | 1TB SSD      | 32GB | Talos       | K8S Worker        |
 | Burrich   | Dell Optiplex 3090 Micro | i5-10500T | 256GB NVMe | 1TB SSD      | 32GB | Talos       | K8S Worker        |
 | Bee       | Dell Optiplex 3090 Micro | i5-10500T | 256GB NVMe | 1TB SSD      | 32GB | Talos       | K8S Worker        |
 | NAS       | Synology DS1520          |           |            | 5*4TB        | 8GB  | Synology OS | NAS (NFS/Backup)  |
