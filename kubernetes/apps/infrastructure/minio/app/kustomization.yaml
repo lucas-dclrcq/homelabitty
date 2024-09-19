@@ -5,3 +5,14 @@ kind: Kustomization
 resources:
   - ./secret.sops.yaml
   - ./helmrelease.yaml
+configMapGenerator:
+  - name: minio-dashboard
+    files:
+      - minio.json=./resources/grafana_dashboard.json
+generatorOptions:
+  annotations:
+    kustomize.toolkit.fluxcd.io/substitute: disabled
+    k8s-sidecar-target-directory: /var/lib/grafana/dashboards/storage
+  labels:
+    grafana_dashboard: "true"
+  disableNameSuffixHash: true

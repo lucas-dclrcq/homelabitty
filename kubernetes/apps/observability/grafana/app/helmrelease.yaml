@@ -107,14 +107,14 @@ spec:
             editable: true
             options:
               path: /var/lib/grafana/dashboards/default
-          - name: ceph
+          - name: storage
             orgId: 1
-            folder: Ceph
+            folder: Storage
             type: file
             disableDeletion: false
             editable: true
             options:
-              path: /var/lib/grafana/dashboards/ceph
+              path: /var/lib/grafana/dashboards/storage
           - name: flux
             orgId: 1
             folder: Flux
@@ -147,9 +147,17 @@ spec:
             editable: true
             options:
               path: /var/lib/grafana/dashboards/kubernetes
+          - name: apps
+            orgId: 1
+            folder: Apps
+            type: file
+            disableDeletion: false
+            editable: true
+            options:
+              path: /var/lib/grafana/dashboards/apps
 
     dashboards:
-      ceph:
+      storage:
         ceph-cluster:
           # renovate: depName="Ceph Cluster"
           gnetId: 2842
@@ -164,9 +172,6 @@ spec:
           # renovate: depName="Ceph - Pools"
           gnetId: 5342
           revision: 9
-          datasource: Prometheus
-        volsync:
-          url: https://raw.githubusercontent.com/lucas-dclrcq/homelabitty/main/grafana/dashboards/volsync.json
           datasource: Prometheus
 
       network:
@@ -253,10 +258,15 @@ spec:
           revision: 14
           datasource: Prometheus
 
-      default:
+      apps:
         miniflux:
           url: https://raw.githubusercontent.com/miniflux/v2/main/contrib/grafana/dashboard.json
           datasource: Prometheus
+        matrix-synapse:
+          url: https://raw.githubusercontent.com/element-hq/synapse/master/contrib/grafana/synapse.json
+          datasource: Prometheus
+
+      default:
         node-exporter-full:
           # renovate: depName="Node Exporter Full"
           gnetId: 1860
@@ -264,9 +274,6 @@ spec:
           datasource: Prometheus
         node-feature-discovery:
           url: https://raw.githubusercontent.com/kubernetes-sigs/node-feature-discovery/master/examples/grafana-dashboard.json
-          datasource: Prometheus
-        matrix-synapse:
-          url: https://raw.githubusercontent.com/element-hq/synapse/master/contrib/grafana/synapse.json
           datasource: Prometheus
         prometheus:
           # renovate: depName="Prometheus"
@@ -277,9 +284,6 @@ spec:
           # renovate: depName="Hashicorp Vault"
           gnetId: 12904
           revision: 2
-          datasource: Prometheus
-        minio:
-          url: https://raw.githubusercontent.com/lucas-dclrcq/homelabitty/main/grafana/dashboards/minio.json
           datasource: Prometheus
 
     sidecar:
