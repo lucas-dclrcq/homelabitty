@@ -18,3 +18,4 @@ resources:
   - ./calibre-web/ks.yaml
   - ./autobrr/ks.yaml
   - ./slskd-to-betanin-notifier/ks.yaml
+  - ./jellyfin/ks.yaml
