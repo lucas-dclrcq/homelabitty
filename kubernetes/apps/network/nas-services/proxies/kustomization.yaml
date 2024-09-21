@@ -5,5 +5,4 @@ kind: Kustomization
 resources:
   - ./nas.service.yaml
   - ./jellyfin.ingress.yaml
-  - ./navidrome.ingress.yaml
   - ./synology.ingress.yaml
