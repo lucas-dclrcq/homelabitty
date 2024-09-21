@@ -265,6 +265,11 @@ spec:
         matrix-synapse:
           url: https://raw.githubusercontent.com/element-hq/synapse/master/contrib/grafana/synapse.json
           datasource: Prometheus
+        authentik:
+          # renovate: depName="authentik"
+          gnetId: 14837
+          version: 2
+          datasource: Prometheus
 
       default:
         node-exporter-full:
