@@ -90,7 +90,7 @@ spec:
         annotations:
           external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
         hosts:
-          - host: "jellyfin2.${SECRET_DOMAIN}"
+          - host: "jellyfin.${SECRET_DOMAIN}"
             paths:
               - path: /
                 service:
