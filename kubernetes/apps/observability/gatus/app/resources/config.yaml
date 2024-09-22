@@ -12,11 +12,9 @@ ui:
   header: Health Status
 alerting:
   matrix:
-    title: Gatus
     server-url: "http://synapse-matrix-synapse.matrix.svc.cluster.local:8008"
     access-token: "${MATRIX_TOKEN}"
     internal-room-id: "${MATRIX_ROOM}"
-    priority: 1
     default-alert:
       description: health-check failed
       send-on-resolved: true
