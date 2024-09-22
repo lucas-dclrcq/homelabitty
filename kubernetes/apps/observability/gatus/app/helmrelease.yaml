@@ -25,7 +25,6 @@ spec:
   values:
     controllers:
       gatus:
-        replicas: 3
         strategy: RollingUpdate
         labels:
           postgres: "true"
