@@ -10,7 +10,6 @@ debug: false
 ui:
   title: Health Status
   header: Health Status
-  logo: https://raw.githubusercontent.com/joryirving/home-ops/main/docs/src/assets/icons/lds-transparent.png
 connectivity:
   checker:
     target: 1.1.1.1:53
@@ -30,7 +29,3 @@ endpoints:
     client:
       dns-resolver: tcp://1.1.1.1:53
     conditions: ["[STATUS] == 404"]
-#remote:
-#  instances:
-#    - endpoint-prefix: ""
-#      url: "https://status-utility.${SECRET_DOMAIN}/api/v1/endpoints/statuses"
