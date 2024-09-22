@@ -1,9 +1,9 @@
 ---
 web:
-  port: ${WEB_PORT}
+  port: $${WEB_PORT}
 storage:
   type: postgres
-  path: ${POSTGRES_URI}
+  path: $${POSTGRES_URI}
   caching: true
 metrics: true
 debug: false
@@ -11,15 +11,20 @@ ui:
   title: Health Status
   header: Health Status
 alerting:
-  matrix:
-    server-url: "http://synapse-matrix-synapse.matrix.svc.cluster.local:8008"
-    access-token: "${MATRIX_TOKEN}"
-    internal-room-id: "${MATRIX_ROOM}"
+  pushover:
+    title: Gatus
+    application-token: $${PUSHOVER_TOKEN}
+    user-key: $${PUSHOVER_USER_KEY}
+    priority: 1
     default-alert:
       description: health-check failed
       send-on-resolved: true
       failure-threshold: 3
       success-threshold: 3
+  matrix:
+    server-url: "http://synapse-matrix-synapse.matrix.svc.cluster.local:8008"
+    access-token: $${MATRIX_TOKEN}
+    internal-room-id: "!CdhmJpkYAURXzzYGGg:$${SECRET_DOMAIN}"
 connectivity:
   checker:
     target: 1.1.1.1:53
