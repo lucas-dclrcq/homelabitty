@@ -32,7 +32,7 @@ spec:
           main:
             image:
               repository: ghcr.io/plankanban/planka
-              tag: 1.22.0@sha256:dcfde343825471c854507e77879d002f442552d90ac5ea450e2e89cda648b402
+              tag: 1.23.0@sha256:0d652c03ced37ba787fcb1f78839e5de99808f13458701181b32f694f65dc027
 
             env:
               BASE_URL: &url "{{ .Release.Name }}.${SECRET_DOMAIN}"
