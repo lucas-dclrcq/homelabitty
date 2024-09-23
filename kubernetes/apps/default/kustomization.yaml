@@ -9,4 +9,5 @@ resources:
   - ./linkwarden/ks.yaml
   - ./filebrowser/ks.yaml
   - ./changedetection/ks.yaml
+  - ./planka/ks.yaml
 #  - ./nextcloud/ks.yaml
