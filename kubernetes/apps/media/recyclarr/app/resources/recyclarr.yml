@@ -12,36 +12,11 @@ sonarr:
       type: series
 
     quality_profiles:
-      - name: Web 1080p
-        # reset_unmatched_scores:
-        #   enabled: true
-        upgrade:
-          allowed: true
-          until_quality: Web-1080p
-          until_score: 10000
-        min_format_score: 0
-        quality_sort: top
-        qualities:
-          - name: Bluray-1080p Remux
-          - name: Web-1080p
-            qualities:
-              - WEBDL-1080p
-              - WEBRip-1080p
-          - name: HDTV-1080p
-          - name: Web-720p
-            qualities:
-              - WEBDL-720p
-              - WEBRip-720p
-          - name: HDTV-720p
-          - name: Web-480p
-            qualities:
-              - WEBDL-480p
-              - WEBRip-480p
-          - name: DVD
-          - name: SDTV
       - name: Web 720p
         reset_unmatched_scores:
           enabled: true
+          except:
+            - "Language: Not Original"
         upgrade:
           allowed: true
           until_quality: Web-720p
@@ -53,25 +28,13 @@ sonarr:
             qualities:
               - WEBDL-720p
               - WEBRip-720p
+          - name: Bluray-720p
           - name: HDTV-720p
-          - name: Web-480p
+          - name: Bluray|WEB-480p
             qualities:
               - WEBDL-480p
               - WEBRip-480p
-          - name: DVD
-          - name: SDTV
-      - name: Web 480p
-        reset_unmatched_scores:
-          enabled: true
-        upgrade:
-          allowed: false
-        min_format_score: 0
-        quality_sort: top
-        qualities:
-          - name: Web-480p
-            qualities:
-              - WEBDL-480p
-              - WEBRip-480p
+              - Bluray-480p
           - name: DVD
           - name: SDTV
     custom_formats:
@@ -135,16 +98,7 @@ sonarr:
           - a4c51febd4d8b2a0db10a3c974f21d92  # FR WEB Tier 02
           - dbfc0a4b5cb4cbd693311c4482ae9683  # FR WEB Tier 03
         assign_scores_to:
-          - name: Web 1080p
           - name: Web 720p
-      - trash_ids: [9965a052eb87b0d10313b1cea89eb451] # Remux Tier 01
-        assign_scores_to:
-          - name: Web 1080p
-            score: 1900
-      - trash_ids: [8a1d0c3d7497e741736761a1da866a2e] # Remux Tier 02
-        assign_scores_to:
-          - name: Web 1080p
-            score: 1850
 
 radarr:
   radarr:
@@ -158,24 +112,30 @@ radarr:
       type: movie
 
     quality_profiles:
-      - name: Remux/Web 1080p
+      - name: Movies
         reset_unmatched_scores:
           enabled: true
+          except:
+            - "Language: Not Original"
         upgrade:
           allowed: true
-          until_quality: Remux-1080p
+          until_quality: Bluray|WEB|720p
           until_score: 10000
         min_format_score: 0
         quality_sort: top
         qualities:
-          - name: Remux-1080p
-          - name: Bluray-1080p
-            enabled: false
-          - name: Web-1080p
+          - name: Bluray|WEB|720p
             qualities:
-              - WEBDL-1080p
-              - WEBRip-1080p
-          - name: HDTV-1080p
+              - WEBDL-720p
+              - WEBRip-720p
+              - Bluray-720p
+          - name: Bluray-576p
+          - name: Bluray|WEB|480p
+            qualities:
+              - WEBDL-480p
+              - WEBRip-480p
+              - Bluray-480p
+          - name: DVD
     custom_formats:
       - trash_ids:
           # Audio
