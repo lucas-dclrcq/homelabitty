@@ -37,12 +37,6 @@ spec:
             env:
               TZ: "${TIMEZONE}"
 
-            probes:
-              liveness:
-                enabled: true
-              readiness:
-                enabled: true
-
             resources:
               requests:
                 cpu: 10m
