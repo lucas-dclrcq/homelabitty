@@ -1,0 +1,16 @@
+### Test notification
+POST http://localhost:8000/notify/{{apprise_conf_id}}
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+
+--WebAppBoundary
+Content-Disposition: form-data; name="body"
+
+Test Message
+--WebAppBoundary
+Content-Disposition: form-data; name="tags"
+
+all
+--WebAppBoundary--
+
+###
+

@@ -25,3 +25,5 @@ Brewfile.lock.json
 wiki
 # Bootstrap
 /config.yaml
+
+requests/http-client.private.env.json

@@ -1,0 +1,42 @@
+###
+
+@room_id=TBD
+
+### Purge matrix room
+DELETE {{matrix_url}}/_synapse/admin/v1/rooms/{{room_id}}
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer TBD
+
+{
+  "purge": true,
+  "message": "Sorry - kicking you out to clean up the database"
+}
+
+### List media size per user
+
+GET {{matrix_url}}/_synapse/admin/v1/statistics/users/media
+Accept: application/json
+Authorization: Bearer TVD
+
+
+### Send a message with a linked image
+
+PUT https://{{matrix_url}}/_matrix/client/r0/rooms/ROOM_ID/send/m.room.message/TXN_ID?access_token={{}}
+Content-Type: application/json
+
+{
+  "msgtype": "m.text",
+  "body": "This is a text description and an image.",
+  "format": "org.matrix.custom.html",
+  "formatted_body": "<p>This is a text description and an image:</p><img src=\"mxc://your-homeserver-url/media_id\" alt=\"Image description\" />",
+  "m.relates_to": {
+    "msgtype": "m.image",
+    "url": "mxc://your-homeserver-url/media_id",
+    "info": {
+      "mimetype": "image/jpeg",
+      "size": 12345,
+      "w": 800,
+      "h": 600
+    }
+  }
