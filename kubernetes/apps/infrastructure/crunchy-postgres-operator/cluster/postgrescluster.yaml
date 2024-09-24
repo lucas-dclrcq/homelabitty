@@ -125,10 +125,14 @@ spec:
       databases: ["atuin"]
       password:
         type: AlphaNumeric
+    - name: "vaultwarden"
+      databases: ["vaultwarden"]
+      password:
+        type: AlphaNumeric
 
   backups:
     pgbackrest:
-      configuration: &backupConfig
+      configuration:
         - secret:
             name: crunchy-postgres-secret
       global: &backupFlag
