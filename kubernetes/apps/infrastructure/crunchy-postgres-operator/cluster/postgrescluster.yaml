@@ -121,8 +121,8 @@ spec:
       databases: ["autobrr"]
       password:
         type: AlphaNumeric
-    - name: "planka"
-      databases: ["planka"]
+    - name: "atuin"
+      databases: ["atuin"]
       password:
         type: AlphaNumeric
 
