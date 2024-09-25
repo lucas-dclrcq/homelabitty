@@ -81,13 +81,13 @@ spec:
     externalDatabase:
       enabled: true
       type: postgresql
-      host: postgres-primary.infrastructure.svc.cluster.local
-      database: nextcloud
       existingSecret:
         enabled: true
         secretName: nextcloud-db-secret
         usernameKey: POSTGRES_USER
         passwordKey: POSTGRES_PASS
+        hostKey: POSTGRES_HOST
+        databaseKey: POSTGRES_DB
 
     ingress:
       enabled: true
