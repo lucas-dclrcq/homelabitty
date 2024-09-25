@@ -29,7 +29,14 @@ spec:
 
     nginx:
       enabled: true
-
+      extraVolumes:
+        - name: nfs-nas
+          nfs:
+            server: nas.${INTERNAL_DOMAIN}
+            path: /volume1/Nextcloud
+      extraVolumeMounts:
+        - name: nfs-nas
+          mountPath: /var/www/data
     nextcloud:
       datadir: /var/www/data
 
@@ -120,10 +127,6 @@ spec:
     persistence:
       enabled: true
       existingClaim: *app
-      nextcloudData:
-        enabled: true
-        existingClaim: nextcloud-nfs
-        accessMode: ReadWriteMany
 
     cronjob:
       enabled: true
