@@ -1,0 +1,7 @@
+### List torrents
+GET {{betanin_url}}/api/torrents?page=1&per_page=25
+X-API-Key: {{betanin_api_key}}
+
+### Delete torrent
+DELETE {{betanin_url}}/api/torrents/27
+X-API-Key: {{betanin_api_key}}
