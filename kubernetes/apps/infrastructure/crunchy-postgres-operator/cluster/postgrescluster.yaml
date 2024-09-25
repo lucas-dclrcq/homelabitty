@@ -129,7 +129,10 @@ spec:
       databases: ["vaultwarden"]
       password:
         type: AlphaNumeric
-
+    - name: "jellystat"
+      databases: ["jellystat"]
+      password:
+        type: AlphaNumeric
   backups:
     pgbackrest:
       configuration:

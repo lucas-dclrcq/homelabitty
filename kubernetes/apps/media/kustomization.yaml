@@ -19,3 +19,4 @@ resources:
   - ./autobrr/ks.yaml
   - ./slskd-to-betanin-notifier/ks.yaml
   - ./jellyfin/ks.yaml
+  - ./jellystat/ks.yaml
