@@ -29,6 +29,9 @@ spec:
 
     nginx:
       enabled: true
+
+    nextcloud:
+      datadir: /var/www/data
       extraVolumes:
         - name: nfs-nas
           nfs:
@@ -37,9 +40,6 @@ spec:
       extraVolumeMounts:
         - name: nfs-nas
           mountPath: /var/www/data
-    nextcloud:
-      datadir: /var/www/data
-
       extraEnv:
         - name: REDIS_HOST
           value: dragonfly.infrastructure.svc.cluster.local
