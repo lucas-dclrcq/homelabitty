@@ -1,0 +1,15 @@
+---
+id: meta
+url: http://mautrix-meta.matrix.svc.cluster.local:29319
+as_token: {{ .as_token }}
+hs_token: {{ .hs_token }}
+sender_localpart: {{ .sender_localpart }}
+rate_limited: false
+namespaces:
+  users:
+    - regex: ^@metabot:hoohoot\.org$
+      exclusive: true
+    - regex: ^@meta_.*:hoohoot\.org$
+      exclusive: true
+de.sorunome.msc2409.push_ephemeral: true
+push_ephemeral: true
