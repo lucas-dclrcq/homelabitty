@@ -46,8 +46,6 @@ spec:
       enabled: false
     admissionController:
       enabled: false
-      cleanupOnDelete:
-        enabled: true
     recommender:
       extraArgs:
         storage: prometheus

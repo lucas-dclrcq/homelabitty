@@ -22,7 +22,7 @@ metrics:
     title: Nodes
 
   - name: cluster_total_ram
-    query: sum(ceil(node_memory_MemTotal_bytes / 1024 / 1024 / 1024))
+    query: round(sum(machine_memory_bytes) / 1024 / 1024 / 1024)
     suffix: "Gb"
     colors:
       - { color: "green", min: 0, max: 9999 }
