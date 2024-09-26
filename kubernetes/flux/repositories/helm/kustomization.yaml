@@ -39,3 +39,4 @@ resources:
   - ./authentik.yaml
   - ./ananace.yaml
   - ./minecraft.yaml
+  - ./fairwinds.yaml
