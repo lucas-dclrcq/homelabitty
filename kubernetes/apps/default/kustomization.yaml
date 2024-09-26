@@ -6,7 +6,6 @@ resources:
   - ./namespace.yaml
   - ./echo-server/ks.yaml
   - ./miniflux/ks.yaml
-  - ./linkwarden/ks.yaml
   - ./filebrowser/ks.yaml
   - ./changedetection/ks.yaml
   - ./atuin/ks.yaml
