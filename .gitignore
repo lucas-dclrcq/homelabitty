@@ -27,3 +27,4 @@ wiki
 /config.yaml
 
 requests/http-client.private.env.json
+cluster-keys.json
