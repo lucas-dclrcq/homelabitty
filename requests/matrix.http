@@ -14,6 +14,17 @@ GET {{matrix_url}}/_synapse/admin/v1/statistics/users/media
 Accept: application/json
 Authorization: Bearer {{matrix_token}}
 
+### Create MXC
+POST {{matrix_url}}/_matrix/media/v1/create
+Accept: application/json
+Authorization: Bearer {{matrix_token}}
+
+### Upload an image to the Matrix Content Repository
+PUT  https://{{matrix_url}}/_matrix/media/v3/upload/hoohoot.org/OLmAYFgLbMGzEAXjpIRqHPGY?filename=jellystat.png
+Authorization: Bearer {{matrix_token}}
+Content-Type: application/octet-stream
+
+< /home/lucas/Downloads/jellystat.png
 
 ### Send a message with a linked image
 PUT https://{{matrix_url}}/_matrix/client/r0/rooms/{{matrix_room}}/send/m.room.message/TXN_ID?access_token={{matrix_token}}
@@ -26,12 +37,9 @@ Content-Type: application/json
   "formatted_body": "<p>This is a text description and an image:</p><img src=\"mxc://your-homeserver-url/media_id\" alt=\"Image description\" />",
   "m.relates_to": {
     "msgtype": "m.image",
-    "url": "mxc://your-homeserver-url/media_id",
+    "url": "mxc://hoohoot.org/OLmAYFgLbMGzEAXjpIRqHPGY",
     "info": {
-      "mimetype": "image/jpeg",
-      "size": 12345,
-      "w": 800,
-      "h": 600
+      "mimetype": "image/png",
     }
   }
 }
