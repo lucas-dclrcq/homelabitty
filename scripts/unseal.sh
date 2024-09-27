@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VAULT_UNSEAL_KEY=$(jq -r ".unseal_keys_b64[]" $1)
+VAULT_UNSEAL_KEY=$(jq -r ".unseal_keys_hex[]" $1)
 
 kubens vault
 kubectl exec -ti vault-0 -- vault operator unseal "$VAULT_UNSEAL_KEY"
