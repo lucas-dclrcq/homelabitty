@@ -9,3 +9,4 @@ resources:
   - ./element/ks.yaml
   - ./synapse-admin/ks.yaml
   - ./baibot/ks.yaml
+  - ./synapse-usage-exporter/ks.yaml
