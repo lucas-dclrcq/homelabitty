@@ -1,12 +1,8 @@
-###
-
-@room_id=TBD
-
 ### Purge matrix room
-DELETE {{matrix_url}}/_synapse/admin/v1/rooms/{{room_id}}
+DELETE {{matrix_url}}/_synapse/admin/v1/rooms/{{matrix_room}}
 Accept: application/json
 Content-Type: application/json
-Authorization: Bearer TBD
+Authorization: Bearer {{matrix_token}}
 
 {
   "purge": true,
@@ -14,15 +10,13 @@ Authorization: Bearer TBD
 }
 
 ### List media size per user
-
 GET {{matrix_url}}/_synapse/admin/v1/statistics/users/media
 Accept: application/json
-Authorization: Bearer TVD
+Authorization: Bearer {{matrix_token}}
 
 
 ### Send a message with a linked image
-
-PUT https://{{matrix_url}}/_matrix/client/r0/rooms/ROOM_ID/send/m.room.message/TXN_ID?access_token={{}}
+PUT https://{{matrix_url}}/_matrix/client/r0/rooms/{{matrix_room}}/send/m.room.message/TXN_ID?access_token={{matrix_token}}
 Content-Type: application/json
 
 {
@@ -41,3 +35,19 @@ Content-Type: application/json
     }
   }
 }
+
+### Make user room admin
+POST https://{{matrix_url}}/_synapse/admin/v1/rooms/{{matrix_room}}/make_room_admin
+Content-Type: application/json
+Authorization: Bearer {{matrix_token}}
+
+{
+    "user_id": "{{matrix_admin}}"
+}
+
+### Delete local media by date
+POST https://{{matrix_url}}/_synapse/admin/v1/media/delete?before_ts=1725184800000
+Content-Type: application/json
+Authorization: Bearer {{matrix_token}}
+
+{}
