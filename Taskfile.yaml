@@ -34,6 +34,8 @@ includes:
   user:
     taskfile: .taskfiles/User
     optional: true
+  rook:
+    taskfile: .taskfiles/Rook
 
 tasks:
 

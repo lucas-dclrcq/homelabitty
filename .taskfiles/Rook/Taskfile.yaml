@@ -1,0 +1,59 @@
+---
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: '3'
+
+vars:
+  BOOTSTRAP_RESOURCES_DIR: '{{.ROOT_DIR}}/.taskfiles/Rook/resources'
+  TALOS_CONTROLLER:
+    sh: talosctl config info --output json | jq --raw-output '.endpoints[]' | shuf -n 1
+
+tasks:
+  rook:
+    internal: true
+    vars: &vars
+      CLUSTER: '{{.CLUSTER}}'
+      NODE: '{{.ITEM}}'
+      DISK: '{{.DISK}}'
+    cmds:
+      - for: { var: NODES }
+        task: rook-data
+        vars: *vars
+      - for: { var: NODES }
+        task: rook-disk
+        vars: *vars
+
+  rook-disk:
+    cmds:
+      - envsubst < <(cat {{.BOOTSTRAP_RESOURCES_DIR}}/rook-disk-job.tmpl.yaml) | kubectl apply -f -
+      - bash {{.BOOTSTRAP_RESOURCES_DIR}}/wait-for-job.sh {{.JOB}} default
+      - kubectl --namespace default wait job/{{.JOB}} --for condition=complete --timeout=1m
+      - kubectl --namespace default logs job/{{.JOB}}
+      - kubectl --namespace default delete job {{.JOB}}
+    env:
+      DISK: '{{.DISK}}'
+      JOB: '{{.JOB}}'
+      NODE: '{{.NODE}}'
+    vars:
+      JOB: wipe-disk-{{.NODE}}
+    preconditions:
+      - test -f {{.BOOTSTRAP_RESOURCES_DIR}}/wait-for-job.sh
+      - test -f {{.BOOTSTRAP_RESOURCES_DIR}}/rook-disk-job.tmpl.yaml
+
+  rook-data:
+    internal: true
+    cmds:
+      - $GOPATH/bin/envsubst < <(cat {{.BOOTSTRAP_RESOURCES_DIR}}/rook-data-job.tmpl.yaml) | kubectl apply -f -
+      - bash {{.BOOTSTRAP_RESOURCES_DIR}}/wait-for-job.sh {{.JOB}} default {{.CLUSTER}}
+      - kubectl --namespace default wait job/{{.JOB}} --for condition=complete --timeout=1m
+      - kubectl --namespace default logs job/{{.JOB}}
+      - kubectl --namespace default delete job {{.JOB}}
+    env:
+      DISK: '{{.DISK}}'
+      JOB: '{{.JOB}}'
+      NODE: '{{.NODE}}'
+    vars:
+      JOB: wipe-data-{{.NODE}}
+    preconditions:
+      - test -f $GOPATH/bin/envsubst
+      - test -f {{.BOOTSTRAP_RESOURCES_DIR}}/wait-for-job.sh
+      - test -f {{.BOOTSTRAP_RESOURCES_DIR}}/rook-data-job.tmpl.yaml
