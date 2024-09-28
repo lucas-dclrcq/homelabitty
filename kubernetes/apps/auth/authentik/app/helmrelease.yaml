@@ -27,9 +27,12 @@ spec:
             name: authentik-db-secret
 
     redis:
-      enabled: true
+      enabled: false
 
     server:
+      autoscaling:
+        enabled: true
+        minReplicas: 2
       metrics:
         enabled: true
         serviceMonitor:
@@ -42,6 +45,11 @@ spec:
           external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
         hosts:
           - sso.${SECRET_DOMAIN}
+
+    worker:
+      autoscaling:
+        enabled: true
+        minReplicas: 2
 
     prometheus:
       rules:
