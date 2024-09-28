@@ -1,6 +1,6 @@
-## Matrix Synapse
+# Matrix Synapse
 
-### Monitoring
+## Monitoring
 
 Docs :
 - https://element-hq.github.io/synapse/latest/metrics-howto.html

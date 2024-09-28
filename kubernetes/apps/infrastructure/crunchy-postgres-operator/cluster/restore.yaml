@@ -12,8 +12,6 @@ spec:
       clusterName: postgres
       repoName: repo1
       options:
-        - --type=time
-        - --target="2024-09-26 12:00:00-02"
         - --db-include=matrixbridge
 
   service:
@@ -72,5 +70,10 @@ spec:
         - name: repo1
           s3:
             bucket: "postgres-backup"
+            endpoint: "s3.${SECRET_DOMAIN}"
+            region: "us-east-1"
+        - name: repo2
+          s3:
+            bucket: "matrix-backup"
             endpoint: "s3.${SECRET_DOMAIN}"
             region: "us-east-1"

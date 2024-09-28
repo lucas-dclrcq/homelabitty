@@ -95,6 +95,23 @@ nodes:
             gateway: "192.168.1.1"
         mtu: 1500
 
+  - hostname: "burrich"
+    ipAddress: "192.168.1.15"
+    installDiskSelector:
+      busPath: "/pci0000:00/0000:00:1b.0/0000:01:00.0/nvme/nvme0/nvme0n1"
+    talosImageURL: factory.talos.dev/installer/376567988ad370138ad8b2698212367b8edcb69b5fd68c80be1f2ec7d603b4ba
+    controlPlane: false
+    networkInterfaces:
+      - deviceSelector:
+          hardwareAddr: "C0:25:A5:A9:D3:5C"
+        dhcp: true
+        addresses:
+          - "192.168.1.15/24"
+        routes:
+          - network: 0.0.0.0/0
+            gateway: "192.168.1.1"
+        mtu: 1500
+
 # Global patches
 patches:
   - "@./patches/global/cluster-discovery.yaml"
