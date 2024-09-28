@@ -12,6 +12,15 @@
       "separateMinorPatch": true
     },
     {
+      "description": ["AWS Cli"],
+      "matchPackageNames": ["amazon/aws-cli"],
+      "matchDatasources": ["docker"],
+      "separateMinorPatch": true,
+      "patch": {
+        "enabled": false
+      }
+    },
+    {
       "description": ["Flux Group"],
       "groupName": "Flux",
       "matchPackagePatterns": ["fluxcd"],
