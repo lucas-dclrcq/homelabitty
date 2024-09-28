@@ -37,7 +37,7 @@ spec:
           app:
             image:
               repository: ghcr.io/lucas-dclrcq/slskd-to-betanin-notifier
-              tag: latest@sha256:f0399a1b28971c1724fd75c0a8c2ae505ae38ff6659fe458dcc0e4d7da616a53
+              tag: latest@sha256:f4670cd8289f59d0eed29f871d13b430e9d9b15adcdb8b7d031c55dd55bee4a6
 
             env:
               SLSKD_COMPLETE_FOLDER_PATH: /media/Downloads/nicotine/complete
