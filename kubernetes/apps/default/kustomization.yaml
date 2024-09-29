@@ -11,3 +11,4 @@ resources:
   - ./atuin/ks.yaml
   - ./vaultwarden/ks.yaml
   - ./nextcloud/ks.yaml
+  - ./actual/ks.yaml
