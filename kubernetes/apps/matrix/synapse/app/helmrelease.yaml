@@ -118,6 +118,11 @@ spec:
       app_service_config_files:
         - "/discord/registration.yml"
       use_appservice_legacy_authorization: true
+      url_preview_ip_range_blacklist:
+        - "127.0.0.0/8"
+        - '192.168.0.0/16'
+        - '10.0.0.0/8'
+      url_preview_enabled: true
       oidc_providers:
         - idp_id: authentik
           idp_name: Hoohoot SSO
