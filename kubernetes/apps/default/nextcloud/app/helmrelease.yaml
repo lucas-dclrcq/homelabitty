@@ -133,10 +133,10 @@ spec:
 
     resources:
       requests:
-        cpu: 34m
-        memory: 204Mi
+        cpu: 10m
+        memory: 512Mi
       limits:
-        memory: 363Mi
+        memory: 2Gi
 
     livenessProbe:
       enabled: false
