@@ -13,3 +13,4 @@ resources:
 #  - ./nextcloud/ks.yaml
   - ./actual/ks.yaml
   - ./wallabag/ks.yaml
+  - ./immich/ks.yaml

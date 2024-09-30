@@ -1,0 +1,77 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app immich-microservices
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.4.0
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  maxHistory: 2
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  dependsOn:
+    - name: immich-server
+      namespace: default
+  values:
+    controllers:
+      immich-microservices:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/immich-app/immich-server
+              tag: v1.116.2@sha256:effd3d44202964c5f53af85e0fd0f2ca5287c989a43c4d55ba71133eb148bed3
+
+            env:
+              TZ: ${TIMEZONE}
+              IMMICH_WORKERS_EXCLUDE: api
+
+            envFrom:
+              - secretRef:
+                  name: immich-secret
+
+            resources:
+              requests:
+                cpu: 10m
+                gpu.intel.com/i915: 1
+                memory: 512Mi
+              limits:
+                gpu.intel.com/i915: 1
+                memory: 8000Mi
+
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+
+        pod:
+          enableServiceLinks: false
+          securityContext:
+            runAsUser: 1026
+            runAsGroup: 100
+            fsGroup: 100
+            fsGroupChangePolicy: OnRootMismatch
+          nodeSelector:
+            intel.feature.node.kubernetes.io/gpu: "true"
+
+    persistence:
+      library:
+        type: nfs
+        server: "nas.${INTERNAL_DOMAIN}"
+        path: /volume1/Photos
+        globalMounts:
+          - path: /usr/src/app/upload
