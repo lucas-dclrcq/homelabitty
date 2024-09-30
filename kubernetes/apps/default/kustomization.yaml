@@ -12,3 +12,4 @@ resources:
   - ./vaultwarden/ks.yaml
 #  - ./nextcloud/ks.yaml
   - ./actual/ks.yaml
+  - ./wallabag/ks.yaml
