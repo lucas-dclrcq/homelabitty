@@ -58,7 +58,7 @@ spec:
 #              SYMFONY__ENV__REDIS_HOST: dragonfly.infrastructure.svc.cluster.local.
               SYMFONY__ENV__DOMAIN_NAME: https://wallabag.${SECRET_DOMAIN}
               SYMFONY__ENV__SERVER_NAME: Wallabag
-              POPULATE_DATABASE: "true"
+              POPULATE_DATABASE: "false"
 
             command:
               - /var/www/wallabag/bin/console
@@ -100,10 +100,3 @@ spec:
                 service:
                   identifier: app
                   port: http
-
-    persistence:
-      config:
-        enabled: true
-        existingClaim: *app
-        globalMounts:
-          - path: /images
