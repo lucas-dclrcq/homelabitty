@@ -134,6 +134,11 @@ spec:
       databases: ["jellystat"]
       password:
         type: AlphaNumeric
+    - name: "wallabag"
+      databases: ["wallabag"]
+      password:
+        type: AlphaNumeric
+
   backups:
     pgbackrest:
       configuration:
