@@ -39,40 +39,25 @@ spec:
         pod:
           enableServiceLinks: false
 
-        initContainers:
-          migrations:
-            image:
-              repository: wallabag/wallabag
-              tag: 2.6.9@sha256:d482b139bab164afef0e8bbfbeb7c55cd3e10e848b95d7d167e4ffcbc847f4b9
-
-            envFrom: &envFrom
-              - secretRef:
-                  name: wallabag-secret
-
-            env: &env
-#              SYMFONY__ENV__FOSUSER_REGISTRATION: "true"
-#              SYMFONY__ENV__FOSUSER_CONFIRMATION: "true"
-#              SYMFONY__ENV__FROM_EMAIL: wallabag@${SECRET_DOMAIN}
-#              SYMFONY__ENV__MAILER_DSN: smtp://smtp-relay.infrastructure.svc.cluster.local:2525
-              # Cannot set dbindex so db0 it is
-#              SYMFONY__ENV__REDIS_HOST: dragonfly.infrastructure.svc.cluster.local.
-              SYMFONY__ENV__DOMAIN_NAME: https://wallabag.${SECRET_DOMAIN}
-              SYMFONY__ENV__SERVER_NAME: Wallabag
-              POPULATE_DATABASE: "false"
-
-            command:
-              - /var/www/wallabag/bin/console
-              - doctrine:migrations:migrate
-              - --env=prod
-              - --no-interaction
-
         containers:
           app:
             image:
               repository: wallabag/wallabag
               tag: 2.6.9@sha256:d482b139bab164afef0e8bbfbeb7c55cd3e10e848b95d7d167e4ffcbc847f4b9
-            envFrom: *envFrom
-            env: *env
+
+            envFrom:
+              - secretRef:
+                  name: wallabag-secret
+
+            env:
+              SYMFONY__ENV__FOSUSER_REGISTRATION: "true"
+              SYMFONY__ENV__FOSUSER_CONFIRMATION: "true"
+              SYMFONY__ENV__FROM_EMAIL: wallabag@${SECRET_DOMAIN}
+              SYMFONY__ENV__MAILER_DSN: smtp://smtp-relay.infrastructure.svc.cluster.local:2525
+              SYMFONY__ENV__DOMAIN_NAME: https://wallabag.${SECRET_DOMAIN}
+              SYMFONY__ENV__SERVER_NAME: Wallabag
+              POPULATE_DATABASE: "false"
+
             resources:
               requests:
                 cpu: 100m
@@ -100,3 +85,10 @@ spec:
                 service:
                   identifier: app
                   port: http
+
+    persistence:
+      config:
+        enabled: true
+        existingClaim: *app
+        globalMounts:
+          - path: /images
