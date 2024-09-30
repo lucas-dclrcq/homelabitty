@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 3.2.1
+      version: 3.4.0
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -50,16 +50,15 @@ spec:
                   name: wallabag-secret
 
             env: &env
-              SYMFONY__ENV__DATABASE_DRIVER: pdo_pgsql
-              SYMFONY__ENV__DOMAIN_NAME: https://wallabag.${SECRET_DOMAIN}
-              SYMFONY__ENV__FOSUSER_REGISTRATION: "true"
-              SYMFONY__ENV__FOSUSER_CONFIRMATION: "true"
-              SYMFONY__ENV__FROM_EMAIL: wallabag@${SECRET_DOMAIN}
-              SYMFONY__ENV__MAILER_HOST: smtp-relay.infrastructure.svc.cluster.local
-              SYMFONY__ENV__MAILER_PORT: "2525"
+#              SYMFONY__ENV__FOSUSER_REGISTRATION: "true"
+#              SYMFONY__ENV__FOSUSER_CONFIRMATION: "true"
+#              SYMFONY__ENV__FROM_EMAIL: wallabag@${SECRET_DOMAIN}
+#              SYMFONY__ENV__MAILER_DSN: smtp://smtp-relay.infrastructure.svc.cluster.local:2525
               # Cannot set dbindex so db0 it is
-              SYMFONY__ENV__REDIS_HOST: dragonfly.infrastructure.svc.cluster.local
+#              SYMFONY__ENV__REDIS_HOST: dragonfly.infrastructure.svc.cluster.local.
+              SYMFONY__ENV__DOMAIN_NAME: https://wallabag.${SECRET_DOMAIN}
               SYMFONY__ENV__SERVER_NAME: Wallabag
+              POPULATE_DATABASE: "true"
 
             command:
               - /var/www/wallabag/bin/console
