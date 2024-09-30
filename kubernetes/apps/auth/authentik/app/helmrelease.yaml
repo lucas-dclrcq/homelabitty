@@ -23,8 +23,6 @@ spec:
       envFrom:
         - secretRef:
             name: authentik-secret
-        - secretRef:
-            name: authentik-db-secret
 
     redis:
       enabled: false
