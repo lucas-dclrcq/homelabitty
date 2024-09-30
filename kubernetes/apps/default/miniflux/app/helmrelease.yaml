@@ -35,6 +35,7 @@ spec:
               LOG_DATE_TIME: "1"
               POLLING_SCHEDULER: "entry_frequency"
               POLLING_FREQUENCY: "15"
+              METRICS_COLLECTOR: "1"
               RUN_MIGRATIONS: "1"
               OAUTH2_USER_CREATION: "1"
               OAUTH2_PROVIDER: oidc
@@ -72,6 +73,16 @@ spec:
         ports:
           http:
             port: 8080
+
+    serviceMonitor:
+      app:
+        serviceName: miniflux
+        endpoints:
+          - port: http
+            scheme: http
+            path: /metrics
+            interval: 1m
+            scrapeTimeout: 10s
 
     ingress:
       main:
