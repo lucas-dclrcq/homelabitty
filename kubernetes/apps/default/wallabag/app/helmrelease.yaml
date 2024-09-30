@@ -4,7 +4,6 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: &app wallabag
-  namespace: default
 spec:
   interval: 30m
   chart:
@@ -52,7 +51,7 @@ spec:
 
             env: &env
               SYMFONY__ENV__DATABASE_DRIVER: pdo_pgsql
-              SYMFONY__ENV__DOMAIN_NAME: &host https://wallabag.${SECRET_DOMAIN}
+              SYMFONY__ENV__DOMAIN_NAME: https://wallabag.${SECRET_DOMAIN}
               SYMFONY__ENV__FOSUSER_REGISTRATION: "true"
               SYMFONY__ENV__FOSUSER_CONFIRMATION: "true"
               SYMFONY__ENV__FROM_EMAIL: wallabag@${SECRET_DOMAIN}
@@ -96,7 +95,7 @@ spec:
         annotations:
           external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
         hosts:
-          - host: *host
+          - host: "wallabag.${SECRET_DOMAIN}"
             paths:
               - path: /
                 service:
