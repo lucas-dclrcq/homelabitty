@@ -25,16 +25,19 @@ spec:
   values:
     controllers:
       flaresolverr:
-        replicas: 2
+        replicas: 1
         strategy: RollingUpdate
 
         containers:
           app:
             image:
-              repository: ghcr.io/flaresolverr/flaresolverr
-              tag: v3.3.21
+              repository: docker.io/21hsmw/flaresolverr
+              tag: nodriver
 
             env:
+              LOG_LEVEL: "debug"
+              DRIVER: "nodriver"
+              CAPTCHA_SOLVER: "harvester"
               LANG: "fr_FR"
               TZ: "${TIMEZONE}"
               PORT: &port "8191"
