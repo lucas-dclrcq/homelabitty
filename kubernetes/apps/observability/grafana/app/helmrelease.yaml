@@ -283,7 +283,7 @@ spec:
         prometheus:
           # renovate: depName="Prometheus"
           gnetId: 19105
-          revision: 3
+          revision: 4
           datasource: Prometheus
         vault:
           # renovate: depName="Hashicorp Vault"
