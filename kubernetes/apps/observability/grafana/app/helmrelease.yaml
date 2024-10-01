@@ -270,6 +270,11 @@ spec:
           gnetId: 14837
           version: 2
           datasource: Prometheus
+        flaresolverr:
+          # renovate: depName="FlareSolverr"
+          gnetId: 19363
+          version: 1
+          datasource: Prometheus
 
       default:
         node-exporter-full:
