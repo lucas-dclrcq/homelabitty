@@ -35,7 +35,7 @@ spec:
               tag: nodriver
 
             env:
-              LOG_LEVEL: "debug"
+              LOG_LEVEL: "info"
               DRIVER: "nodriver"
               CAPTCHA_SOLVER: "harvester"
               LANG: "fr_FR"
