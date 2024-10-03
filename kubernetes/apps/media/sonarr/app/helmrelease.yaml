@@ -123,6 +123,9 @@ spec:
           - path: /scripts/pushover-notify.sh
             subPath: pushover-notify.sh
             readOnly: true
+          - path: /scripts/refresh-series.sh
+            subPath: refresh-series.sh
+            readOnly: true
       media:
         type: nfs
         server: "nas.${INTERNAL_DOMAIN}"
