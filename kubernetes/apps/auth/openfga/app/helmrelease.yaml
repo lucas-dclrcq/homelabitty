@@ -32,7 +32,7 @@ spec:
           app:
             image:
               repository: openfga/openfga
-              tag: v1.6.1@sha256:92f6cde52e749e7548ab9dcd4313a3ca4b41b32c94a7718275ef487f15b694de
+              tag: v1.6.2@sha256:1d55f2359a63404b162077c7c8a1c359d29f92bf7be3911fe4311b3e13c409b4
 
             envFrom:
               - secretRef:
