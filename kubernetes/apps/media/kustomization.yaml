@@ -20,3 +20,4 @@ resources:
   - ./jellyfin/ks.yaml
   - ./jellystat/ks.yaml
   - ./flaresolverr/ks.yaml
+  - ./lidarr/ks.yaml
