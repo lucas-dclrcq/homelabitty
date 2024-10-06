@@ -78,6 +78,18 @@ spec:
         ports:
           http:
             port: 3001
+          metrics:
+            port: 8081
+
+    serviceMonitor:
+      app:
+        serviceName: immich
+        endpoints:
+          - port: metrics
+            scheme: http
+            path: /metrics
+            interval: 1m
+            scrapeTimeout: 10s
 
     ingress:
       app:
