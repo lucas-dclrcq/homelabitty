@@ -9,7 +9,6 @@ resources:
   - ./changedetection/ks.yaml
   - ./atuin/ks.yaml
   - ./vaultwarden/ks.yaml
-#  - ./nextcloud/ks.yaml
   - ./actual/ks.yaml
   - ./wallabag/ks.yaml
   - ./immich/ks.yaml
