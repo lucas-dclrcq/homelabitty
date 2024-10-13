@@ -18,7 +18,7 @@ spec:
               name: cloudflare-secret
               key: CLOUDFLARE_API_TOKEN
         selector:
-          dnsZones: ["${SECRET_DOMAIN}"]
+          dnsZones: ["${SECRET_DOMAIN}", "${LIMITED_DOMAIN}"]
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/cert-manager.io/clusterissuer_v1.json
 apiVersion: cert-manager.io/v1
@@ -39,4 +39,4 @@ spec:
               name: cloudflare-secret
               key: CLOUDFLARE_API_TOKEN
         selector:
-          dnsZones: ["${SECRET_DOMAIN}"]
+          dnsZones: ["${SECRET_DOMAIN}", "${LIMITED_DOMAIN}"]
