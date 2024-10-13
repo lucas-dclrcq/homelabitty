@@ -37,15 +37,5 @@ spec:
     limits:
       memory: 2Gi
 
-    livenessProbe:
-      initialDelaySeconds: 20
-      periodSeconds: 10
-      timeoutSeconds: 10
-
-    readinessProbe:
-      initialDelaySeconds: 20
-      periodSeconds: 10
-      timeoutSeconds: 10
-
   metrics:
     enabled: true
