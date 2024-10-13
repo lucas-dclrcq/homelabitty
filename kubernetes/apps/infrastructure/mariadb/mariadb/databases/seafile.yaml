@@ -1,0 +1,35 @@
+---
+apiVersion: k8s.mariadb.com/v1alpha1
+kind: Database
+metadata:
+  name: seafile
+spec:
+  mariaDbRef:
+    name: mariadb-galera
+  characterSet: utf8
+  collate: utf8_general_ci
+---
+apiVersion: k8s.mariadb.com/v1alpha1
+kind: User
+metadata:
+  name: seafile
+spec:
+  mariaDbRef:
+    name: mariadb-galera
+  passwordSecretKeyRef:
+    name: mariadb-secret
+    key: SEAFILE_DB_USER_PASSWORD
+  maxUserConnections: 20
+---
+apiVersion: k8s.mariadb.com/v1alpha1
+kind: Grant
+metadata:
+  name: seafile
+spec:
+  mariaDbRef:
+    name: mariadb-galera
+  privileges:
+    - "ALL PRIVILEGES"
+  database: "*"
+  table: "*"
+  username: seafile
