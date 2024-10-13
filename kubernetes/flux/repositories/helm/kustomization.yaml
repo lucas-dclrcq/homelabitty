@@ -40,3 +40,4 @@ resources:
   - ./ananace.yaml
   - ./minecraft.yaml
   - ./fairwinds.yaml
+  - ./descheduler.yaml
