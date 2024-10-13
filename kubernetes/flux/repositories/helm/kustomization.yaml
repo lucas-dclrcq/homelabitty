@@ -41,3 +41,4 @@ resources:
   - ./minecraft.yaml
   - ./fairwinds.yaml
   - ./descheduler.yaml
+  - ./mariadb.yaml
