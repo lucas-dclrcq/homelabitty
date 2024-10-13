@@ -86,9 +86,6 @@ spec:
         repo1-retention-diff: "30"
         repo1-path: "/crunchy-pgo-vector"
         repo1-s3-uri-style: path
-        repo2-bundle: "y"
-        repo2-block: "y"
-        repo2-path: "/crunchy-pgo-vector"
       manual:
         repoName: repo1
         options:
