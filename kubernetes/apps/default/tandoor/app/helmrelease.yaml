@@ -37,12 +37,13 @@ spec:
               tag: 1.5.17
 
             env:
+              TZ: "Europe/Paris"
               COMMENT_PREF_DEFAULT: 0
               DEBUG: 1
               ENABLE_SIGNUP: 0
               FRACTION_PREF_DEFAULT: 0
               GUNICORN_MEDIA: 0
-              MAX_OWNED_SPACES_PREF_DEFAULT: 0
+              MAX_OWNED_SPACES_PREF_DEFAULT: 2
               SHOPPING_MIN_AUTOSYNC_INTERVAL: 5
               TANDOOR_PORT: &tandoorPort 8000
 
