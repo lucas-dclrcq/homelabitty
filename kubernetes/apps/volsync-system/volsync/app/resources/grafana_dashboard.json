@@ -635,7 +635,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{pod=~\"$volsyncPod\", namespace=~\"$volsyncNamespace\"}) by (pod)",
+          "expr": "sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{namespace=\"volsync-system\", pod=~\"volsync-.+\"}) by (pod)",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -729,7 +729,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum(container_memory_working_set_bytes{pod=~\"$volsyncPod\", namespace=~\"$volsyncNamespace\"}) by (pod)",
+          "expr": "sum(container_memory_working_set_bytes{namespace=\"volsync-system\", pod=~\"volsync-.+\"}) by (pod)",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
