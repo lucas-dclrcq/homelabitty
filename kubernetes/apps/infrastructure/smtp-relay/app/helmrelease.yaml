@@ -60,6 +60,7 @@ spec:
         controller: *app
         type: LoadBalancer
         annotations:
+          external-dns.alpha.kubernetes.io/hostname: "smtp.${LIMITED_DOMAIN}"
           io.cilium/lb-ipam-ips: "${LB_IP_SMTP_RELAY}"
         externalTrafficPolicy: Local
         ports:

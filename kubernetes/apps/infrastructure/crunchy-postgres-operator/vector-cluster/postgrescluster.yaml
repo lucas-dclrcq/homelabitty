@@ -17,6 +17,7 @@ spec:
     type: LoadBalancer
     metadata:
       annotations:
+        external-dns.alpha.kubernetes.io/hostname: "vector.postgres.${LIMITED_DOMAIN}"
         io.cilium/lb-ipam-ips: "${LB_IP_PG_VECTOR}"
 
   patroni:
