@@ -55,6 +55,7 @@ spec:
         existingClaim: *app
 
     serviceAnnotations:
+      external-dns.alpha.kubernetes.io/hostname: "minecraft.${LIMITED_DOMAIN}"
       io.cilium/lb-ipam-ips: "${LB_IP_MINECRAFT}"
 
     minecraftServer:
