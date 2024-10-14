@@ -28,7 +28,7 @@ spec:
       replicaCount: 2
       service:
         annotations:
-          io.cilium/lb-ipam-ips: 192.168.1.33
+          io.cilium/lb-ipam-ips: "${LB_IP_NGINX_EXTERNAL}"
       ingressClassResource:
         name: internal
         default: true
