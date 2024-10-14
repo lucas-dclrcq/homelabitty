@@ -6,8 +6,6 @@ metadata:
   namespace: flux-system
 data:
   TIMEZONE: "Europe/Paris"
-
-  # Load balancer IPs
   LB_IP_NGINX_INTERNAL: "192.168.1.31"
   LB_IP_PG_MAIN: "192.168.1.32"
   LB_IP_NGINX_EXTERNAL: "192.168.1.33"
