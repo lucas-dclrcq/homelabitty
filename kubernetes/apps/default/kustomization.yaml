@@ -13,3 +13,4 @@ resources:
   - ./wallabag/ks.yaml
   - ./immich/ks.yaml
   - ./seafile/ks.yaml
+  - ./tandoor/ks.yaml

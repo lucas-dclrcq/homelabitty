@@ -139,8 +139,8 @@ spec:
       databases: ["wallabag"]
       password:
         type: AlphaNumeric
-    - name: "lidarr"
-      databases: ["lidarr_main", "lidarr_log"]
+    - name: "tandoor"
+      databases: ["tandoor"]
       password:
         type: AlphaNumeric
 
