@@ -5,3 +5,4 @@ kind: Kustomization
 resources:
   - ./remove-cpu-limits.yaml
   - ./add-authentik-annotations.yaml
+  - ./add-authentik-internal-annotations.yaml
