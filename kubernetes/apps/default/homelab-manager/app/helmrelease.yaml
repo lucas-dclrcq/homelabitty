@@ -63,3 +63,4 @@ spec:
         tls:
           - hosts:
               - *host
+            secretName: "${LIMITED_DOMAIN/./-}-production-tls"
