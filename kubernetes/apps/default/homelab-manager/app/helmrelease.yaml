@@ -27,7 +27,7 @@ spec:
           main:
             image:
               repository: ghcr.io/lucas-dclrcq/homelab-manager
-              tag: latest@sha256:d0d24c46a9219359dc7dab7882c9a7e7812d10dcba6fa5fef21f835bfb601bfe
+              tag: latest@sha256:012e65eaa92349362ac9bc1f1daf81c87ae7ba711f6da03e101ebb8bd23d89ce
 
             env:
               QUARKUS_HTTP_PORT: &port 80
@@ -35,6 +35,30 @@ spec:
             envFrom:
               - secretRef:
                   name: homelab-manager-secret
+
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /q/health/live
+                    port: *port
+                  initialDelaySeconds: 5
+                  periodSeconds: 10
+                  timeoutSeconds: 10
+                  failureThreshold: 3
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /q/health/ready
+                    port: *port
+                  initialDelaySeconds: 5
+                  periodSeconds: 10
+                  timeoutSeconds: 10
+                  failureThreshold: 3
 
             resources:
               requests:
