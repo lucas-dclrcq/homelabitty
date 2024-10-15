@@ -54,9 +54,12 @@ spec:
       main:
         className: internal
         hosts:
-          - host: "{{ .Release.Name }}.${LIMITED_DOMAIN}"
+          - host: &host "{{ .Release.Name }}.${LIMITED_DOMAIN}"
             paths:
               - path: /
                 service:
                   identifier: main
                   port: http
+        tls:
+          - hosts:
+              - *host
