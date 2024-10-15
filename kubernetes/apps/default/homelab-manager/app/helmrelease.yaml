@@ -1,0 +1,62 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2beta1.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: homelab-manager
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.5.1
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+
+  values:
+    controllers:
+      main:
+        strategy: RollingUpdate
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+        containers:
+          main:
+            image:
+              repository: ghcr.io/lucas-dclrcq/homelab-manager
+              tag: latest@sha256:4a95cec68e994b6c6aaf958fc722a8982b20a7fca6f162f13dc1aa8544e65b58
+
+            env:
+              QUARKUS_HTTP_PORT: &port 80
+
+            envFrom:
+              - secretRef:
+                  name: homelab-manager-secret
+
+            resources:
+              requests:
+                cpu: 12m
+                memory: 64M
+              limits:
+                memory: 512Mi
+
+    service:
+      main:
+        controller: main
+        ports:
+          http:
+            port: *port
+
+    ingress:
+      main:
+        className: internal
+        hosts:
+          - host: "{{ .Release.Name }}.${LIMITED_DOMAIN}"
+            paths:
+              - path: /
+                service:
+                  identifier: main
+                  port: http
