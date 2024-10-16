@@ -27,7 +27,7 @@ spec:
     keepHistory: false
   values:
     controllers:
-      main:
+      *app:
         containers:
           main:
             image:
@@ -57,14 +57,14 @@ spec:
               - {name: DEFAULT_STEALTH, value: "true"}
 
     service:
-      main:
-        controller: main
+      app:
+        controller: *app
         ports:
           http:
             port: *port
 
     ingress:
-      main:
+      app:
         enabled: true
         className: internal
         annotations:
@@ -74,7 +74,7 @@ spec:
             paths:
               - path: /
                 service:
-                  identifier: main
+                  identifier: app
                   port: http
         tls:
           - hosts:
@@ -82,10 +82,5 @@ spec:
             secretName: "${LIMITED_DOMAIN/./-}-production-tls"
 
     persistence:
-      config:
-        enabled: true
+      datastore:
         existingClaim: *app
-        advancedMounts:
-          main:
-            main:
-              - path: /datastore
