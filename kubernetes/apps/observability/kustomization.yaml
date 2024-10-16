@@ -10,3 +10,4 @@ resources:
   - ./promtail/ks.yaml
   - ./kromgo/ks.yaml
   - ./gatus/ks.yaml
+  - ./smartctl-exporter/ks.yaml
