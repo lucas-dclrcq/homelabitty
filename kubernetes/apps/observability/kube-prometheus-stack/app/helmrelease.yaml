@@ -39,12 +39,16 @@ spec:
     alertmanager:
       ingress:
         enabled: true
-        ingressClassName: external
+        ingressClassName: internal
         annotations:
-          authentik.home.arpa/enabled: "true"
-          external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
-        hosts: ["alertmanager.${SECRET_DOMAIN}"]
+          authentik-internal.home.arpa/enabled: "true"
+        hosts:
+          - &alert_host "alertmanager.${LIMITED_DOMAIN}"
         pathType: Prefix
+        tls:
+          - hosts:
+              - *alert_host
+            secretName: "${LIMITED_DOMAIN/./-}-production-tls"
       alertmanagerSpec:
         useExistingSecret: true
         configSecret: alertmanager-secret
@@ -80,12 +84,16 @@ spec:
     prometheus:
       ingress:
         enabled: true
-        ingressClassName: external
+        ingressClassName: internal
         annotations:
-          authentik.home.arpa/enabled: "true"
-          external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
-        hosts: ["prometheus.${SECRET_DOMAIN}"]
+          authentik-internal.home.arpa/enabled: "true"
+        hosts:
+          - &prom_host "prometheus.${LIMITED_DOMAIN}"
         pathType: Prefix
+        tls:
+          - hosts:
+              - *prom_host
+            secretName: "${LIMITED_DOMAIN/./-}-production-tls"
       prometheusSpec:
         scrapeInterval: 1m # Must match interval in Grafana Helm chart
         podMonitorSelector: &selector
