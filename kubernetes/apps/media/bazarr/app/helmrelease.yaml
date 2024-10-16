@@ -88,12 +88,11 @@ spec:
 
     ingress:
       app:
-        className: external
+        className: internal
         annotations:
-          authentik.home.arpa/enabled: "true"
-          external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
+          authentik-internal.home.arpa/enabled: "true"
         hosts:
-          - host: "{{ .Release.Name }}.${SECRET_DOMAIN}"
+          - host: "{{ .Release.Name }}.${LIMITED_DOMAIN}"
             paths:
               - path: /
                 service:

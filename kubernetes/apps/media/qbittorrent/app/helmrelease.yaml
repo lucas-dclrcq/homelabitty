@@ -105,12 +105,11 @@ spec:
 
     ingress:
       app:
-        className: external
+        className: internal
         annotations:
-          external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
-          authentik.home.arpa/enabled: "true"
+          authentik-internal.home.arpa/enabled: "true"
         hosts:
-          - host: "qbittorrent.${SECRET_DOMAIN}"
+          - host: "qbittorrent.${LIMITED_DOMAIN}"
             paths:
               - path: /
                 service:

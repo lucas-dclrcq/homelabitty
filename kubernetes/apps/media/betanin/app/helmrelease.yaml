@@ -78,7 +78,7 @@ spec:
       betanin:
         className: internal
         hosts:
-          - host: "betanin.${SECRET_DOMAIN}"
+          - host: "betanin.${LIMITED_DOMAIN}"
             paths:
               - path: /
                 service:
