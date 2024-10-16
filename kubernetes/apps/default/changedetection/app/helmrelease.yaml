@@ -68,14 +68,18 @@ spec:
         enabled: true
         className: internal
         annotations:
-          authentik.home.arpa/enabled: "true"
+          authentik-internal.home.arpa/enabled: "true"
         hosts:
-          - host: "{{ .Release.Name }}.${SECRET_DOMAIN}"
+          - host: &host "{{ .Release.Name }}.${LIMITED_DOMAIN}"
             paths:
               - path: /
                 service:
                   identifier: main
                   port: http
+        tls:
+          - hosts:
+              - *host
+            secretName: "${LIMITED_DOMAIN/./-}-production-tls"
 
     persistence:
       config:
