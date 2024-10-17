@@ -4,3 +4,14 @@ kind: Kustomization
 resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
+configMapGenerator:
+  - name: authentik-dashboard
+    files:
+      - authentik.json=./resources/grafana_dashboard.json
+generatorOptions:
+  annotations:
+    kustomize.toolkit.fluxcd.io/substitute: disabled
+    grafana_folder: Apps
+  labels:
+    grafana_dashboard: "true"
+  disableNameSuffixHash: true
