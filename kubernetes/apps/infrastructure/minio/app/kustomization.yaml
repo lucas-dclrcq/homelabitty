@@ -12,7 +12,7 @@ configMapGenerator:
 generatorOptions:
   annotations:
     kustomize.toolkit.fluxcd.io/substitute: disabled
-    k8s-sidecar-target-directory: /var/lib/grafana/dashboards/storage
+    grafana_folder: Infrastructure
   labels:
     grafana_dashboard: "true"
   disableNameSuffixHash: true
