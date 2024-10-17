@@ -155,6 +155,14 @@ spec:
             editable: true
             options:
               path: /var/lib/grafana/dashboards/apps
+          - name: observability
+            orgId: 1
+            folder: Observability
+            type: file
+            disableDeletion: false
+            editable: true
+            options:
+              path: /var/lib/grafana/dashboards/observability
 
     dashboards:
       storage:
@@ -276,6 +284,13 @@ spec:
           version: 1
           datasource: Prometheus
 
+      observability:
+        prometheus:
+          # renovate: depName="Prometheus"
+          gnetId: 19105
+          revision: 5
+          datasource: Prometheus
+
       default:
         node-exporter-full:
           # renovate: depName="Node Exporter Full"
@@ -284,11 +299,6 @@ spec:
           datasource: Prometheus
         node-feature-discovery:
           url: https://raw.githubusercontent.com/kubernetes-sigs/node-feature-discovery/master/examples/grafana-dashboard.json
-          datasource: Prometheus
-        prometheus:
-          # renovate: depName="Prometheus"
-          gnetId: 19105
-          revision: 5
           datasource: Prometheus
         vault:
           # renovate: depName="Hashicorp Vault"
