@@ -65,9 +65,13 @@ spec:
         enabled: true
         className: internal
         hosts:
-          - host: "{{ .Release.Name }}.${LIMITED_DOMAIN}"
+          - host: &host "{{ .Release.Name }}.${LIMITED_DOMAIN}"
             paths:
               - path: /
                 service:
                   identifier: app
                   port: http
+        tls:
+          - hosts:
+              - *host
+            secretName: "${LIMITED_DOMAIN/./-}-production-tls"
