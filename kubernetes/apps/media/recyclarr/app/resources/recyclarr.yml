@@ -243,7 +243,7 @@ radarr:
           - 72b1548df1ac3175ca105a9ce7043c91 # Multi-Audio
           - d5f3a1afdb77e6b95e489f7654532d04 # Multi-French
         assign_scores_to:
-          - Movies FR
+          - name: Movies FR
       - trash_ids:
           - 404c08fd0bd67f39b4d8e5709319094e  # VFF
         assign_scores_to:
