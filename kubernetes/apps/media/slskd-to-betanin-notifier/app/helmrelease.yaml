@@ -41,7 +41,7 @@ spec:
 
             env:
               SLSKD_COMPLETE_FOLDER_PATH: /media/Downloads/nicotine/complete
-              SLSKD_BETANIN_URL: "https://betanin.${SECRET_DOMAIN}"
+              SLSKD_BETANIN_URL: "http://betanin.media.svc.cluster.local:9393"
               SLSKD_BETANIN_COMPLETE_FOLDER_PATH: /media/Downloads/nicotine/complete
 
             envFrom:
