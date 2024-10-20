@@ -14,3 +14,4 @@ resources:
   - ./immich/ks.yaml
   - ./tandoor/ks.yaml
   - ./homelab-manager/ks.yaml
+  - ./nextcloud/ks.yaml

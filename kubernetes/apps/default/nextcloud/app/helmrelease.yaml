@@ -1,0 +1,257 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app nextcloud
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: nextcloud
+      version: 6.1.1
+      sourceRef:
+        kind: HelmRepository
+        name: nextcloud
+        namespace: flux-system
+  install:
+    createNamespace: true
+    remediation:
+      retries: 5
+  upgrade:
+    remediation:
+      retries: 5
+  values:
+    fullnameOverride: *app
+    deploymentAnnotations:
+      secret.reloader.stakater.com/reload: &secret nextcloud-secret
+    image:
+      repository: public.ecr.aws/docker/library/nextcloud
+      tag: 30.0.1-fpm-alpine
+      flavor: fpm-alpine
+    nextcloud:
+      host: nextcloud.${SECRET_DOMAIN}
+      existingSecret:
+        enabled: true
+        secretName: *secret
+        usernameKey: nextcloud-username
+        passwordKey: nextcloud-password
+        smtpHostKey: smtp-host
+        smtpPasswordKey: smtp-password
+        smtpUsernameKey: smtp-username
+      extraEnv:
+        - name: S3_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: *secret
+              key: S3_ACCESS_KEY
+        - name: S3_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: *secret
+              key: S3_SECRET_KEY
+        - name: NEXTCLOUD_OAUTH_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: *secret
+              key: NEXTCLOUD_OAUTH_CLIENT_ID
+        - name: NEXTCLOUD_OAUTH_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: *secret
+              key: NEXTCLOUD_OAUTH_CLIENT_SECRET
+        - name: REDIS_HOST
+          value: dragonfly.infrastructure.svc.cluster.local
+        - name: REDIS_HOST_PORT
+          value: "6379"
+
+      mail:
+        enabled: true
+        fromAddress: nextcloud.${SECRET_DOMAIN}
+        domain: ${SECRET_DOMAIN}
+        smtp:
+          host: smtp-relay.infrastructure.svc.cluster.local
+          secure: ""
+          port: 2525
+
+      objectstore:
+        s3:
+          enabled: true
+          host: minio.infrastructure.svc.cluster.local:9000
+          ssl: false
+          bucket: nextcloud-data
+          usePathStyle: true
+          region: us-east-1
+          autocreate: true
+          existingSecret: nextcloud-secret
+          secretKeys:
+            accessKey: S3_ACCESS_KEY
+            secretKey: S3_SECRET_KEY
+
+      securityContext:
+        runAsUser: 82
+        runAsGroup: 82
+        runAsNonRoot: true
+        readOnlyRootFilesystem: false
+
+      configs:
+        custom.config.php: |-
+          <?php
+          $CONFIG = array (
+            'overwriteprotocol' => 'https',
+            'overwrite.cli.url' => 'https://nextcloud.${SECRET_DOMAIN}',
+            'overwritehost' => 'nextcloud.${SECRET_DOMAIN}',
+            'filelocking.enabled' => 'true',
+            'default_phone_region' => 'FR',
+            'loglevel' => '2',
+            'enable_previews' => true,
+            'log_type' => 'syslog',
+            'maintenance_window_start' => 1,
+            'trusted_domains' =>
+              array (
+                0 => 'nextcloud',
+                1 => 'nextcloud.${SECRET_DOMAIN}',
+                2 => 'localhost',
+              ),
+            'trusted_proxies' =>
+              array (
+                0 => '10.69.0.0/16',
+                1 => '10.96.0.0/16',
+                2 => '192.168.1.1/24',
+              ),
+          );
+
+        sso.config.php: |-
+          <?php
+          $CONFIG = array (
+            'oidc_login_provider_url' => 'https://sso.${SECRET_DOMAIN}/application/o/nextcloud/',
+            'oidc_login_client_id' => getenv('NEXTCLOUD_OAUTH_CLIENT_ID'),
+            'oidc_login_client_secret' => getenv('NEXTCLOUD_OAUTH_CLIENT_SECRET'),
+            'oidc_login_button_text' => 'Hoohoot SSO',
+            'oidc_login_attributes' =>
+            array (
+              'id' => 'preferred_username',
+              'name' => 'name',
+              'mail' => 'email',
+            ),
+            'oidc_login_scope' => 'openid profile email',
+            'oidc_login_disable_registration' => false,
+            'oidc_login_password_authentication' => true,
+          );
+
+      phpConfigs:
+        uploadLimit.ini: |
+          upload_max_filesize = 16G
+          post_max_size = 16G
+          max_input_time = 3600
+          max_execution_time = 3600
+        www.conf: |
+          [www]
+          user = www-data
+          group = www-data
+          listen = 127.0.0.1:9000
+          pm = dynamic
+          pm.max_children = 57
+          pm.start_servers = 14
+          pm.min_spare_servers = 14
+          pm.max_spare_servers = 42
+          pm.max_requests = 500
+          pm.process_idle_timeout = 10s
+
+    redis:
+      enabled: false
+
+    nginx:
+      enabled: true
+      image:
+        repository: public.ecr.aws/nginx/nginx
+        tag: "1.27.2"
+      config:
+        default: true
+      securityContext:
+        runAsGroup: 82
+      resources:
+        requests:
+          cpu: 10m
+          memory: 100M
+        limits:
+          memory: 100M
+
+    internalDatabase:
+      enabled: false
+
+    externalDatabase:
+      enabled: true
+      type: postgresql
+      host: postgres-primary.infrastructure.svc.cluster.local:5432
+      database: nextclouddata
+      existingSecret:
+        enabled: true
+        secretName: *secret
+        usernameKey: POSTGRES_USER
+        passwordKey: POSTGRES_PASSWORD
+
+    ingress:
+      enabled: true
+      className: external
+      annotations:
+        external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
+        nginx.ingress.kubernetes.io/proxy-body-size: "10G"
+        nginx.ingress.kubernetes.io/enable-cors: "true"
+        nginx.ingress.kubernetes.io/cors-allow-headers: "X-Forwarded-For"
+        nginx.ingress.kubernetes.io/custom-http-errors: "502,503"
+        nginx.ingress.kubernetes.io/server-snippet: |-
+          server_tokens off;
+          proxy_hide_header X-Powered-By;
+          rewrite ^/.well-known/webfinger /index.php/.well-known/webfinger last;
+          rewrite ^/.well-known/nodeinfo /index.php/.well-known/nodeinfo last;
+          rewrite ^/.well-known/host-meta /public.php?service=host-meta last;
+          rewrite ^/.well-known/host-meta.json /public.php?service=host-meta-json;
+          location = /.well-known/carddav {
+            return 301 $scheme://$host/remote.php/dav;
+          }
+          location = /.well-known/caldav {
+            return 301 $scheme://$host/remote.php/dav;
+          }
+          location = /robots.txt {
+            allow all;
+            log_not_found off;
+            access_log off;
+          }
+          location ~ ^/(?:build|tests|config|lib|3rdparty|templates|data)/ {
+            deny all;
+          }
+          location ~ ^/(?:autotest|occ|issue|indie|db_|console) {
+            deny all;
+          }
+      path: /
+      pathType: Prefix
+
+    persistence:
+      enabled: true
+      existingClaim: *app
+
+    cronjob:
+      enabled: true
+      securityContext:
+        runAsGroup: 82
+
+    securityContext:
+      fsGroupChangePolicy: OnRootMismatch
+
+    hpa:
+      enabled: false
+
+    startupProbe:
+      enabled: false
+    livenessProbe:
+      enabled: false
+    readinessProbe:
+      enabled: false
+
+    resources:
+      requests:
+        cpu: 17m
+        memory: 536Mi
+      limits:
+        memory: 736Mi

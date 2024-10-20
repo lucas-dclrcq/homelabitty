@@ -4,7 +4,7 @@
 
 | DbId | Name      |
 |------|-----------|
-| 0    | N/A       |
+| 0    | Nextcloud |
 | 1    | Synapse   |
 | 2    | N/A       |
 | 3    | Authentik |
