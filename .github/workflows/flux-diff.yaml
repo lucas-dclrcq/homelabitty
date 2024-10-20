@@ -14,7 +14,7 @@ concurrency:
 jobs:
   flux-diff:
     name: Flux Diff
-    runs-on: self-hosted
+    runs-on: gha-runner-scale-set
     permissions:
       contents: read
       pull-requests: write

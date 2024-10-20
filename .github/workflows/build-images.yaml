@@ -37,7 +37,7 @@ on:
 jobs:
   prepare:
     name: Prepare to Build
-    runs-on: self-hosted
+    runs-on: gha-runner-scale-set
     outputs:
       matrices: ${{ steps.prepare-matrices.outputs.matrices }}
     steps:
