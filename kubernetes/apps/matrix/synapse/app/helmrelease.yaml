@@ -111,6 +111,11 @@ spec:
       reportStats: true
 
     extraConfig:
+      email:
+        smtp_host: smtp-relay.infrastructure.svc.cluster.local
+        smtp_port: 2525
+        notif_from: "Hoohoot Matrix <noreply@${SECRET_DOMAIN}>"
+
       presence:
         enabled: true
       report_stats_endpoint: synapse-usage-exporter.matrix.svc.cluster.local:5000/report-usage-stats/push
