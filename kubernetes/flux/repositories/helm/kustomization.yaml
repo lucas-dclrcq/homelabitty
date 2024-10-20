@@ -42,3 +42,4 @@ resources:
   - ./fairwinds.yaml
   - ./descheduler.yaml
   - ./mariadb.yaml
+  - ./actions-runner-controller.yaml
