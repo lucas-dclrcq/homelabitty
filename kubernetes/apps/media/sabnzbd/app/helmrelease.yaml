@@ -47,7 +47,7 @@ spec:
                 sabnzbd.default.svc,
                 sabnzbd.default.svc.cluster,
                 sabnzbd.default.svc.cluster.local,
-                sabnzbd.${SECRET_DOMAIN}
+                sabnzbd.${LIMITED_DOMAIN}
 
             probes:
               liveness: &probes
