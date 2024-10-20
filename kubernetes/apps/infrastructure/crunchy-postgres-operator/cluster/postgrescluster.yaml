@@ -99,8 +99,8 @@ spec:
       databases: ["linkwarden"]
       password:
         type: AlphaNumeric
-    - name: "nextclouddata"
-      databases: ["nextclouddata"]
+    - name: "nextclouddb"
+      databases: ["nextclouddb"]
       password:
         type: AlphaNumeric
     - name: "synapse"
