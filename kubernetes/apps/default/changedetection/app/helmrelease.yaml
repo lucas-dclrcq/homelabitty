@@ -27,7 +27,7 @@ spec:
     keepHistory: false
   values:
     controllers:
-      *app:
+      app:
         containers:
           main:
             image:
@@ -58,7 +58,7 @@ spec:
 
     service:
       app:
-        controller: *app
+        controller: app
         ports:
           http:
             port: *port
