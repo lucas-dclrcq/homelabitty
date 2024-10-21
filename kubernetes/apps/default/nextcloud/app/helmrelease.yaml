@@ -61,13 +61,14 @@ spec:
 
       mail:
         enabled: true
-        fromAddress: Nextcloud <nextcloud.${SECRET_DOMAIN}>
+        fromAddress: nextcloud.${SECRET_DOMAIN}
         domain: ${SECRET_DOMAIN}
         smtp:
           host: smtp-relay.infrastructure.svc.cluster.local
           secure: ""
           port: 2525
-
+      defaultConfigs:
+        s3.config.php: false
       configs:
         logging.config.php: |-
           <?php
@@ -91,6 +92,7 @@ spec:
           $CONFIG = array (
             'overwrite.cli.url' => 'https://nextcloud.${SECRET_DOMAIN}',
             'overwriteprotocol' => 'https',
+            'allow_local_remote_servers' => true
           );
         misc.config.php: |-
           <?php
@@ -113,6 +115,30 @@ spec:
                 'use_ssl'        => true,
               ),
             ),
+          );
+        sso.config.php: |-
+          $CONFIG = array (
+            'allow_user_to_change_display_name' => false,
+            'lost_password_link' => 'disabled',
+            'oidc_login_provider_url' => 'https://sso.${SECRET_DOMAIN}/application/o/nextcloud/',
+            'oidc_login_client_id' => getenv('NEXTCLOUD_OAUTH_CLIENT_ID'),
+            'oidc_login_client_secret' => getenv('NEXTCLOUD_OAUTH_CLIENT_SECRET'),
+            'oidc_login_auto_redirect' => false,
+            'oidc_login_logout_url' => 'https://sso.${SECRET_DOMAIN}/application/o/nextcloud/end-session/',
+            'oidc_login_end_session_redirect' => true,
+            'oidc_login_default_quota' => '50000000000',
+            'oidc_login_button_text' => 'Hoohoot SSO',
+            'oidc_login_hide_password_form' => false,
+            'oidc_login_attributes' => array (
+                     'id' => 'sub',
+                     'name' => 'name',
+                     'mail' => 'email',
+            ),
+            'oidc_create_groups' => true,
+            'oidc_login_code_challenge_method' => 'S256',
+            'oidc_login_auto_redirect' => true,
+            'oidc_login_webdav_enabled' => true,
+            'oidc_login_disable_registration' => false,
           );
 
     deploymentAnnotations:
