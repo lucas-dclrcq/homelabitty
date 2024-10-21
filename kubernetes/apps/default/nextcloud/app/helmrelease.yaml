@@ -1,10 +1,11 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+# yaml-language-server: $schema=https://github.com/fluxcd-community/flux2-schemas/raw/main/helmrelease-helm-v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: &app nextcloud
 spec:
+  timeout: 15m
   interval: 30m
   chart:
     spec:
@@ -15,80 +16,107 @@ spec:
         name: nextcloud
         namespace: flux-system
   install:
-    createNamespace: true
     remediation:
-      retries: 5
+      retries: 3
   upgrade:
+    cleanupOnFail: true
     remediation:
-      retries: 5
+      strategy: rollback
+      retries: 3
   values:
-    fullnameOverride: *app
-    deploymentAnnotations:
-      secret.reloader.stakater.com/reload: &secret nextcloud-secret
-
     image:
-      repository: public.ecr.aws/docker/library/nextcloud
-      tag: 30.0.1-fpm-alpine
       flavor: fpm-alpine
+    nginx:
+      enabled: true
 
     nextcloud:
-      host: nextcloud.${SECRET_DOMAIN}
-
-      existingSecret:
-        enabled: true
-        secretName: *secret
-        usernameKey: nextcloud-username
-        passwordKey: nextcloud-password
-
       extraEnv:
+        - name: REDIS_HOST
+          value: dragonfly.infrastructure.svc.cluster.local.
+        - name: REDIS_HOST_PORT
+          value: "6379"
+        - name: REDIS_HOST_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: nextcloud-secret
+              key: REDIS_HOST_PASSWORD
         - name: S3_ACCESS_KEY
           valueFrom:
             secretKeyRef:
-              name: *secret
+              name: nextcloud-secret
               key: S3_ACCESS_KEY
         - name: S3_SECRET_KEY
           valueFrom:
             secretKeyRef:
-              name: *secret
+              name: nextcloud-secret
               key: S3_SECRET_KEY
-        - name: REDIS_HOST
-          value: dragonfly.infrastructure.svc.cluster.local
-        - name: REDIS_HOST_PORT
-          value: "6379"
+
+      existingSecret:
+        enabled: true
+        secretName: nextcloud-secret
+        usernameKey: NEXTCLOUD_ADMIN_USER
+        passwordKey: NEXTCLOUD_ADMIN_PASS
+
+      host: nextcloud.${SECRET_DOMAIN}
 
       mail:
-        enabled: false
-
-      objectstore:
-        s3:
-          enabled: true
-          host: minio.infrastructure.svc.cluster.local:9000
-          ssl: false
-          bucket: nextcloud-data
-          usePathStyle: true
-          region: us-east-1
-          autocreate: true
-          existingSecret: nextcloud-secret
-          secretKeys:
-            accessKey: S3_ACCESS_KEY
-            secretKey: S3_SECRET_KEY
+        enabled: true
+        fromAddress: Nextcloud <nextcloud.${SECRET_DOMAIN}>
+        domain: ${SECRET_DOMAIN}
+        smtp:
+          host: smtp-relay.infrastructure.svc.cluster.local
+          secure: ""
+          port: 2525
 
       configs:
-        https.config.php: |-
+        logging.config.php: |-
           <?php
           $CONFIG = array (
-            'overwritehost' => 'nextcloud.${SECRET_DOMAIN}',
-            'overwriteprotocol' => 'https'
+            'log_type' => 'file',
+            'logfile' => 'nextcloud.log',
+            'loglevel' => 0,
+            'logdateformat' => 'F d, Y H:i:s'
+            );
+        proxy.config.php: |-
+          <?php
+          $CONFIG = array (
+            'trusted_proxies' => array(
+              0 => '127.0.0.1',
+              1 => '10.96.0.0/16',
+            ),
+            'forwarded_for_headers' => array('HTTP_X_FORWARDED_FOR'),
+          );
+        ingress.config.php: |-
+          <?php
+          $CONFIG = array (
+            'overwrite.cli.url' => 'https://nextcloud.${SECRET_DOMAIN}',
+            'overwriteprotocol' => 'https',
+          );
+        misc.config.php: |-
+          <?php
+          $CONFIG = array (
+            'default_phone_region' => 'FR',
+          );
+        minio.config.php: |-
+          <?php
+          $CONFIG = array (
+            'objectstore' => array(
+              'class' => '\\OC\\Files\\ObjectStore\\S3',
+              'arguments' => array(
+                'hostname'       => 's3.${SECRET_DOMAIN}',
+                'port'           => 443,
+                'use_path_style' => true,
+                'bucket'         => 'nextcloud-data',
+                'autocreate'     => false,
+                'key'            => getenv('S3_ACCESS_KEY'),
+                'secret'         => getenv('S3_SECRET_KEY'),
+                'use_ssl'        => true,
+              ),
+            ),
           );
 
-    redis:
-      enabled: false
-
-    nginx:
-      enabled: true
-      image:
-        repository: nginx
-        tag: 1.27-alpine
+    deploymentAnnotations:
+      reloader.stakater.com/auto: "true"
 
     internalDatabase:
       enabled: false
@@ -97,10 +125,10 @@ spec:
       enabled: true
       type: postgresql
       host: postgres-primary.infrastructure.svc.cluster.local:5432
-      database: nextclouddb
+      database: nc
       existingSecret:
         enabled: true
-        secretName: *secret
+        secretName: nextcloud-secret
         usernameKey: POSTGRES_USER
         passwordKey: POSTGRES_PASSWORD
 
@@ -108,25 +136,36 @@ spec:
       enabled: true
       className: external
       annotations:
-        external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
-        nginx.ingress.kubernetes.io/proxy-body-size: 512M
+        external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
+        nginx.ingress.kubernetes.io/proxy-body-size: "10G"
         nginx.ingress.kubernetes.io/proxy-buffering: "off"
         nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
-        nginx.ingress.kubernetes.io/server-snippet: |
+        nginx.ingress.kubernetes.io/server-snippet: |-
           server_tokens off;
-          location ^~ /.well-known {
-            location = /.well-known/carddav { return 301 /remote.php/dav/; }
-            location = /.well-known/caldav { return 301 /remote.php/dav/; }
-            location = /.well-known/acme-challenge { try_files $uri $uri/ =404; }
-            location = /.well-known/pki-validation { try_files $uri $uri/ =404; }
-            return 301 /index.php$request_uri;
+          proxy_hide_header X-Powered-By;
+          rewrite ^/.well-known/webfinger /index.php/.well-known/webfinger last;
+          rewrite ^/.well-known/nodeinfo /index.php/.well-known/nodeinfo last;
+          rewrite ^/.well-known/host-meta /public.php?service=host-meta last;
+          rewrite ^/.well-known/host-meta.json /public.php?service=host-meta-json;
+          location = /.well-known/carddav {
+            return 301 $scheme://$host/remote.php/dav;
           }
-          location ~ ^/(?:build|tests|config|lib|3rdparty|templates|data)(?:$|/)  { return 404; }
-          location ~ ^/(?:\.|autotest|occ|issue|indie|db_|console)                { return 404; }
-      tls:
-        - hosts:
-            - nextcloud.${SECRET_DOMAIN}
-          secretName: "${SECRET_DOMAIN/./-}-production-tls"
+          location = /.well-known/caldav {
+            return 301 $scheme://$host/remote.php/dav;
+          }
+          location = /robots.txt {
+            allow all;
+            log_not_found off;
+            access_log off;
+          }
+          location ~ ^/(?:build|tests|config|lib|3rdparty|templates|data)/ {
+            deny all;
+          }
+          location ~ ^/(?:autotest|occ|issue|indie|db_|console) {
+            deny all;
+          }
+      path: /
+      pathType: Prefix
 
     persistence:
       enabled: true
@@ -135,18 +174,18 @@ spec:
     cronjob:
       enabled: true
 
-    hpa:
-      enabled: false
-
-    livenessProbe:
-      enabled: false
-    readinessProbe:
-      enabled: false
     startupProbe:
-      enabled: false
+      enabled: true
+      initialDelaySeconds: 60
+      periodSeconds: 30
+      timeoutSeconds: 10
+      failureThreshold: 10
+      successThreshold: 1
 
     resources:
-      limits:
-        memory: 4Gi
       requests:
-        memory: 2Gi
+        cpu: 200m
+        memory: 512Mi
+      limits:
+        cpu: 4
+        memory: 5Gi
