@@ -50,6 +50,16 @@ spec:
             secretKeyRef:
               name: nextcloud-secret
               key: S3_SECRET_KEY
+        - name: NEXTCLOUD_OAUTH_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: nextcloud-secret
+              key: NEXTCLOUD_OAUTH_CLIENT_SECRET
+        - name: NEXTCLOUD_OAUTH_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: nextcloud-secret
+              key: NEXTCLOUD_OAUTH_CLIENT_ID
 
       existingSecret:
         enabled: true
@@ -117,6 +127,7 @@ spec:
             ),
           );
         sso.config.php: |-
+          <?php
           $CONFIG = array (
             'allow_user_to_change_display_name' => false,
             'lost_password_link' => 'disabled',
