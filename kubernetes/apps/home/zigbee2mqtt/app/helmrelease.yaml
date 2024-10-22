@@ -107,12 +107,16 @@ spec:
       app:
         className: internal
         hosts:
-          - host: "zigbee.${SECRET_DOMAIN}"
+          - host: &host "zigbee.${LIMITED_DOMAIN}"
             paths:
               - path: /
                 service:
                   identifier: app
                   port: http
+        tls:
+          - hosts:
+              - *host
+            secretName: "${LIMITED_DOMAIN/./-}-production-tls"
 
     persistence:
       config:
