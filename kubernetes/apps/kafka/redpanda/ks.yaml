@@ -10,7 +10,7 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  path: ./kubernetes/apps/infrastructure/redpanda/app
+  path: ./kubernetes/apps/kafka/redpanda/app
   prune: true
   sourceRef:
     kind: GitRepository
