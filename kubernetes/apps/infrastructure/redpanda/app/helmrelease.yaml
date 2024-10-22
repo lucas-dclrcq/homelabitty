@@ -1,0 +1,42 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: redpanda
+spec:
+  interval: 60m
+  chart:
+    spec:
+      chart: redpanda
+      version: 5.7.34
+      interval: 60m
+      sourceRef:
+        kind: HelmRepository
+        name: redpanda-data
+        namespace: flux-system
+  maxHistory: 2
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    tls:
+      enabled: false
+    external:
+      enabled: true
+      domain: hoohoot.xyz
+      type: NodePort
+    service:
+      internal:
+        annotations:
+          "external-dns.alpha.kubernetes.io/hostname": hoohoot.xyz
+          "external-dns.alpha.kubernetes.io/endpoints-type": HostIP
+    storage:
+      persistentVolume:
+        size: 10Gi
+        storageClass: openebs-hostpath

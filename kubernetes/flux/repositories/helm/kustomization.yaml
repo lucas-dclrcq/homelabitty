@@ -41,6 +41,5 @@ resources:
   - ./minecraft.yaml
   - ./fairwinds.yaml
   - ./descheduler.yaml
-  - ./mariadb.yaml
   - ./actions-runner-controller.yaml
-  - ./angelnu.yaml
+  - ./redpanda.yaml
