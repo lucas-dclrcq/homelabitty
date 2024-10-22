@@ -7,7 +7,7 @@ spec:
   chart:
     spec:
       chart: redpanda
-      version: 5.7.34
+      version: 5.9.7
       interval: 60m
       sourceRef:
         kind: HelmRepository
