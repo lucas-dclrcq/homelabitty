@@ -36,8 +36,12 @@ spec:
       dashboard:
         ingressClassName: internal
         host:
-          name: "rook.${SECRET_DOMAIN}"
+          name: &dashboard_host "rook.${LIMITED_DOMAIN}"
           path: /
+        tls:
+          - hosts:
+              - *dashboard_host
+            secretName: "${LIMITED_DOMAIN/./-}-production-tls"
     toolbox:
       enabled: true
     configOverride: |
