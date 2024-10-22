@@ -6,7 +6,7 @@ metadata:
   name: &app redpanda
   namespace: flux-system
 spec:
-  targetNamespace: infrastructure
+  targetNamespace: kafka
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
