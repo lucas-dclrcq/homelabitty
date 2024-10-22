@@ -43,3 +43,4 @@ resources:
   - ./descheduler.yaml
   - ./mariadb.yaml
   - ./actions-runner-controller.yaml
+  - ./angelnu.yaml

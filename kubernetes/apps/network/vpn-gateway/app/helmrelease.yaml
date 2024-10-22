@@ -1,0 +1,91 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: vpn-gateway
+  labels:
+    kustomize.toolkit.fluxcd.io/substitute: disabled
+spec:
+  interval: 5m
+  chart:
+    spec:
+      chart: pod-gateway
+      version: 6.5.1
+      interval: 15m
+      sourceRef:
+        kind: HelmRepository
+        name: angelnu-charts
+        namespace: flux-system
+  #See https://github.com/angelnu/helm-charts/blob/main/charts/apps/pod-gatewa/values.yaml
+  values:
+
+    image:
+      repository: ghcr.io/angelnu/pod-gateway
+      tag: v1.11.1@sha256:ce3852b879e12d6c559038f60ef47bc1eca8066bdf83dd4f4fd0eb3352b9100f
+
+    webhook:
+      image:
+        repository: ghcr.io/angelnu/gateway-admision-controller
+        tag: v3.10.0@sha256:18b6b8acbaf58eea6aecf3c2656d8cc5ba18bcd4a11d10f98b825f25fd3caa11
+      gatewayDefault: false
+      gatewayLabel: setGateway
+      gatewayAnnotation: setGateway
+      namespaceSelector:
+        label: "vpn-routed-gateway"
+
+    addons:
+      vpn:
+        enabled: true
+        type: gluetun
+        gluetun:
+          image:
+            repository: docker.io/qmcgaw/gluetun
+            tag: v3.39.1@sha256:6a8058e626763cbf735ac2f78c774dbb24fec2490bd9d9f7d67e22592cb4a991
+
+        env:
+          - name: LOG_LEVEL
+            value: debug
+          - name: VPN_SERVICE_PROVIDER
+            value: protonvpn
+          - name: VPN_INTERFACE
+            value: wg0
+          - name: FIREWALL
+            value: "off"
+          - name: DOT
+            value: "off"
+          - name: SERVER_COUNTRIES
+            value: Netherlands
+          - name: VPN_PORT_FORWARDING
+            value: "true"
+          - name: OPENVPN_USER
+            valueFrom:
+              secretKeyRef:
+                name: vpn-gateway-secret
+                key: OPENVPN_USER
+          - name: OPENVPN_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: vpn-gateway-secret
+                key: OPENVPN_PASSWORD
+        securityContext:
+          capabilities:
+            add:
+              - NET_ADMIN
+
+    routed_namespaces:
+      - media
+
+    settings:
+      VPN_INTERFACE: wg0
+      VPN_BLOCK_OTHER_TRAFFIC: true
+      VPN_TRAFFIC_PORT: "51820"
+      VPN_LOCAL_CIDRS: "10.0.0.0/8 192.168.0.0/16"
+
+    publicPorts:
+      - hostname: qbittorrent
+        IP: 10
+        ports:
+          - type: udp
+            port: 50413
+          - type: tcp
+            port: 50413
