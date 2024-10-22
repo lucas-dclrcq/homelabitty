@@ -88,7 +88,7 @@ spec:
               VPN_PORT_FORWARDING_PROVIDER: protonvpn
               FIREWALL_INPUT_PORTS: 8080
               FIREWALL_OUTBOUND_SUBNETS: 10.96.0.0/12,10.69.0.0/16
-              PUBLICIP_API: cloudflare
+              PUBLICIP_API: ip2location
 
             envFrom:
               - secretRef:
