@@ -80,14 +80,13 @@ spec:
             env:
               DOT: "off"
               DNS_ADDRESS: "127.0.0.2"
-              VPN_SERVICE_PROVIDER: custom
               VPN_TYPE: wireguard
+              VPN_SERVICE_PROVIDER: protonvpn
               VPN_INTERFACE: wg0
-              WIREGUARD_ENDPOINT_PORT: 51820
               VPN_PORT_FORWARDING: on
-              VPN_PORT_FORWARDING_PROVIDER: protonvpn
+              PORT_FORWARD_ONLY: on
               FIREWALL_INPUT_PORTS: 8080
-              FIREWALL_OUTBOUND_SUBNETS: 10.96.0.0/12,10.69.0.0/16
+              FIREWALL_OUTBOUND_SUBNETS: 10.96.0.0/16,10.69.0.0/16
               PUBLICIP_API: ip2location
 
             envFrom:
