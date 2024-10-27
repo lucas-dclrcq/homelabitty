@@ -79,16 +79,8 @@ spec:
       databases: ["miniflux"]
       password:
         type: AlphaNumeric
-    - name: "openfga"
-      databases: ["openfga"]
-      password:
-        type: AlphaNumeric
     - name: "bazarr"
       databases: ["bazarr"]
-      password:
-        type: AlphaNumeric
-    - name: "lldap"
-      databases: ["lldap"]
       password:
         type: AlphaNumeric
     - name: "sso"
@@ -141,6 +133,10 @@ spec:
         type: AlphaNumeric
     - name: "tandoor"
       databases: ["tandoor"]
+      password:
+        type: AlphaNumeric
+    - name: "n8n"
+      databases: ["n8n"]
       password:
         type: AlphaNumeric
 

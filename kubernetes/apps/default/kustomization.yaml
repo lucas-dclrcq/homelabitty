@@ -16,3 +16,4 @@ resources:
   - ./tandoor/ks.yaml
   - ./homelab-manager/ks.yaml
   - ./nextcloud/ks.yaml
+  - ./n8n/ks.yaml
