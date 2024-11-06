@@ -29,7 +29,7 @@ spec:
           app:
             image:
               repository: docker.io/n8nio/n8n
-              tag: 1.66.0
+              tag: 1.67.0
 
             env:
               # Isolating N8N
