@@ -139,6 +139,10 @@ spec:
       databases: ["n8n"]
       password:
         type: AlphaNumeric
+    - name: "conduktor"
+      databases: ["conduktor"]
+      password:
+        type: AlphaNumeric
 
   backups:
     pgbackrest:
