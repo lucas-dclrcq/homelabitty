@@ -8,9 +8,9 @@ spec:
   class: io.lenses.streamreactor.connect.mqtt.source.MqttSourceConnector
   config:
     key.converter.schemas.enable: false
-    key.converter: org.apache.kafka.connect.json.JSONConverter
+    key.converter: org.apache.kafka.connect.json.StringConverter
     value.converter.schemas.enable: false
-    value.converter: org.apache.kafka.connect.json.JSONConverter
+    value.converter: org.apache.kafka.connect.json.StringConverter
     connect.mqtt.connection.clean: true
     connect.mqtt.connection.timeout: 1000
     connect.mqtt.client.id: kafkasource
@@ -18,5 +18,5 @@ spec:
     connect.mqtt.username: kafkaconnect
     connect.mqtt.password: kafkaconnect
     connect.mqtt.service.quality: 1
-    connect.mqtt.kcql: INSERT INTO zigbee2mqtt SELECT * FROM zigbee2mqtt/+ WITHCONVERTER=`io.lenses.streamreactor.connect.converters.source.JsonSimpleConverter`
+    connect.mqtt.kcql: INSERT INTO zigbee2mqtt SELECT * FROM zigbee2mqtt/+ WITHCONVERTER=`io.lenses.streamreactor.connect.converters.source.JsonPassThroughConverter`
     connect.progress.enabled: true
