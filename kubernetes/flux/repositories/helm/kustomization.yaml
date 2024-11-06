@@ -43,3 +43,4 @@ resources:
   - ./descheduler.yaml
   - ./actions-runner-controller.yaml
   - ./redpanda.yaml
+  - ./strimzi.yaml
