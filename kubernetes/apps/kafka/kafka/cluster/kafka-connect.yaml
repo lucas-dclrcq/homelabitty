@@ -22,3 +22,13 @@ spec:
     config.storage.replication.factor: -1
     offset.storage.replication.factor: -1
     status.storage.replication.factor: -1
+  build:
+    output:
+      type: docker
+      image: ghcr.io/lucas-dclrcq/homelabitty/kafka-connect:latest
+      pushSecret: kafka-connect-registry
+    plugins:
+      - name: mqtt-connector
+        artifacts:
+          - type: zip
+            url: https://github.com/lensesio/stream-reactor/releases/download/8.1.15/kafka-connect-mqtt-8.1.15.zip
