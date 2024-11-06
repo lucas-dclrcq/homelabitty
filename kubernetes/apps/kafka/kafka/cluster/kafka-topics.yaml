@@ -10,3 +10,15 @@ spec:
   replicas: 3
   config:
     retention.ms: 7200000
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: zigbee2mqtt
+  labels:
+    strimzi.io/cluster: hoohoot
+spec:
+  partitions: 1
+  replicas: 3
+  config:
+    retention.ms: 7200000

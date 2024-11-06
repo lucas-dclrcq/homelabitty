@@ -6,3 +6,4 @@ resources:
   - ./kafka-cluster.yaml
   - ./kafka-topics.yaml
   - ./kafka-connect.yaml
+  - ./connectors
