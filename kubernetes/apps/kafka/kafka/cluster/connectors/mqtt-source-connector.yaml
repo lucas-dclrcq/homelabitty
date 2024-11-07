@@ -8,9 +8,9 @@ spec:
   class: io.lenses.streamreactor.connect.mqtt.source.MqttSourceConnector
   config:
     key.converter.schemas.enable: false
-    key.converter: org.apache.kafka.connect.json.StringConverter
+    key.converter: org.apache.kafka.connect.json.JsonConverter
     value.converter.schemas.enable: false
-    value.converter: org.apache.kafka.connect.json.StringConverter
+    value.converter: org.apache.kafka.connect.json.JsonConverter
     connect.mqtt.connection.clean: true
     connect.mqtt.connection.timeout: 1000
     connect.mqtt.client.id: kafkasource
