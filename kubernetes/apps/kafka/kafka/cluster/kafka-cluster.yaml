@@ -62,12 +62,7 @@ spec:
       transaction.state.log.min.isr: 2
       default.replication.factor: 3
       min.insync.replicas: 2
-    storage:
-      type: persistent-claim
-      size: 50Gi
-      class: openebs-hostpath
-  zookeeper:
-    replicas: 3
+      group.min.session.timeout.ms: 250
     storage:
       type: persistent-claim
       size: 50Gi
