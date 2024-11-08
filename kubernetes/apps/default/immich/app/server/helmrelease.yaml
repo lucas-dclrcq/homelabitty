@@ -37,21 +37,36 @@ spec:
             env:
               TZ: ${TIMEZONE}
               IMMICH_WORKERS_INCLUDE: api
+              SERVER_PORT: &port 2283
 
             envFrom:
               - secretRef:
                   name: immich-secret
 
             probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/server/ping
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
               startup:
                 enabled: true
+                custom: true
                 spec:
+                  httpGet:
+                    path: /api/server/ping
+                    port: *port
                   failureThreshold: 30
                   periodSeconds: 5
-              liveness:
-                enabled: true
-              readiness:
-                enabled: true
+                  successThreshold: 1
+                  timeoutSeconds: 1
 
             resources:
               requests:
