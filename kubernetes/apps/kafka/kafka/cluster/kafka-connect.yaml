@@ -32,3 +32,9 @@ spec:
         artifacts:
           - type: zip
             url: https://github.com/lensesio/stream-reactor/releases/download/8.1.15/kafka-connect-mqtt-8.1.15.zip
+      - name: apicurio-utils
+        artifacts:
+          - type: maven
+            group: io.apicurio
+            artifact: apicurio-registry-utils-converter
+            version: 3.0.3
