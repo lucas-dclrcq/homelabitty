@@ -71,6 +71,7 @@ spec:
           namespaceSelector:
             any: true
       extraArgs:
+        enable-ssl-passthrough: "true"
         default-ssl-certificate: "network/${SECRET_DOMAIN/./-}-production-tls"
       terminationGracePeriodSeconds: 120
       topologySpreadConstraints:
