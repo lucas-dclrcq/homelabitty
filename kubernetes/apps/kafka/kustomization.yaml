@@ -7,3 +7,4 @@ resources:
   - ./notifications.yaml
   - ./kafka/ks.yaml
   - ./conduktor/ks.yaml
+  - ./apicurio/ks.yaml
