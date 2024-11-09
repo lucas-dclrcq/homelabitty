@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: apicurio
+  name: schema-registry
 spec:
   interval: 30m
   chart:
@@ -25,18 +25,17 @@ spec:
     keepHistory: false
   values:
     controllers:
-      apicurio:
+      schema-registry:
         containers:
           app:
             image:
-              repository: apicurio/apicurio-registry
-              tag: 3.0.3
+              repository: confluentinc/cp-schema-registry
+              tag: 7.7.1
 
             env:
-              QUARKUS_PROFILE: "prod"
-              QUARKUS_HTTP_CORS_ORIGINS: '*'
-              APPLICATION_ID: schema-registry
-              KAFKA_BOOTSTRAP_SERVERS: hoohoot-kafka-bootstrap:9092
+              SCHEMA_REGISTRY_HOST_NAME: "schema-registry"
+              SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: PLAINTEXT://hoohoot-kafka-bootstrap:9092
+              SCHEMA_REGISTRY_KAFKASTORE_TOPIC: schemas
 
             resources:
               requests:
@@ -47,16 +46,16 @@ spec:
 
     service:
       app:
-        controller: apicurio
+        controller: schema-registry
         ports:
           http:
-            port: 8080
+            port: 8081
 
     ingress:
       betanin:
         className: internal
         hosts:
-          - host: &host "apicurio-api.${LIMITED_DOMAIN}"
+          - host: &host "schema-registry.${LIMITED_DOMAIN}"
             paths:
               - path: /
                 service:

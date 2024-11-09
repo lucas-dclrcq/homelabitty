@@ -4,4 +4,3 @@ kind: Kustomization
 resources:
   - ./storage-topics.yaml
   - ./helmrelease-backend.yaml
-  - ./helmrelease-ui.yaml
