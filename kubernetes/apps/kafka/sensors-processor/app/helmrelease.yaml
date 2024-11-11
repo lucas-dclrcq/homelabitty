@@ -1,0 +1,77 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: sensors-processor
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.5.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    controllers:
+      sensors-processor:
+        containers:
+          app:
+            image:
+              repository: ghcr.io/lucas-dclrcq/home-sensors-processor
+              tag: latest@sha256:8102cdd31f6fd80c00b3388750e641ceef69c51c050b3a9a6030ad45c454efa8
+
+            env:
+              QUARKUS_HTTP_PORT: &port 80
+              KAFKA_BOOTSTRAP_SERVERS: hoohoot-kafka-bootstrap:9092
+              QUARKUS_KAFKA_STREAMS_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+              QUARKUS_KAFKA_STREAMS_APPLICATION_ID: homelab-sensors-processor
+
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /q/health/live
+                    port: *port
+                  initialDelaySeconds: 5
+                  periodSeconds: 10
+                  timeoutSeconds: 10
+                  failureThreshold: 3
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /q/health/ready
+                    port: *port
+                  initialDelaySeconds: 5
+                  periodSeconds: 10
+                  timeoutSeconds: 10
+                  failureThreshold: 3
+
+            resources:
+              requests:
+                cpu: 200m
+                memory: 100Mi
+              limits:
+                memory: 500Mi
+
+    service:
+      app:
+        controller: sensors-processor
+        ports:
+          http:
+            port: 8081

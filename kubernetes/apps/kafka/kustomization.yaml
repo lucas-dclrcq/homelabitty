@@ -8,3 +8,4 @@ resources:
   - ./kafka/ks.yaml
   - ./conduktor/ks.yaml
   - ./schema-registry/ks.yaml
+  - ./sensors-processor/ks.yaml
