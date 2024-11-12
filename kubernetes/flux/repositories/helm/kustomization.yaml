@@ -45,3 +45,4 @@ resources:
   - ./redpanda.yaml
   - ./strimzi.yaml
   - ./conduktor.yaml
+  - ./influxdata.yaml
