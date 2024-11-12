@@ -31,10 +31,8 @@ spec:
       - name: mqtt-connector
         artifacts:
           - type: zip
-            url: https://github.com/lensesio/stream-reactor/releases/download/8.1.15/kafka-connect-mqtt-8.1.15.zip
-      - name: apicurio-utils
+            url: https://github.com/lensesio/stream-reactor/releases/download/8.1.16/kafka-connect-mqtt-8.1.16.zip
+      - name: influxdb-connector
         artifacts:
-          - type: maven
-            group: io.apicurio
-            artifact: apicurio-registry-utils-converter
-            version: 3.0.3
+          - type: zip
+            url: https://github.com/lensesio/stream-reactor/releases/download/8.1.16/kafka-connect-influxdb-8.1.16.zip
