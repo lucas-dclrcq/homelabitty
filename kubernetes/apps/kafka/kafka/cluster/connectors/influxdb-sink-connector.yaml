@@ -14,4 +14,4 @@ spec:
     connect.influx.db: temperatures
     connect.influx.username: ${secrets:kafka/connect-credentials:influxdb-username}
     connect.influx.password: ${secrets:kafka/connect-credentials:influxdb-password}
-    connect.influx.kcql: INSERT INTO temperatures SELECT * FROM sensors-temperatures WITHTIMESTAMP timestamp WITHTAG (location)
+    connect.influx.kcql: INSERT INTO temperatures SELECT * FROM sensors-temperatures WITHTIMESTAMP timestamp
