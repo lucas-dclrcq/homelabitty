@@ -22,6 +22,9 @@ spec:
     config.storage.replication.factor: -1
     offset.storage.replication.factor: -1
     status.storage.replication.factor: -1
+    config.providers: secrets,configmaps
+    config.providers.secrets.class: io.strimzi.kafka.KubernetesSecretConfigProvider
+    config.providers.configmaps.class: io.strimzi.kafka.KubernetesConfigMapConfigProvider
   build:
     output:
       type: docker
@@ -36,3 +39,28 @@ spec:
         artifacts:
           - type: zip
             url: https://github.com/lensesio/stream-reactor/releases/download/8.1.16/kafka-connect-influxdb-8.1.16.zip
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: connector-configuration-role
+  namespace: kafka
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    resourceNames: ["connect-credentials"]
+    verbs: ["get"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: connector-configuration-role-binding
+  namespace: kafka
+subjects:
+  - kind: ServiceAccount
+    name: hoohoot-connect-connect
+    namespace: kafka
+roleRef:
+  kind: Role
+  name: connector-configuration-role
+  apiGroup: rbac.authorization.k8s.io
