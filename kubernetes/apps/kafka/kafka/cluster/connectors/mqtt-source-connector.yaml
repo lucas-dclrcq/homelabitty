@@ -5,6 +5,7 @@ metadata:
   name: mqtt-source-connector
   labels:
     strimzi.io/cluster: hoohoot-connect
+    kustomize.toolkit.fluxcd.io/substitute: disabled
 spec:
   class: io.lenses.streamreactor.connect.mqtt.source.MqttSourceConnector
   config:
