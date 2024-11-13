@@ -1,0 +1,16 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaConnector
+metadata:
+  name: influxdb-sink-connector
+  labels:
+    strimzi.io/cluster: hoohoot-connect
+spec:
+  class: io.lenses.streamreactor.connect.influx.InfluxSinkConnector
+  config:
+    tasks.max=1
+    topics=sensors-temperatures
+    connect.influx.url=http://influxdb-influxdb2.home.svc.cluster.local
+    connect.influx.db=temperatures
+    connect.influx.username=${secrets:kafka/connect-credentials:influxdb-username}
+    connect.influx.password=${secrets:kafka/connect-credentials:influxdb-password}
+    connect.influx.kcql=INSERT INTO temperatures SELECT * FROM sensors-temperatures WITHTIMESTAMP timestamp WITHTAG (location)
