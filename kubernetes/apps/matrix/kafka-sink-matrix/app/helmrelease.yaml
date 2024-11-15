@@ -30,7 +30,7 @@ spec:
           app:
             image:
               repository: ghcr.io/lucas-dclrcq/kafka-matrix-sink
-              tag: latest@sha256:39971264b4b7ac6d1e8231bff3ecc563100f74c25902e313fba9a9aab0412528
+              tag: latest@sha256:dcc367aeea9eb697590a962d943d2eb9adf79c83204868ce57ede2c6fdaa0601
 
             env:
               QUARKUS_HTTP_PORT: &port 8080
@@ -43,29 +43,29 @@ spec:
               - secretRef:
                   name: kafka-sink-matrix
 
-#            probes:
-#              liveness:
-#                enabled: true
-#                custom: true
-#                spec:
-#                  httpGet:
-#                    path: /q/health/live
-#                    port: *port
-#                  initialDelaySeconds: 5
-#                  periodSeconds: 10
-#                  timeoutSeconds: 10
-#                  failureThreshold: 3
-#              readiness:
-#                enabled: true
-#                custom: true
-#                spec:
-#                  httpGet:
-#                    path: /q/health/ready
-#                    port: *port
-#                  initialDelaySeconds: 5
-#                  periodSeconds: 10
-#                  timeoutSeconds: 10
-#                  failureThreshold: 3
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /q/health/live
+                    port: *port
+                  initialDelaySeconds: 5
+                  periodSeconds: 10
+                  timeoutSeconds: 10
+                  failureThreshold: 3
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /q/health/ready
+                    port: *port
+                  initialDelaySeconds: 5
+                  periodSeconds: 10
+                  timeoutSeconds: 10
+                  failureThreshold: 3
 
             resources:
               requests:
