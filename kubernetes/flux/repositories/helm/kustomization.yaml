@@ -46,3 +46,4 @@ resources:
   - ./strimzi.yaml
   - ./conduktor.yaml
   - ./influxdata.yaml
+  - ./kedacore.yaml

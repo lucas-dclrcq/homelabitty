@@ -11,3 +11,4 @@ resources:
   - ./kromgo/ks.yaml
   - ./gatus/ks.yaml
   - ./smartctl-exporter/ks.yaml
+  - ./keda/ks.yaml
