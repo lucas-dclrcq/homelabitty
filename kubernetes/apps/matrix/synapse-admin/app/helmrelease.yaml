@@ -31,8 +31,8 @@ spec:
         containers:
           app:
             image:
-              repository: awesometechnologies/synapse-admin
-              tag: 0.10.3@sha256:70a6e988af1b4acc2f3c0dea8c2eebc27a9ecbe638a472540104625326c5e259
+              repository: ghcr.io/etkecc/synapse-admin
+              tag: v0.10.3-etke30
 
     service:
       app:
