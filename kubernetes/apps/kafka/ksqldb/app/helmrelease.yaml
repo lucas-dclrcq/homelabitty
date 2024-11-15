@@ -1,0 +1,53 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: ksqldb
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.5.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    controllers:
+      ksqldb:
+        containers:
+          app:
+            image:
+              repository: confluentinc/cp-ksqldb-server
+              tag: 7.7.1
+
+            env:
+              KSQL_LISTENERS: http://0.0.0.0:8088
+              KSQL_BOOTSTRAP_SERVERS: hoohoot-kafka-bootstrap:9092
+              KSQL_KSQL_LOGGING_PROCESSING_STREAM_AUTO_CREATE: "true"
+              KSQL_KSQL_LOGGING_PROCESSING_TOPIC_AUTO_CREATE: "true"
+
+            resources:
+              requests:
+                cpu: 200m
+                memory: 100Mi
+              limits:
+                memory: 500Mi
+
+    service:
+      app:
+        controller: ksqldb
+        ports:
+          http:
+            port: 8088
