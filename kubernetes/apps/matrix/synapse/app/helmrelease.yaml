@@ -27,8 +27,6 @@ spec:
       client:
         m.homeserver:
           base_url: "https://matrix.${SECRET_DOMAIN}"
-        org.matrix.msc3575.proxy:
-          url: "https://syncv3.${SECRET_DOMAIN}"
 
     workers:
       default:
