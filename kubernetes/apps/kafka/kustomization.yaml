@@ -9,4 +9,3 @@ resources:
   - ./conduktor/ks.yaml
   - ./schema-registry/ks.yaml
   - ./sensors-processor/ks.yaml
-  - ./ksqldb/ks.yaml

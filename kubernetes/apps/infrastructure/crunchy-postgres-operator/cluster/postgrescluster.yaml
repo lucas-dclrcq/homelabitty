@@ -143,6 +143,10 @@ spec:
       databases: ["conduktor"]
       password:
         type: AlphaNumeric
+    - name: "kyoo"
+      databases: ["kyoo"]
+      password:
+        type: AlphaNumeric
 
   backups:
     pgbackrest:
