@@ -269,4 +269,9 @@ spec:
         server: "nas.${INTERNAL_DOMAIN}"
         path: /volume1/Media
         globalMounts:
-          - path: /media
+          - path: /media/Movies
+            subPath: Movies
+          - path: /media/TV
+            subPath: TV
+          - path: /media/Family
+            subPath: Family
