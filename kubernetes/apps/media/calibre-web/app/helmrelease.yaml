@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: calibre-web
+  name: calibre-web-automated
 spec:
   chart:
     spec:
@@ -16,27 +16,32 @@ spec:
         namespace: flux-system
   interval: 30m
   values:
+    defaultPodOptions:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      securityContext:
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile:
+          type: RuntimeDefault
+
     controllers:
       calibre-web:
+        type: statefulset
+
         annotations:
           reloader.stakater.com/auto: "true"
-
-        pod:
-          securityContext:
-            runAsUser: 1026
-            runAsGroup: 100
-            fsGroup: 100
-            fsGroupChangePolicy: "OnRootMismatch"
-            supplementalGroups: [10000]
 
         containers:
           app:
             image:
-              repository: ghcr.io/bjw-s/calibre-web
-              tag: 0.6.24@sha256:d7d8e0e05f4c1eb6e125327dfb03550f98eb4a5b3c7f4233f34d9c624ef62c24
+              repository: crocodilestick/calibre-web-automated
+              tag: V2.1.2
 
             env:
               CACHE_DIR: /cache
+              TZ: "${TIMEZONE}"
+              PUID: "1026"
+              PGID: "100"
 
             probes:
               liveness:
@@ -46,15 +51,16 @@ spec:
               startup:
                 enabled: true
                 spec:
-                  failureThreshold: 30
+                  initialDelaySeconds: 60
+                  failureThreshold: 45
                   periodSeconds: 5
 
             resources:
               requests:
-                cpu: 5m
-                memory: 470M
+                cpu: 10m
+                memory: 128Mi
               limits:
-                memory: 470M
+                memory: 768Mi
 
     service:
       app:
@@ -89,6 +95,8 @@ spec:
         path: /volume1/Media
         globalMounts:
           - path: /media
+          - path: /cwa-book-ingest
+            subPath: Downloads/Ebooks
       cache:
         type: emptyDir
         globalMounts:
