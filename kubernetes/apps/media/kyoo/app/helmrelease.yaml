@@ -36,7 +36,7 @@ spec:
                   name: kyoo-secret
             image:
               repository: ghcr.io/zoriya/kyoo_migrations
-              tag: 4.6.0
+              tag: 4.7.0
         containers:
           app:
             image:
