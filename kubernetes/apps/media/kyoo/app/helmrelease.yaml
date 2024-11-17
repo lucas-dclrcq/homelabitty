@@ -79,7 +79,7 @@ spec:
           app:
             image:
               repository: &scannerimage ghcr.io/zoriya/kyoo_scanner
-              tag: &scannertag 4.6.0
+              tag: &scannertag 4.7.0
             envFrom: *envFrom
             resources:
               requests:
