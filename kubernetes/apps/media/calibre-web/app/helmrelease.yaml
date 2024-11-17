@@ -94,7 +94,8 @@ spec:
         server: "nas.${INTERNAL_DOMAIN}"
         path: /volume1/Media
         globalMounts:
-          - path: /media
+          - path: /calibre-library
+            subPath: Ebooks
           - path: /cwa-book-ingest
             subPath: Downloads/Ebooks
       cache:
