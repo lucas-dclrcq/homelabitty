@@ -42,6 +42,18 @@ spec:
               TZ: "${TIMEZONE}"
               PUID: "1026"
               PGID: "100"
+              DOCKER_MODS: >-
+                {{- $items := list
+                  "// renovate: lsio-docker-mod"
+                  "ghcr.io/linuxserver/mods:universal-calibre-v7.16.0"
+                -}}
+                {{- $filtered := list -}}
+                {{- range $item := $items -}}
+                  {{- if not (hasPrefix "//" $item) -}}
+                    {{- $filtered = append $filtered $item -}}
+                  {{- end -}}
+                {{- end -}}
+                {{- $filtered | join "|" -}}
 
             probes:
               liveness:
