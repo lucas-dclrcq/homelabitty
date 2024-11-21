@@ -79,4 +79,4 @@ spec:
         type: hostPath
         hostPath: /var/run/dbus
         globalMounts:
-          - path: /var/run/dbus
+          - path: /run/dbus
