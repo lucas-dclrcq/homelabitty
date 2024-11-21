@@ -74,6 +74,13 @@ spec:
             secretName: "${LIMITED_DOMAIN/./-}-production-tls"
 
     persistence:
+      config:
+        enabled: true
+        type: configMap
+        name: airsane-driver
+        globalMounts:
+          - path: /drivers/brscan4-0.4.11-1.amd64.deb
+            subPath: brscan4-0.4.11-1.amd64.deb
       usb:
         enabled: true
         type: hostPath
