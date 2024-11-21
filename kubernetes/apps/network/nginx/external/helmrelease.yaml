@@ -77,7 +77,7 @@ spec:
           namespaceSelector:
             any: true
       extraArgs:
-        default-ssl-certificate: "network/${SECRET_DOMAIN/./-}-production-tls"
+        default-ssl-certificate: "network/${SECRET_DOMAIN/./-}-production-tls-clean"
       terminationGracePeriodSeconds: 120
       topologySpreadConstraints:
         - maxSkew: 1
