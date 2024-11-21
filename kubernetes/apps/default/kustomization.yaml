@@ -17,4 +17,4 @@ resources:
   - ./homelab-manager/ks.yaml
   - ./nextcloud/ks.yaml
   - ./cupsd/ks.yaml
-  - ./airsane/ks.yaml
+  - ./scanservjs/ks.yaml

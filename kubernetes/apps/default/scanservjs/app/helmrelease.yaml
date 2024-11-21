@@ -1,0 +1,113 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/app-template-3.5.1/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app scanservjs
+spec:
+  chart:
+    spec:
+      chart: app-template
+      version: 3.5.1
+      sourceRef:
+        kind: HelmRepository
+        namespace: flux-system
+        name: bjw-s
+  interval: 1h
+  driftDetection:
+    mode: enabled
+  values:
+    controllers:
+      scanservjs:
+        containers:
+          app:
+            image:
+              repository: sbs20/scanservjs
+              tag: release-v3.0.3@sha256:dad1fd6e9a98957d324499e822a3019cc43d6557e314635c82665baf576b960e
+
+            command: /bin/sh
+            args: [-c, service dbus start && /entrypoint.sh]
+
+            env:
+              TZ: "${TIMEZONE}"
+
+            securityContext:
+              privileged: true
+
+            probes:
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 5
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+
+        pod:
+          terminationGracePeriodSeconds: 1
+          securityContext:
+            runAsUser: 1026
+            runAsGroup: 100
+            fsGroup: 100
+            fsGroupChangePolicy: OnRootMismatch
+
+    defaultPodOptions:
+      nodeSelector:
+        brother.feature.node.kubernetes.io/printer: "true"
+
+    service:
+      scanservjs:
+        controller: scanservjs
+        ports:
+          http:
+            port: 8080
+
+    ingress:
+      scanservjs:
+        enabled: true
+        annotations:
+          nginx.ingress.kubernetes.io/proxy-connect-timeout: "600"
+          nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+          nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+        hosts:
+          - host: &host "scanner.${LIMITED_DOMAIN}"
+            paths:
+              - path: /
+                service:
+                  identifier: scanservjs
+                  port: http
+        tls:
+          - secretName: "${LIMITED_DOMAIN/./-}-production-tls"
+            hosts:
+              - *host
+
+    persistence:
+      config:
+        enabled: true
+        existingClaim: *app
+        globalMounts:
+          - path: /etc/scanservjs
+            subPath: config
+          - path: /var/lib/scanservjs
+            subPath: data
+      output:
+        enabled: true
+        type: nfs
+        server: "nas.${INTERNAL_DOMAIN}"
+        path: /volume1/Scans
+        globalMounts:
+          - path: /var/lib/scanservjs/output
+      tmp:
+        enabled: true
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
+      dbus:
+        type: hostPath
+        hostPath: /var/run/dbus
+        advancedMounts:
+          scanservjs:
+            app:
+              - path: /var/run/dbus
