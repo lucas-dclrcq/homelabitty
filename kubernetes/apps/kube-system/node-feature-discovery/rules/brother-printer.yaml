@@ -1,0 +1,16 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/nfd.k8s-sigs.io/nodefeaturerule_v1alpha1.json
+apiVersion: nfd.k8s-sigs.io/v1alpha1
+kind: NodeFeatureRule
+metadata:
+  name: brother-printer-device
+spec:
+  rules:
+    - name: brother.printer
+      labels:
+        brother.feature.node.kubernetes.io/printer: "true"
+      matchFeatures:
+        - feature: usb.device
+          matchExpressions:
+            vendor: {op: In, value: ["04f9"]}
+            device: {op: In, value: ["041f"]}
