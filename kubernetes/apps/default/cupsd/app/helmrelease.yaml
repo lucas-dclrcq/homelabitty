@@ -25,8 +25,11 @@ spec:
   values:
     controllers:
       cupsd:
+        type: statefulset
+
         annotations:
           reloader.stakater.com/auto: "true"
+
         containers:
           app:
             image:
@@ -47,7 +50,7 @@ spec:
 
     defaultPodOptions:
       nodeSelector:
-        brother.feature.node.kubernetes.io/printer: "true"
+        kubernetes.io/hostname: burrich
 
     service:
       app:
