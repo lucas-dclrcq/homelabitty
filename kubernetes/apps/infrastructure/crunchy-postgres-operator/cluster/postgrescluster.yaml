@@ -143,8 +143,8 @@ spec:
       databases: ["conduktor"]
       password:
         type: AlphaNumeric
-    - name: "kyoo"
-      databases: ["kyoo"]
+    - name: "firefly"
+      databases: ["firefly"]
       password:
         type: AlphaNumeric
 
