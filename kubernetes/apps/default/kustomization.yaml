@@ -19,4 +19,3 @@ resources:
   - ./cupsd/ks.yaml
   - ./vikunja/ks.yaml
   - ./searxng/ks.yaml
-  - ./firefly-iii/ks.yaml
