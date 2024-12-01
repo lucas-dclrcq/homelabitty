@@ -3,6 +3,7 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - ./namespace.yaml
+  - ./exporters
   - ./prometheus-operator-crds/ks.yaml
   - ./kube-prometheus-stack/ks.yaml
   - ./grafana/ks.yaml
@@ -10,5 +11,4 @@ resources:
   - ./promtail/ks.yaml
   - ./kromgo/ks.yaml
   - ./gatus/ks.yaml
-  - ./smartctl-exporter/ks.yaml
   - ./keda/ks.yaml
