@@ -25,6 +25,7 @@ spec:
     substitute:
       APP: *app
       VOLSYNC_CAPACITY: 1Gi
+      VOLSYNC_CRONSTRING: "15 * * * *"
     substituteFrom:
       - kind: Secret
         name: betanin-secret
