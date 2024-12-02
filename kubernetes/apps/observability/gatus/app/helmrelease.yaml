@@ -64,6 +64,8 @@ spec:
             envFrom:
               - secretRef:
                   name: gatus-secret
+              - secretRef:
+                  name: gatus-db-secret
 
             probes:
               liveness: &probes
@@ -78,6 +80,7 @@ spec:
                   timeoutSeconds: 1
                   failureThreshold: 3
               readiness: *probes
+
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true

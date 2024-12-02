@@ -50,7 +50,8 @@ spec:
             envFrom:
               - secretRef:
                   name: jellystat-secret
-
+              - secretRef:
+                  name: jellystat-db-secret
     service:
       main:
         controller: main

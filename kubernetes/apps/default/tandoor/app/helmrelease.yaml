@@ -50,6 +50,8 @@ spec:
             envFrom:
               - secretRef:
                   name: tandoor-secret
+              - secretRef:
+                  name: tandoor-db-secret
 
             probes:
               liveness: &probes

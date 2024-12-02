@@ -165,7 +165,7 @@ spec:
       database: nc
       existingSecret:
         enabled: true
-        secretName: nextcloud-secret
+        secretName: nextcloud-db-secret
         usernameKey: POSTGRES_USER
         passwordKey: POSTGRES_PASSWORD
 
