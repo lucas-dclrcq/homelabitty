@@ -32,8 +32,8 @@ spec:
         initContainers:
           load-config:
             image:
-              repository: halfshot/matrix-appservice-discord
-              tag: latest
+              repository: ghcr.io/matrix-org/matrix-appservice-discord
+              tag: v4.0.0
             command:
               - "/bin/sh"
               - "-c"
