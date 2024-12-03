@@ -134,8 +134,6 @@ spec:
     ingress:
       app:
         className: internal
-        annotations:
-          authentik-internal.home.arpa/enabled: "true"
         hosts:
           - host: &host "{{ .Release.Name }}.${LIMITED_DOMAIN}"
             paths:

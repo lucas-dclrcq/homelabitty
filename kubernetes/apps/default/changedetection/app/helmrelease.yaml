@@ -67,8 +67,6 @@ spec:
       app:
         enabled: true
         className: internal
-        annotations:
-          authentik-internal.home.arpa/enabled: "true"
         hosts:
           - host: &host "{{ .Release.Name }}.${LIMITED_DOMAIN}"
             paths:

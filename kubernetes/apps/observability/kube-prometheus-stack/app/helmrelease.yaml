@@ -42,8 +42,6 @@ spec:
       ingress:
         enabled: true
         ingressClassName: internal
-        annotations:
-          authentik-internal.home.arpa/enabled: "true"
         hosts:
           - &alert_host "alertmanager.${LIMITED_DOMAIN}"
         pathType: Prefix
@@ -87,8 +85,6 @@ spec:
       ingress:
         enabled: true
         ingressClassName: internal
-        annotations:
-          authentik-internal.home.arpa/enabled: "true"
         hosts:
           - &prom_host "prometheus.${LIMITED_DOMAIN}"
         pathType: Prefix
