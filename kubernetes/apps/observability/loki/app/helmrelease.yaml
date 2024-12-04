@@ -47,15 +47,6 @@ spec:
         chunk_encoding: snappy
       storage:
         type: filesystem
-      structuredConfig:
-        ruler:
-          external_url: https://grafana.${SECRET_DOMAIN}
-          alertmanager_url: http://kube-prometheus-stack-alertmanager:9093
-          enable_api: true
-          ring:
-            kvstore:
-              store: inmemory
-          enable_alertmanager_v2: true
       schemaConfig:
         configs:
           - from: "2024-04-01" # quote
