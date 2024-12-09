@@ -17,7 +17,6 @@ resources:
   - ./recyclarr/ks.yaml
   - ./jellyseerr/ks.yaml
   - ./calibre-web/ks.yaml
-  - ./slskd-to-betanin-notifier/ks.yaml
   - ./jellyfin/ks.yaml
   - ./jellystat/ks.yaml
   - ./flaresolverr/ks.yaml

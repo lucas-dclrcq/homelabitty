@@ -76,3 +76,9 @@ shares:
     - \.ini$
     - Thumbs.db$
     - \.DS_Store$
+integration:
+  scripts:
+    notify_betanin:
+      on:
+        - DownloadDirectoryComplete
+      run: /bin/sh /scripts/notify_betanin.sh "$DATA"
