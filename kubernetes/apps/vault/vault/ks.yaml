@@ -13,7 +13,6 @@ spec:
   path: ./kubernetes/apps/vault/vault/app
   dependsOn:
     - name: rook-ceph-cluster
-      namespace: rook-ceph
   prune: true
   sourceRef:
     kind: GitRepository
