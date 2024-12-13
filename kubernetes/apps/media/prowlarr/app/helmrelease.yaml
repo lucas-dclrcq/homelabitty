@@ -37,7 +37,7 @@ spec:
               PROWLARR__AUTH__METHOD: External
               PROWLARR__AUTH__REQUIRED: DisabledForLocalAddresses
               PROWLARR__LOG__DBENABLED: "False"
-              PROWLARR__POSTGRES__HOST: "postgres-pgbouncer.infrastructure.svc.cluster.local"
+              PROWLARR__POSTGRES__HOST: "postgres-16-pgbouncer.infrastructure.svc.cluster.local"
               PROWLARR__POSTGRES__PORT: "5432"
               PROWLARR__POSTGRES__MAINDB: "prowlarr_main"
               PROWLARR__LOG__LEVEL: info

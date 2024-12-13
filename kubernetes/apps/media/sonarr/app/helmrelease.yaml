@@ -44,7 +44,7 @@ spec:
               SONARR__SERVER__PORT: &port 80
               SONARR__UPDATE__BRANCH: develop
               TZ: "${TIMEZONE}"
-              SONARR__POSTGRES__HOST: "postgres-pgbouncer.infrastructure.svc.cluster.local"
+              SONARR__POSTGRES__HOST: "postgres-16-pgbouncer.infrastructure.svc.cluster.local"
               SONARR__POSTGRES__PORT: "5432"
               SONARR__POSTGRES__MAINDB: "sonarr_main"
 

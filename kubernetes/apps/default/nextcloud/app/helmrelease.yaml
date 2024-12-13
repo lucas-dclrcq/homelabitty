@@ -161,7 +161,7 @@ spec:
     externalDatabase:
       enabled: true
       type: postgresql
-      host: postgres-primary.infrastructure.svc.cluster.local:5432
+      host: postgres-16-primary.infrastructure.svc.cluster.local:5432
       database: nc
       existingSecret:
         enabled: true

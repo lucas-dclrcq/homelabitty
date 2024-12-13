@@ -157,7 +157,7 @@ spec:
       enabled: false
 
     externalPostgresql:
-      host: "postgres-primary.infrastructure.svc.cluster.local"
+      host: "postgres-16-primary.infrastructure.svc.cluster.local"
       port: 5432
       username: "synapse"
       existingSecret: "synapse-db-secret"
