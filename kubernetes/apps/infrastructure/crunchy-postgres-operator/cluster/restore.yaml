@@ -11,14 +11,10 @@ spec:
     postgresCluster:
       clusterName: postgres
       repoName: repo1
-      options:
-        - --db-include=matrixbridge
 
   service:
     type: LoadBalancer
-    metadata:
-      annotations:
-        io.cilium/lb-ipam-ips: TBD
+
 
   patroni:
     dynamicConfiguration:

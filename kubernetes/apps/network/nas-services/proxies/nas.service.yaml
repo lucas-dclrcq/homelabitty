@@ -16,3 +16,9 @@ spec:
     - name: synology
       protocol: TCP
       port: 5999
+    - name: minio
+      protocol: TCP
+      port: 9001
+    - name: s3
+      protocol: TCP
+      port: 9000

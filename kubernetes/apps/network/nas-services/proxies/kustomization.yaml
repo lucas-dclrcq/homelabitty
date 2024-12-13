@@ -5,3 +5,4 @@ kind: Kustomization
 resources:
   - ./nas.service.yaml
   - ./synology.ingress.yaml
+  - ./minio.ingress.yaml

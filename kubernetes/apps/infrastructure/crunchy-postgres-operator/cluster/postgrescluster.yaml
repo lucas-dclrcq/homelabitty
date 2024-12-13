@@ -3,14 +3,32 @@
 apiVersion: postgres-operator.crunchydata.com/v1beta1
 kind: PostgresCluster
 metadata:
-  name: &name postgres
+  name: &name postgres-16
 spec:
   postgresVersion: 16
 
   dataSource:
-    postgresCluster:
-      clusterName: postgres
-      repoName: repo1
+    pgbackrest:
+      stanza: db
+      configuration:
+        - secret:
+            name: crunchy-postgres-secret
+      global:
+        compress-type: "bz2"
+        compress-level: "9"
+        # Minio
+        repo1-block: "y"
+        repo1-bundle: "y"
+        repo1-path: /crunchy-pgo
+        repo1-retention-full: "30" # days
+        repo1-retention-full-type: "time"
+        repo1-s3-uri-style: path
+      repo:
+        name: repo1
+        s3:
+          bucket: "postgres-backup"
+          endpoint: "s3.${SECRET_DOMAIN}"
+          region: "us-east-1"
 
   metadata:
     labels:
@@ -177,8 +195,8 @@ spec:
           app.kubernetes.io/name: crunchy-postgres-backup
       repos:
         - name: repo1 # Minio
-          s3: &minio
-            bucket: "postgres-backup"
+          s3:
+            bucket: "postgres-16-backup"
             endpoint: "s3.${SECRET_DOMAIN}"
             region: "us-east-1"
           schedules:
