@@ -125,7 +125,7 @@ spec:
     persistence:
       library:
         type: nfs
-        server: "nas.${INTERNAL_DOMAIN}"
+        server: "192.168.1.80"
         path: /volume1/Photos
         globalMounts:
           - path: /usr/src/app/upload

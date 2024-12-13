@@ -7,7 +7,7 @@ metadata:
 spec:
   staticConfigs:
     - targets:
-        - nas.${INTERNAL_DOMAIN}:9100
+        - 192.168.1.80:9100
         - the-tower.${INTERNAL_DOMAIN}:9100
   metricsPath: /metrics
   relabelings:

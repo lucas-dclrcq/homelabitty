@@ -74,7 +74,7 @@ spec:
         existingClaim: *app
       media:
         type: nfs
-        server: "nas.${INTERNAL_DOMAIN}"
+        server: "192.168.1.80"
         path: /volume1/Media
         globalMounts:
           - path: /media
