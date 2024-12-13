@@ -117,7 +117,7 @@ spec:
           - path: /config/log
       media:
         type: nfs
-        server: "192.168.1.80"
+        server: "nas.${INTERNAL_DOMAIN}"
         path: /volume1/Media
         globalMounts:
           - path: /media
