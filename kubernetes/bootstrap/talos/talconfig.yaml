@@ -1,18 +1,18 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/budimanjojo/talhelper/master/pkg/config/schemas/talconfig.json
 ---
 # renovate: datasource=docker depName=ghcr.io/siderolabs/installer
-talosVersion: v1.8.4
+talosVersion: v1.8.3
 # renovate: datasource=docker depName=ghcr.io/siderolabs/kubelet
-kubernetesVersion: v1.32.0
+kubernetesVersion: v1.31.4
 
 clusterName: "hoohoot"
-endpoint: https://192.168.1.20:6443
+endpoint: https://192.168.1.42:6443
 clusterPodNets:
   - "10.69.0.0/16"
 clusterSvcNets:
   - "10.96.0.0/16"
 additionalApiServerCertSans: &sans
-  - "192.168.1.20"
+  - "192.168.1.42"
   - 127.0.0.1 # KubePrism
 additionalMachineCertSans: *sans
 
@@ -29,7 +29,7 @@ nodes:
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
-          hardwareAddr: "70:b5:e8:66:45:10"
+          hardwareAddr: "00:00:22:50:26:c6"
         dhcp: true
         addresses:
           - "192.168.1.11/24"
@@ -38,7 +38,7 @@ nodes:
             gateway: "192.168.1.1"
         mtu: 1500
         vip:
-          ip: "192.168.1.20"
+          ip: "192.168.1.42"
 
   - hostname: "nighteyes"
     ipAddress: "192.168.1.12"
@@ -48,7 +48,7 @@ nodes:
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
-          hardwareAddr: "8c:04:ba:a5:c2:f1"
+          hardwareAddr: "00:00:22:50:25:cf"
         dhcp: true
         addresses:
           - "192.168.1.12/24"
@@ -57,7 +57,7 @@ nodes:
             gateway: "192.168.1.1"
         mtu: 1500
         vip:
-          ip: "192.168.1.20"
+          ip: "192.168.1.42"
 
   - hostname: "chade"
     ipAddress: "192.168.1.13"
@@ -67,7 +67,7 @@ nodes:
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
-          hardwareAddr: "70:b5:e8:65:e4:fa"
+          hardwareAddr: "00:00:22:50:26:55"
         dhcp: true
         addresses:
           - "192.168.1.13/24"
@@ -76,7 +76,7 @@ nodes:
             gateway: "192.168.1.1"
         mtu: 1500
         vip:
-          ip: "192.168.1.20"
+          ip: "192.168.1.42"
 
   - hostname: "fool"
     ipAddress: "192.168.1.14"
@@ -86,7 +86,7 @@ nodes:
     controlPlane: false
     networkInterfaces:
       - deviceSelector:
-          hardwareAddr: "C0:25:A5:A9:81:E3"
+          hardwareAddr: "00:00:22:50:26:d8"
         dhcp: true
         addresses:
           - "192.168.1.14/24"
@@ -103,7 +103,7 @@ nodes:
     controlPlane: false
     networkInterfaces:
       - deviceSelector:
-          hardwareAddr: "C0:25:A5:A9:D3:5C"
+          hardwareAddr: "00:00:22:50:26:1e"
         dhcp: true
         addresses:
           - "192.168.1.15/24"
@@ -120,7 +120,7 @@ nodes:
     controlPlane: false
     networkInterfaces:
       - deviceSelector:
-          hardwareAddr: "C0:25:A5:AB:1A:C6"
+          hardwareAddr: "00:00:22:50:26:d5"
         dhcp: true
         addresses:
           - "192.168.1.16/24"

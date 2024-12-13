@@ -5,17 +5,17 @@ kind: Kustomization
 resources:
   - ./namespace.yaml
   - ./notifications.yaml
-  - ./echo-server/ks.yaml
-  - ./miniflux/ks.yaml
-  - ./changedetection/ks.yaml
-  - ./atuin/ks.yaml
-  - ./vaultwarden/ks.yaml
-  - ./actual/ks.yaml
-  - ./wallabag/ks.yaml
-  - ./immich/ks.yaml
-  - ./tandoor/ks.yaml
-  - ./homelab-manager/ks.yaml
-  - ./nextcloud/ks.yaml
-  - ./cupsd/ks.yaml
-  - ./vikunja/ks.yaml
-  - ./searxng/ks.yaml
+#  - ./echo-server/ks.yaml
+#  - ./miniflux/ks.yaml
+#  - ./changedetection/ks.yaml
+#  - ./atuin/ks.yaml
+#  - ./vaultwarden/ks.yaml
+#  - ./actual/ks.yaml
+#  - ./wallabag/ks.yaml
+#  - ./immich/ks.yaml
+#  - ./tandoor/ks.yaml
+#  - ./homelab-manager/ks.yaml
+#  - ./nextcloud/ks.yaml
+#  - ./cupsd/ks.yaml
+#  - ./vikunja/ks.yaml
+#  - ./searxng/ks.yaml

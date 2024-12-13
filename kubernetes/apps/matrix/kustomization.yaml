@@ -3,10 +3,10 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - ./namespace.yaml
-  - ./synapse/ks.yaml
-  - ./bridge-discord/ks.yaml
-  - ./element/ks.yaml
-  - ./synapse-admin/ks.yaml
-  - ./baibot/ks.yaml
-  - ./synapse-usage-exporter/ks.yaml
-  - ./kafka-sink-matrix/ks.yaml
+#  - ./synapse/ks.yaml
+#  - ./bridge-discord/ks.yaml
+#  - ./element/ks.yaml
+#  - ./synapse-admin/ks.yaml
+#  - ./baibot/ks.yaml
+#  - ./synapse-usage-exporter/ks.yaml
+#  - ./kafka-sink-matrix/ks.yaml
