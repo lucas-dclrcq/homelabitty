@@ -3,15 +3,33 @@
 apiVersion: postgres-operator.crunchydata.com/v1beta1
 kind: PostgresCluster
 metadata:
-  name: &name postgres-vector
+  name: &name postgres-16-vector
 spec:
   postgresVersion: 16
   image: ghcr.io/drag0n141/cdpgvector:0.3.0@sha256:0c0cdea03433d3e660239f21d0d17a80d5739fd24f58ae83f708cad344c83342
 
   dataSource:
-    postgresCluster:
-      clusterName: postgres-vector
-      repoName: repo1
+    pgbackrest:
+      stanza: db
+      configuration:
+        - secret:
+            name: crunchy-postgres-secret
+      global:
+        compress-type: "bz2"
+        compress-level: "9"
+        # Minio
+        repo1-block: "y"
+        repo1-bundle: "y"
+        repo1-path: /crunchy-pgo
+        repo1-retention-full: "30" # days
+        repo1-retention-full-type: "time"
+        repo1-s3-uri-style: path
+      repo:
+        name: repo1
+        s3:
+          bucket: "postgres-vector-backup"
+          endpoint: "s3.${SECRET_DOMAIN}"
+          region: "us-east-1"
 
   metadata:
     labels:
