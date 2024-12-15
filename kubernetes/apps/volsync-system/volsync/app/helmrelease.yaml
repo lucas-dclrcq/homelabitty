@@ -23,8 +23,6 @@ spec:
       strategy: rollback
       retries: 3
   dependsOn:
-    - name: minio
-      namespace: infrastructure
     - name: snapshot-controller
       namespace: volsync-system
   values:
