@@ -10,3 +10,27 @@ spec:
   replicas: 3
   config:
     retention.ms: 7200000
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: matrix-messages
+  labels:
+    strimzi.io/cluster: hoohoot
+spec:
+  partitions: 2
+  replicas: 3
+  config:
+    retention.ms: 7200000
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: incoming-notifications
+  labels:
+    strimzi.io/cluster: hoohoot
+spec:
+  partitions: 2
+  replicas: 3
+  config:
+    retention.ms: 7200000
