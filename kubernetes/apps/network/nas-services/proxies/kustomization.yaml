@@ -6,3 +6,5 @@ resources:
   - ./nas.service.yaml
   - ./synology.ingress.yaml
   - ./minio.ingress.yaml
+  - ./truenas.service.yaml
+  - ./truenas.ingress.yaml
