@@ -115,8 +115,8 @@ spec:
           - path: /config/log
       media:
         type: nfs
-        server: "nas.${INTERNAL_DOMAIN}"
-        path: /volume1/Media
+        server: "truenas.${INTERNAL_DOMAIN}"
+        path: /mnt/tank/Media
         globalMounts:
           - path: /media
       tmp:

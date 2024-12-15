@@ -103,8 +103,8 @@ spec:
               - path: /config
       media:
         type: nfs
-        server: "nas.${INTERNAL_DOMAIN}"
-        path: /volume1/Media
+        server: "truenas.${INTERNAL_DOMAIN}"
+        path: /mnt/tank/Media
         globalMounts:
           - path: /calibre-library
             subPath: Ebooks

@@ -153,8 +153,8 @@ spec:
               - path: /tmp
       media:
         type: nfs
-        server: "nas.${INTERNAL_DOMAIN}"
-        path: /volume1/Media
+        server: "truenas.${INTERNAL_DOMAIN}"
+        path: /mnt/tank/Media
         advancedMounts:
           sabnzbd:
             app:
