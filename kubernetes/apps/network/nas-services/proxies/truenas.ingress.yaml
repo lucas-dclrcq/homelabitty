@@ -7,9 +7,9 @@ metadata:
     ingress.kubernetes.io/preserve-host: "true"
   name: truenas
 spec:
-  ingressClassName: external
+  ingressClassName: internal
   rules:
-    - host: "truenas.${SECRET_DOMAIN}"
+    - host: "truenas.${LIMITED_DOMAIN}"
       http:
         paths:
           - backend:
