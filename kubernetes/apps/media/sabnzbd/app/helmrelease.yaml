@@ -30,6 +30,7 @@ spec:
       sabnzbd:
         annotations:
           reloader.stakater.com/auto: "true"
+
         containers:
           app:
             image:
@@ -48,18 +49,15 @@ spec:
                 sabnzbd.${LIMITED_DOMAIN}
 
             probes:
-              liveness: &probes
+              liveness:
                 enabled: true
-                custom: true
+              readiness:
+                enabled: true
+              startup:
+                enabled: true
                 spec:
-                  httpGet:
-                    path: /api?mode=version
-                    port: *port
-                  initialDelaySeconds: 0
-                  periodSeconds: 10
-                  timeoutSeconds: 1
-                  failureThreshold: 3
-              readiness: *probes
+                  failureThreshold: 30
+                  periodSeconds: 5
 
             securityContext:
               allowPrivilegeEscalation: false
@@ -147,16 +145,35 @@ spec:
     persistence:
       config:
         existingClaim: sabnzbd
-      logs:
+      temp:
         type: emptyDir
-        globalMounts:
-          - path: /config/logs
-      tmp:
-        type: emptyDir
+        advancedMounts:
+          sabnzbd:
+            app:
+              - path: /tmp
       media:
         type: nfs
         server: "nas.${INTERNAL_DOMAIN}"
         path: /volume1/Media
-        globalMounts:
-          - path: /media/Downloads/sabnzbd
-            subPath: Downloads/sabnzbd
+        advancedMounts:
+          sabnzbd:
+            app:
+              - path: /media/Downloads/sabnzbd
+                subPath: Downloads/sabnzbd
+      ephemeral:
+        type: custom
+        volumeSpec:
+          ephemeral:
+            volumeClaimTemplate:
+              spec:
+                accessModes:
+                  - ReadWriteOnce
+                storageClassName: "openebs-hostpath"
+                resources:
+                  requests:
+                    storage: 100Gi
+        advancedMounts:
+          sabnzbd:
+            app:
+              - path: /incomplete
+                subPath: incomplete
