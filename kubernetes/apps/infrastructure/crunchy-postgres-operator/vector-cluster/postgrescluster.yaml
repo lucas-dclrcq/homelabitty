@@ -20,7 +20,7 @@ spec:
         # Minio
         repo1-block: "y"
         repo1-bundle: "y"
-        repo1-path: /crunchy-pgo
+        repo1-path: /crunchy-pgo-vector
         repo1-retention-full: "30" # days
         repo1-retention-full-type: "time"
         repo1-s3-uri-style: path
@@ -120,7 +120,7 @@ spec:
       repos:
         - name: repo1 # Minio
           s3:
-            bucket: "postgres-vector-backup"
+            bucket: "postgres-16-vector-backup"
             endpoint: "s3.${SECRET_DOMAIN}"
             region: "us-east-1"
           schedules:
