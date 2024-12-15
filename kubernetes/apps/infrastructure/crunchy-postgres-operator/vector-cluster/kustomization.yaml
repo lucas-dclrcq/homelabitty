@@ -5,4 +5,4 @@ kind: Kustomization
 resources:
   - ./secret.sops.yaml
   - ./postgrescluster.yaml
-#  - ./podmonitor.yaml
+  - ./podmonitor.yaml

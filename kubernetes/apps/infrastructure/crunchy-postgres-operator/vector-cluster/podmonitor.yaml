@@ -33,5 +33,5 @@ spec:
           targetLabel: instance
   selector:
     matchLabels:
-      postgres-operator.crunchydata.com/cluster: postgres
+      postgres-operator.crunchydata.com/cluster: postgres-16-vector
       postgres-operator.crunchydata.com/crunchy-postgres-exporter: "true"
