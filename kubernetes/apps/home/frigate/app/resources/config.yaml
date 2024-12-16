@@ -47,10 +47,11 @@ detectors:
 #      max_area: 100000
 #      threshold: 0.7
 
-#go2rtc:
-#  streams:
-#    office:
-#      - rtsps://192.168.10.1:7441/fIopDXIbgy5K354P
+go2rtc:
+  streams:
+    office:
+      - rtsps://192.168.10.1:7441/fIopDXIbgy5K354P
+
 ##    rdc:
 ##      - rtsps://192.168.10.1:7441/Ft9uSx2dNdzPozRh
 #
