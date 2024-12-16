@@ -17,56 +17,67 @@ mqtt:
 database:
   path: /data/frigate.db
 
-detectors:
-  coral:
-    type: edgetpu
-    device: usb
+#detectors:
+#  coral:
+#    type: edgetpu
+#    device: usb
 
-ffmpeg:
-  global_args: ["-hide_banner", "-loglevel", "warning"]
-  hwaccel_args: preset-vaapi
+#ffmpeg:
+#  global_args: ["-hide_banner", "-loglevel", "warning"]
+#  hwaccel_args: preset-vaapi
+#
+#snapshots:
+#  enabled: true
+#  timestamp: true
+#  bounding_box: true
+#  retain:
+#    default: 7
 
-snapshots:
-  enabled: true
-  timestamp: true
-  bounding_box: true
-  retain:
-    default: 7
+#record:
+#  enabled: true
+#  retain:
+#    days: 7
+#    mode: all
+#
+#objects:
+#  track: [person]
+#  filters:
+#    person:
+#      min_area: 5000
+#      max_area: 100000
+#      threshold: 0.7
 
-record:
-  enabled: true
-  retain:
-    days: 7
-    mode: all
-
-objects:
-  track: [person]
-  filters:
-    person:
-      min_area: 5000
-      max_area: 100000
-      threshold: 0.7
-
-go2rtc:
-  streams:
-    office:
-      - rtsps://192.168.10.1:7441/fIopDXIbgy5K354P
-#    rdc:
-#      - rtsps://192.168.10.1:7441/Ft9uSx2dNdzPozRh
+#go2rtc:
+#  streams:
+#    office:
+#      - rtsps://192.168.10.1:7441/fIopDXIbgy5K354P
+##    rdc:
+##      - rtsps://192.168.10.1:7441/Ft9uSx2dNdzPozRh
+#
+#cameras:
+#  office:
+#    ffmpeg:
+#      inputs:
+#        - path: rtsp://localhost:8554/office?video=copy&audio=aac
+#          input_args: preset-rtsp-restream
+#          roles: [record]
+#        - path: rtsp://localhost:8554/office?video=copy
+#          input_args: preset-rtsp-restream
+#          roles: [detect]
+#    detect:
+#      width: 640
+#      height: 480
+#      fps: 7
+#    live:
+#      stream_name: office
 
 cameras:
   office:
+    enabled: True
     ffmpeg:
       inputs:
-        - path: rtsp://localhost:8554/office?video=copy&audio=aac
-          input_args: preset-rtsp-restream
-          roles: [record]
-        - path: rtsp://localhost:8554/office?video=copy
-          input_args: preset-rtsp-restream
-          roles: [detect]
+        - path: rtsps://192.168.10.1:7441/fIopDXIbgy5K354P
+          roles:
+            - detect
     detect:
-      width: 640
-      height: 480
-      fps: 7
-    live:
-      stream_name: office
+      enabled: False
