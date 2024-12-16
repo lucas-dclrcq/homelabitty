@@ -1,9 +1,0 @@
----
-log:
-  output: "stdout"
-
-streams:
-  office:
-    - rtsps://192.168.10.1:7441/fIopDXIbgy5K354P
-  rdc:
-    - rtsps://192.168.10.1:7441/Ft9uSx2dNdzPozRh
