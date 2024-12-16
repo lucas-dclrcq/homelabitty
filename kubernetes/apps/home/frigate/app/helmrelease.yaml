@@ -43,7 +43,6 @@ spec:
 
             env:
               TZ: ${TIMEZONE}
-              LIBVA_DRIVER_NAME: i965
 
             envFrom:
               - secretRef:
