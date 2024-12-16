@@ -46,7 +46,8 @@ spec:
     dynamicConfiguration:
       synchronous_mode: true
       postgresql:
-        max_connections: 500
+        parameters:
+          max_connections: 300
         max_wal_size: 5GB
         synchronous_commit: "on"
         pg_hba:
