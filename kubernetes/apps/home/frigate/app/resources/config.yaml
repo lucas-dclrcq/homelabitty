@@ -69,8 +69,4 @@ cameras:
       height: 480
       fps: 7
     live:
-      stream_name: playroom
-    audio:
-      enabled: true
-      listen:
-        - fire_alarm
+      stream_name: office
