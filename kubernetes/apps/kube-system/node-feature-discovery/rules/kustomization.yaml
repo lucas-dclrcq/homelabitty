@@ -6,3 +6,4 @@ resources:
   - ./intel-gpu-device.yaml
   - ./zigbee-adapter.yaml
   - ./brother-printer.yaml
+  - ./google-coral-device.yaml
