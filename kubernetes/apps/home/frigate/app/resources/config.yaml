@@ -51,6 +51,7 @@ go2rtc:
   streams:
     office:
       - rtsps://192.168.10.1:7441/fIopDXIbgy5K354P
+      - "ffmpeg:office#video=h264#hardware"
 
 ##    rdc:
 ##      - rtsps://192.168.10.1:7441/Ft9uSx2dNdzPozRh
