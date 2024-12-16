@@ -75,6 +75,7 @@ cameras:
   office:
     enabled: True
     ffmpeg:
+      hwaccel_args: preset-vaapi
       inputs:
         - path: rtsps://192.168.10.1:7441/fIopDXIbgy5K354P
           roles:
