@@ -9,6 +9,5 @@ spec:
     matchLabels:
       app: dragonfly
   podTargetLabels: ["app"]
-  scrapeFallbackProtocol: "PrometheusProto"
   podMetricsEndpoints:
     - port: admin
