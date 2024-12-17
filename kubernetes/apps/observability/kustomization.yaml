@@ -12,3 +12,4 @@ resources:
   - ./kromgo/ks.yaml
   - ./gatus/ks.yaml
   - ./keda/ks.yaml
+  - ./unpoller/ks.yaml
