@@ -208,12 +208,6 @@ spec:
         nginx-request-handling-performance:
           url: https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/grafana/dashboards/request-handling-performance.json
           datasource: Prometheus
-        speedtest-exporter-hub:
-          # renovate: depName="Speedtest Exporter"
-          gnetId: 13665
-          revision: 4
-          datasource:
-            - { name: datasource, value: Prometheus }
 
       flux:
         flux-cluster:
