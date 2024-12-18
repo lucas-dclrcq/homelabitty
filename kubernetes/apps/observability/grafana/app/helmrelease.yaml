@@ -296,7 +296,11 @@ spec:
           # renovate: depName="Navidrome"
           gnetId: 18038
           version: 1
-          datasource: Prometheus
+          datasource:
+            - name: "DS_PROMETHEUS"
+              value: Prometheus
+            - name: "DS_VICTORIAMETRICS"
+              value: Prometheus
 
       observability:
         prometheus:
