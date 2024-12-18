@@ -13,3 +13,4 @@ resources:
   - ./gatus/ks.yaml
   - ./keda/ks.yaml
   - ./unpoller/ks.yaml
+  - ./silence-operator/ks.yaml
