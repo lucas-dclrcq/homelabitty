@@ -298,6 +298,11 @@ spec:
           gnetId: 19363
           version: 1
           datasource: Prometheus
+        navidrome:
+          # renovate: depName="Navidrome"
+          gnetId: 18038
+          version: 1
+          datasource: Prometheus
 
       observability:
         prometheus:

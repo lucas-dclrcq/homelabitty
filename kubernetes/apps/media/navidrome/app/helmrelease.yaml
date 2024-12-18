@@ -83,6 +83,16 @@ spec:
           http:
             port: *port
 
+    serviceMonitor:
+      app:
+        serviceName: navidrome
+        endpoints:
+          - port: http
+            scheme: http
+            path: /metrics
+            interval: 1m
+            scrapeTimeout: 10s
+
     ingress:
       api:
         enabled: true
