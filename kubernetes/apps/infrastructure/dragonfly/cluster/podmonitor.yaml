@@ -9,5 +9,6 @@ spec:
     matchLabels:
       app: dragonfly
   podTargetLabels: ["app"]
+  fallbackScrapeProtocol: "PrometheusText1.0.0"
   podMetricsEndpoints:
     - port: admin
