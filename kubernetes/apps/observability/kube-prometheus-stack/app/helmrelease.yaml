@@ -50,15 +50,11 @@ spec:
               - *alert_host
             secretName: "${LIMITED_DOMAIN/./-}-production-tls"
       alertmanagerSpec:
-        useExistingSecret: true
-        configSecret: alertmanager-secret
-        storage:
-          volumeClaimTemplate:
-            spec:
-              storageClassName: ceph-block
-              resources:
-                requests:
-                  storage: 2Gi
+        alertmanagerConfiguration:
+          name: alertmanager
+          global:
+            resolveTimeout: 5m
+        externalUrl: https://alertmanager.${LIMITED_DOMAIN}
 
     kubeApiServer:
       serviceMonitor:
