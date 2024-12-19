@@ -6,3 +6,4 @@ resources:
   - ./namespace.yaml
   - ./notifications.yaml
   - ./sabnzbd/ks.yaml
+  - ./qbittorrent/ks.yaml
