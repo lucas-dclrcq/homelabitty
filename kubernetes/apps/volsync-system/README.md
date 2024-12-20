@@ -34,6 +34,7 @@
 | sabnzbd               | 25 * * * * |
 | slskd                 | 30 * * * * |
 | sonarr                | 30 * * * * |
+| metube                | 30 * * * * |
 
 ## Troubleshooting
 
