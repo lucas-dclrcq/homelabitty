@@ -29,13 +29,17 @@ spec:
         port: 5432
         name: "conduktor"
 
-      existingSecret: "conduktor-secret"
+      existingSecret: &secret "conduktor-secret"
 
       clusters:
         - id: hoohoot
           name: Hoohoot
           color: "#0013E7"
           bootstrapServers: "hoohoot-kafka-bootstrap.kafka.svc.cluster.local:9092"
+
+    platform:
+      podAnnotations:
+        secret.reloader.stakater.com/reload: *secret
 
     ingress:
       enabled: true
