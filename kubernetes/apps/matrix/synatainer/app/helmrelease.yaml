@@ -1,0 +1,55 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2beta1.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: synatainer
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.5.1
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+
+  values:
+    controllers:
+      main:
+        replicas: 1
+        strategy: Recreate
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+        containers:
+          main:
+            image:
+              repository: registry.gitlab.com/mb-saces/synatainer
+              tag: 0.4.4
+
+            env:
+              SYNAPSE_HOST: http://synapse-matrix-synapse.matrix.svc.cluster.local:8008
+              MAILFROM: synatainer@${SECRET_DOMAIN}
+              SMTPHOST: smtp-relay.infrastructure.svc.cluster.local:2525
+              MEDIA_MAX_AGE: 90
+              HISTORY_MAX_AGE: 180
+              STATE_AUTOCOMPRESSOR_CHUNKS_TO_COMPRESS: 100
+              STATE_AUTOCOMPRESSOR_CHUNK_SIZE: 500
+              ROOM_KEEP_LIST: all
+              HISTORY_ROOM_LIST: all
+
+            envFrom:
+              - secretRef:
+                  name: synatainer-secret
+              - secretRef:
+                  name: synatainer-db-secret
+
+            resources:
+              requests:
+                cpu: 12m
+                memory: 64M
+              limits:
+                memory: 256M
