@@ -40,6 +40,12 @@ spec:
     platform:
       podAnnotations:
         secret.reloader.stakater.com/reload: *secret
+      metrics:
+        enabled: true
+        serviceMonitor:
+          enabled: true
+      grafana:
+        enabled: true
 
     ingress:
       enabled: true
