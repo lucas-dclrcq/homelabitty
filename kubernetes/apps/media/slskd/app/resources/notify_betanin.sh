@@ -3,8 +3,10 @@
 
 set -euo pipefail
 
-BETANIN_API_KEY="${BETANIN_API_KEY:-required}"
-BETANIN_URL="${BETANIN_URL:-required}"
+if [ -n "$BETANIN_API_KEY" ] || [ -n "$BETANIN_URL" ]; then
+    echo "BETANIN_API_KEY and BETANIN_URL variables are mandatory"
+    exit 1;
+fi
 
 DIRECTORY_PATH=$(echo "$1" | grep -oP '"localDirectoryName":\s*"\K[^"]+')
 
