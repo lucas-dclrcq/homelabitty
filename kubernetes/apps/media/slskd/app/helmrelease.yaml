@@ -135,6 +135,7 @@ spec:
       scripts:
         type: configMap
         name: slskd-scripts
+        defaultMode: 0775
         globalMounts:
           - path: /scripts/notify_betanin.sh
             subPath: notify_betanin.sh
