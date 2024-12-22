@@ -18,4 +18,3 @@ resources:
   - ./nextcloud/ks.yaml
   - ./cupsd/ks.yaml
   - ./vikunja/ks.yaml
-  - ./searxng/ks.yaml
