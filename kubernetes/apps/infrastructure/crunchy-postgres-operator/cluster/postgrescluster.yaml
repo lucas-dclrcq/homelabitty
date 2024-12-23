@@ -168,8 +168,8 @@ spec:
       databases: ["conduktor"]
       password:
         type: AlphaNumeric
-    - name: "firefly"
-      databases: ["firefly"]
+    - name: "piped"
+      databases: ["piped"]
       password:
         type: AlphaNumeric
 
