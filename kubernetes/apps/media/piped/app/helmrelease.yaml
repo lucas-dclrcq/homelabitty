@@ -168,6 +168,7 @@ spec:
     ingress:
       backend:
         annotations:
+          external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
           nginx.ingress.kubernetes.io/enable-cors: "true"
           nginx.ingress.kubernetes.io/cors-allow-origin: "https://piped.${SECRET_DOMAIN}, https://piped-api.${SECRET_DOMAIN}, https://piped-proxy.${SECRET_DOMAIN}"
         className: external
@@ -180,6 +181,7 @@ spec:
                   port: http
       frontend:
         annotations:
+          external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
           nginx.ingress.kubernetes.io/enable-cors: "true"
           nginx.ingress.kubernetes.io/cors-allow-origin: "https://piped.${SECRET_DOMAIN}, https://piped-api.${SECRET_DOMAIN}, https://piped-proxy.${SECRET_DOMAIN}"
         className: external
@@ -193,6 +195,7 @@ spec:
 
       ytproxy:
         annotations:
+          external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
           nginx.ingress.kubernetes.io/enable-cors: "true"
           nginx.ingress.kubernetes.io/cors-allow-origin: "https://piped.${SECRET_DOMAIN}, https://piped-api.${SECRET_DOMAIN}, https://piped-proxy.${SECRET_DOMAIN}"
         className: external
