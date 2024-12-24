@@ -60,7 +60,6 @@ spec:
           timeoutSeconds: 5
     extraArgs:
       - --ignore-ingress-tls-spec
-      - --ingress-class=internal
     triggerLoopOnEvent: true
     policy: sync
     sources: ["ingress", "service"]
