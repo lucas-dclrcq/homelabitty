@@ -36,6 +36,8 @@ _... managed with Flux, Renovate, and GitHub Actions_ 🤖
 &nbsp;&nbsp;
 [![Memory-Usage](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.hoohoot.org%2Fcluster_memory_usage&style=flat-square&label=Memory)](https://github.com/kashalls/kromgo)
 &nbsp;&nbsp;
+[![Power-Usage](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.hoohoot.org%2Fcluster_power_usage&style=flat-square&label=Power)](https://github.com/kashalls/kromgo)
+&nbsp;&nbsp;
 </div>
 
 ## 🚀 Bootstrap
