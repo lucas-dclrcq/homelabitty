@@ -54,9 +54,8 @@ spec:
         disable: false
       dashboard:
         enabled: true
-        urlPrefix: /
         ssl: false
-        prometheusEndpoint: http://prometheus-operated.observability.svc.cluster.local:9090
+        port: 8080
       mgr:
         modules:
           - name: pg_autoscaler
