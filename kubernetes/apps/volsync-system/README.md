@@ -35,6 +35,7 @@
 | slskd                 | 30 * * * * |
 | sonarr                | 30 * * * * |
 | metube                | 30 * * * * |
+| trilium               | 30 * * * * |
 
 ## Troubleshooting
 

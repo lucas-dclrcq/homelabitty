@@ -18,3 +18,4 @@ resources:
   - ./nextcloud/ks.yaml
   - ./cupsd/ks.yaml
   - ./vikunja/ks.yaml
+  - ./trilium/ks.yaml
