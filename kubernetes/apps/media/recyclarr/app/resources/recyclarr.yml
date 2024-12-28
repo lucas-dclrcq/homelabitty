@@ -43,6 +43,33 @@ sonarr:
               - Bluray-480p
           - name: DVD
           - name: SDTV
+      - name: TV FR
+        upgrade:
+          allowed: true
+          until_quality: Bluray|Web-1080p
+          until_score: 10000
+        min_format_score: 0
+        quality_sort: top
+        qualities:
+          - name: Bluray|Web-1080p
+            qualities:
+              - WEBDL-1080p
+              - WEBRip-1080p
+              - Bluray-1080p
+          - name: HDTV-1080p
+          - name: Bluray|Web-720p
+            qualities:
+              - WEBDL-720p
+              - WEBRip-720p
+              - Bluray-720p
+          - name: HDTV-720p
+          - name: Bluray|WEB-480p
+            qualities:
+              - WEBDL-480p
+              - WEBRip-480p
+              - Bluray-480p
+          - name: DVD
+          - name: SDTV
     custom_formats:
       - trash_ids:
           # Audio
@@ -105,6 +132,53 @@ sonarr:
           - dbfc0a4b5cb4cbd693311c4482ae9683  # FR WEB Tier 03
         assign_scores_to:
           - name: TV
+          - name: TV FR
+      - trash_ids:
+          - 6d27683346c78d6a3f772e30877910a7 # French Audio
+          - 72b1548df1ac3175ca105a9ce7043c91 # Multi-Audio
+          - d5f3a1afdb77e6b95e489f7654532d04 # Multi-French
+        assign_scores_to:
+          - name: TV FR
+      - trash_ids:
+          - 404c08fd0bd67f39b4d8e5709319094e  # VFF
+        assign_scores_to:
+          - name: TV FR
+            score: 101
+      - trash_ids:
+          - 4cafa20d5584f6ba1871d1b8941aa3cb  # VOF
+        assign_scores_to:
+          - name: TV FR
+            score: 101
+      - trash_ids:
+          - 52772f1cad6b5d26c2551f79bc538a50  # VFI
+        assign_scores_to:
+          - name: TV FR
+            score: 101
+      - trash_ids:
+          - 29b5f7b1a5f20f64228786c3ab1bdc7d  # VF2
+        assign_scores_to:
+          - name: TV FR
+            score: 101
+      - trash_ids:
+          - b6ace47331a1d3b77942fc18156f6df6  # VFQ
+        assign_scores_to:
+          - name: TV FR
+            score: 0
+      - trash_ids:
+          - 95aa50f71a01c82354a7a2b385f1c4d8  # VQ
+        assign_scores_to:
+          - name: TV FR
+            score: 0
+      - trash_ids:
+          - b3fb499641d7b3c2006be1d9eb014cb3  # VFB
+        assign_scores_to:
+          - name: TV FR
+            score: 0
+      - trash_ids:
+          - 9172b2f683f6223e3a1846427b417a3d  # VOSTFR
+        assign_scores_to:
+          - name: TV FR
+            score: 0
 
 radarr:
   radarr:
