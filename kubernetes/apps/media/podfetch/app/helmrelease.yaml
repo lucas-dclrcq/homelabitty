@@ -44,6 +44,8 @@ spec:
 
             envFrom:
               - secretRef:
+                  name: podfetch-secret
+              - secretRef:
                   name: podfetch-db-secret
 
     defaultPodOptions:
