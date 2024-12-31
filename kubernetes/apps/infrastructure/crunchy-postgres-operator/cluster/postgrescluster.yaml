@@ -172,6 +172,10 @@ spec:
       databases: ["piped"]
       password:
         type: AlphaNumeric
+    - name: "podfetch"
+      databases: ["podfetch"]
+      password:
+        type: AlphaNumeric
 
   backups:
     pgbackrest:
