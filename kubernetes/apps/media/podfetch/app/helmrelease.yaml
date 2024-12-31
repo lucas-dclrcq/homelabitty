@@ -41,6 +41,7 @@ spec:
               TZ: "${TIMEZONE}"
               POLLING_INTERVAL: "60"
               SERVER_URL: "https://podcasts.${SECRET_DOMAIN}"
+              GPODDER_INTEGRATION_ENABLED: "true"
 
             envFrom:
               - secretRef:
