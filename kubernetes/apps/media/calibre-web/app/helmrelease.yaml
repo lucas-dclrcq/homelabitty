@@ -26,7 +26,8 @@ spec:
 
     controllers:
       calibre-web:
-        type: statefulset
+        type: deployment
+        strategy: Recreate
 
         annotations:
           reloader.stakater.com/auto: "true"
@@ -111,11 +112,13 @@ spec:
         type: nfs
         server: "truenas.${INTERNAL_DOMAIN}"
         path: /mnt/tank/Media
-        globalMounts:
-          - path: /calibre-library
-            subPath: Ebooks
-          - path: /cwa-book-ingest
-            subPath: Downloads/Ebooks
+        advancedMounts:
+          calibre-web:
+            app:
+              - path: /calibre-library
+                subPath: Ebooks
+              - path: /cwa-book-ingest
+                subPath: Downloads/Ebooks
       cache:
         type: emptyDir
         globalMounts:
