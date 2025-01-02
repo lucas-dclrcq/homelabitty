@@ -176,6 +176,10 @@ spec:
       databases: ["podfetch"]
       password:
         type: AlphaNumeric
+    - name: "wikijs"
+      databases: ["wikijs"]
+      password:
+        type: AlphaNumeric
 
   backups:
     pgbackrest:

@@ -19,3 +19,4 @@ resources:
   - ./cupsd/ks.yaml
   - ./vikunja/ks.yaml
   - ./trilium/ks.yaml
+  - ./wikijs/ks.yaml
