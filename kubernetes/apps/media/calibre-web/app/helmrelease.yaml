@@ -40,8 +40,8 @@ spec:
             env:
               CACHE_DIR: /cache
               TZ: "${TIMEZONE}"
-              PUID: "1026"
-              PGID: "100"
+              PUID: "${APP_UID}"
+              PGID: "${APP_GID}"
               DOCKER_MODS: >-
                 {{- $items := list
                   "// renovate: lsio-docker-mod"
