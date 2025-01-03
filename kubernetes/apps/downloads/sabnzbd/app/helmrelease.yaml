@@ -154,12 +154,11 @@ spec:
       media:
         type: nfs
         server: "truenas.${INTERNAL_DOMAIN}"
-        path: /mnt/tank/Media
+        path: /mnt/tank/Media/Downloads/sabnzbd
         advancedMounts:
           sabnzbd:
             app:
               - path: /media/Downloads/sabnzbd
-                subPath: Downloads/sabnzbd
       ephemeral:
         type: custom
         volumeSpec:
@@ -176,4 +175,3 @@ spec:
           sabnzbd:
             app:
               - path: /incomplete
-                subPath: incomplete

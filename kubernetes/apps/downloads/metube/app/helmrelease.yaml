@@ -77,7 +77,6 @@ spec:
       media:
         type: nfs
         server: "truenas.${INTERNAL_DOMAIN}"
-        path: /mnt/tank/Media
+        path: /mnt/tank/Media/Downloads/metube
         globalMounts:
           - path: /downloads
-            subPath: Downloads/metube

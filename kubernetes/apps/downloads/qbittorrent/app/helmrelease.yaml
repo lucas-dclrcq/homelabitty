@@ -164,10 +164,11 @@ spec:
       media:
         type: nfs
         server: "truenas.${INTERNAL_DOMAIN}"
-        path: /mnt/tank/Media
-        globalMounts:
-          - path: /media/Downloads/qbittorrent
-            subPath: Downloads/qbittorrent
+        path: /mnt/tank/Media/Downloads/qbittorrent
+        advancedMounts:
+          qbittorrent:
+            app:
+              - path: /media/Downloads/qbittorrent
       dnsdist:
         type: configMap
         name: qbittorrent-dnsdist
