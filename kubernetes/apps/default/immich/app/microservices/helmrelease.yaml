@@ -73,7 +73,7 @@ spec:
     persistence:
       library:
         type: nfs
-        server: "nas.${INTERNAL_DOMAIN}"
-        path: /volume1/Photos
+        server: "truenas.${INTERNAL_DOMAIN}"
+        path: /mnt/tank/Photos
         globalMounts:
           - path: /usr/src/app/upload
