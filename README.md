@@ -46,6 +46,69 @@ _... managed with Flux, Renovate, and GitHub Actions_ 🤖
 2. Push private key: `task flux:github-deploy-key`
 3. Setup Flux : `task flux:bootstrap`
 
+## 🛠️ Talos and Kubernetes Maintenance
+
+### ⚙️ Updating Talos node configuration
+
+> [!IMPORTANT]
+> Ensure you have updated `talconfig.yaml` and any patches with your updated configuration. In some cases you **not only need to apply the configuration but also upgrade talos** to apply new configuration.
+
+```sh
+# (Re)generate the Talos config
+task talos:generate-config
+# Apply the config to the node
+task talos:apply-node HOSTNAME=? MODE=?
+# e.g. task talos:apply-config HOSTNAME=k8s-0 MODE=auto
+```
+
+### ⬆️ Updating Talos and Kubernetes versions
+
+> [!IMPORTANT]
+> Ensure the `talosVersion` and `kubernetesVersion` in `talhelper.yaml` are up-to-date with the version you wish to upgrade to.
+
+```sh
+# Upgrade node to a newer Talos version
+task talos:upgrade-node HOSTNAME=?
+# e.g. task talos:upgrade HOSTNAME=k8s-0
+```
+
+```sh
+# Upgrade cluster to a newer Kubernetes version
+task talos:upgrade-k8s
+# e.g. task talos:upgrade-k8s
+```
+## 🛠️ Talos and Kubernetes Maintenance
+
+### ⚙️ Updating Talos node configuration
+
+> [!IMPORTANT]
+> Ensure you have updated `talconfig.yaml` and any patches with your updated configuration. In some cases you **not only need to apply the configuration but also upgrade talos** to apply new configuration.
+
+```sh
+# (Re)generate the Talos config
+task talos:generate-config
+# Apply the config to the node
+task talos:apply-node HOSTNAME=? MODE=?
+# e.g. task talos:apply-config HOSTNAME=k8s-0 MODE=auto
+```
+
+### ⬆️ Updating Talos and Kubernetes versions
+
+> [!IMPORTANT]
+> Ensure the `talosVersion` and `kubernetesVersion` in `talhelper.yaml` are up-to-date with the version you wish to upgrade to.
+
+```sh
+# Upgrade node to a newer Talos version
+task talos:upgrade-node HOSTNAME=?
+# e.g. task talos:upgrade HOSTNAME=k8s-0
+```
+
+```sh
+# Upgrade cluster to a newer Kubernetes version
+task talos:upgrade-k8s
+# e.g. task talos:upgrade-k8s
+```
+
 ## 🔧 Hardware
 
 | Name      | Device                   | CPU               | OS Disk    | Data Disk(s)            | RAM  | OS            | Purpose           |
