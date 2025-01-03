@@ -3,7 +3,7 @@ directories:
   downloads: "/media/Downloads/nicotine/complete"
   incomplete: "/media/Downloads/nicotine/incomplete"
 flags:
-  no_share_scan: true
+  no_share_scan: false
   no_version_check: true
 metrics:
   enabled: true
