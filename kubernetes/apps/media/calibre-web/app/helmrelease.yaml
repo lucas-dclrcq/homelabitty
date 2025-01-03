@@ -42,18 +42,6 @@ spec:
               TZ: "${TIMEZONE}"
               PUID: "${APP_UID}"
               PGID: "${APP_GID}"
-              DOCKER_MODS: >-
-                {{- $items := list
-                  "// renovate: lsio-docker-mod"
-                  "ghcr.io/linuxserver/mods:universal-calibre-v7.16.0"
-                -}}
-                {{- $filtered := list -}}
-                {{- range $item := $items -}}
-                  {{- if not (hasPrefix "//" $item) -}}
-                    {{- $filtered = append $filtered $item -}}
-                  {{- end -}}
-                {{- end -}}
-                {{- $filtered | join "|" -}}
 
             probes:
               liveness:
@@ -72,7 +60,7 @@ spec:
                 cpu: 10m
                 memory: 128Mi
               limits:
-                memory: 768Mi
+                memory: 2Gi
 
     service:
       app:
