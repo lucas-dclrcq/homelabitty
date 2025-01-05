@@ -24,31 +24,31 @@ spec:
     - kind: ConfigMap
       name: cilium-helm-values
   values:
-    operator:
-      prometheus:
-        enabled: true
+    hubble:
+      enabled: true
+      metrics:
+        enabled:
+          - dns:query
+          - drop
+          - tcp
+          - flow
+          - port-distribution
+          - icmp
+          - http
         serviceMonitor:
           enabled: true
-      dashboards:
+        dashboards:
+          enabled: true
+      relay:
         enabled: true
-        annotations:
-          grafana_folder: Cilium
-
-    prometheus:
-      enabled: true
-      serviceMonitor:
+        rollOutPods: true
+        prometheus:
+          serviceMonitor:
+            enabled: true
+      ui:
         enabled: true
-        trustCRDsExist: true
-
-    ui:
-      enabled: true
-      rollOutPods: true
-      ingress:
-        enabled: true
-        className: internal
-        hosts: ["hubble.${SECRET_DOMAIN}"]
-
-    dashboards:
-      enabled: true
-      annotations:
-        grafana_folder: Cilium
+        rollOutPods: true
+        ingress:
+          enabled: true
+          className: internal
+          hosts: ["hubble.${SECRET_DOMAIN}"]
