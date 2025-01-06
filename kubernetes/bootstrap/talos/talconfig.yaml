@@ -25,7 +25,7 @@ nodes:
     ipAddress: "192.168.1.11"
     installDiskSelector:
       type: nvme
-    talosImageURL: factory.talos.dev/installer/039535a70c3bd1667c355eca78571267704e55c8a24785033d183b8f26e39d82
+    talosImageURL: factory.talos.dev/installer/4b3cd373a192c8469e859b7a0cfbed3ecc3577c4a2d346a37b0aeff9cd17cdb0
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
@@ -44,7 +44,7 @@ nodes:
     ipAddress: "192.168.1.12"
     installDiskSelector:
       type: nvme
-    talosImageURL: factory.talos.dev/installer/039535a70c3bd1667c355eca78571267704e55c8a24785033d183b8f26e39d82
+    talosImageURL: factory.talos.dev/installer/4b3cd373a192c8469e859b7a0cfbed3ecc3577c4a2d346a37b0aeff9cd17cdb0
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
@@ -63,7 +63,7 @@ nodes:
     ipAddress: "192.168.1.13"
     installDiskSelector:
       type: nvme
-    talosImageURL: factory.talos.dev/installer/039535a70c3bd1667c355eca78571267704e55c8a24785033d183b8f26e39d82
+    talosImageURL: factory.talos.dev/installer/4b3cd373a192c8469e859b7a0cfbed3ecc3577c4a2d346a37b0aeff9cd17cdb0
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
@@ -82,7 +82,7 @@ nodes:
     ipAddress: "192.168.1.14"
     installDiskSelector:
       type: nvme
-    talosImageURL: factory.talos.dev/installer/039535a70c3bd1667c355eca78571267704e55c8a24785033d183b8f26e39d82
+    talosImageURL: factory.talos.dev/installer/4b3cd373a192c8469e859b7a0cfbed3ecc3577c4a2d346a37b0aeff9cd17cdb0
     controlPlane: false
     networkInterfaces:
       - deviceSelector:
@@ -99,7 +99,7 @@ nodes:
     ipAddress: "192.168.1.15"
     installDiskSelector:
       type: nvme
-    talosImageURL: factory.talos.dev/installer/039535a70c3bd1667c355eca78571267704e55c8a24785033d183b8f26e39d82
+    talosImageURL: factory.talos.dev/installer/4b3cd373a192c8469e859b7a0cfbed3ecc3577c4a2d346a37b0aeff9cd17cdb0
     controlPlane: false
     networkInterfaces:
       - deviceSelector:
@@ -166,17 +166,6 @@ patches:
       network:
         disableSearchDomain: true
 
-  # Enable cluster discovery
-#  - |-
-#    cluster:
-#      discovery:
-#        enabled: true
-#        registries:
-#          kubernetes:
-#            disabled: false
-#          service:
-#            disabled: true
-
   # Configure kubelet
   - |-
     machine:
@@ -206,21 +195,21 @@ patches:
         vm.nr_hugepages: "1024"
 
   # Custom sysfs settings # 5/6 nodes are 6c/12t and constantly throwing DMESG errors
-#  - |-
-#    machine:
-#      sysfs:
-#        devices.system.cpu.cpu0.cpufreq.energy_performance_preference: balance_power
-#        devices.system.cpu.cpu1.cpufreq.energy_performance_preference: balance_power
-#        devices.system.cpu.cpu2.cpufreq.energy_performance_preference: balance_power
-#        devices.system.cpu.cpu3.cpufreq.energy_performance_preference: balance_power
-#        devices.system.cpu.cpu4.cpufreq.energy_performance_preference: balance_power
-#        devices.system.cpu.cpu5.cpufreq.energy_performance_preference: balance_power
-#        devices.system.cpu.cpu6.cpufreq.energy_performance_preference: balance_power
-#        devices.system.cpu.cpu7.cpufreq.energy_performance_preference: balance_power
-#        devices.system.cpu.cpu8.cpufreq.energy_performance_preference: balance_power
-#        devices.system.cpu.cpu9.cpufreq.energy_performance_preference: balance_power
-#        devices.system.cpu.cpu10.cpufreq.energy_performance_preference: balance_power
-#        devices.system.cpu.cpu11.cpufreq.energy_performance_preference: balance_power
+  - |-
+    machine:
+      sysfs:
+        devices.system.cpu.cpu0.cpufreq.energy_performance_preference: balance_power
+        devices.system.cpu.cpu1.cpufreq.energy_performance_preference: balance_power
+        devices.system.cpu.cpu2.cpufreq.energy_performance_preference: balance_power
+        devices.system.cpu.cpu3.cpufreq.energy_performance_preference: balance_power
+        devices.system.cpu.cpu4.cpufreq.energy_performance_preference: balance_power
+        devices.system.cpu.cpu5.cpufreq.energy_performance_preference: balance_power
+        devices.system.cpu.cpu6.cpufreq.energy_performance_preference: balance_power
+        devices.system.cpu.cpu7.cpufreq.energy_performance_preference: balance_power
+        devices.system.cpu.cpu8.cpufreq.energy_performance_preference: balance_power
+        devices.system.cpu.cpu9.cpufreq.energy_performance_preference: balance_power
+        devices.system.cpu.cpu10.cpufreq.energy_performance_preference: balance_power
+        devices.system.cpu.cpu11.cpufreq.energy_performance_preference: balance_power
 
   # Mount openebs-hostpath in kubelet
   - |-
