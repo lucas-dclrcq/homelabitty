@@ -1,0 +1,16 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: tektoncd-operator
+  namespace: flux-system
+spec:
+  interval: 5m0s
+  url: https://github.com/tektoncd/operator
+  ref:
+    branch: release-v0.74.x
+  ignore: |
+    # exclude all
+    /*
+    # include charts directory
+    !/charts/
