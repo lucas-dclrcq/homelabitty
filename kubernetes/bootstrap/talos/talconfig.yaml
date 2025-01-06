@@ -25,7 +25,7 @@ nodes:
     ipAddress: "192.168.1.11"
     installDiskSelector:
       type: nvme
-    talosImageURL: factory.talos.dev/installer/376567988ad370138ad8b2698212367b8edcb69b5fd68c80be1f2ec7d603b4ba
+    talosImageURL: factory.talos.dev/installer/039535a70c3bd1667c355eca78571267704e55c8a24785033d183b8f26e39d82
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
@@ -44,7 +44,7 @@ nodes:
     ipAddress: "192.168.1.12"
     installDiskSelector:
       type: nvme
-    talosImageURL: factory.talos.dev/installer/376567988ad370138ad8b2698212367b8edcb69b5fd68c80be1f2ec7d603b4ba
+    talosImageURL: factory.talos.dev/installer/039535a70c3bd1667c355eca78571267704e55c8a24785033d183b8f26e39d82
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
@@ -63,7 +63,7 @@ nodes:
     ipAddress: "192.168.1.13"
     installDiskSelector:
       type: nvme
-    talosImageURL: factory.talos.dev/installer/376567988ad370138ad8b2698212367b8edcb69b5fd68c80be1f2ec7d603b4ba
+    talosImageURL: factory.talos.dev/installer/039535a70c3bd1667c355eca78571267704e55c8a24785033d183b8f26e39d82
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
@@ -82,7 +82,7 @@ nodes:
     ipAddress: "192.168.1.14"
     installDiskSelector:
       type: nvme
-    talosImageURL: factory.talos.dev/installer/376567988ad370138ad8b2698212367b8edcb69b5fd68c80be1f2ec7d603b4ba
+    talosImageURL: factory.talos.dev/installer/039535a70c3bd1667c355eca78571267704e55c8a24785033d183b8f26e39d82
     controlPlane: false
     networkInterfaces:
       - deviceSelector:
@@ -99,7 +99,7 @@ nodes:
     ipAddress: "192.168.1.15"
     installDiskSelector:
       type: nvme
-    talosImageURL: factory.talos.dev/installer/376567988ad370138ad8b2698212367b8edcb69b5fd68c80be1f2ec7d603b4ba
+    talosImageURL: factory.talos.dev/installer/039535a70c3bd1667c355eca78571267704e55c8a24785033d183b8f26e39d82
     controlPlane: false
     networkInterfaces:
       - deviceSelector:
@@ -116,7 +116,7 @@ nodes:
     ipAddress: "192.168.1.16"
     installDiskSelector:
       type: nvme
-    talosImageURL: factory.talos.dev/installer/376567988ad370138ad8b2698212367b8edcb69b5fd68c80be1f2ec7d603b4ba
+    talosImageURL: factory.talos.dev/installer/4b3cd373a192c8469e859b7a0cfbed3ecc3577c4a2d346a37b0aeff9cd17cdb0
     controlPlane: false
     networkInterfaces:
       - deviceSelector:
@@ -206,21 +206,21 @@ patches:
         vm.nr_hugepages: "1024"
 
   # Custom sysfs settings # 5/6 nodes are 6c/12t and constantly throwing DMESG errors
-  - |-
-    machine:
-      sysfs:
-        devices.system.cpu.cpu0.cpufreq.energy_performance_preference: balance_power
-        devices.system.cpu.cpu1.cpufreq.energy_performance_preference: balance_power
-        devices.system.cpu.cpu2.cpufreq.energy_performance_preference: balance_power
-        devices.system.cpu.cpu3.cpufreq.energy_performance_preference: balance_power
-        devices.system.cpu.cpu4.cpufreq.energy_performance_preference: balance_power
-        devices.system.cpu.cpu5.cpufreq.energy_performance_preference: balance_power
-        devices.system.cpu.cpu6.cpufreq.energy_performance_preference: balance_power
-        devices.system.cpu.cpu7.cpufreq.energy_performance_preference: balance_power
-        devices.system.cpu.cpu8.cpufreq.energy_performance_preference: balance_power
-        devices.system.cpu.cpu9.cpufreq.energy_performance_preference: balance_power
-        devices.system.cpu.cpu10.cpufreq.energy_performance_preference: balance_power
-        devices.system.cpu.cpu11.cpufreq.energy_performance_preference: balance_power
+#  - |-
+#    machine:
+#      sysfs:
+#        devices.system.cpu.cpu0.cpufreq.energy_performance_preference: balance_power
+#        devices.system.cpu.cpu1.cpufreq.energy_performance_preference: balance_power
+#        devices.system.cpu.cpu2.cpufreq.energy_performance_preference: balance_power
+#        devices.system.cpu.cpu3.cpufreq.energy_performance_preference: balance_power
+#        devices.system.cpu.cpu4.cpufreq.energy_performance_preference: balance_power
+#        devices.system.cpu.cpu5.cpufreq.energy_performance_preference: balance_power
+#        devices.system.cpu.cpu6.cpufreq.energy_performance_preference: balance_power
+#        devices.system.cpu.cpu7.cpufreq.energy_performance_preference: balance_power
+#        devices.system.cpu.cpu8.cpufreq.energy_performance_preference: balance_power
+#        devices.system.cpu.cpu9.cpufreq.energy_performance_preference: balance_power
+#        devices.system.cpu.cpu10.cpufreq.energy_performance_preference: balance_power
+#        devices.system.cpu.cpu11.cpufreq.energy_performance_preference: balance_power
 
   # Mount openebs-hostpath in kubelet
   - |-
@@ -232,7 +232,6 @@ patches:
             source: /var/openebs/local
             options: ["bind", "rshared", "rw"]
 
-  # Performance hacks
   - |-
     machine:
       install:
@@ -242,6 +241,15 @@ patches:
           - init_on_free=0       # Less security, More speed
           - mitigations=off      # Less security, More speed
           - security=none        # Less security, More speed
+          - net.ifnames=1        # Enable predictable NIC naming
+
+  # Configure udev rulesc
+#  - |-
+#    machine:
+#      udev:
+#        rules:
+#          # Intel GPU
+#          - SUBSYSTEM=="drm", KERNEL=="renderD*", GROUP="44", MODE="0660"
 
   # Host DNS
   - |-
