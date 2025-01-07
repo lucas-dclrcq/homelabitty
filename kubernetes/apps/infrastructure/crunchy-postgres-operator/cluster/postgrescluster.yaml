@@ -180,6 +180,10 @@ spec:
       databases: ["wikijs"]
       password:
         type: AlphaNumeric
+    - name: "kyoo"
+      databases: ["kyoo"]
+      password:
+        type: AlphaNumeric
 
   backups:
     pgbackrest:

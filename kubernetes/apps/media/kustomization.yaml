@@ -20,3 +20,4 @@ resources:
   - ./flaresolverr/ks.yaml
   - ./piped/ks.yaml
   - ./podfetch/ks.yaml
+  - ./kyoo/ks.yaml
