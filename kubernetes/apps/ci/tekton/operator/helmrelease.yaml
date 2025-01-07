@@ -25,3 +25,5 @@ spec:
       retries: 3
   values:
     installCRDs: true
+    operator:
+      defaultTargetNamespace: ci
