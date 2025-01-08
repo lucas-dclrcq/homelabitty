@@ -6,11 +6,11 @@ metadata:
   name: &app tekton-operator
   namespace: flux-system
 spec:
-  targetNamespace: ci
+  targetNamespace: tekton-pipelines
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  path: ./kubernetes/apps/ci/tekton/operator
+  path: ./kubernetes/apps/tekton-pipelines/tekton/operator
   prune: true
   sourceRef:
     kind: GitRepository
@@ -27,11 +27,11 @@ metadata:
   name: &app tekton-pipelines
   namespace: flux-system
 spec:
-  targetNamespace: ci
+  targetNamespace: tekton-pipelines
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  path: ./kubernetes/apps/ci/tekton/pipelines
+  path: ./kubernetes/apps/tekton-pipelines/tekton/pipelines
   prune: true
   sourceRef:
     kind: GitRepository
