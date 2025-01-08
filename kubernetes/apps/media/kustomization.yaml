@@ -22,3 +22,4 @@ resources:
   - ./podfetch/ks.yaml
 #  - ./kyoo/ks.yaml
   - ./plex/ks.yaml
+  - ./wizarr/ks.yaml
