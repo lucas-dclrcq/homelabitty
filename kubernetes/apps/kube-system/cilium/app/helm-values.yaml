@@ -2,6 +2,8 @@
 autoDirectNodeRoutes: true
 bpf:
   masquerade: false # Required for Talos `.machine.features.hostDNS.forwardKubeDNSToHost`
+bgpControlPlane:
+  enabled: true
 cgroup:
   automount:
     enabled: false
@@ -59,6 +61,8 @@ securityContext:
       - IPC_LOCK
       - SYS_ADMIN
       - SYS_RESOURCE
+      - PERFMON
+      - BPF
       - DAC_OVERRIDE
       - FOWNER
       - SETGID
