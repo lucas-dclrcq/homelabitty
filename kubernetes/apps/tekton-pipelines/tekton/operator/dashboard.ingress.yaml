@@ -5,7 +5,7 @@ metadata:
 spec:
   ingressClassName: internal
   rules:
-    - host: "tekton.${SECRET_DOMAIN}"
+    - host: "tekton.${LIMITED_DOMAIN}"
       http:
         paths:
           - backend:
@@ -17,5 +17,5 @@ spec:
             pathType: Prefix
   tls:
     - hosts:
-        - "tekton.${SECRET_DOMAIN}"
+        - "tekton.${LIMITED_DOMAIN}"
       secretName: "${LIMITED_DOMAIN/./-}-production-tls"

@@ -49,6 +49,7 @@ spec:
               ND_REVERSEPROXYUSERHEADER: x-authentik-username
               ND_REVERSEPROXYWHITELIST: 10.0.0.0/8
               ND_SCANSCHEDULE: "@every 1h"
+              ND_DEFAULTTHEME: "Spotify-ish"
 
             probes:
               liveness: &probes
