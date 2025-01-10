@@ -50,7 +50,7 @@ spec:
 
     defaultPodOptions:
       nodeSelector:
-        kubernetes.io/hostname: burrich
+        kubernetes.io/hostname: nighteyes
 
     service:
       app:
