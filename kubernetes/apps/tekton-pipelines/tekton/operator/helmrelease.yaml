@@ -25,3 +25,7 @@ spec:
       retries: 3
   values:
     installCRDs: true
+    pruner:
+      image:
+        # Temporary fix because of : https://github.com/tektoncd/operator/issues/2495
+        tag: "latest@sha256:d1da68e766393c4b4eb162128f2c5fd2cee270828811a113fcda1e8a586e7471"
