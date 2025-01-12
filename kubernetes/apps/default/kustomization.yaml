@@ -20,3 +20,4 @@ resources:
   - ./vikunja/ks.yaml
   - ./trilium/ks.yaml
   - ./wikijs/ks.yaml
+  - ./teable/ks.yaml
