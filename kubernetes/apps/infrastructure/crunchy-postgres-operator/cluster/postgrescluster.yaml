@@ -180,8 +180,8 @@ spec:
       databases: ["wikijs"]
       password:
         type: AlphaNumeric
-    - name: "kyoo"
-      databases: ["kyoo"]
+    - name: "teable"
+      databases: ["teable"]
       password:
         type: AlphaNumeric
 
