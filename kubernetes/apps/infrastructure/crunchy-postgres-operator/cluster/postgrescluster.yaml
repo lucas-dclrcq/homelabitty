@@ -128,16 +128,8 @@ spec:
       databases: ["matrixbridge"]
       password:
         type: AlphaNumeric
-    - name: "matrixslidingsync"
-      databases: ["matrixslidingsync"]
-      password:
-        type: AlphaNumeric
     - name: "gatus"
       databases: ["gatus"]
-      password:
-        type: AlphaNumeric
-    - name: "autobrr"
-      databases: ["autobrr"]
       password:
         type: AlphaNumeric
     - name: "atuin"
@@ -160,10 +152,6 @@ spec:
       databases: ["tandoor"]
       password:
         type: AlphaNumeric
-    - name: "n8n"
-      databases: ["n8n"]
-      password:
-        type: AlphaNumeric
     - name: "conduktor"
       databases: ["conduktor"]
       password:
@@ -172,16 +160,16 @@ spec:
       databases: ["piped"]
       password:
         type: AlphaNumeric
-    - name: "podfetch"
-      databases: ["podfetch"]
-      password:
-        type: AlphaNumeric
     - name: "wikijs"
       databases: ["wikijs"]
       password:
         type: AlphaNumeric
     - name: "teable"
       databases: ["teable"]
+      password:
+        type: AlphaNumeric
+    - name: "gotosocial"
+      databases: ["gotosocial"]
       password:
         type: AlphaNumeric
 
