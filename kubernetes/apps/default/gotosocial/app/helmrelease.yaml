@@ -91,6 +91,23 @@ spec:
                 service:
                   identifier: *app
                   port: http
+          - host: "${SECRET_DOMAIN}"
+            paths:
+              - path: /.well-known/webfinger
+                pathType: Prefix
+                service:
+                  identifier: *app
+                  port: http
+              - path: /.well-known/host-meta
+                pathType: Prefix
+                service:
+                  identifier: *app
+                  port: http
+              - path: /.well-known/nodeinfo
+                pathType: Prefix
+                service:
+                  identifier: *app
+                  port: http
 
     persistence:
       tmp:
