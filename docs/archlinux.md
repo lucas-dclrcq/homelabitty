@@ -211,18 +211,10 @@ bootctl --path=/boot install
 9. Copier l'uuid de la partition btrfs directement dans le fichier de conf pour pas se faire chier à le taper à la main :
 
 ```
-lsblk -o name,uuid | grep btrfs | awk '{print $2}' > /boot/loader/entries/arch.conf
-```
-> Attention, si tu as un disque sdX et non nvme, utilise plutôt la commande suivante:
-{.is-warning}
-
-
-```
 lsblk -o name,uuid | grep sda2 | awk '{print $2}' > /boot/loader/entries/arch.conf
 ```
 
 > Attention (bis) : il est possible que lsblk n'arrive pas à trouver les uuid. Tu peut utiliser blkid à la place en mettant le nom de ta partition à la place de nvme0n1p5:
-
 
 ```
 blkid | grep nvme0n1p5 | awk '{print $2}' > /boot/loader/entries/arch.conf
