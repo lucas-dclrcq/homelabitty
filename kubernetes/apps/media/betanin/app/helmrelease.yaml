@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: betanin
+  name: &app betanin
 spec:
   interval: 30m
   chart:
@@ -20,65 +20,67 @@ spec:
   upgrade:
     cleanupOnFail: true
     remediation:
+      strategy: rollback
       retries: 3
-  uninstall:
-    keepHistory: false
   values:
     controllers:
-      betanin:
+      *app:
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
           app:
             image:
-              repository: ghcr.io/profmoo/betanin
-              tag: latest@sha256:334ff437b1e4f0995cf979d5f98f6a1ac93e00ab77a9930017c5dee6f9b405dc
+              repository: ghcr.io/jee-r/beets
+              tag: latest@sha256:1c7c2e0eff470bd5e5014af7d1ef362e927c989bb2bf0be5c98da1bba0bd929b
             env:
-              UID: "1026"
-              GUID: "100"
+              BETANIN_HOST: 0.0.0.0
+              BETANIN_PORT: &port 80
+              MODE: betanin
+              TZ: "${TIMEZONE}"
+
             probes:
               liveness:
-                enabled: false
+                enabled: true
               readiness:
-                enabled: false
+                enabled: true
               startup:
-                enabled: false
+                enabled: true
                 spec:
                   failureThreshold: 30
-                  periodSeconds: 5
+                  periodSeconds: 10
 
-            command:
-              - "betanin"
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
 
             resources:
               requests:
-                cpu: 200m
-                memory: 500Mi
+                cpu: 10m
               limits:
                 memory: 1Gi
 
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
-        runAsUser: 1026
-        runAsGroup: 100
-        fsGroup: 100
+        runAsUser: "${APP_UID}"
+        runAsGroup: "${APP_GID}"
+        fsGroup: "${APP_GID}"
         fsGroupChangePolicy: OnRootMismatch
-        supplementalGroups: [10000]
         seccompProfile: { type: RuntimeDefault }
 
     service:
       app:
-        controller: betanin
+        controller: *app
         ports:
           http:
-            port: 9393
+            port: *port
 
     ingress:
-      betanin:
+      app:
         className: internal
         hosts:
-          - host: &host "betanin.${LIMITED_DOMAIN}"
+          - host: "{{ .Release.Name }}.${LIMITED_DOMAIN}"
             paths:
               - path: /
                 service:
@@ -86,36 +88,31 @@ spec:
                   port: http
         tls:
           - hosts:
-              - *host
+              - "{{ .Release.Name }}.${LIMITED_DOMAIN}"
             secretName: "${LIMITED_DOMAIN/./-}-production-tls"
 
     persistence:
+      config:
+        type: emptyDir
       media:
         type: nfs
         server: "truenas.${INTERNAL_DOMAIN}"
         path: /mnt/tank/Media
         globalMounts:
           - path: /media
-
-      # These configs need to mounted as specific locations:
-      # https://github.com/sentriz/betanin/blob/master/docker-entry
-      # NOTE: This config is the complex config.yaml that defines beets behavior.
-      beets-config:
-        type: secret
-        name: betanin-beets-secret
+      config-file:
+        type: configMap
+        name: beets-configmap
         globalMounts:
-          - path: /b/.config/beets/
-
-      # NOTE: This config is the simple config.toml that defines betanin behavior.
-      betanin-config:
+          - path: /config/.config/beets/config.yaml
+            subPath: config.yaml
+            readOnly: true
+      secret-file:
         type: secret
         name: betanin-secret
         globalMounts:
-          - path: /b/.config/betanin/
-
-      # NOTE: This data is the smaller betanin DB which keeps information about the individual imports.
-      # This populates the betanin GUI.
-      data:
-        existingClaim: betanin
-        globalMounts:
-          - path: /b/.local/share/betanin/
+          - path: /config/.config/betanin/config.toml
+            subPath: config.toml
+            readOnly: true
+      tmp:
+        type: emptyDir
