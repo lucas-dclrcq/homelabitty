@@ -68,7 +68,7 @@ groups:
         files: 150
         megabytes: 1500
         failures: 30
-features:
+feature:
   swagger: true
 remote_configuration: false
 shares:
