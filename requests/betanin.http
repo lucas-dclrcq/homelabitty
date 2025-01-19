@@ -5,3 +5,11 @@ X-API-Key: {{betanin_api_key}}
 ### Delete torrent
 DELETE {{betanin_url}}/api/torrents/27
 X-API-Key: {{betanin_api_key}}
+
+### Add a torrent
+POST {{betanin_url}}/api/torrents
+X-API-Key: {{betanin_api_key}}
+Content-Type: application/x-www-form-urlencoded
+
+path = /media/Downloads/nicotine/complete/Fontaines DC - Romance (2024) &
+name = /media/Downloads/nicotine/complete/Fontaines DC - Romance (2024)
