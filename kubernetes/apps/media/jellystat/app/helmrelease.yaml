@@ -46,6 +46,7 @@ spec:
 
             env:
               TZ: "${TIMEZONE}"
+              MINIMUM_SECONDS_TO_INCLUDE_PLAYBACK: "30"
 
             envFrom:
               - secretRef:
