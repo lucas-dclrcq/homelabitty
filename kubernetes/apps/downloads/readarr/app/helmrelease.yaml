@@ -28,6 +28,8 @@ spec:
               TZ: "${TIMEZONE}"
               READARR__PORT: &port 8787
               READARR__LOG_LEVEL: info
+              READARR__AUTH__METHOD: External
+              READARR__AUTH__REQUIRED: DisabledForLocalAddresses
 
             envFrom:
               - secretRef:
