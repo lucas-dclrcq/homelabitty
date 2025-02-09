@@ -19,3 +19,4 @@ resources:
   - ./jellystat/ks.yaml
   - ./flaresolverr/ks.yaml
   - ./piped/ks.yaml
+  - ./audiobookshelf/ks.yaml
