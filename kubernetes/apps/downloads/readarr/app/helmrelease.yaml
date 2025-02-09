@@ -1,0 +1,83 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app readarr
+spec:
+  interval: 5m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.6.1
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  values:
+    controllers:
+      *app:
+        containers:
+          app:
+            image:
+              repository: ghcr.io/onedr0p/readarr-nightly
+              tag: 0.4.0.2593@sha256:22154f5d5ea888c9bbc797e235d34c11cc8c89d49d7f3d6ec9c5c60220962ee6
+
+            env:
+              TZ: "${TIMEZONE}"
+              READARR__PORT: &port 8787
+              READARR__LOG_LEVEL: info
+
+            envFrom:
+              - secretRef:
+                  name: readarr-secret
+
+            resources:
+              requests:
+                memory: 250Mi
+                cpu: 500m
+              limits:
+                memory: 1500Mi
+
+        pod:
+          securityContext:
+            runAsUser: "${APP_UID}"
+            runAsGroup: "${APP_GID}"
+            fsGroup: "${APP_GID}"
+            fsGroupChangePolicy: "OnRootMismatch"
+
+    service:
+      main:
+        controller: *app
+        ports:
+          http:
+            port: *port
+
+    ingress:
+      main:
+        className: internal
+        enabled: true
+        hosts:
+          - host: &host "readarr.${LIMITED_DOMAIN}"
+            paths:
+              - path: /
+                pathType: Prefix
+                service:
+                  identifier: main
+                  port: http
+        tls:
+          - hosts:
+              - *host
+            secretName: "${LIMITED_DOMAIN/./-}-production-tls"
+
+    persistence:
+      config:
+        enabled: true
+        existingClaim: *app
+      media:
+        type: nfs
+        server: "truenas.${INTERNAL_DOMAIN}"
+        path: /mnt/tank/Media
+        globalMounts:
+          - path: /media
