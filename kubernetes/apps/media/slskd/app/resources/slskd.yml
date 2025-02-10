@@ -83,8 +83,4 @@ integration:
     notify_betanin:
       on:
         - DownloadDirectoryComplete
-      run: /bin/sh /scripts/notify_betanin.sh "$DATA"
-    debug:
-      on:
-        - DownloadDirectoryComplete
-      run: echo "$DATA" >> /config/debug.txt
+      run: /scripts/notify_betanin.sh $DATA
