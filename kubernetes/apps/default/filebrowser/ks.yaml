@@ -3,14 +3,14 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app simple-uploader
+  name: &app filebrowser
   namespace: flux-system
 spec:
-  targetNamespace: downloads
+  targetNamespace: default
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  path: ./kubernetes/apps/downloads/simple-uploader/app
+  path: ./kubernetes/apps/default/filebrowser/app
   prune: true
   sourceRef:
     kind: GitRepository
@@ -19,3 +19,7 @@ spec:
   interval: 30m
   retryInterval: 1m
   timeout: 5m
+  postBuild:
+    substitute:
+      APP: *app
+      VOLSYNC_CAPACITY: 1Gi

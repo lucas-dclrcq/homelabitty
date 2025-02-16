@@ -1,0 +1,118 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app filebrowser
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.5.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  values:
+    controllers:
+      *app:
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+        containers:
+          app:
+            image:
+              repository: docker.io/filebrowser/filebrowser
+              tag: v2.31.2
+
+            env:
+              TZ: "${TIMEZONE}"
+              FB_DATABASE: /config/filebrowser.db
+              FB_ROOT: /media
+              FB_LOG: stdout
+              FB_NOAUTH: true
+
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health
+                    port: &port 80
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+
+            resources:
+              requests:
+                cpu: 50m
+              limits:
+                memory: 2Gi
+
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: "${APP_UID}"
+        runAsGroup: "${APP_GID}"
+        fsGroup: "${APP_GID}"
+        fsGroupChangePolicy: OnRootMismatch
+        supplementalGroups: [10000]
+        seccompProfile: { type: RuntimeDefault }
+
+    service:
+      app:
+        controller: filebrowser
+        ports:
+          http:
+            port: *port
+
+    ingress:
+      app:
+        className: external
+        annotations:
+          nginx.ingress.kubernetes.io/client-body-buffer-size: "10g"
+          nginx.ingress.kubernetes.io/proxy-body-size: "10g"
+          nginx.ingress.kubernetes.io/auth-url: |-
+            http://ak-outpost-oauth2-proxy-outpost.auth.svc.cluster.local:9000/outpost.goauthentik.io/auth/nginx
+          nginx.ingress.kubernetes.io/auth-signin: |-
+            https://uploads.${SECRET_DOMAIN}/outpost.goauthentik.io/start?rd=$escaped_request_uri
+          nginx.ingress.kubernetes.io/auth-response-headers: |-
+            Set-Cookie,X-authentik-username,X-authentik-groups,X-authentik-email,X-authentik-name,X-authentik-uid,authorization
+          nginx.ingress.kubernetes.io/auth-snippet: |-
+            proxy_set_header X-Forwarded-Host $http_host;
+        hosts:
+          - host: "uploads.${SECRET_DOMAIN}"
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: http
+
+    persistence:
+      config:
+        existingClaim: *app
+        globalMounts:
+          - path: /config
+      media:
+        type: nfs
+        server: "truenas.${INTERNAL_DOMAIN}"
+        path: /mnt/tank/Media
+        globalMounts:
+          - path: /media
