@@ -6,7 +6,7 @@ paths:
   singleton: Non-Album/$artist/$title
   comp: Compilations/$album%aunique{}/$track $title
 
-plugins: fetchart embedart
+plugins: fetchart embedart missing
 
 import:
   move: true
@@ -17,3 +17,8 @@ fetchart:
 embedart:
   auto: yes
   ifempty: yes
+
+missing:
+  format: $albumartist - $album - $title
+  count: no
+  total: no
