@@ -45,7 +45,7 @@ spec:
               SLSKD_NO_AUTH: true
               SLSKD_NO_HTTPS: true
               SLSKD_SLSK_LISTEN_PORT: &soulseekPort 50300
-              BETANIN_URL: "https://betanin.${LIMITED_DOMAIN}"
+              BETANIN_URL: "http://betanin.media.svc.cluster.local"
 
             envFrom:
               - secretRef:
