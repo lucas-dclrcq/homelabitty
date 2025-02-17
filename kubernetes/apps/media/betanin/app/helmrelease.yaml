@@ -90,6 +90,10 @@ spec:
     persistence:
       config:
         type: emptyDir
+      database:
+        existingClaim: *app
+        globalMounts:
+          - path: /b/.local/share/betanin
       media:
         type: nfs
         server: "truenas.${INTERNAL_DOMAIN}"
