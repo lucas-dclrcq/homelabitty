@@ -22,3 +22,6 @@ missing:
   format: $albumartist - $album - $title
   count: no
   total: no
+
+match:
+  strong_rec_thresh: 0.05
