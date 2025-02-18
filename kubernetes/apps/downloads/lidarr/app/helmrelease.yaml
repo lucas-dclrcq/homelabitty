@@ -27,14 +27,6 @@ spec:
   uninstall:
     keepHistory: false
   values:
-    defaultPodOptions:
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: "${APP_UID}"
-        runAsGroup: "${APP_GID}"
-        fsGroup: "${APP_GID}"
-        fsGroupChangePolicy: OnRootMismatch
-
     controllers:
       *app:
         annotations:
@@ -55,6 +47,8 @@ spec:
               LIDARR__LOG__DBENABLED: "False"
               LIDARR__LOG_LEVEL: info
               LIDARR__SERVER__PORT: &port 8686
+              PUID: "${APP_UID}"
+              PGID: "${APP_GID}"
 
             envFrom:
               - secretRef:
@@ -73,11 +67,6 @@ spec:
                   timeoutSeconds: 1
                   failureThreshold: 3
               readiness: *probes
-
-            securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
 
     service:
       app:
