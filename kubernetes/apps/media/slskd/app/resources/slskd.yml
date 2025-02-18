@@ -10,6 +10,10 @@ metrics:
   url: /metrics
   authentication:
     disabled: true
+    api_keys:
+      lidarr:
+        key: idontreallycare
+        cidr: 10.69.0.0/16,10.96.0.0/16
 permissions:
   file:
     mode: 750
@@ -78,9 +82,9 @@ shares:
     - \.ini$
     - Thumbs.db$
     - \.DS_Store$
-integration:
-  scripts:
-    notify_betanin:
-      on:
-        - DownloadDirectoryComplete
-      run: /scripts/notify_betanin.sh $DATA
+#integration:
+#  scripts:
+#    notify_betanin:
+#      on:
+#        - DownloadDirectoryComplete
+#      run: /scripts/notify_betanin.sh $DATA
