@@ -1,4 +1,10 @@
 ---
+web:
+  authentication:
+    api_keys:
+      lidarr:
+        key: a3089459ec99e64fbe5091adf11b057db7f7cef88e588b521743fd49b392c322
+        cidr: 10.69.0.0/16,10.96.0.0/16
 directories:
   downloads: "/media/Downloads/nicotine/complete"
   incomplete: "/media/Downloads/nicotine/incomplete"
@@ -10,10 +16,6 @@ metrics:
   url: /metrics
   authentication:
     disabled: true
-    api_keys:
-      lidarr:
-        key: idontreallycare
-        cidr: 10.69.0.0/16,10.96.0.0/16
 permissions:
   file:
     mode: 750
