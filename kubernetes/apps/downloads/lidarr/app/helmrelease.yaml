@@ -54,6 +54,13 @@ spec:
               - secretRef:
                   name: lidarr-secret
 
+            resources:
+              requests:
+                memory: 250Mi
+                cpu: 500m
+              limits:
+                memory: 2000Mi
+
             probes:
               liveness: &probes
                 enabled: true
