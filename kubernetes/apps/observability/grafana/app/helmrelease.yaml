@@ -292,8 +292,9 @@ spec:
         flaresolverr:
           # renovate: depName="FlareSolverr"
           gnetId: 19363
-          version: 1
-          datasource: Prometheus
+          datasource:
+            - name: "DS_PROMETHEUS"
+              value: Prometheus
         navidrome:
           # renovate: depName="Navidrome"
           gnetId: 18038
