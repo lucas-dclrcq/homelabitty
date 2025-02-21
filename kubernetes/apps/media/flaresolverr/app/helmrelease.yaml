@@ -32,7 +32,7 @@ spec:
           app:
             image:
               repository: docker.io/21hsmw/flaresolverr
-              tag: nodriver
+              tag: nodriver@sha256:12af2ddb030e672c41a24f2f9b95a9ab6da1e2fcbc311aa63ddd1418e95d7422
 
             env:
               LOG_LEVEL: "info"
