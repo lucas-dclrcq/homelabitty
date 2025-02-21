@@ -35,7 +35,8 @@ spec:
               tag: nodriver@sha256:12af2ddb030e672c41a24f2f9b95a9ab6da1e2fcbc311aa63ddd1418e95d7422
 
             env:
-              LOG_LEVEL: "info"
+              LOG_LEVEL: "debug"
+              LOG_HTML: "true"
               DRIVER: "nodriver"
               CAPTCHA_SOLVER: "harvester"
               LANG: "fr_FR"
