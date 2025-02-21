@@ -3,7 +3,7 @@ web:
   authentication:
     api_keys:
       lidarr:
-        key: a3089459ec99e64fbe5091adf11b057db7f7cef88e588b521743fd49b392c322
+        key: "${SLSKD_API_KEY}"
         cidr: 10.69.0.0/16,10.96.0.0/16
 directories:
   downloads: "/media/Downloads/nicotine/complete"
@@ -84,9 +84,3 @@ shares:
     - \.ini$
     - Thumbs.db$
     - \.DS_Store$
-#integration:
-#  scripts:
-#    notify_betanin:
-#      on:
-#        - DownloadDirectoryComplete
-#      run: /scripts/notify_betanin.sh $DATA

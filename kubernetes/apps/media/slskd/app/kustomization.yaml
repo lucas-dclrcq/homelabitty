@@ -11,11 +11,5 @@ configMapGenerator:
   - name: slskd-configmap
     files:
       - slskd.yml=./resources/slskd.yml
-  - name: slskd-scripts
-    options:
-      annotations:
-        kustomize.toolkit.fluxcd.io/substitute: disabled
-    files:
-      - notify_betanin.sh=./resources/notify_betanin.sh
 generatorOptions:
   disableNameSuffixHash: true
