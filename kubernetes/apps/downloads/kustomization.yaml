@@ -9,3 +9,4 @@ resources:
   - ./qbittorrent/ks.yaml
   - ./readarr/ks.yaml
   - ./lidarr/ks.yaml
+  - ./flarebypasser/ks.yaml
