@@ -24,3 +24,4 @@ resources:
   - ./gotosocial/ks.yaml
   - ./bytestash/ks.yaml
   - ./filebrowser/ks.yaml
+  - ./thelounge/ks.yaml
