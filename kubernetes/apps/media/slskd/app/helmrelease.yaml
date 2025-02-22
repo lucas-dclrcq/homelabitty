@@ -44,7 +44,8 @@ spec:
               SLSKD_HTTP_PORT: &port 80
               SLSKD_NO_HTTPS: true
               SLSKD_SLSK_LISTEN_PORT: &soulseekPort 50300
-              BETANIN_URL: "http://betanin.media.svc.cluster.local"
+              SLSKD_UPLOAD_SLOTS: "5"
+              SLSKD_UPLOAD_SPEED_LIMIT: "12207" # 100 mbits/s
 
             envFrom:
               - secretRef:
