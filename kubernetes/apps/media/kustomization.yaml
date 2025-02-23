@@ -17,6 +17,5 @@ resources:
   - ./calibre-web/ks.yaml
   - ./jellyfin/ks.yaml
   - ./jellystat/ks.yaml
-  - ./flaresolverr/ks.yaml
   - ./piped/ks.yaml
   - ./audiobookshelf/ks.yaml

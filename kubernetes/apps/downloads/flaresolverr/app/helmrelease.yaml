@@ -31,8 +31,8 @@ spec:
         containers:
           app:
             image:
-              repository: docker.io/21hsmw/flaresolverr
-              tag: nodriver@sha256:12af2ddb030e672c41a24f2f9b95a9ab6da1e2fcbc311aa63ddd1418e95d7422
+              repository: docker.io/alexfozor/flaresolverr
+              tag: pr-1300-experimental@sha256:3e5e1335c31365b5b0d9a737097c6a719de0ba49fed7db65cd828d75ae1bbecb
 
             env:
               LOG_LEVEL: "debug"
