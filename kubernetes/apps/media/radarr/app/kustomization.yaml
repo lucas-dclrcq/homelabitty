@@ -10,6 +10,12 @@ configMapGenerator:
   - name: radarr-configmap
     files:
       - pushover-notify.sh=./resources/pushover-notify.sh
+  - name: radarr-loki-rules
+    files:
+      - radarr.yaml=./resources/lokirule.yaml
+    options:
+      labels:
+        loki_rule: "true"
 generatorOptions:
   disableNameSuffixHash: true
   annotations:
