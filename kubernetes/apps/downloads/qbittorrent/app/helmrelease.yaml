@@ -80,6 +80,7 @@ spec:
             env:
               DOT: "off"
               DNS_ADDRESS: "127.0.0.2"
+              HTTP_CONTROL_SERVER_AUTH_CONFIG_FILEPATH: &gluetunAuthPath /gluetun/auth.toml
               VPN_TYPE: wireguard
               VPN_SERVICE_PROVIDER: protonvpn
               VPN_INTERFACE: wg0
@@ -96,7 +97,6 @@ spec:
             resources:
               limits:
                 squat.ai/tun: "1"
-
             securityContext:
               capabilities:
                 add:
@@ -110,6 +110,11 @@ spec:
             env:
               GLUETUN_CONTROL_SERVER_HOST: localhost
               GLUETUN_CONTROL_SERVER_PORT: 8000
+              GLUETUN_CONTROL_SERVER_API_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: qbittorrent-secret
+                    key: GLUETUN_API_KEY
               QBITTORRENT_HOST: localhost
               QBITTORRENT_WEBUI_PORT: *port
               CRON_ENABLED: true
@@ -169,6 +174,14 @@ spec:
           qbittorrent:
             app:
               - path: /media/Downloads/qbittorrent
+      gluetun-auth:
+        type: secret
+        name: qbittorrent-gluetun-secret
+        advancedMounts:
+          qbittorrent:
+            gluetun:
+              - path: *gluetunAuthPath
+                subPath: auth.toml
       dnsdist:
         type: configMap
         name: qbittorrent-dnsdist
