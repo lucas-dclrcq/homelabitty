@@ -20,8 +20,6 @@ spec:
     controllers:
       auto-compressor:
         type: cronjob
-        annotations:
-          reloader.stakater.com/auto: "true"
 
         cronjob:
           schedule: "0 2 * * *" # Every day at 2am
@@ -30,24 +28,24 @@ spec:
 
         containers:
           main:
-            image:
+            image: &image
               repository: registry.gitlab.com/mb-saces/synatainer
               tag: 0.4.4
+
+            envFrom: &secrets
+              - secretRef:
+                  name: synatainer-secret
+              - secretRef:
+                  name: synatainer-db-secret
 
             env:
               SYNAPSE_HOST: http://synapse-matrix-synapse.matrix.svc.cluster.local:8008
               STATE_AUTOCOMPRESSOR_CHUNKS_TO_COMPRESS: 100
               STATE_AUTOCOMPRESSOR_CHUNK_SIZE: 500
 
-            envFrom:
-              - secretRef:
-                  name: synatainer-secret
-              - secretRef:
-                  name: synatainer-db-secret
-
             command: ["autocompressor.sh"]
 
-            resources:
+            resources: &resources
               requests:
                 cpu: 12m
                 memory: 64M
@@ -56,8 +54,6 @@ spec:
 
       purge-rooms:
         type: cronjob
-        annotations:
-          reloader.stakater.com/auto: "true"
 
         cronjob:
           schedule: "0 3 * * *" # Every day at 3am
@@ -66,32 +62,18 @@ spec:
 
         containers:
           main:
-            image:
-              repository: registry.gitlab.com/mb-saces/synatainer
-              tag: 0.4.4
+            image: *image
+            envFrom: *secrets
 
             env:
               SYNAPSE_HOST: http://synapse-matrix-synapse.matrix.svc.cluster.local:8008
 
-            envFrom:
-              - secretRef:
-                  name: synatainer-secret
-              - secretRef:
-                  name: synatainer-db-secret
-
             command: ["purge_rooms_no_local_members.sh"]
 
-            resources:
-              requests:
-                cpu: 12m
-                memory: 64M
-              limits:
-                memory: 256M
+            resources: *resources
 
       purge-history:
         type: cronjob
-        annotations:
-          reloader.stakater.com/auto: "true"
 
         cronjob:
           schedule: "0 5 * * 1" # Every monday at 5am
@@ -100,34 +82,20 @@ spec:
 
         containers:
           main:
-            image:
-              repository: registry.gitlab.com/mb-saces/synatainer
-              tag: 0.4.4
+            image: *image
+            envFrom: *secrets
 
             env:
               SYNAPSE_HOST: http://synapse-matrix-synapse.matrix.svc.cluster.local:8008
               HISTORY_MAX_AGE: 180
               HISTORY_ROOM_LIST: all
 
-            envFrom:
-              - secretRef:
-                  name: synatainer-secret
-              - secretRef:
-                  name: synatainer-db-secret
-
             command: ["purge_history.sh"]
 
-            resources:
-              requests:
-                cpu: 12m
-                memory: 64M
-              limits:
-                memory: 256M
+            resources: *resources
 
       vacuum:
         type: cronjob
-        annotations:
-          reloader.stakater.com/auto: "true"
 
         cronjob:
           schedule: "0 4 1 * *" # First day of every month at 4:00 am
@@ -136,19 +104,9 @@ spec:
 
         containers:
           main:
-            image:
-              repository: registry.gitlab.com/mb-saces/synatainer
-              tag: 0.4.4
-
-            envFrom:
-              - secretRef:
-                  name: synatainer-db-secret
+            image: *image
+            envFrom: *secrets
 
             command: ["stui", "vacuum-db", "--full"]
 
-            resources:
-              requests:
-                cpu: 12m
-                memory: 64M
-              limits:
-                memory: 256M
+            resources: *resources
