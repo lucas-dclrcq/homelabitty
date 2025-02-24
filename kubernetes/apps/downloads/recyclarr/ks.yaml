@@ -6,13 +6,13 @@ metadata:
   name: &app recyclarr
   namespace: flux-system
 spec:
-  targetNamespace: media
+  targetNamespace: downloads
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
     - name: external-secrets-stores
-  path: ./kubernetes/apps/media/recyclarr/app
+  path: ./kubernetes/apps/downloads/recyclarr/app
   prune: true
   sourceRef:
     kind: GitRepository
