@@ -18,7 +18,7 @@ spec:
 
   values:
     controllers:
-      synapse-auto-compressor-small:
+      auto-compressor:
         type: cronjob
         annotations:
           reloader.stakater.com/auto: "true"
@@ -45,7 +45,7 @@ spec:
               - secretRef:
                   name: synatainer-db-secret
 
-            command: ["autocompressor-small.sh"]
+            command: ["autocompressor.sh"]
 
             resources:
               requests:
@@ -145,42 +145,6 @@ spec:
                   name: synatainer-db-secret
 
             command: ["stui", "vacuum-db", "--full"]
-
-            resources:
-              requests:
-                cpu: 12m
-                memory: 64M
-              limits:
-                memory: 256M
-
-      synapse-auto-compressor-big:
-        type: cronjob
-        annotations:
-          reloader.stakater.com/auto: "true"
-
-        cronjob:
-          schedule: "0 5 1 * *" # Every month at 5am
-          successfulJobsHistory: 1
-          failedJobsHistory: 3
-
-        containers:
-          main:
-            image:
-              repository: registry.gitlab.com/mb-saces/synatainer
-              tag: 0.4.4
-
-            env:
-              SYNAPSE_HOST: http://synapse-matrix-synapse.matrix.svc.cluster.local:8008
-              STATE_AUTOCOMPRESSOR_CHUNKS_TO_COMPRESS: 100
-              STATE_AUTOCOMPRESSOR_CHUNK_SIZE: 500
-
-            envFrom:
-              - secretRef:
-                  name: synatainer-secret
-              - secretRef:
-                  name: synatainer-db-secret
-
-            command: ["autocompressor-big.sh"]
 
             resources:
               requests:
