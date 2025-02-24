@@ -9,8 +9,7 @@ resources:
   - ./sonarr/ks.yaml
   - ./radarr/ks.yaml
   - ./bazarr/ks.yaml
-  - ./slskd/ks.yaml
-  - ./betanin/ks.yaml
+  - ./slskd/ks.yamlc
   - ./navidrome/ks.yaml
   - ./recyclarr/ks.yaml
   - ./jellyseerr/ks.yaml
