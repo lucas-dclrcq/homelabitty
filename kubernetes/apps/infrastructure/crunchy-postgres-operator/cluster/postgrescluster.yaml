@@ -176,6 +176,10 @@ spec:
       databases: ["gotosocial"]
       password:
         type: AlphaNumeric
+    - name: "planka"
+      databases: ["planka"]
+      password:
+        type: AlphaNumeric
 
   backups:
     pgbackrest:

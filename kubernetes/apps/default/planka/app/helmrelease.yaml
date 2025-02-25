@@ -1,0 +1,102 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.devbu.io/helm.toolkit.fluxcd.io/helmrelease_v2beta1.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: &app planka
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.0.4
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  maxHistory: 2
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    controllers:
+      *app:
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+        containers:
+          main:
+            image:
+              repository: ghcr.io/plankanban/planka
+              tag: 1.24.4@sha256:b5825120d00d8e6f6603e866cbece373a72ca6c46006b67d7640a2040bc1d8df
+
+            env:
+              TZ: "${TIMEZONE}"
+              BASE_URL: &baseUrl "https://{{ .Release.Name }}.${LIMITED_DOMAIN}"
+              REACT_APP_SERVER_BASE_URL: *baseUrl
+              TRUST_PROXY: 1
+
+            envFrom:
+              - secretRef:
+                  name: planka-secret
+
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+
+            resources:
+              requests:
+                cpu: 10m
+                memory: 128Mi
+              limits:
+                memory: 256Mi
+
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: "${APP_UID}"
+        runAsGroup: "${APP_GID}"
+        fsGroup: "${APP_GID}"
+        fsGroupChangePolicy: OnRootMismatch
+        supplementalGroups: [10000]
+        seccompProfile: { type: RuntimeDefault }
+
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: 1337
+
+    ingress:
+      app:
+        className: external
+        hosts:
+          - host: "{{ .Release.Name }}.${LIMITED_DOMAIN}"
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: http
+
+    persistence:
+      tmp:
+        type: emptyDir
+        globalMounts:
+          - path: /app/logs
+            subPath: logs
+          - path: /app/.tmp
+            subPath: tmp

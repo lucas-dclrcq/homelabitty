@@ -25,3 +25,4 @@ resources:
   - ./bytestash/ks.yaml
   - ./filebrowser/ks.yaml
   - ./thelounge/ks.yaml
+  - ./planka/ks.yaml
