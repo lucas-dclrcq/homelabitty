@@ -41,6 +41,7 @@ spec:
               BASE_URL: &baseUrl "https://{{ .Release.Name }}.${SECRET_DOMAIN}"
               REACT_APP_SERVER_BASE_URL: *baseUrl
               TRUST_PROXY: 1
+              ALLOW_ALL_TO_CREATE_PROJECTS: "true"
 
             envFrom:
               - secretRef:
