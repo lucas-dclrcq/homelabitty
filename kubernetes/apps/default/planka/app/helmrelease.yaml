@@ -38,7 +38,7 @@ spec:
 
             env:
               TZ: "${TIMEZONE}"
-              BASE_URL: &baseUrl "https://{{ .Release.Name }}.${LIMITED_DOMAIN}"
+              BASE_URL: &baseUrl "https://{{ .Release.Name }}.${SECRET_DOMAIN}"
               REACT_APP_SERVER_BASE_URL: *baseUrl
               TRUST_PROXY: 1
 
@@ -84,8 +84,10 @@ spec:
     ingress:
       app:
         className: external
+        annotations:
+          external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
         hosts:
-          - host: "{{ .Release.Name }}.${LIMITED_DOMAIN}"
+          - host: "{{ .Release.Name }}.${SECRET_DOMAIN}"
             paths:
               - path: /
                 service:
