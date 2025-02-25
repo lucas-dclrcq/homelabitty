@@ -24,7 +24,7 @@ alerting:
   matrix:
     server-url: "http://synapse-matrix-synapse.matrix.svc.cluster.local:8008"
     access-token: $${MATRIX_TOKEN}
-    internal-room-id: "!CdhmJpkYAURXzzYGGg:${SECRET_DOMAIN}"
+    internal-room-id: "!IccgAPArvRtfPCBFPF:${SECRET_DOMAIN}"
     default-alert:
       description: health-check failed
       send-on-resolved: true
