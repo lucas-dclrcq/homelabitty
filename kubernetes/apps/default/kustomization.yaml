@@ -17,7 +17,6 @@ resources:
   - ./homelab-manager/ks.yaml
   - ./nextcloud/ks.yaml
   - ./cupsd/ks.yaml
-  - ./vikunja/ks.yaml
   - ./trilium/ks.yaml
   - ./wikijs/ks.yaml
   - ./teable/ks.yaml
