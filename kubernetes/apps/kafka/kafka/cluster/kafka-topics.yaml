@@ -106,3 +106,27 @@ spec:
   replicas: 3
   config:
     retention.ms: 604800000
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: jellyseerr-notifications
+  labels:
+    strimzi.io/cluster: hoohoot
+spec:
+  partitions: 2
+  replicas: 3
+  config:
+    retention.ms: 172800000
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: jellyseerr-notifications-dlq
+  labels:
+    strimzi.io/cluster: hoohoot
+spec:
+  partitions: 2
+  replicas: 3
+  config:
+    retention.ms: 604800000
