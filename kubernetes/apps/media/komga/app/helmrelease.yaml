@@ -39,7 +39,11 @@ spec:
 
             env:
               TZ: ${TIMEZONE}
+              KOMGA_CONFIGDIR: &pvc /config
               SERVER_PORT: &port 8080
+              LOGGING_FILE_NAME: /dev/stdout
+              KOMGA_OAUTH2_ACCOUNT_CREATION: "true"
+              KOMGA_OIDC_EMAIL_VERIFICATION: "false"
 
             securityContext:
               allowPrivilegeEscalation: false
@@ -86,6 +90,15 @@ spec:
     persistence:
       config:
         existingClaim: *app
+        globalMounts:
+          - path: /config
+      application-config:
+        type: secret
+        name: komga-secret
+        defaultMode: 0400
+        globalMounts:
+          - subPath: application.yml
+            path: /config/application.yml
       media:
         type: nfs
         server: "truenas.${INTERNAL_DOMAIN}"
