@@ -399,7 +399,8 @@ spec:
       hosts: ["grafana.${SECRET_DOMAIN}"]
 
     persistence:
-      enabled: false
+      enabled: true
+      existingClaim: grafana
 
     testFramework:
       enabled: false
