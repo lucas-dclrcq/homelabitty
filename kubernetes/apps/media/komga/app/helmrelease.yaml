@@ -28,19 +28,23 @@ spec:
   values:
     controllers:
       komga:
-        labels:
-          nfsMount: "true"
         annotations:
           reloader.stakater.com/auto: "true"
+
         containers:
           app:
             image:
               repository: gotson/komga
-              tag: "1.15.1@sha256:800b11aed7631888a071c12c138f7a6eef34cfc6878bc624ecf0989f93c741d6"
+              tag: 1.20.0
 
             env:
               TZ: ${TIMEZONE}
               SERVER_PORT: &port 8080
+
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
 
             resources:
               requests:
@@ -48,6 +52,16 @@ spec:
                 memory: 1Gi
               limits:
                 memory: 4Gi
+
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: "${APP_UID}"
+        runAsGroup: "${APP_GID}"
+        fsGroup: "${APP_GID}"
+        fsGroupChangePolicy: OnRootMismatch
+        supplementalGroups: [10000]
+        seccompProfile: { type: RuntimeDefault }
 
     service:
       app:
