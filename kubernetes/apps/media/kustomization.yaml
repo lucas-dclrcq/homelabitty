@@ -16,3 +16,4 @@ resources:
   - ./jellyfin/ks.yaml
   - ./jellystat/ks.yaml
   - ./audiobookshelf/ks.yaml
+  - ./komga/ks.yaml
