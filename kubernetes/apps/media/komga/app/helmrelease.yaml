@@ -40,6 +40,8 @@ spec:
             env:
               TZ: ${TIMEZONE}
               SERVER_PORT: &port 8080
+              KOMGA_OAUTH2_ACCOUNT_CREATION: "true"
+              KOMGA_OIDC_EMAIL_VERIFICATION: "false"
 
             securityContext:
               allowPrivilegeEscalation: false
@@ -92,3 +94,10 @@ spec:
         path: /mnt/tank/Media
         globalMounts:
           - path: /media
+      application-config:
+        type: secret
+        name: komga-secret
+        defaultMode: 0400
+        globalMounts:
+          - subPath: application.yml
+            path: /config/application.yml
