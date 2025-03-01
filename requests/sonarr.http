@@ -1,0 +1,4 @@
+### Get calendar
+GET {{sonarr_url}}/api/v3/calendar?start=2023-10-16T00:00:00Z&end=2023-10-16T00:00:00Z&includeSeries=true
+Accept: application/json
+X-Api-Key: {{sonarr_api_key}}

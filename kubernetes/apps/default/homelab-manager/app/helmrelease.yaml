@@ -27,11 +27,13 @@ spec:
           main:
             image:
               repository: ghcr.io/lucas-dclrcq/homelab-manager
-              tag: latest@sha256:45ae00fadaef79394463c91e1502f7dc77f87d91bd55541c39e2dfc0f915a336
+              tag: latest@sha256:8510a6b4964498d444ab420e193ba657e4bbd4e4ce3f5ea00d72db4bcae0b6c5
             env:
               QUARKUS_HTTP_PORT: &port 80
               KAFKA_BOOTSTRAP_SERVERS: hoohoot-kafka-bootstrap.kafka.svc.cluster.local:9092
               SCHEMA_REGISTRY_URL: http://schema-registry.kafka.svc.cluster.local:8081
+              SONARR_BASE_URL: http://sonarr.media.svc.cluster.local
+              SYNAPSE_BASE_URL: http://synapse-matrix-synapse.matrix.svc.cluster.local:8008
 
             envFrom:
               - secretRef:
@@ -67,6 +69,31 @@ spec:
                 memory: 64M
               limits:
                 memory: 512Mi
+
+      send-whats-next-report:
+        type: cronjob
+
+        cronjob:
+          schedule: "0 7 * * 1" # Every monday at 7am
+          successfulJobsHistory: 1
+          failedJobsHistory: 3
+
+        containers:
+          main:
+            image:
+              repository: alpine/curl
+              tag: 8.12.1
+
+            args:
+              - -X POST
+              - http://homelab-manager.default.svc.cluster.local/api/notifications/send-whats-next-report
+
+            resources:
+              requests:
+                cpu: 10m
+                memory: 64M
+              limits:
+                memory: 128M
 
     service:
       main:
