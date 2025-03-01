@@ -36,7 +36,7 @@ spec:
           app:
             image:
               repository: gotson/komga
-              tag: "1.15.1@sha256:800b11aed7631888a071c12c138f7a6eef34cfc6878bc624ecf0989f93c741d6"
+              tag: "1.20.0@sha256:90511b6c191d306ada2f75f5cfff2271979fadfc4c2feab9e0ce72cf8b46831a"
 
             env:
               TZ: ${TIMEZONE}
