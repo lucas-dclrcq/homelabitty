@@ -180,6 +180,10 @@ spec:
       databases: ["planka"]
       password:
         type: AlphaNumeric
+    - name: "mautrixdiscord"
+      databases: ["mautrixdiscord"]
+      password:
+        type: AlphaNumeric
 
   backups:
     pgbackrest:

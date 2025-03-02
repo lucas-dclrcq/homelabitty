@@ -193,6 +193,7 @@ spec:
           mountPath: /discord
           readOnly: true
 
+
     signingkey:
       job:
         enabled: false
