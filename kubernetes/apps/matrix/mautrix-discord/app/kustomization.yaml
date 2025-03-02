@@ -5,3 +5,10 @@ resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
   - ../../../../templates/volsync
+configMapGenerator:
+  - name: mautrix-discord-base-config
+    files:
+      - config.yaml=./resources/config.yaml
+      - registration.yaml=./resources/registration.yaml
+generatorOptions:
+  disableNameSuffixHash: true

@@ -1,0 +1,15 @@
+---
+id: discord
+url: http://mautrix-discord.matrix.svc.cluster.local:29334
+as_token: {{ .AS_TOKEN }}
+hs_token: {{ .HS_TOKEN }}
+sender_localpart: {{ .SENDER_LOCALPART }}
+rate_limited: false
+namespaces:
+  users:
+    - regex: ^@discordbot:${SECRET_DOMAIN/./\\.}$
+      exclusive: true
+    - regex: ^@discord_.*:${SECRET_DOMAIN/./\\.}$
+      exclusive: true
+de.sorunome.msc2409.push_ephemeral: true
+push_ephemeral: true
