@@ -79,7 +79,7 @@ spec:
         type: secret
         name: mautrix-discord-secret
         globalMounts:
-          - subPath: registration.yml
+          - subPath: registration.yaml
             path: /data/registration.yaml
-          - subPath: application.yml
+          - subPath: config.yaml
             path: /data/config.yaml
