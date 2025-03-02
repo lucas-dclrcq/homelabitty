@@ -120,6 +120,7 @@ spec:
       enable_3pid_lookup: false
       app_service_config_files:
         - "/discord/registration.yml"
+        - "/mautrix-discord/registration.yaml"
       use_appservice_legacy_authorization: true
       url_preview_ip_range_blacklist:
         - "127.0.0.0/8"
@@ -188,11 +189,16 @@ spec:
         - name: discord-registration
           secret:
             secretName: matrix-bridge-discord-secret
+        - name: mautrix-discord-registration
+          secret:
+            secretName: mautrix-discord-secret
       extraVolumeMounts:
         - name: discord-registration
           mountPath: /discord
           readOnly: true
-
+        - name: mautrix-discord-registration
+          mountPath: /mautrix-discord
+          readOnly: true
 
     signingkey:
       job:
