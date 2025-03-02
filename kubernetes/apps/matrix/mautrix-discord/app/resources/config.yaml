@@ -4,7 +4,7 @@ homeserver:
   address: http://synapse-matrix-synapse.matrix.svc.cluster.local:8008
   # Publicly accessible base URL for media, used for avatars in relay mode.
   # If not set, the connection address above will be used.
-  public_address: null
+  public_address: https://mautrix-discord.${SECRET_DOMAIN}
   # The domain of the homeserver (also known as server_name, used for MXIDs, etc).
   domain: ${SECRET_DOMAIN}
 
