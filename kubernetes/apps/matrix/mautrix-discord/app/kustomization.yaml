@@ -10,5 +10,6 @@ configMapGenerator:
     files:
       - config.yaml=./resources/config.yaml
       - registration.yaml=./resources/registration.yaml
+      - double-puppet-registration.yaml=./resources/double-puppet-registration.yaml
 generatorOptions:
   disableNameSuffixHash: true

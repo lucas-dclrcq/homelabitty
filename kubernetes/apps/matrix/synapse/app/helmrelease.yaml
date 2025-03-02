@@ -121,6 +121,7 @@ spec:
       app_service_config_files:
         - "/discord/registration.yml"
         - "/mautrix-discord/registration.yaml"
+        - "/mautrix-discord/double-puppet-registration.yaml"
       use_appservice_legacy_authorization: true
       url_preview_ip_range_blacklist:
         - "127.0.0.0/8"

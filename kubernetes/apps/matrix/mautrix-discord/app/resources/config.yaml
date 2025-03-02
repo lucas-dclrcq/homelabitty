@@ -190,7 +190,7 @@ bridge:
       fps: 25 # only for webm, webp and gif (2, 5, 10, 20 or 25 recommended)
   # Servers to always allow double puppeting from
   double_puppet_server_map:
-    example.com: https://example.com
+    ${SECRET_DOMAIN}: https://matrix.${SECRET_DOMAIN}
   # Allow using double puppeting from any server with a valid client .well-known file.
   double_puppet_allow_discovery: false
   # Shared secrets for https://github.com/devture/matrix-synapse-shared-secret-auth
@@ -199,7 +199,7 @@ bridge:
   # instead of users having to find an access token and run `login-matrix`
   # manually.
   login_shared_secret_map:
-    example.com: foobar
+    ${SECRET_DOMAIN}: "as_token:{{ .DOUBLE_PUPPET_AS_TOKEN }}"
 
   # The prefix for commands. Only required in non-management rooms.
   command_prefix: '!discord'
