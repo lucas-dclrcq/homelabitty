@@ -12,7 +12,6 @@ resources:
   - ./slskd/ks.yaml
   - ./navidrome/ks.yaml
   - ./jellyseerr/ks.yaml
-  - ./calibre-web/ks.yaml
   - ./jellyfin/ks.yaml
   - ./jellystat/ks.yaml
   - ./audiobookshelf/ks.yaml
