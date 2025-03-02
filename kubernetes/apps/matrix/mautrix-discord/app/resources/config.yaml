@@ -51,7 +51,7 @@ appservice:
     max_conn_lifetime: null
 
   # The unique ID of this appservice.
-  id: discord
+  id: discorder
   # Appservice bot details.
   bot:
     # Username of the appservice bot.
@@ -75,7 +75,7 @@ appservice:
   hs_token: {{ .HS_TOKEN }}
 bridge:
   # Localpart template of MXIDs for Discord users.
-  username_template: "{{ `mdiscord_{{.}}` }}"
+  username_template: "{{ `discorder_{{.}}` }}"
   # Displayname template for Discord users. This is also used as the room name in DMs if private_chat_portal_meta is enabled.
   # Available variables:
   #   .ID - Internal user ID
