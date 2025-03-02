@@ -9,6 +9,5 @@ resources:
   - ./synapse-admin/ks.yaml
   - ./baibot/ks.yaml
   - ./synapse-usage-exporter/ks.yaml
-  - ./kafka-sink-matrix/ks.yaml
   - ./synatainer/ks.yaml
   - ./mautrix-discord/ks.yaml
