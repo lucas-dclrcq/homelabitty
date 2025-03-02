@@ -15,30 +15,26 @@ spec:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
-
   values:
     controllers:
       main:
         strategy: RollingUpdate
         annotations:
           reloader.stakater.com/auto: "true"
-
         containers:
           main:
             image:
               repository: ghcr.io/lucas-dclrcq/homelab-manager
-              tag: latest@sha256:8510a6b4964498d444ab420e193ba657e4bbd4e4ce3f5ea00d72db4bcae0b6c5
+              tag: latest@sha256:6aa75daeefd6386ebf08a78c63d44ba42104cbca935f0944fb770fb90952df0d
             env:
               QUARKUS_HTTP_PORT: &port 80
               KAFKA_BOOTSTRAP_SERVERS: hoohoot-kafka-bootstrap.kafka.svc.cluster.local:9092
               SCHEMA_REGISTRY_URL: http://schema-registry.kafka.svc.cluster.local:8081
               SONARR_BASE_URL: http://sonarr.media.svc.cluster.local
               SYNAPSE_BASE_URL: http://synapse-matrix-synapse.matrix.svc.cluster.local:8008
-
             envFrom:
               - secretRef:
                   name: homelab-manager-secret
-
             probes:
               liveness:
                 enabled: true
@@ -62,46 +58,38 @@ spec:
                   periodSeconds: 10
                   timeoutSeconds: 10
                   failureThreshold: 3
-
             resources:
               requests:
                 cpu: 12m
                 memory: 64M
               limits:
                 memory: 512Mi
-
       send-whats-next-report:
         type: cronjob
-
         cronjob:
           schedule: "0 7 * * 1" # Every monday at 7am
           successfulJobsHistory: 1
           failedJobsHistory: 3
-
         containers:
           main:
             image:
               repository: alpine/curl
               tag: 8.12.1
-
             args:
               - -X POST
               - http://homelab-manager.default.svc.cluster.local/api/notifications/send-whats-next-report
-
             resources:
               requests:
                 cpu: 10m
                 memory: 64M
               limits:
                 memory: 128M
-
     service:
       main:
         controller: main
         ports:
           http:
             port: *port
-
     ingress:
       main:
         className: internal
