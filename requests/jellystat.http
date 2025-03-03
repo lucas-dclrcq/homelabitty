@@ -1,0 +1,9 @@
+POST {{jellystat_url}}/stats/getMostPopularByType
+Accept: application/json, text/plain, */*
+Content-Type: application/json
+x-api-token: {{jellystat_api_token}}
+
+{"days":"30","type":"Series"}
+
+###
+

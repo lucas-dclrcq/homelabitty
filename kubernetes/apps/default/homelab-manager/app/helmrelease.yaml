@@ -32,6 +32,7 @@ spec:
               SCHEMA_REGISTRY_URL: http://schema-registry.kafka.svc.cluster.local:8081
               SONARR_BASE_URL: http://sonarr.media.svc.cluster.local
               SYNAPSE_BASE_URL: http://synapse-matrix-synapse.matrix.svc.cluster.local:8008
+              JELLYSTAT_BASE_URL: http://jellystat.media.svc.cluster.local:3000
             envFrom:
               - secretRef:
                   name: homelab-manager-secret
