@@ -4,10 +4,10 @@ kind: Kustomization
 resources:
   - ./namespace.yaml
   - ./synapse/ks.yaml
-  - ./bridge-discord/ks.yaml
   - ./element/ks.yaml
   - ./synapse-admin/ks.yaml
   - ./baibot/ks.yaml
   - ./synapse-usage-exporter/ks.yaml
   - ./synatainer/ks.yaml
   - ./mautrix-discord/ks.yaml
+  - ./mautrix-instagram/ks.yaml

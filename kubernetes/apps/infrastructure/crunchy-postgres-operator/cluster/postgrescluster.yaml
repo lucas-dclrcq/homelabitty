@@ -184,6 +184,10 @@ spec:
       databases: ["mautrixdiscord"]
       password:
         type: AlphaNumeric
+    - name: "mautrixinstagram"
+      databases: ["mautrixinstagram"]
+      password:
+        type: AlphaNumeric
 
   backups:
     pgbackrest:
