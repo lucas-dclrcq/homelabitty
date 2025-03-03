@@ -119,7 +119,7 @@ spec:
       report_stats_endpoint: synapse-usage-exporter.matrix.svc.cluster.local:5000/report-usage-stats/push
       enable_3pid_lookup: false
       app_service_config_files:
-        - "/discord/registration.yml"
+        - "/mautrix-instagram/registration.yaml"
         - "/mautrix-discord/registration.yaml"
         - "/mautrix-discord/double-puppet-registration.yaml"
       use_appservice_legacy_authorization: true
@@ -187,15 +187,15 @@ spec:
         prometheus.io/path: "/_synapse/metrics"
         prometheus.io/port: "9090"
       extraVolumes:
-        - name: discord-registration
+        - name: mautrix-instagram-registration
           secret:
-            secretName: matrix-bridge-discord-secret
+            secretName: mautrix-instagram-secret
         - name: mautrix-discord-registration
           secret:
             secretName: mautrix-discord-secret
       extraVolumeMounts:
-        - name: discord-registration
-          mountPath: /discord
+        - name: mautrix-instagram-registration
+          mountPath: /mautrix-instagram
           readOnly: true
         - name: mautrix-discord-registration
           mountPath: /mautrix-discord
