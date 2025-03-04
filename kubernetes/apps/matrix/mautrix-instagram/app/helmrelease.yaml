@@ -28,6 +28,7 @@ spec:
     controllers:
       *app:
         type: statefulset
+
         annotations:
           reloader.stakater.com/auto: "true"
 
@@ -40,6 +41,28 @@ spec:
             env:
               TZ: "${TIMEZONE}"
 
+            command: ["mautrix-meta"]
+
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /_matrix/mau/live
+                    port: &port 29319
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 5
+              readiness: *probes
+              startup: *probes
+
             resources:
               requests:
                 cpu: 10m
@@ -47,13 +70,23 @@ spec:
               limits:
                 memory: 512Mi
 
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: "${APP_UID}"
+        runAsGroup: "${APP_GID}"
+        fsGroup: "${APP_GID}"
+        fsGroupChangePolicy: OnRootMismatch
+        supplementalGroups: [10000]
+        seccompProfile: { type: RuntimeDefault }
+
     service:
       app:
         controller: *app
         publishNotReadyAddresses: true
         ports:
           http:
-            port: 29319
+            port: *port
 
     ingress:
       app:
