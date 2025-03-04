@@ -11,3 +11,4 @@ resources:
   - ./mautrix-discord/ks.yaml
   - ./mautrix-instagram/ks.yaml
   - ./mautrix-facebook/ks.yaml
+  - ./mautrix-whatsapp/ks.yaml

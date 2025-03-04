@@ -192,6 +192,10 @@ spec:
       databases: ["mautrixfacebook"]
       password:
         type: AlphaNumeric
+    - name: "mautrixwhatsapp"
+      databases: ["mautrixwhatsapp"]
+      password:
+        type: AlphaNumeric
 
   backups:
     pgbackrest:
