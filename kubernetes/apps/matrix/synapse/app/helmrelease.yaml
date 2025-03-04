@@ -118,6 +118,7 @@ spec:
         enabled: true
       enable_3pid_lookup: false
       app_service_config_files:
+        - "/mautrix-whatsapp/registration.yaml"
         - "/mautrix-facebook/registration.yaml"
         - "/mautrix-instagram/registration.yaml"
         - "/mautrix-discord/registration.yaml"
@@ -187,6 +188,9 @@ spec:
         prometheus.io/path: "/_synapse/metrics"
         prometheus.io/port: "9090"
       extraVolumes:
+        - name: mautrix-whatsapp-registration
+          secret:
+            secretName: mautrix-whatsapp-secret
         - name: mautrix-facebook-registration
           secret:
             secretName: mautrix-facebook-secret
@@ -197,6 +201,9 @@ spec:
           secret:
             secretName: mautrix-discord-secret
       extraVolumeMounts:
+        - name: mautrix-whatsapp-registration
+          mountPath: /mautrix-whatsapp
+          readOnly: true
         - name: mautrix-facebook-registration
           mountPath: /mautrix-facebook
           readOnly: true
