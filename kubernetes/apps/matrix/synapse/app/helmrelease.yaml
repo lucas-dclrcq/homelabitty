@@ -118,6 +118,7 @@ spec:
         enabled: true
       enable_3pid_lookup: false
       app_service_config_files:
+        - "/mautrix-facebook/registration.yaml"
         - "/mautrix-instagram/registration.yaml"
         - "/mautrix-discord/registration.yaml"
         - "/mautrix-discord/double-puppet-registration.yaml"
@@ -186,6 +187,9 @@ spec:
         prometheus.io/path: "/_synapse/metrics"
         prometheus.io/port: "9090"
       extraVolumes:
+        - name: mautrix-facebook-registration
+          secret:
+            secretName: mautrix-facebook-secret
         - name: mautrix-instagram-registration
           secret:
             secretName: mautrix-instagram-secret
@@ -193,6 +197,9 @@ spec:
           secret:
             secretName: mautrix-discord-secret
       extraVolumeMounts:
+        - name: mautrix-instagram-registration
+          mountPath: /mautrix-instagram
+          readOnly: true
         - name: mautrix-instagram-registration
           mountPath: /mautrix-instagram
           readOnly: true
