@@ -188,6 +188,10 @@ spec:
       databases: ["mautrixinstagram"]
       password:
         type: AlphaNumeric
+    - name: "mautrixfacebook"
+      databases: ["mautrixfacebook"]
+      password:
+        type: AlphaNumeric
 
   backups:
     pgbackrest:
