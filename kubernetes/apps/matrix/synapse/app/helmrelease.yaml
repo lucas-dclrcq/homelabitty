@@ -116,7 +116,6 @@ spec:
 
       presence:
         enabled: true
-      report_stats_endpoint: synapse-usage-exporter.matrix.svc.cluster.local:5000/report-usage-stats/push
       enable_3pid_lookup: false
       app_service_config_files:
         - "/mautrix-instagram/registration.yaml"
