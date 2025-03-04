@@ -197,6 +197,9 @@ spec:
           secret:
             secretName: mautrix-discord-secret
       extraVolumeMounts:
+        - name: mautrix-facebook-registration
+          mountPath: /mautrix-facebook
+          readOnly: true
         - name: mautrix-instagram-registration
           mountPath: /mautrix-instagram
           readOnly: true
