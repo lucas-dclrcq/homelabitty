@@ -25,7 +25,7 @@ spec:
           main:
             image:
               repository: ghcr.io/lucas-dclrcq/homelab-manager
-              tag: latest@sha256:bf90534b3632ff2252c0748c037d8e6f642f6bd4600c7622b5475ca37b34fa69
+              tag: latest@sha256:c2122f29347d5a2a3acb2458e3c3e6785a20714886de7226d245103ce9d93263
             env:
               QUARKUS_HTTP_PORT: &port 80
               KAFKA_BOOTSTRAP_SERVERS: hoohoot-kafka-bootstrap.kafka.svc.cluster.local:9092
