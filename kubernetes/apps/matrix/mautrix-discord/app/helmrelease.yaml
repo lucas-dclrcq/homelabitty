@@ -86,3 +86,7 @@ spec:
             path: /data/registration.yaml
           - subPath: config.yaml
             path: /data/config.yaml
+      tmp:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
