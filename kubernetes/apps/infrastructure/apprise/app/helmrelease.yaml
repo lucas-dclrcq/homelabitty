@@ -32,7 +32,7 @@ spec:
           app:
             image:
               repository: docker.io/caronc/apprise
-              tag: 1.1.8
+              tag: 1.1.9
 
             env:
               TZ: "${TIMEZONE}"
