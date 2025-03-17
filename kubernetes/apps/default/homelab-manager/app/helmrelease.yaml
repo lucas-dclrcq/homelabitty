@@ -19,15 +19,13 @@ spec:
     controllers:
       main:
         type: statefulset
-
         annotations:
           reloader.stakater.com/auto: "true"
-
         containers:
           main:
             image:
               repository: ghcr.io/lucas-dclrcq/homelab-manager
-              tag: latest@sha256:42d40d21a77fc2d4c2d3adcf8bc9b8d94a0de2210cb548a05d4f7c0583265f5f
+              tag: latest@sha256:6732e9b4073555a6202d5f1a7525240407b32859480566c7d7d40f9464e3a3e1
             env:
               QUARKUS_HTTP_PORT: &port 80
             envFrom:
@@ -90,7 +88,7 @@ spec:
         fsGroup: "${APP_GID}"
         fsGroupChangePolicy: OnRootMismatch
         supplementalGroups: [10000]
-        seccompProfile: { type: RuntimeDefault }
+        seccompProfile: {type: RuntimeDefault}
     service:
       main:
         controller: main
