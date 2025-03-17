@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: homelab-manager
+  name: &app homelab-manager
 spec:
   interval: 30m
   chart:
@@ -59,9 +59,9 @@ spec:
             resources:
               requests:
                 cpu: 12m
-                memory: 64M
+                memory: 256Mi
               limits:
-                memory: 512Mi
+                memory: 1Gi
       send-whats-next-report:
         type: cronjob
         cronjob:
@@ -102,3 +102,6 @@ spec:
           - hosts:
               - *host
             secretName: "${LIMITED_DOMAIN/./-}-production-tls"
+    persistence:
+      data:
+        existingClaim: *app
