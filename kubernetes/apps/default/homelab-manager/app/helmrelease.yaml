@@ -104,4 +104,4 @@ spec:
       data:
         existingClaim: *app
         globalMounts:
-          - path: /data
+          - path: /matrix
