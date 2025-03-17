@@ -18,9 +18,11 @@ spec:
   values:
     controllers:
       main:
-        strategy: RollingUpdate
+        type: statefulset
+
         annotations:
           reloader.stakater.com/auto: "true"
+
         containers:
           main:
             image:
@@ -28,11 +30,6 @@ spec:
               tag: latest@sha256:42d40d21a77fc2d4c2d3adcf8bc9b8d94a0de2210cb548a05d4f7c0583265f5f
             env:
               QUARKUS_HTTP_PORT: &port 80
-              KAFKA_BOOTSTRAP_SERVERS: hoohoot-kafka-bootstrap.kafka.svc.cluster.local:9092
-              SCHEMA_REGISTRY_URL: http://schema-registry.kafka.svc.cluster.local:8081
-              SONARR_BASE_URL: http://sonarr.media.svc.cluster.local
-              SYNAPSE_BASE_URL: http://synapse-matrix-synapse.matrix.svc.cluster.local:8008
-              JELLYSTAT_BASE_URL: http://jellystat.media.svc.cluster.local:3000
             envFrom:
               - secretRef:
                   name: homelab-manager-secret
