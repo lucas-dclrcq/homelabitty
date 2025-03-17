@@ -82,6 +82,15 @@ spec:
                 memory: 64M
               limits:
                 memory: 128M
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: "${APP_UID}"
+        runAsGroup: "${APP_GID}"
+        fsGroup: "${APP_GID}"
+        fsGroupChangePolicy: OnRootMismatch
+        supplementalGroups: [10000]
+        seccompProfile: { type: RuntimeDefault }
     service:
       main:
         controller: main
@@ -105,3 +114,5 @@ spec:
     persistence:
       data:
         existingClaim: *app
+        globalMounts:
+          - path: /data
