@@ -1,9 +1,20 @@
+###
+
 POST {{jellystat_url}}/stats/getMostPopularByType
 Accept: application/json, text/plain, */*
 Content-Type: application/json
 x-api-token: {{jellystat_api_token}}
 
 {"days":"30","type":"Series"}
+
+###
+
+POST {{jellystat_url}}/api/getItemHistory
+Accept: application/json
+Content-Type: application/json
+x-api-token: {{jellystat_api_token}}
+
+{ "itemid": "2476d555ebfd0ac55ecb878839b0b4a4" }
 
 ###
 

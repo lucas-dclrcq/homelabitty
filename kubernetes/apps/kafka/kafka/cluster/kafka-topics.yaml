@@ -30,7 +30,7 @@ metadata:
   labels:
     strimzi.io/cluster: hoohoot
 spec:
-  partitions: 2
+  partitions: 1
   replicas: 3
   config:
     retention.ms: 172800000
@@ -42,7 +42,7 @@ metadata:
   labels:
     strimzi.io/cluster: hoohoot
 spec:
-  partitions: 2
+  partitions: 1
   replicas: 3
   config:
     retention.ms: 172800000
@@ -54,7 +54,7 @@ metadata:
   labels:
     strimzi.io/cluster: hoohoot
 spec:
-  partitions: 2
+  partitions: 1
   replicas: 3
   config:
     retention.ms: 172800000
@@ -66,7 +66,7 @@ metadata:
   labels:
     strimzi.io/cluster: hoohoot
 spec:
-  partitions: 2
+  partitions: 1
   replicas: 3
   config:
     retention.ms: 172800000
@@ -78,7 +78,7 @@ metadata:
   labels:
     strimzi.io/cluster: hoohoot
 spec:
-  partitions: 2
+  partitions: 1
   replicas: 3
   config:
     retention.ms: 604800000
@@ -90,7 +90,7 @@ metadata:
   labels:
     strimzi.io/cluster: hoohoot
 spec:
-  partitions: 2
+  partitions: 1
   replicas: 3
   config:
     retention.ms: 604800000
@@ -102,7 +102,7 @@ metadata:
   labels:
     strimzi.io/cluster: hoohoot
 spec:
-  partitions: 2
+  partitions: 1
   replicas: 3
   config:
     retention.ms: 604800000
@@ -114,7 +114,7 @@ metadata:
   labels:
     strimzi.io/cluster: hoohoot
 spec:
-  partitions: 2
+  partitions: 1
   replicas: 3
   config:
     retention.ms: 172800000
@@ -126,7 +126,7 @@ metadata:
   labels:
     strimzi.io/cluster: hoohoot
 spec:
-  partitions: 2
+  partitions: 1
   replicas: 3
   config:
     retention.ms: 604800000
@@ -138,7 +138,7 @@ metadata:
   labels:
     strimzi.io/cluster: hoohoot
 spec:
-  partitions: 2
+  partitions: 1
   replicas: 3
   config:
     retention.ms: 2592000000
