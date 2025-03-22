@@ -1,0 +1,23 @@
+GET {{jellyseerr_base_url}}/api/v1/request?take=100&skip=0&filter=all&sort=added&sortDirection=desc&requestedBy=1
+Accept: */*
+X-Api-Key: {{jellyseerr_api_key}}
+
+###
+
+GET {{jellyseerr_base_url}}/api/v1/user?q=lucasd
+Accept: */*
+X-Api-Key: {{jellyseerr_api_key}}
+
+###
+
+GET {{jellyseerr_base_url}}/api/v1/media/1452/watch_data
+Accept: */*
+X-Api-Key: {{jellyseerr_api_key}}
+
+###
+
+GET {{jellyseerr_base_url}}/api/v1/movie/949
+Accept: */*
+X-Api-Key: {{jellyseerr_api_key}}
+
+###
