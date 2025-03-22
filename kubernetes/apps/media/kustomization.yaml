@@ -16,3 +16,4 @@ resources:
   - ./jellystat/ks.yaml
   - ./audiobookshelf/ks.yaml
   - ./komga/ks.yaml
+  - ./maloja/ks.yaml
