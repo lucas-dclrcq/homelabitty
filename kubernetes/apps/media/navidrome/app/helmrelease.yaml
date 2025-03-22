@@ -53,9 +53,10 @@ spec:
               ND_PROMETHEUS_ENABLED: true
               ND_REVERSEPROXYUSERHEADER: x-authentik-username
               ND_REVERSEPROXYWHITELIST: 10.0.0.0/8
-              ND_SCANNER_SCHEDULE: "*/15 * * * *"
+              ND_SCANNER_SCHEDULE: "*/30 * * * *"
               ND_SCANNER_ENABLED: "true"
               ND_DEFAULTTHEME: "Spotify-ish"
+              ND_LISTENBRAINZ_BASEURL: "http://maloja.media.svc.cluster.local:42010/apis/listenbrainz/1/"
 
             probes:
               liveness: &probes
