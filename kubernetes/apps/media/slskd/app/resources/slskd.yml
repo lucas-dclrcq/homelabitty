@@ -29,3 +29,34 @@ shares:
     - \.ini$
     - Thumbs.db$
     - \.DS_Store$
+global:
+  upload:
+    slots: 3
+    speed_limit: 50000 # in kibibytes
+  limits:
+    queued:
+      files: 500
+      megabytes: 5000
+    daily:
+      files: 1000
+      megabytes: 10000
+      failures: 200
+    weekly:
+      files: 5000
+      megabytes: 50000
+      failures: 1000
+retention:
+  search: 1440 # 7 days, in minutes
+  transfers:
+    upload:
+      succeeded: 1440 # 1 day, in minutes
+      errored: 30
+      cancelled: 5
+    download:
+      succeeded: 1440 # 1 day, in minutes
+      errored: 20160 # 2 weeks, in minutes
+      cancelled: 5
+  files:
+    complete: 20160 # 2 weeks, in minutes
+    incomplete: 43200 # 30 days, in minutes
+  logs: 1 # days
