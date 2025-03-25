@@ -1,0 +1,62 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2beta1.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app the-elder-scrobz
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.7.3
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  values:
+    controllers:
+      *app:
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+        containers:
+          main:
+            image:
+              repository: ghcr.io/oknozor/the-elder-scrobz
+              tag: latest@sha256:646828b5967aa33cf90ebdad17da324322a03920ca4eadd523a646707401ef33
+
+            env:
+              SCROBZ__debug: "true"
+              SCROBZ__port: &port 3000
+              RUST_LOG: tower_http=debug,axum=debug,scrobz=debug,elder_scrobz_api=debug,elder_scrobz_resolver=debug
+
+            envFrom:
+              - secretRef:
+                  name: the-elder-scrobz-secret
+
+            resources:
+              requests:
+                cpu: 12m
+                memory: 256Mi
+              limits:
+                memory: 1Gi
+
+    service:
+      main:
+        controller: *app
+        ports:
+          http:
+            port: *port
+
+    ingress:
+      main:
+        className: external
+        hosts:
+          - host: "{{ .Release.Name }}.${SECRET_DOMAIN}"
+            paths:
+              - path: /
+                service:
+                  identifier: main
+                  port: http

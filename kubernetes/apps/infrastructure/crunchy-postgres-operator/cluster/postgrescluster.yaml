@@ -196,6 +196,10 @@ spec:
       databases: ["mautrixwhatsapp"]
       password:
         type: AlphaNumeric
+    - name: "elderscrobz"
+      databases: ["elderscrobz"]
+      password:
+        type: AlphaNumeric
 
   backups:
     pgbackrest:
