@@ -20,36 +20,35 @@ spec:
       *app:
         annotations:
           reloader.stakater.com/auto: "true"
-
         containers:
           main:
             image:
               repository: ghcr.io/oknozor/the-elder-scrobz
               tag: latest@sha256:9de139db3c8fecf300b7cb537335cce1319310b2746bea1208150bdc8156c978
-
             env:
               SCROBZ__debug: "true"
               SCROBZ__port: &port 3000
               RUST_LOG: tower_http=debug,axum=debug,scrobz=debug,elder_scrobz_api=debug,elder_scrobz_resolver=debug
-
             envFrom:
               - secretRef:
                   name: the-elder-scrobz-secret
-
             resources:
               requests:
                 cpu: 12m
                 memory: 256Mi
               limits:
                 memory: 1Gi
-
+      main:
+        containers:
+          main:
+            image:
+              tag: latest@sha256:dbf15988a5bccd4b34e6f70025c032815905d9137abfd3a356461143479d88f0
     service:
       main:
         controller: *app
         ports:
           http:
             port: *port
-
     ingress:
       main:
         className: external
