@@ -17,14 +17,14 @@ spec:
         namespace: flux-system
   values:
     controllers:
-      *app:
+      the-elder-scrobz:
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
           main:
             image:
               repository: ghcr.io/oknozor/the-elder-scrobz
-              tag: latest@sha256:9de139db3c8fecf300b7cb537335cce1319310b2746bea1208150bdc8156c978
+              tag: latest@sha256:bc0aed57b46d78a02b54a52e155170e8fd8b0825746bdcce7101982cd97dd9b8
             env:
               SCROBZ__debug: "true"
               SCROBZ__port: &port 3000
@@ -38,11 +38,6 @@ spec:
                 memory: 256Mi
               limits:
                 memory: 1Gi
-      main:
-        containers:
-          main:
-            image:
-              tag: latest@sha256:a00f814c3e9194ea0bfa859d38df6847e70e38c29e4e21325beebaca9b5d2c8b
     service:
       main:
         controller: *app
