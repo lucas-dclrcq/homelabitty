@@ -42,7 +42,7 @@ spec:
         containers:
           main:
             image:
-              tag: latest@sha256:f9b54f1ea1c3e6cd21fc42ed7cef14867c77e8a4909c2426fb55bd6494801e0a
+              tag: latest@sha256:36ece1e5c24a0569f1ad077afcc0c26572c365e712ab438f4be79a483a202fb3
     service:
       main:
         controller: *app
