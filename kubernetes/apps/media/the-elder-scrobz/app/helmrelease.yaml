@@ -24,7 +24,7 @@ spec:
           main:
             image:
               repository: ghcr.io/oknozor/the-elder-scrobz
-              tag: latest@sha256:21f5c16e280be25d5f5d2687410aef9e2592723c18d6a4bad92bc394a8783740
+              tag: latest@sha256:fb49b35e1bf9e1993e6625fcbde1b4b9e77e25e712cc37826ae0cb144c441aba
             env:
               SCROBZ__debug: "true"
               SCROBZ__port: &port 3000
