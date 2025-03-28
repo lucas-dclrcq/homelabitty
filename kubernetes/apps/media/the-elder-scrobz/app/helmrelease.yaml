@@ -28,6 +28,7 @@ spec:
             env:
               SCROBZ__debug: "true"
               SCROBZ__port: &port 3000
+              SCROBZ__coverart_path: "/.cache"
               RUST_LOG: tower_http=debug,axum=debug,scrobz=debug,elder_scrobz_api=debug,elder_scrobz_resolver=debug
             envFrom:
               - secretRef:
@@ -56,3 +57,10 @@ spec:
                 service:
                   identifier: main
                   port: http
+    persistence:
+      cache:
+        existingClaim: *app
+        advancedMounts:
+          the-elder-scrobz:
+            main:
+              - path: /.cache
