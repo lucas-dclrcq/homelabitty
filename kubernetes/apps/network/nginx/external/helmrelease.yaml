@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: ingress-nginx
-      version: 4.11.3
+      version: 4.12.1
       sourceRef:
         kind: HelmRepository
         name: ingress-nginx
@@ -30,6 +30,7 @@ spec:
   values:
     fullnameOverride: nginx-external
     controller:
+
       replicaCount: 2
       service:
         annotations:
@@ -70,6 +71,7 @@ spec:
         ssl-protocols: TLSv1.3 TLSv1.2
         use-geoip2: true
         use-forwarded-headers: "true"
+        annotations-risk-level: Critical
       metrics:
         enabled: true
         serviceMonitor:
