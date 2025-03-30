@@ -103,9 +103,13 @@ spec:
     persistence:
       data:
         existingClaim: *app
-        globalMounts:
-          - path: /matrix
+        advancedMounts:
+          main:
+            main:
+              - path: /matrix
       tmp:
         type: emptyDir
-        globalMounts:
-          - path: /tmp
+        advancedMounts:
+          main:
+            main:
+              - path: /tmp
