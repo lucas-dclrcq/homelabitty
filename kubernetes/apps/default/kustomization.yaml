@@ -19,7 +19,6 @@ resources:
   - ./cupsd/ks.yaml
   - ./trilium/ks.yaml
   - ./wikijs/ks.yaml
-  - ./teable/ks.yaml
   - ./gotosocial/ks.yaml
   - ./bytestash/ks.yaml
   - ./filebrowser/ks.yaml
