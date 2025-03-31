@@ -52,6 +52,27 @@ spec:
                 cpu: 10m
               limits:
                 memory: 2Gi
+          codeserver:
+            image:
+              repository: ghcr.io/coder/code-server
+              tag: 4.98.2@sha256:9ed588a05d4e81aa464e753a409bc3b2b93267323d1c3975fbddf6f9aef84c26
+
+            env:
+              TZ: "${TIMEZONE}"
+
+            args: [
+              "--auth", "none",
+              "--user-data-dir", "/config/.vscode",
+              "--extensions-dir", "/config/.vscode",
+              "--port", "12321",
+              "/config"
+            ]
+
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 512Mi
 
     defaultPodOptions:
       securityContext:
@@ -67,6 +88,8 @@ spec:
         ports:
           http:
             port: 8123
+          codeserver:
+            port: 12321
 
     ingress:
       app:
@@ -79,6 +102,20 @@ spec:
                 service:
                   identifier: app
                   port: http
+        tls:
+          - hosts:
+              - *host
+            secretName: "${LIMITED_DOMAIN/./-}-production-tls"
+      hass-code:
+        enabled: true
+        className: internal
+        hosts:
+          - host: &host "hass-code.${LIMITED_DOMAIN}"
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: codeserver
         tls:
           - hosts:
               - *host
