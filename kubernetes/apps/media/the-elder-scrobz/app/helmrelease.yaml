@@ -45,6 +45,15 @@ spec:
         ports:
           http:
             port: *port
+    serviceMonitor:
+      app:
+        serviceName: &app the-elder-scrobz
+        endpoints:
+          - port: http
+            scheme: http
+            path: /metrics
+            interval: 1m
+            scrapeTimeout: 10s
     ingress:
       main:
         className: external

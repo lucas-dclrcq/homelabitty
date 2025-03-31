@@ -304,7 +304,9 @@ spec:
               value: Prometheus
             - name: "DS_VICTORIAMETRICS"
               value: Prometheus
-
+        the-elder-scrobz:
+          url: https://raw.githubusercontent.com/autometrics-dev/autometrics-shared/refs/heads/main/dashboards/Autometrics%20Overview.json
+          datasource: Prometheus
       observability:
         prometheus:
           # renovate: depName="Prometheus"
