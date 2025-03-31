@@ -47,7 +47,7 @@ spec:
             port: *port
     serviceMonitor:
       app:
-        serviceName: &app the-elder-scrobz
+        serviceName: *app
         endpoints:
           - port: http
             scheme: http
