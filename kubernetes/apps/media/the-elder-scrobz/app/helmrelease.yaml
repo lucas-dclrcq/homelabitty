@@ -29,7 +29,7 @@ spec:
               SCROBZ__debug: "true"
               SCROBZ__port: &port 3000
               SCROBZ__coverart_path: "/.cache"
-              RUST_LOG: tower_http=debug,axum=debug,scrobz=debug,elder_scrobz_api=debug,elder_scrobz_resolver=debug
+              RUST_LOG: tower_http=debug,axum=debug,scrobz=debug,elder_scrobz_api=debug,elder_scrobz_crawler=debug
             envFrom:
               - secretRef:
                   name: the-elder-scrobz-secret
