@@ -26,7 +26,7 @@ spec:
               repository: ghcr.io/oknozor/the-elder-scrobz
               tag: latest@sha256:9c8418fad62c605f4b4f3b576a0b21a95e5777fd6447488afa203ab9c51a1ebd
             env:
-              SCROBZ__debug: "true"
+              SCROBZ__debug: "false"
               SCROBZ__port: &port 3000
               SCROBZ__coverart_path: "/.cache"
               RUST_LOG: tower_http=debug,axum=debug,scrobz=debug,elder_scrobz_api=debug,elder_scrobz_crawler=debug
