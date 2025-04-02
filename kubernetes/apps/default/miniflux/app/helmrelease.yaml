@@ -28,7 +28,7 @@ spec:
           main:
             image:
               repository: ghcr.io/miniflux/miniflux
-              tag: 2.2.6
+              tag: 2.2.7
             env:
               BASE_URL: "https://miniflux.${SECRET_DOMAIN}"
               CREATE_ADMIN: "0"
