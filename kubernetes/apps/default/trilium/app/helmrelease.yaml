@@ -42,7 +42,7 @@ spec:
           *app :
             image:
               repository: ghcr.io/triliumnext/notes
-              tag: v0.92.6
+              tag: v0.92.7
 
             env:
               TZ: ${TIMEZONE}
