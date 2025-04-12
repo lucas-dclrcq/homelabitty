@@ -43,7 +43,7 @@ spec:
           app:
             image:
               repository: wallabag/wallabag
-              tag: 2.6.11@sha256:9c69fe9f580db791650d3e7391debb6cf75dbde3c63ecd8732031ce24b1ff596
+              tag: 2.6.12@sha256:9989e05769885aef0b316508b728580460c7713e435cc0b02c16e7b06e17bb6a
 
             envFrom:
               - secretRef:
