@@ -60,3 +60,10 @@ spec:
           - host: flagsmith.${SECRET_DOMAIN}
             paths:
               - /api
+              - /health/
+              - /admin/
+              - /static/admin/
+
+    frontend:
+      extraEnv:
+        FLAGSMITH_API_URL: https://flagsmith.${SECRET_DOMAIN}/api/v1/
