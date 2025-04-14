@@ -1,0 +1,62 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2beta1.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: flagsmith
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: flagsmith
+      version: 0.72.1
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: flagsmith-charts
+        namespace: flux-system
+  values:
+    api:
+      bootstrap:
+        enabled: true
+
+    devPostgresql:
+      enabled: false
+
+    databaseExternal:
+      enabled: true
+      urlFromExistingSecret:
+        enabled: true
+        name: flagsmith-secret
+        key: DATABASE_URL
+
+    influxdb2:
+      enabled: false
+
+    influxdbExternal:
+      enabled: true
+      url: http://influxdb-influxdb2.home.svc.cluster.local
+      bucket: flagsmith
+      organization: homelab
+      tokenFromExistingSecret:
+        enabled: true
+        name: flagsmith-secret
+        key: INFLUXDB_TOKEN
+
+    ingress:
+      frontend:
+        enabled: true
+        annotations:
+          external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
+        ingressClassName: external
+        hosts:
+          - flagsmith.${SECRET_DOMAIN}
+      api:
+        enabled: true
+        annotations:
+          external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
+        ingressClassName: external
+        hosts:
+          - host: flagsmith.${SECRET_DOMAIN}
+            paths:
+              - /api

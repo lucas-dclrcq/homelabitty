@@ -47,3 +47,4 @@ resources:
   - ./conduktor.yaml
   - ./influxdata.yaml
   - ./kedacore.yaml
+  - ./flagsmith.yaml

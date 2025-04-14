@@ -200,7 +200,10 @@ spec:
       databases: ["elderscrobz"]
       password:
         type: AlphaNumeric
-
+    - name: "flagsmith"
+      databases: ["flagsmith"]
+      password:
+        type: AlphaNumeric
   backups:
     pgbackrest:
       configuration:
