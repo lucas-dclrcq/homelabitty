@@ -33,7 +33,7 @@ spec:
                 - mountPath: /share
                   name: share
             - name: upload
-              image: amazon/aws-cli:2.25.1
+              image: amazon/aws-cli:2.26.2
               imagePullPolicy: IfNotPresent
               command:
                 - /bin/sh
