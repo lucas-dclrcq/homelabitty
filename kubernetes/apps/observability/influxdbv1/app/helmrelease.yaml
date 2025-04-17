@@ -24,7 +24,7 @@ spec:
           main:
             image:
               repository: influxdb
-              tag: 1.8.10
+              tag: 1.11.8
             envFrom:
               - secretRef:
                   name: influxdbv1-secret
