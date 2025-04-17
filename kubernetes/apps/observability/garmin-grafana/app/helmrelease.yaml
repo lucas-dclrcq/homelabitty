@@ -1,0 +1,42 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: &app garmin-grafana
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.7.3
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  values:
+    controllers:
+      main:
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+        containers:
+          main:
+            image:
+              repository: thisisarpanghosh/garmin-fetch-data
+              tag: latest
+            envFrom:
+              - secretRef:
+                  name: garmin-grafana-secret
+            env:
+              INFLUXDB_HOST: influxdbv1.observability.svc.cluster.local
+              INFLUXDB_PORT: 8086
+              INFLUXDB_DATABASE: GarminStats
+              UPDATE_INTERVAL_SECONDS: 300
+              LOG_LEVEL: INFO
+
+    persistence:
+      tokens:
+        existingClaim: *app
+        globalMounts:
+          - path: /home/appuser/.garminconnect

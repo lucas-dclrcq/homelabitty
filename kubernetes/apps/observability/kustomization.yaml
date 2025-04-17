@@ -15,3 +15,4 @@ resources:
   - ./silence-operator/ks.yaml
   - ./karma/ks.yaml
   - ./influxdbv1/ks.yaml
+  - ./garmin-grafana/ks.yaml
