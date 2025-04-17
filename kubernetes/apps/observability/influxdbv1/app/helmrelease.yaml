@@ -1,0 +1,60 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: &app influxdbv1
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.7.3
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  values:
+    controllers:
+      main:
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+        containers:
+          main:
+            image:
+              repository: influxdb
+              tag: 1.8.10
+            envFrom:
+              - secretRef:
+                  name: influxdbv1-secret
+            env:
+              TZ: "${TIMEZONE}"
+
+    service:
+      app:
+        controller: main
+        ports:
+          http:
+            port: 8086
+
+    ingress:
+      main:
+        className: internal
+        hosts:
+          - host: &host "influxdbv1.${LIMITED_DOMAIN}"
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: http
+        tls:
+          - hosts:
+              - *host
+            secretName: "${LIMITED_DOMAIN/./-}-production-tls"
+
+    persistence:
+      influxdata:
+        existingClaim: *app
+        globalMounts:
+          - path: /var/lib/influxdb
