@@ -6,4 +6,4 @@ resources:
   - ./namespace.yaml
   - ./zigbee2mqtt/ks.yaml
   - ./influxdb/ks.yaml
-  - ./frigate/ks.yaml
+#  - ./frigate/ks.yaml

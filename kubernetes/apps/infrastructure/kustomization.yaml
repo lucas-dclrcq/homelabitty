@@ -6,7 +6,6 @@ resources:
   - ./namespace.yaml
   - ./crunchy-postgres-operator/ks.yaml
   - ./emqx/ks.yaml
-  - ./minio/ks.yaml
   - ./dragonfly/ks.yaml
   - ./apprise/ks.yaml
   - ./smtp-relay/ks.yaml
