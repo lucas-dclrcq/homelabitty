@@ -10,6 +10,8 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  components:
+    - ../../../../components/volsync
   path: ./kubernetes/apps/media/slskd/app
   prune: true
   sourceRef:

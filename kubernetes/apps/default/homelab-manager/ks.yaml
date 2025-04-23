@@ -12,6 +12,7 @@ spec:
       app.kubernetes.io/name: *app
   components:
     - ../../../../components/gatus/guarded
+    - ../../../../components/volsync
   path: ./kubernetes/apps/default/homelab-manager/app
   prune: true
   sourceRef:

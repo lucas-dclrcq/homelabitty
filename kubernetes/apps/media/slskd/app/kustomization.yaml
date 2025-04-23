@@ -6,7 +6,6 @@ resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
   - ./servicemonitor.yaml
-  - ../../../../templates/volsync
 configMapGenerator:
   - name: slskd-configmap
     files:
