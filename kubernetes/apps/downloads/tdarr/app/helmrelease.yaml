@@ -33,7 +33,20 @@ spec:
               repository: ghcr.io/haveagitgat/tdarr
               tag: 2.40.01
             env:
+              webUIPort: &web-port 8265
+              serverIP: 0.0.0.0
+              serverPort: &server-port 8266
+              ffmpegPath: "/usr/local/bin/ffmpeg"
               TZ: ${TIMEZONE}
+              PUID: ${APP_UID}
+              PGID: ${APP_GID}
+              TDARR__PORT: *web-port
+              TDARR_APPLICATION_URL: tdarr.${LIMITED_DOMAIN}
+              TDARR_INSTANCE_NAME: Tdarr
+            securityContext:
+              capabilities:
+                add:
+                  - CHOWN
             resources:
               requests:
                 memory: 1.5Gi
@@ -65,11 +78,11 @@ spec:
         type: LoadBalancer
         ports:
           http:
-            port: 8265
+            port: *web-port
           server:
             enabled: true
             protocol: TCP
-            port: 8266
+            port: *server-port
 
     ingress:
       app:
