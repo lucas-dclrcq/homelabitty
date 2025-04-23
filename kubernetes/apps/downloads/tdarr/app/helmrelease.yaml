@@ -1,0 +1,92 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app tdarr
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: app-template
+      version: 3.6.1
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  values:
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: "${APP_UID}"
+        runAsGroup: "${APP_GID}"
+        fsGroup: "${APP_GID}"
+        fsGroupChangePolicy: OnRootMismatch
+    controllers:
+      tdarr:
+        containers:
+          app:
+            image:
+              repository: haveagitgat/tdarr
+              tag: 2.40.01@sha256:4a9a20b71752eb6f770aba30247b1403e4c9ed2602453ffdd073e9fae25b4dfd
+            resources:
+              requests:
+                cpu: 50m
+                memory: 256Mi
+              limits:
+                memory: 1Gi
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: 8265
+      server:
+        controller: *app
+        ports:
+          server:
+            enabled: true
+            protocol: TCP
+            port: 8266
+    ingress:
+      app:
+        enabled: true
+        className: internal
+        hosts:
+          - host: &host "{{ .Release.Name }}.${LIMITED_DOMAIN}"
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: http
+        tls:
+          - hosts:
+              - *host
+            secretName: "${LIMITED_DOMAIN/./-}-production-tls"
+
+    persistence:
+      config:
+        enabled: true
+        existingClaim: *app
+        advancedMounts:
+          tdarr:
+            app:
+              - path: /app/configs
+                subPath: config
+              - path: /app/server
+                subPath: server
+      media:
+        type: nfs
+        server: "truenas.${INTERNAL_DOMAIN}"
+        path: /mnt/tank/Media
+        globalMounts:
+          - path: /media
