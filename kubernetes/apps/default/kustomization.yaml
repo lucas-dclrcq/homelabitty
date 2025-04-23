@@ -23,4 +23,3 @@ resources:
   - ./filebrowser/ks.yaml
   - ./thelounge/ks.yaml
   - ./planka/ks.yaml
-  - ./flagsmith/ks.yaml

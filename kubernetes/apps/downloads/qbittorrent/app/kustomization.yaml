@@ -6,7 +6,6 @@ resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
   - ../../../../templates/volsync
-  - ../../../../templates/gatus/guarded
 configMapGenerator:
   - name: qbittorrent-dnsdist
     files:

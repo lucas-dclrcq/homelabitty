@@ -10,6 +10,8 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  components:
+    - ../../../../components/gatus/external
   path: ./kubernetes/apps/default/wikijs/app
   prune: true
   sourceRef:
@@ -21,4 +23,5 @@ spec:
   timeout: 5m
   postBuild:
     substitute:
-      APP: wiki
+      APP: *app
+      GATUS_SUBDOMAIN: wiki

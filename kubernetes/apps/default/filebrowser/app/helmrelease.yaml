@@ -95,7 +95,7 @@ spec:
           nginx.ingress.kubernetes.io/auth-snippet: |-
             proxy_set_header X-Forwarded-Host $http_host;
         hosts:
-          - host: "filebrowser.${SECRET_DOMAIN}"
+          - host: "{{ .Release.Name }}.${SECRET_DOMAIN}"
             paths:
               - path: /
                 service:
