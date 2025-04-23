@@ -6,7 +6,6 @@ resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
   - ./prometheusrule.yaml
-  - ../../../../templates/volsync
 configMapGenerator:
   - name: autobrr-loki-rules
     files:

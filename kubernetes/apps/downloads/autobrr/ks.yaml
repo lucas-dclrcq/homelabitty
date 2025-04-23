@@ -12,6 +12,7 @@ spec:
       app.kubernetes.io/name: *app
   components:
     - ../../../../components/gatus/guarded
+    - ../../../../components/volsync
   dependsOn:
     - name: external-secrets-stores
   path: ./kubernetes/apps/downloads/autobrr/app

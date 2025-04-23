@@ -10,6 +10,8 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *appname
+  components:
+    - ../../../../components/volsync
   interval: 30m
   timeout: 5m
   path: "./kubernetes/apps/home/frigate/app"
