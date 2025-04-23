@@ -29,8 +29,8 @@ spec:
         containers:
           app:
             image:
-              repository: docker.io/fallenbagel/jellyseerr
-              tag: "2.5.2"
+              repository: ghcr.io/fallenbagel/jellyseerr
+              tag: 2.5.2@sha256:cf84b74c32d3049554ae02ac1da2e9e5affc693fe4263f859e804da77fe7f98f
 
             env:
               TZ: ${TIMEZONE}
