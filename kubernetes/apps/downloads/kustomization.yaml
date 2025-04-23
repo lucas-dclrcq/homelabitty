@@ -13,3 +13,4 @@ resources:
   - ./flarebypasser/ks.yaml
   - ./autobrr/ks.yaml
   - ./recyclarr/ks.yaml
+  - ./tdarr/ks.yaml
