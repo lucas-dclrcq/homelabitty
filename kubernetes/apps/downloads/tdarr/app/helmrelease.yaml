@@ -25,10 +25,7 @@ spec:
     keepHistory: false
   values:
     defaultPodOptions:
-      runtimeClassName: nvidia
       securityContext:
-        runAsUser: 0
-        runAsGroup: 0
         fsGroup: 1500
         fsGroupChangePolicy: "OnRootMismatch"
     controllers:
@@ -48,7 +45,6 @@ spec:
             image:
               repository: ghcr.io/haveagitgat/tdarr_node
               tag: 2.40.01
-              pullPolicy: IfNotPresent
             env:
               - name: nodeID
                 valueFrom:
