@@ -27,8 +27,8 @@ spec:
         containers:
           app:
             image:
-              repository: vectorim/element-web
-              tag: v1.11.98@sha256:47e10f77453bf677d6510a19aea866f1c4401a70b0305b6406995922f12236d8
+              repository: ghcr.io/element-hq/element-web
+              tag: v1.11.99@sha256:f1c6dd305c321fc400dd0565825befb806b472b795e0246d7be3192d3c3b9130
 
     service:
       app:
