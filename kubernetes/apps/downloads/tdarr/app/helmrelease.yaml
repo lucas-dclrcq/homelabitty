@@ -34,7 +34,7 @@ spec:
               tag: 2.40.01
             env:
               webUIPort: &web-port 8265
-              serverIP: 0.0.0.0
+              serverIP: localhost
               serverPort: &server-port 8266
               ffmpegPath: "/usr/local/bin/ffmpeg"
               TZ: ${TIMEZONE}
