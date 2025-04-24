@@ -1,0 +1,59 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app tdarr-node
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+    namespace: flux-system
+  install:
+    remediation:
+      retries: -1
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  values:
+    defaultPodOptions:
+      securityContext:
+        fsGroup: 1500
+        fsGroupChangePolicy: "OnRootMismatch"
+    controllers:
+      tdarr-node:
+        containers:
+          node:
+            image:
+              repository: haveagitgat/tdarr_node
+              tag: 2.40.01@sha256:ac6d8451148b311d99be1e0e3978bc866009ee412f9644f521374a5dd7f3c4c5
+            env:
+              - name: nodeID
+                value: kube-node
+              - name: serverIP
+                value: tdarr.downloads.svc.cluster.local.
+              - name: serverPort
+                value: 8266
+              - name: PUID
+                value: ${APP_UID}
+              - name: PGID
+                value: ${APP_GID}
+            resources:
+              requests:
+                cpu: 100m
+              limits:
+                cpu: 2
+    service:
+      app:
+        controller: *app
+        enabled: false
+    persistence:
+      media:
+        type: nfs
+        server: "truenas.${INTERNAL_DOMAIN}"
+        path: /mnt/tank/Media
+        globalMounts:
+          - path: /media

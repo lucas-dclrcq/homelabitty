@@ -33,16 +33,9 @@ spec:
               repository: ghcr.io/haveagitgat/tdarr
               tag: 2.40.01
             env:
-              webUIPort: &web-port 8265
-              serverIP: localhost
-              serverPort: &server-port 8266
-              ffmpegPath: "/usr/local/bin/ffmpeg"
               TZ: ${TIMEZONE}
               PUID: ${APP_UID}
               PGID: ${APP_GID}
-              TDARR__PORT: *web-port
-              TDARR_APPLICATION_URL: tdarr.${LIMITED_DOMAIN}
-              TDARR_INSTANCE_NAME: Tdarr
             securityContext:
               capabilities:
                 add:
@@ -50,39 +43,16 @@ spec:
             resources:
               requests:
                 memory: 1.5Gi
-
-          node:
-            image:
-              repository: ghcr.io/haveagitgat/tdarr_node
-              tag: 2.40.01
-            env:
-              - name: nodeID
-                valueFrom:
-                  fieldRef:
-                    fieldPath: spec.nodeName
-              - name: serverIP
-                value: localhost
-              - name: serverPort
-                value: 8266
-            resources:
-              requests:
-                memory: 1Gi
-                cpu: 1000m
-                gpu.intel.com/i915: 1
-              limits:
-                memory: 2Gi
-                gpu.intel.com/i915: 1
     service:
       app:
         controller: tdarr
-        type: LoadBalancer
         ports:
           http:
-            port: *web-port
+            port: &http-port 8265
           server:
             enabled: true
             protocol: TCP
-            port: *server-port
+            port: 8266
 
     route:
       app:
@@ -95,7 +65,7 @@ spec:
         rules:
           - backendRefs:
               - name: *app
-                port: *web-port
+                port: *http-port
 
     persistence:
       config:
