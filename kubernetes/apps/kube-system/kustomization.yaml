@@ -13,4 +13,3 @@ resources:
   - ./node-feature-discovery/ks.yaml
   - ./intel-device-plugin/ks.yaml
   - ./generic-device-plugin/ks.yaml
-  - ./kube-guardian/ks.yaml

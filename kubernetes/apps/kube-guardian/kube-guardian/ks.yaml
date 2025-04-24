@@ -5,11 +5,11 @@ metadata:
   name: &app kube-guardian
   namespace: flux-system
 spec:
-  targetNamespace: kube-system
+  targetNamespace: kube-guardian
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  path: ./kubernetes/apps/kube-system/kube-guardian/app
+  path: ./kubernetes/apps/kube-guardian/kube-guardian/app
   prune: true
   sourceRef:
     kind: GitRepository
