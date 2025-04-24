@@ -44,18 +44,20 @@ spec:
         controller: apprise
         ports:
           http:
-            port: 8000
+            port: &port 8000
 
-    ingress:
+    route:
       app:
-        className: internal
-        hosts:
-          - host: apprise.${LIMITED_DOMAIN}
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
+        hostnames:
+          - "{{ .Release.Name }}.${LIMITED_DOMAIN}"
+        parentRefs:
+          - name: internal
+            namespace: kube-system
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
 
     persistence:
       config:

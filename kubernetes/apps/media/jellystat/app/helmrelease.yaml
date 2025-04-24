@@ -57,23 +57,20 @@ spec:
         controller: main
         ports:
           http:
-            port: &httpPort 3000
+            port: &port 3000
 
-    ingress:
-      main:
-        className: internal
-        hosts:
-          - host: &host "{{ .Release.Name }}.${LIMITED_DOMAIN}"
-            paths:
-              - path: /
-                pathType: Prefix
-                service:
-                  identifier: main
-                  port: *httpPort
-        tls:
-          - hosts:
-              - *host
-            secretName: "${LIMITED_DOMAIN/./-}-production-tls"
+    route:
+      app:
+        hostnames:
+          - "{{ .Release.Name }}.${LIMITED_DOMAIN}"
+        parentRefs:
+          - name: internal
+            namespace: kube-system
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
 
     persistence:
       backup:

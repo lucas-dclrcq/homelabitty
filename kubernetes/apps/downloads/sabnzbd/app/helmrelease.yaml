@@ -123,20 +123,18 @@ spec:
             interval: 30s
             scrapeTimeout: 10s
 
-    ingress:
+    route:
       app:
-        className: internal
-        hosts:
-          - host: &host "{{ .Release.Name }}.${LIMITED_DOMAIN}"
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
-        tls:
-          - hosts:
-              - *host
-            secretName: "${LIMITED_DOMAIN/./-}-production-tls"
+        hostnames:
+          - "{{ .Release.Name }}.${LIMITED_DOMAIN}"
+        parentRefs:
+          - name: internal
+            namespace: kube-system
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
 
     persistence:
       config:

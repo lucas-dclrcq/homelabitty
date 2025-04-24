@@ -35,20 +35,16 @@ spec:
   values:
     crds:
       enabled: false
-
     cleanPrometheusOperatorObjectNames: true
-
     alertmanager:
-      ingress:
-        enabled: true
-        ingressClassName: internal
-        hosts:
-          - &alert_host "alertmanager.${LIMITED_DOMAIN}"
-        pathType: Prefix
-        tls:
-          - hosts:
-              - *alert_host
-            secretName: "${LIMITED_DOMAIN/./-}-production-tls"
+      route:
+        main:
+          enabled: true
+          hostnames: ["alertmanager.${LIMITED_DOMAIN}"]
+          parentRefs:
+            - name: internal
+              namespace: kube-system
+              sectionName: https
       alertmanagerSpec:
         alertmanagerConfiguration:
           name: alertmanager
@@ -78,16 +74,14 @@ spec:
       enabled: false
 
     prometheus:
-      ingress:
-        enabled: true
-        ingressClassName: internal
-        hosts:
-          - &prom_host "prometheus.${LIMITED_DOMAIN}"
-        pathType: Prefix
-        tls:
-          - hosts:
-              - *prom_host
-            secretName: "${LIMITED_DOMAIN/./-}-production-tls"
+      route:
+        main:
+          enabled: true
+          hostnames: ["prometheus.${LIMITED_DOMAIN}"]
+          parentRefs:
+            - name: internal
+              namespace: kube-system
+              sectionName: https
       prometheusSpec:
         scrapeInterval: 1m # Must match interval in Grafana Helm chart
         podMonitorSelector: &selector
