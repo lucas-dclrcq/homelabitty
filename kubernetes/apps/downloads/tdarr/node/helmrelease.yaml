@@ -23,8 +23,13 @@ spec:
       securityContext:
         fsGroup: 1500
         fsGroupChangePolicy: "OnRootMismatch"
+        supplementalGroups:
+          - 44 # Required for Intel iGPU on Ubuntu base containers like Tdarr
+          - 10000
+        seccompProfile: { type: RuntimeDefault }
     controllers:
       tdarr-node:
+        replicas: 3
         containers:
           node:
             image:
@@ -32,7 +37,9 @@ spec:
               tag: 2.40.01@sha256:ac6d8451148b311d99be1e0e3978bc866009ee412f9644f521374a5dd7f3c4c5
             env:
               - name: nodeID
-                value: kube-node
+                valueFrom:
+                  fieldRef:
+                    fieldPath: spec.nodeName
               - name: serverIP
                 value: tdarr.downloads.svc.cluster.local.
               - name: serverPort
@@ -46,6 +53,30 @@ spec:
                 cpu: 100m
               limits:
                 cpu: 2
+            securityContext:
+              capabilities:
+                add:
+                  - CHOWN
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: intel.feature.node.kubernetes.io/gpu=true
+                  operator: In
+                  values:
+                    - "true"
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+                - key: app.kubernetes.io/instance
+                  operator: In
+                  values:
+                    - "jellyfin"
+                    - "tdarr-node"
+            topologyKey: "kubernetes.io/hostname"
+
     service:
       app:
         controller: *app
