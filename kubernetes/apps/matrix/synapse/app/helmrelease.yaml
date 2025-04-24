@@ -210,9 +210,6 @@ spec:
         - name: mautrix-instagram-registration
           mountPath: /mautrix-instagram
           readOnly: true
-        - name: mautrix-instagram-registration
-          mountPath: /mautrix-instagram
-          readOnly: true
         - name: mautrix-discord-registration
           mountPath: /mautrix-discord
           readOnly: true
