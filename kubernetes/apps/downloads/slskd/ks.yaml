@@ -3,18 +3,16 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app radarr
+  name: &app slskd
   namespace: flux-system
 spec:
-  targetNamespace: media
+  targetNamespace: downloads
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
   components:
     - ../../../../components/volsync
-  dependsOn:
-    - name: crunchy-postgres-operator-cluster
-  path: ./kubernetes/apps/media/radarr/app
+  path: ./kubernetes/apps/downloads/slskd/app
   prune: true
   sourceRef:
     kind: GitRepository
@@ -26,5 +24,5 @@ spec:
   postBuild:
     substitute:
       APP: *app
-      VOLSYNC_CAPACITY: 15Gi
-      VOLSYNC_CRONSTRING: "25 * * * *"
+      VOLSYNC_CAPACITY: 5Gi
+      VOLSYNC_CRONSTRING: "30 * * * *"

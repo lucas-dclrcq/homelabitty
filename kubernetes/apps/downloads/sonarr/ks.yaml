@@ -6,7 +6,7 @@ metadata:
   name: &app sonarr
   namespace: flux-system
 spec:
-  targetNamespace: media
+  targetNamespace: downloads
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
@@ -14,7 +14,7 @@ spec:
     - ../../../../components/volsync
   dependsOn:
     - name: crunchy-postgres-operator-cluster
-  path: ./kubernetes/apps/media/sonarr/app
+  path: ./kubernetes/apps/downloads/sonarr/app
   prune: true
   sourceRef:
     kind: GitRepository

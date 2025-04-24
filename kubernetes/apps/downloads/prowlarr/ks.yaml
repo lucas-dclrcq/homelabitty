@@ -5,13 +5,13 @@ metadata:
   name: &app prowlarr
   namespace: flux-system
 spec:
-  targetNamespace: media
+  targetNamespace: downloads
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
     - name: crunchy-postgres-operator-cluster
-  path: ./kubernetes/apps/media/prowlarr/app
+  path: ./kubernetes/apps/downloads/prowlarr/app
   prune: true
   sourceRef:
     kind: GitRepository

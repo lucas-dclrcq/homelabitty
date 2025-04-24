@@ -5,11 +5,6 @@ kind: Kustomization
 resources:
   - ./namespace.yaml
   - ./notifications.yaml
-  - ./prowlarr/ks.yaml
-  - ./sonarr/ks.yaml
-  - ./radarr/ks.yaml
-  - ./bazarr/ks.yaml
-  - ./slskd/ks.yaml
   - ./navidrome/ks.yaml
   - ./jellyseerr/ks.yaml
   - ./jellyfin/ks.yaml
