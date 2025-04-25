@@ -18,8 +18,8 @@ spec:
         containers:
           main:
             image:
-              repository: thisisarpanghosh/garmin-fetch-data
-              tag: latest
+              repository: ghcr.io/arpanghosh8453/garmin-fetch-data
+              tag: latest@sha256:b3cbfb23c6ed932d331f6d78e93119625ad51f0c18b0c48efe7ed26a4416fa58
             envFrom:
               - secretRef:
                   name: garmin-grafana-secret
