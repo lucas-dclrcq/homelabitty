@@ -20,7 +20,7 @@ spec:
           main:
             image:
               repository: ghcr.io/lucas-dclrcq/homelab-manager
-              tag: latest@sha256:157e496d44388d79933cae809719e09984274bfb3fbe01a54401380a0bc0873c
+              tag: latest@sha256:5f60b426e5b39267a66d67ee344b0bc76519d0b5d1f9d68861dd887e87607a56
             env:
               QUARKUS_HTTP_PORT: &port 80
             envFrom:
