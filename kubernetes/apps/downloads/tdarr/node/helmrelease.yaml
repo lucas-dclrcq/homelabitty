@@ -29,7 +29,7 @@ spec:
         seccompProfile: { type: RuntimeDefault }
     controllers:
       tdarr-node:
-        replicas: 3
+        replicas: 5
         containers:
           node:
             image:
@@ -51,8 +51,12 @@ spec:
             resources:
               requests:
                 cpu: 100m
+                memory: 100Mi
+                gpu.intel.com/i915: 1
               limits:
-                cpu: 2
+                memory: 2Gi
+                cpu: 4
+                gpu.intel.com/i915: 1
             securityContext:
               capabilities:
                 add:
