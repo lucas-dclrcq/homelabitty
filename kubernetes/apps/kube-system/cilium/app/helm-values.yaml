@@ -18,12 +18,8 @@ cni:
 endpointRoutes:
   enabled: true
 envoy:
-  enabled: true
-
+  enabled: false
 gatewayAPI:
-  enabled: true
-  enableAlpn: true
-hubble:
   enabled: false
 ipam:
   mode: kubernetes
