@@ -79,13 +79,13 @@ spec:
         existingClaim: *app
       audiobooks:
         type: nfs
-        server: "truenas.${INTERNAL_DOMAIN}"
+        server: "${TRUENAS_ADDR}"
         path: /mnt/tank/Media/Audiobooks
         globalMounts:
           - path: /audiobooks
       podcasts:
         type: nfs
-        server: "truenas.${INTERNAL_DOMAIN}"
+        server: "${TRUENAS_ADDR}"
         path: /mnt/tank/Media/Podcasts
         globalMounts:
           - path: /podcasts

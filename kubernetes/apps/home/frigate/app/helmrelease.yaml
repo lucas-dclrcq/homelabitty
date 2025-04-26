@@ -117,7 +117,7 @@ spec:
             readOnly: true
       media:
         type: nfs
-        server: "truenas.${INTERNAL_DOMAIN}"
+        server: "${TRUENAS_ADDR}"
         path: /mnt/tank/Cameras
         globalMounts:
           - path: /media/frigate

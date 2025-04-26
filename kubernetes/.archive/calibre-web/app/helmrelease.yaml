@@ -109,7 +109,7 @@ spec:
               - path: /config
       ebooks:
         type: nfs
-        server: "truenas.${INTERNAL_DOMAIN}"
+        server: "${TRUENAS_ADDR}"
         path: /mnt/tank/Media/Ebooks
         advancedMounts:
           calibre-web:
@@ -117,7 +117,7 @@ spec:
               - path: /calibre-library
       ingest:
         type: nfs
-        server: "truenas.${INTERNAL_DOMAIN}"
+        server: "${TRUENAS_ADDR}"
         path: /mnt/tank/Media/Downloads/Ebooks
         advancedMounts:
           calibre-web:

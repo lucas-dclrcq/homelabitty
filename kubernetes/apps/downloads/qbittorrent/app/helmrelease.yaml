@@ -161,7 +161,7 @@ spec:
               - path: /config
       media:
         type: nfs
-        server: "truenas.${INTERNAL_DOMAIN}"
+        server: "${TRUENAS_ADDR}"
         path: /mnt/tank/Media/Downloads/qbittorrent
         advancedMounts:
           qbittorrent:

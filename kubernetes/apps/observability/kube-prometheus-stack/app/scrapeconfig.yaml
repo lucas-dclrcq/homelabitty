@@ -8,7 +8,7 @@ spec:
   staticConfigs:
     - targets:
         - nas.${INTERNAL_DOMAIN}:9100
-        - truenas.${INTERNAL_DOMAIN}:9100
+        - ${TRUENAS_ADDR}:9100
   metricsPath: /metrics
   relabelings:
     - action: replace
@@ -23,7 +23,7 @@ metadata:
 spec:
   staticConfigs:
     - targets:
-        - truenas.${INTERNAL_DOMAIN}:9633
+        - ${TRUENAS_ADDR}:9633
   metricsPath: /metrics
   relabelings:
     - action: replace

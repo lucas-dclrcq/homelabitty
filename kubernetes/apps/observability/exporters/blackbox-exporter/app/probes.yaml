@@ -11,7 +11,7 @@ spec:
   targets:
     staticConfig:
       static:
-        - "truenas.${INTERNAL_DOMAIN}"
+        - "${TRUENAS_ADDR}"
         - "nas.${INTERNAL_DOMAIN}"
         - "ups.${INTERNAL_DOMAIN}"
         # Nodes

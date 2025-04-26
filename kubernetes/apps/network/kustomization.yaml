@@ -7,4 +7,3 @@ resources:
   - ./notifications.yaml
   - ./external-dns/ks.yaml
   - ./nginx/ks.yaml
-  - ./nas-services/ks.yaml

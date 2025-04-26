@@ -109,7 +109,7 @@ spec:
           - path: /config/logs
       media:
         type: nfs
-        server: "truenas.${INTERNAL_DOMAIN}"
+        server: "${TRUENAS_ADDR}"
         path: /mnt/tank/Media
         globalMounts:
           - path: /media
