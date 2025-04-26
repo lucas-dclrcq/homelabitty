@@ -379,6 +379,11 @@ spec:
           gnetId: 12340
           revision: 1
           datasource: Prometheus
+        cilium-policy-verdicts:
+          # renovate: depName="Cilium Policy Verdicts"
+          gnetId: 18015
+          revision: 4
+          datasource: Prometheus
 
     sidecar:
       dashboards:
