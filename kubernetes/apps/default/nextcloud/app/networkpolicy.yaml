@@ -12,7 +12,7 @@ spec:
   egress:
     # Allow to Minio (NAS)
     - toFQDNs:
-        - matchname: "s3.${SECRET_DOMAIN}"
+        - matchName: "s3.${SECRET_DOMAIN}"
       toPorts:
         - ports:
             - port: "443"
