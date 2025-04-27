@@ -230,7 +230,7 @@ spec:
         - name: repo1 # Minio
           s3:
             bucket: "postgres-16-backup"
-            endpoint: "s3.${SECRET_DOMAIN}"
+            endpoint: "${NAS_ADDR}:9000"
             region: "us-east-1"
           schedules:
             full: "0 1 * * 0" # Sunday at 01:00
