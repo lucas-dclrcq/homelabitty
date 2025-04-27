@@ -6,13 +6,13 @@ metadata:
   name: &app influxdb
   namespace: flux-system
 spec:
-  targetNamespace: home
+  targetNamespace: infrastructure
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
   components:
     - ../../../../components/volsync
-  path: ./kubernetes/apps/home/influxdb/app
+  path: ./kubernetes/apps/infrastructure/influxdb/app
   prune: true
   sourceRef:
     kind: GitRepository
@@ -25,4 +25,3 @@ spec:
     substitute:
       APP: *app
       VOLSYNC_CAPACITY: 20Gi
-      VOLSYNC_CRONSTRING: "5 * * * *"
