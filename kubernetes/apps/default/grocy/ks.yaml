@@ -13,6 +13,8 @@ spec:
   components:
     - ../../../../components/gatus/external
     - ../../../../components/volsync
+    - ../../../../components/network-policy/coredns
+    - ../../../../components/network-policy/nginx
   path: ./kubernetes/apps/default/grocy/app
   prune: true
   sourceRef:
