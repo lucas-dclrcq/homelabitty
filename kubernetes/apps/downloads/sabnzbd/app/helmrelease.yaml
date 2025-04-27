@@ -147,7 +147,7 @@ spec:
               - path: /tmp
       media:
         type: nfs
-        server: "${TRUENAS_ADDR}"
+        server: "truenas.${INTERNAL_DOMAIN}"
         path: /mnt/tank/Media/Downloads/sabnzbd
         advancedMounts:
           sabnzbd:

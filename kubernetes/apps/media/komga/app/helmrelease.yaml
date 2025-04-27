@@ -97,7 +97,7 @@ spec:
             path: /config/application.yml
       media:
         type: nfs
-        server: "${TRUENAS_ADDR}"
+        server: "truenas.${INTERNAL_DOMAIN}"
         path: /mnt/tank/Media
         globalMounts:
           - path: /media

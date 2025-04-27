@@ -122,7 +122,7 @@ spec:
     persistence:
       library:
         type: nfs
-        server: "${TRUENAS_ADDR}"
+        server: "truenas.${INTERNAL_DOMAIN}"
         path: /mnt/tank/Photos
         globalMounts:
           - path: /usr/src/app/upload

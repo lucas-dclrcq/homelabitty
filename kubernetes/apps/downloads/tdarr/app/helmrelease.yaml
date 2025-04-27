@@ -81,14 +81,14 @@ spec:
                 subPath: config
       media:
         type: nfs
-        server: "${TRUENAS_ADDR}"
+        server: "truenas.${INTERNAL_DOMAIN}"
         path: /mnt/tank/Media
         globalMounts:
           - path: /media
       cache:
         enabled: true
         type: nfs
-        server: "${TRUENAS_ADDR}"
+        server: "truenas.${INTERNAL_DOMAIN}"
         path: /mnt/tank/Media/Transcode/cache
         globalMounts:
           - path: /cache

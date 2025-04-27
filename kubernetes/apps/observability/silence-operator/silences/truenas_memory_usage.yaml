@@ -9,5 +9,5 @@ spec:
       value: NodeMemoryHighUtilization
       isRegex: false
     - name: instance
-      value: ${TRUENAS_ADDR}:9100
+      value: truenas.${INTERNAL_DOMAIN}:9100
       isRegex: false
