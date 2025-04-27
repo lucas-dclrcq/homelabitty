@@ -9,7 +9,6 @@ spec:
       app:kubernetes.io/instance: homelab-manager
       app:kubernetes.io/name: homelab-manager
   egress:
-    - {}
     # Allow to CoreDNS
     - toEndpoints:
         - matchLabels:
