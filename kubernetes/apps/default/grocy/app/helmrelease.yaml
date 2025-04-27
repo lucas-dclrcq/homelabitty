@@ -37,12 +37,13 @@ spec:
               PUID: "${APP_UID}"
               PGID: "${APP_GID}"
               GROCY_MODE: "production"
-              GROCY_DEFAULT_LOCALE: "fr_FR"
-              GROCY_CULTURE: "fr_FR"
+              GROCY_DEFAULT_LOCALE: "fr"
               GROCY_MEAL_PLAN_FIRST_DAY_OF_WEEK: "1"
               GROCY_CALENDAR_FIRST_DAY_OF_WEEK: "1"
               GROCY_CURRENCY: "EUR"
-              GROCY_ENERGY_UNIT: "kJ"
+              GROCY_ENERGY_UNIT: "kcal"
+              AUTH_CLASS: "Grocy\\Middleware\\ReverseProxyAuthMiddleware"
+              REVERSE_PROXY_AUTH_HEADER: "x-authentik-username"
 
             probes:
               liveness:
@@ -69,6 +70,14 @@ spec:
         className: "external"
         annotations:
           external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
+          nginx.ingress.kubernetes.io/auth-url: |-
+            http://ak-outpost-oauth2-proxy-outpost.auth.svc.cluster.local:9000/outpost.goauthentik.io/auth/nginx
+          nginx.ingress.kubernetes.io/auth-signin: |-
+            https://music.${SECRET_DOMAIN}/outpost.goauthentik.io/start?rd=$escaped_request_uri
+          nginx.ingress.kubernetes.io/auth-response-headers: |-
+            Set-Cookie,X-authentik-username,X-authentik-groups,X-authentik-email,X-authentik-name,X-authentik-uid,authorization
+          nginx.ingress.kubernetes.io/auth-snippet: |-
+            proxy_set_header X-Forwarded-Host $http_host;
         hosts:
           - host: "{{ .Release.Name }}.${SECRET_DOMAIN}"
             paths:
