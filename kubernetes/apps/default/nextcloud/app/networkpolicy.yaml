@@ -64,7 +64,7 @@ spec:
             - port: "443"
               protocol: TCP
   ingress:
-    - # Allow from Ingress
+    # Allow from Ingress
     - fromEndpoints:
         - matchLabels:
             app:kubernetes.io/component: controller
