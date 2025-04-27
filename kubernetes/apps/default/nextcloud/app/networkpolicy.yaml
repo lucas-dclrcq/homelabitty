@@ -11,11 +11,11 @@ spec:
       app:kubernetes.io/name: nextcloud
   egress:
     # Allow to Minio (NAS)
-    - toCIDR:
-        - ${NAS_ADDR}/32
+    - toFQDNs:
+        - matchname: "s3.${SECRET_DOMAIN}"
       toPorts:
         - ports:
-            - port: "9000"
+            - port: "443"
               protocol: TCP
     # Allow to PostgreSQL
     - toEndpoints:
