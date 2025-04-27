@@ -1,0 +1,24 @@
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: ${APP}-coredns
+spec:
+  endpointSelector:
+    matchLabels:
+      app:kubernetes.io/component: ${APP}
+      app:kubernetes.io/instance: ${APP}
+      app:kubernetes.io/name: ${APP}
+  egress:
+    # Allow to CoreDNS
+    - toEndpoints:
+        - matchLabels:
+            any:k8s-app: kube-dns
+            app:kubernetes.io/instance: coredns
+            app:kubernetes.io/name: coredns
+        - matchLabels:
+            io:kubernetes.pod.namespace: kube-system
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
