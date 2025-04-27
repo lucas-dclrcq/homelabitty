@@ -12,7 +12,7 @@ spec:
     namespace: flux-system
   values:
     controllers:
-      main:
+      homelab-manager:
         type: statefulset
         annotations:
           reloader.stakater.com/auto: "true"
@@ -77,7 +77,7 @@ spec:
                 memory: 128M
     service:
       main:
-        controller: main
+        controller: homelab-manager
         ports:
           http:
             port: *port
@@ -99,12 +99,12 @@ spec:
       data:
         existingClaim: *app
         advancedMounts:
-          main:
+          homelab-manager:
             main:
               - path: /matrix
       tmp:
         type: emptyDir
         advancedMounts:
-          main:
+          homelab-manager:
             main:
               - path: /tmp

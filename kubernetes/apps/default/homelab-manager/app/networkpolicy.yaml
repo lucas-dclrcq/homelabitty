@@ -1,13 +1,13 @@
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: homelab-manager
+  name: &app homelab-manager
 spec:
   endpointSelector:
     matchLabels:
-      app:kubernetes.io/component: main
-      app:kubernetes.io/instance: homelab-manager
-      app:kubernetes.io/name: homelab-manager
+      app:kubernetes.io/component: *app
+      app:kubernetes.io/instance: *app
+      app:kubernetes.io/name: *app
   egress:
     # Allow to CoreDNS
     - toEndpoints:
