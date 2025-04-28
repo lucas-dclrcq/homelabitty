@@ -24,3 +24,4 @@ resources:
   - ./thelounge/ks.yaml
   - ./planka/ks.yaml
   - ./grocy/ks.yaml
+  - ./outline/ks.yaml

@@ -204,6 +204,10 @@ spec:
       databases: ["flagsmith"]
       password:
         type: AlphaNumeric
+    - name: "outline"
+      databases: ["outline"]
+      password:
+        type: AlphaNumeric
   backups:
     pgbackrest:
       configuration:
