@@ -19,7 +19,7 @@ spec:
           main:
             image:
               repository: ghcr.io/arpanghosh8453/garmin-fetch-data
-              tag: latest@sha256:48cd086decd007daca22580a5e8253650100a0e2c51931177482ba55d50c2d76
+              tag: latest@sha256:62c3f7fe59d173d7a4f425ccab8920b77d4ce83f8ca33f46dd41d46f30652d90
             envFrom:
               - secretRef:
                   name: garmin-grafana-secret
