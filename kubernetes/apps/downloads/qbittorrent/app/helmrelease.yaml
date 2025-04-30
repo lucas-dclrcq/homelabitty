@@ -23,6 +23,57 @@ spec:
             fsGroupChangePolicy: "OnRootMismatch"
           terminationGracePeriodSeconds: 120
 
+        initContainers:
+          coredns:
+            image:
+              repository: mirror.gcr.io/coredns/coredns
+              tag: 1.12.1
+            args:
+              - -conf
+              - /etc/coredns/Corefile
+            restartPolicy: Always
+
+          gluetun:
+            dependsOn:
+              - coredns
+            image:
+              repository: ghcr.io/qdm12/gluetun
+              tag: v3.40.0
+
+            env:
+              DOT: "off"
+              DNS_ADDRESS: "127.0.0.2"
+              HTTP_CONTROL_SERVER_AUTH_CONFIG_FILEPATH: &gluetunAuthPath /gluetun/auth.toml
+              VPN_TYPE: wireguard
+              VPN_SERVICE_PROVIDER: protonvpn
+              VPN_INTERFACE: wg0
+              VPN_PORT_FORWARDING: "on"
+              PORT_FORWARD_ONLY: "on"
+              FIREWALL_INPUT_PORTS: 8080
+              FIREWALL_OUTBOUND_SUBNETS: 10.96.0.0/16,10.69.0.0/16
+
+            envFrom:
+              - secretRef:
+                  name: qbittorrent-secret
+
+            lifecycle:
+              postStart:
+                exec:
+                  command:
+                    - /bin/sh
+                    - -c
+                    - (ip rule del table 51820; ip -6 rule del table 51820) || true
+
+            resources:
+              limits:
+                squat.ai/tun: "1"
+            restartPolicy: Always
+            securityContext:
+              capabilities:
+                add:
+                  - NET_ADMIN
+              allowPrivilegeEscalation: false
+
         containers:
           app:
             nameOverride: qbittorrent
@@ -62,41 +113,6 @@ spec:
               capabilities:
                 drop:
                   - ALL
-
-          dnsdist:
-            image:
-              repository: docker.io/powerdns/dnsdist-19
-              tag: 1.9.8
-
-          gluetun:
-            image:
-              repository: ghcr.io/qdm12/gluetun
-              tag: v3.40.0
-            env:
-              DOT: "off"
-              DNS_ADDRESS: "127.0.0.2"
-              HTTP_CONTROL_SERVER_AUTH_CONFIG_FILEPATH: &gluetunAuthPath /gluetun/auth.toml
-              VPN_TYPE: wireguard
-              VPN_SERVICE_PROVIDER: protonvpn
-              VPN_INTERFACE: wg0
-              VPN_PORT_FORWARDING: "on"
-              PORT_FORWARD_ONLY: "on"
-              FIREWALL_INPUT_PORTS: 8080
-              FIREWALL_OUTBOUND_SUBNETS: 10.96.0.0/16,10.69.0.0/16
-              PUBLICIP_API: ip2location
-
-            envFrom:
-              - secretRef:
-                  name: qbittorrent-secret
-
-            resources:
-              limits:
-                squat.ai/tun: "1"
-            securityContext:
-              capabilities:
-                add:
-                  - NET_ADMIN
-              allowPrivilegeEscalation: false
 
           port-forward:
             image:
@@ -175,12 +191,12 @@ spec:
             gluetun:
               - path: *gluetunAuthPath
                 subPath: auth.toml
-      dnsdist:
+      coredns:
         type: configMap
-        name: qbittorrent-dnsdist
+        name: qbittorrent-coredns
         advancedMounts:
           qbittorrent:
-            dnsdist:
-              - path: /etc/dnsdist/dnsdist.conf
-                subPath: dnsdist.conf
+            coredns:
+              - path: /etc/coredns/Corefile
+                subPath: Corefile
                 readOnly: true

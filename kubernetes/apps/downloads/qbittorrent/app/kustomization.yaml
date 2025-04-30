@@ -6,10 +6,12 @@ resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
 configMapGenerator:
-  - name: qbittorrent-dnsdist
+  - name: qbittorrent-coredns
     files:
-      - ./config/dnsdist.conf
+      - ./config/Corefile
 generatorOptions:
   disableNameSuffixHash: true
   annotations:
     kustomize.toolkit.fluxcd.io/substitute: disabled
+configurations:
+  - kustomizeconfig.yaml
