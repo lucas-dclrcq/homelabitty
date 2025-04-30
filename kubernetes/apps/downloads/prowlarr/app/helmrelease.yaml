@@ -72,7 +72,7 @@ spec:
           exporter:
             image:
               repository: ghcr.io/onedr0p/exportarr
-              tag: v2.2.0@sha256:cfa5172442268f09e6eb75e17ffb35d300ab4c02772ce0b1bc14c462ca85f808
+              tag: v2.2.0@sha256:320b0ea7399f4b9af4741dcdddd7d40c05c36b0359679305d8a54df4e97065df
 
             args:
               - prowlarr
