@@ -6,20 +6,23 @@ metadata:
   name: crunchy-postgres-operator
 spec:
   interval: 30m
-  chart:
-    spec:
-      chart: pgo
-      version: 5.8.1
-      sourceRef:
-        kind: HelmRepository
-        name: crunchydata
-        namespace: flux-system
-      interval: 5m
+  chartRef:
+    kind: OCIRepository
+    name: pgo
+  maxHistory: 2
   install:
     crds: CreateReplace
+    remediation:
+      retries: -1
   upgrade:
     crds: CreateReplace
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
   values:
+    monitoring: true
     install:
       clusterLabels:
         app.kubernetes.io/name: pgo
