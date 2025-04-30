@@ -334,7 +334,8 @@ spec:
           # renovate: depName="Node Exporter Full"
           gnetId: 1860
           revision: 40
-          datasource: Prometheus
+          datasource:
+            - { name: DS_PROMETHEUS, value: Prometheus }
 
       unpoller:
         unifi-insights:
