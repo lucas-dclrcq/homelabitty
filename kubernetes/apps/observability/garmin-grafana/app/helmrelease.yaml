@@ -29,9 +29,6 @@ spec:
               INFLUXDB_DATABASE: GarminStats
               UPDATE_INTERVAL_SECONDS: 300
               LOG_LEVEL: INFO
-              USER_TIMEZONE: "${TIMEZONE}"
-              FETCH_ADVANCED_TRAINING_DATA: "True"
-              ALWAYS_PROCESS_FIT_FILES: "True"
 
     persistence:
       tokens:
