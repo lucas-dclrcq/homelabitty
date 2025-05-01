@@ -11,7 +11,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   components:
-    - ../../../../components/gatus/external
+    - ../../../../components/security-policy/forward-auth
   path: ./kubernetes/apps/default/echo-server/app
   prune: true
   sourceRef:
