@@ -1,0 +1,73 @@
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: s3
+spec:
+  hostnames:
+    - s3.${SECRET_DOMAIN}
+  parentRefs:
+    - name: external
+      namespace: network
+      sectionName: https
+  rules:
+    - backendRefs:
+        - name: minio
+          port: 9000
+      matches:
+        - path:
+            type: PathPrefix
+            value: /
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: minio
+spec:
+  hostnames:
+    - minio.${SECRET_DOMAIN}
+  parentRefs:
+    - name: external
+      namespace: network
+      sectionName: https
+  rules:
+    - backendRefs:
+        - name: minio
+          port: 9001
+      matches:
+        - path:
+            type: PathPrefix
+            value: /
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: minio
+spec:
+  ports:
+    - port: 9001
+      protocol: TCP
+      targetPort: 9001
+      name: minio
+    - port: 9000
+      protocol: TCP
+      targetPort: 9000
+      name: s3
+---
+apiVersion: discovery.k8s.io/v1
+kind: EndpointSlice
+metadata:
+  name: minio
+  labels:
+    kubernetes.io/service-name: minio
+addressType: IPv4
+ports:
+  - port: 9001
+    protocol: TCP
+    name: minio
+  - port: 9000
+    protocol: TCP
+    name: s3
+endpoints:
+  - addresses:
+      - 192.168.1.80

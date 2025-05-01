@@ -12,7 +12,7 @@ spec:
       sectionName: https
   rules:
     - backendRefs:
-        - name: nas
+        - name: synology
           port: 5999
       matches:
         - path:

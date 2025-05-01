@@ -12,7 +12,7 @@ spec:
       sectionName: https
   rules:
     - backendRefs:
-        - name: nas
+        - name: truenas
           port: 80
       matches:
         - path:
