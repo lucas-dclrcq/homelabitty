@@ -1,0 +1,18 @@
+---
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: bazarr-oidc
+spec:
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      name: bazarr
+  oidc:
+    provider:
+      issuer: "https://sso.${SECRET_DOMAIN}/application/o/bazarr/"
+    clientID: bazarr
+    clientSecret:
+      name: "bazarr-oidc-secret"
+    redirectURL: "https://bazarr.${LIMITED_DOMAIN}/oauth/callback"
+    logoutPath: "/logout"
