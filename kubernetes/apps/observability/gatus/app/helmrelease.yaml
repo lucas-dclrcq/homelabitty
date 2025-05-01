@@ -119,18 +119,18 @@ spec:
                 sourceLabels: ["service"]
                 targetLabel: instance
 
-    ingress:
+    route:
       app:
-        className: external
-        annotations:
-          external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
-        hosts:
-          - host: status.${SECRET_DOMAIN}
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
+        hostnames:
+          - "status.${SECRET_DOMAIN}"
+        parentRefs:
+          - name: external
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
 
     serviceAccount:
       create: true

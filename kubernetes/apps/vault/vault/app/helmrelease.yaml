@@ -23,19 +23,6 @@ spec:
       enabled: true
 
     server:
-      ingress:
-        enabled: true
-        ingressClassName: internal
-        activeService: true
-        pathType: Prefix
-        hosts:
-          - host: &host "vault.${SECRET_DOMAIN}"
-            paths: []
-        tls:
-          - hosts:
-              - *host
-            secretName: "${SECRET_DOMAIN/./-}-production-tls-clean"
-
       extraLabels:
         configmap.reloader.stakater.com/reload: vault-config
 

@@ -144,14 +144,8 @@ spec:
             config:
               localpart_template: "{{ user.nickname }}"
               display_name_template: "{{ user.name | capitalize }}"
-
     ingress:
-      enabled: true
-      className: external
-      annotations:
-        nginx.ingress.kubernetes.io/use-regex: "true"
-        nginx.ingress.kubernetes.io/proxy-body-size: 10m
-        external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
+      enabled: false
 
     postgresql:
       enabled: false

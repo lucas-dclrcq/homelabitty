@@ -46,21 +46,21 @@ spec:
         controller: *app
         ports:
           http:
-            port: 5000
+            port: &port 5000
 
-    ingress:
+    route:
       app:
-        enabled: true
-        className: external
-        annotations:
-          external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
-        hosts:
-          - host: "{{ .Release.Name }}.${SECRET_DOMAIN}"
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
+        hostnames:
+          - "{{ .Release.Name }}.${LIMITED_DOMAIN}"
+        parentRefs:
+          - name: external
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
+
 
     persistence:
       data:

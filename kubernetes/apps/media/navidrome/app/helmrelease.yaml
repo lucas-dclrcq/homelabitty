@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: navidrome
+  name: &app navidrome
 spec:
   interval: 15m
   chartRef:
@@ -96,43 +96,33 @@ spec:
             interval: 1m
             scrapeTimeout: 10s
 
-    ingress:
+    route:
       api:
-        enabled: true
-        className: external
-        annotations:
-          external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
-        hosts:
-          - host: "music-api.${SECRET_DOMAIN}"
-            paths:
-              - path: /rest
-                service:
-                  identifier: main
-                  port: http
+        hostnames:
+          - "music-api.${SECRET_DOMAIN}"
+        parentRefs:
+          - name: external
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
       main:
-        enabled: true
-        className: external
-        annotations:
-          external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
-          nginx.ingress.kubernetes.io/auth-url: |-
-            http://ak-outpost-oauth2-proxy-outpost.auth.svc.cluster.local:9000/outpost.goauthentik.io/auth/nginx
-          nginx.ingress.kubernetes.io/auth-signin: |-
-            https://music.${SECRET_DOMAIN}/outpost.goauthentik.io/start?rd=$escaped_request_uri
-          nginx.ingress.kubernetes.io/auth-response-headers: |-
-            Set-Cookie,X-authentik-username,X-authentik-groups,X-authentik-email,X-authentik-name,X-authentik-uid,authorization
-          nginx.ingress.kubernetes.io/auth-snippet: |-
-            proxy_set_header X-Forwarded-Host $http_host;
-        hosts:
-          - host: "music.${SECRET_DOMAIN}"
-            paths:
-              - path: /
-                service:
-                  identifier: main
-                  port: http
+        hostnames:
+          - "music.${SECRET_DOMAIN}"
+        parentRefs:
+          - name: external
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
 
     persistence:
       config:
-        existingClaim: navidrome
+        existingClaim: *app
         advancedMounts:
           main:
             main:

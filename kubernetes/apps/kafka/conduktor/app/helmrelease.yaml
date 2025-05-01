@@ -46,6 +46,3 @@ spec:
           enabled: true
       grafana:
         enabled: true
-
-    ingress:
-      enabled: false

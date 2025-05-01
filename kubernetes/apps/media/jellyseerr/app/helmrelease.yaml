@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: jellyseerr
+  name: &app jellyseerr
 spec:
   interval: 10m
   chartRef:
@@ -71,28 +71,27 @@ spec:
 
     service:
       main:
-        controller: jellyseerr
+        controller: *app
         ports:
           http:
             port: *port
 
-    ingress:
-      main:
-        className: external
-        annotations:
-          external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
-        hosts:
-          - host: "requests.${SECRET_DOMAIN}"
-            paths:
-              - path: /
-                pathType: Prefix
-                service:
-                  identifier: main
-                  port: http
+    route:
+      app:
+        hostnames:
+          - "requests.${SECRET_DOMAIN}"
+        parentRefs:
+          - name: external
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
 
     persistence:
       config:
-        existingClaim: jellyseerr
+        existingClaim: *app
         globalMounts:
           - path: /app/config
       logs:

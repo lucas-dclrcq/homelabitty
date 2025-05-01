@@ -9,7 +9,6 @@ spec:
   targetNamespace: network
   dependsOn:
     - name: certificates
-    - name: nginx-external
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app

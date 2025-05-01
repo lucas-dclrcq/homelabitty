@@ -223,7 +223,7 @@ spec:
           datasource: Prometheus
 
       postgresql:
-        crunchy-pgbackrest: #https://github.com/CrunchyData/postgres-operator-examples/issues/264
+        crunchy-pgbackrest: # https://github.com/CrunchyData/postgres-operator-examples/issues/264
           url: https://raw.githubusercontent.com/CrunchyData/postgres-operator-examples/main/kustomize/monitoring/grafana/dashboards/pgbackrest.json
           datasource: Prometheus
         crunchy-pod-details:
@@ -411,12 +411,15 @@ spec:
     serviceMonitor:
       enabled: true
 
-    ingress:
-      enabled: true
-      ingressClassName: external
-      annotations:
-        external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
-      hosts: ["grafana.${SECRET_DOMAIN}"]
+    route:
+      main:
+        enabled: true
+        hostnames:
+          - "grafana.${SECRET_DOMAIN}"
+        parentRefs:
+          - name: external
+            namespace: network
+            sectionName: https
 
     persistence:
       enabled: true

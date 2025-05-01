@@ -38,13 +38,15 @@ spec:
         serviceMonitor:
           enabled: true
 
-      ingress:
-        enabled: true
-        ingressClassName: external
-        annotations:
-          external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
-        hosts:
-          - sso.${SECRET_DOMAIN}
+      route:
+        main:
+          enabled: true
+          hostnames:
+            - "sso.${SECRET_DOMAIN}"
+          parentRefs:
+            - name: external
+              namespace: network
+              sectionName: https
 
     worker:
       autoscaling:

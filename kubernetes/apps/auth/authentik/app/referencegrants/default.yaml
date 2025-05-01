@@ -8,6 +8,9 @@ spec:
     - group: gateway.envoyproxy.io
       kind: SecurityPolicy
       namespace: default
+    - group: gateway.envoyproxy.io
+      kind: SecurityPolicy
+      namespace: downloads
   to:
     - group: ""
       kind: Service
