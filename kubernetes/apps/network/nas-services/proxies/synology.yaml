@@ -1,0 +1,46 @@
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: synology
+spec:
+  hostnames:
+    - synology.${LIMITED_DOMAIN}
+  parentRefs:
+    - name: internal
+      namespace: network
+      sectionName: https
+  rules:
+    - backendRefs:
+        - name: nas
+          port: 5999
+      matches:
+        - path:
+            type: PathPrefix
+            value: /
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: synology
+spec:
+  ports:
+    - port: 5999
+      protocol: TCP
+      targetPort: 5999
+      name: admin
+---
+apiVersion: discovery.k8s.io/v1
+kind: EndpointSlice
+metadata:
+  name: synology
+  labels:
+    kubernetes.io/service-name: synology
+addressType: IPv4
+ports:
+  - name: admin
+    protocol: TCP
+    port: 5999
+endpoints:
+  - addresses:
+      - 192.168.1.80

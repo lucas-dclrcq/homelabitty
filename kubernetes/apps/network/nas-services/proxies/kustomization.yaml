@@ -4,7 +4,6 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - ./nas.service.yaml
-  - ./synology.httproute.yaml
+  - ./synology.yaml
   - ./minio.ingress.yaml
-  - ./truenas.service.yaml
-  - ./truenas.ingress.yaml
+  - ./truenas.yaml
