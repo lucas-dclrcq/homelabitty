@@ -13,6 +13,7 @@ spec:
   components:
     - ../../../../components/gatus/external
     - ../../../../components/volsync
+    - ../../../../components/security-policy/forward-auth
   path: ./kubernetes/apps/media/navidrome/app
   prune: true
   sourceRef:

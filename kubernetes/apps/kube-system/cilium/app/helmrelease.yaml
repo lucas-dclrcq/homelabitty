@@ -48,7 +48,3 @@ spec:
       ui:
         enabled: true
         rollOutPods: true
-        ingress:
-          enabled: true
-          className: internal
-          hosts: ["hubble.${SECRET_DOMAIN}"]

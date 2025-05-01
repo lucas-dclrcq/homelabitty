@@ -78,7 +78,7 @@ spec:
         hostnames:
           - "{{ .Release.Name }}.${LIMITED_DOMAIN}"
         parentRefs:
-          - name: internal
+          - name: external
             namespace: network
             sectionName: https
         rules:

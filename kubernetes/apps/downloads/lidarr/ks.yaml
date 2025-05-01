@@ -12,6 +12,7 @@ spec:
       app.kubernetes.io/name: *app
   components:
     - ../../../../components/volsync
+    - ../../../../components/security-policy/forward-auth
   dependsOn:
     - name: external-secrets-stores
   path: ./kubernetes/apps/downloads/lidarr/app
