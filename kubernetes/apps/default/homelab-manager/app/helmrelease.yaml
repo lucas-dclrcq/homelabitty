@@ -81,20 +81,18 @@ spec:
         ports:
           http:
             port: *port
-    ingress:
-      main:
-        className: internal
-        hosts:
-          - host: &host "{{ .Release.Name }}.${LIMITED_DOMAIN}"
-            paths:
-              - path: /
-                service:
-                  identifier: main
-                  port: http
-        tls:
-          - hosts:
-              - *host
-            secretName: "${LIMITED_DOMAIN/./-}-production-tls"
+    route:
+      app:
+        hostnames:
+          - "{{ .Release.Name }}.${LIMITED_DOMAIN}"
+        parentRefs:
+          - name: internal
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
     persistence:
       data:
         existingClaim: *app

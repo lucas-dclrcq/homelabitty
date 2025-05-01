@@ -32,16 +32,6 @@ spec:
     monitoring:
       enabled: true
       createPrometheusRules: true
-    ingress:
-      dashboard:
-        ingressClassName: internal
-        host:
-          name: &dashboard_host "rook.${LIMITED_DOMAIN}"
-          path: /
-        tls:
-          - hosts:
-              - *dashboard_host
-            secretName: "${LIMITED_DOMAIN/./-}-production-tls"
     toolbox:
       enabled: true
     configOverride: |
@@ -54,8 +44,9 @@ spec:
         disable: false
       dashboard:
         enabled: true
+        urlPrefix: /
         ssl: false
-        port: 8080
+        prometheusEndpoint: http://prometheus-operated.observability.svc.cluster.local:9090
       mgr:
         modules:
           - name: pg_autoscaler

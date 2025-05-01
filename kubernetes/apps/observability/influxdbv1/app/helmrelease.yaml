@@ -31,22 +31,20 @@ spec:
         controller: main
         ports:
           http:
-            port: 8086
+            port: &port 8086
 
-    ingress:
-      main:
-        className: internal
-        hosts:
-          - host: &host "influxdbv1.${LIMITED_DOMAIN}"
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
-        tls:
-          - hosts:
-              - *host
-            secretName: "${LIMITED_DOMAIN/./-}-production-tls"
+    route:
+      app:
+        hostnames:
+          - "{{ .Release.Name }}.${SECRET_DOMAIN}"
+        parentRefs:
+          - name: external
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
 
     persistence:
       influxdata:

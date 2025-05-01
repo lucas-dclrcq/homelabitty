@@ -48,17 +48,4 @@ spec:
         enabled: true
 
     ingress:
-      enabled: true
-      hostname: &host "conduktor.${LIMITED_DOMAIN}"
-      ingressClassName: internal
-      tls: true
-      annotations:
-        nginx.ingress.kubernetes.io/configuration-snippet: |
-          proxy_set_header Upgrade "websocket";
-          proxy_set_header Connection "Upgrade";
-        nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
-        nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
-      extraTls:
-        - hosts:
-            - *host
-          secretName: "${LIMITED_DOMAIN/./-}-production-tls"
+      enabled: false

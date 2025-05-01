@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: cupsd
+  name: &app cupsd
 spec:
   interval: 30m
   chartRef:
@@ -58,25 +58,23 @@ spec:
         controller: cupsd
         ports:
           http:
-            port: 631
+            port: &port 631
           udp:
             port: 631
             protocol: UDP
 
-    ingress:
+    route:
       app:
-        className: internal
-        hosts:
-          - host: &host "cups.${LIMITED_DOMAIN}"
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
-        tls:
-          - hosts:
-              - *host
-            secretName: "${LIMITED_DOMAIN/./-}-production-tls"
+        hostnames:
+          - "{{ .Release.Name }}.${LIMITED_DOMAIN}"
+        parentRefs:
+          - name: internal
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
 
     persistence:
       config:
