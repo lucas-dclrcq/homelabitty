@@ -5,4 +5,4 @@ kind: Kustomization
 resources:
   - ./gatewayclass.yaml
   - ./internal
-  - ./external
+#  - ./external

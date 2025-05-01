@@ -8,12 +8,10 @@ metadata:
     external-dns.alpha.kubernetes.io/target: &hostname gateway-int.${LIMITED_DOMAIN}
 spec:
   gatewayClassName: envoy-gateway
-  addresses:
-    - type: IPAddress
-      value: "${LB_GATEWAY_INT}"
   infrastructure:
     annotations:
       external-dns.alpha.kubernetes.io/hostname: *hostname
+      lbipam.cilium.io/ips: "${LB_GATEWAY_INT}"
     parametersRef:
       group: gateway.envoyproxy.io
       kind: EnvoyProxy
