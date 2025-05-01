@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: schema-registry
+  name: &app schema-registry
 spec:
   interval: 30m
   chartRef:
@@ -21,7 +21,7 @@ spec:
     keepHistory: false
   values:
     controllers:
-      schema-registry:
+      *app:
         containers:
           app:
             image:
@@ -29,7 +29,7 @@ spec:
               tag: 7.9.0
 
             env:
-              SCHEMA_REGISTRY_HOST_NAME: "schema-registry"
+              SCHEMA_REGISTRY_HOST_NAME: "{{ .Release.Name }}"
               SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: PLAINTEXT://hoohoot-kafka-bootstrap:9092
               SCHEMA_REGISTRY_KAFKASTORE_TOPIC: schemas
 
@@ -42,22 +42,20 @@ spec:
 
     service:
       app:
-        controller: schema-registry
+        controller: *app
         ports:
           http:
-            port: 8081
+            port: &port 8081
 
-    ingress:
-      betanin:
-        className: internal
-        hosts:
-          - host: &host "schema-registry.${LIMITED_DOMAIN}"
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
-        tls:
-          - hosts:
-              - *host
-            secretName: "${LIMITED_DOMAIN/./-}-production-tls"
+    route:
+      app:
+        hostnames:
+          - "{{ .Release.Name }}.${LIMITED_DOMAIN}"
+        parentRefs:
+          - name: internal
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
