@@ -23,7 +23,7 @@ spec:
       namespace: rook-ceph
   values:
     controllers:
-      *app:
+      autobrr:
         annotations:
           reloader.stakater.com/auto: "true"
         containers:

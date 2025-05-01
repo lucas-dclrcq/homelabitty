@@ -22,7 +22,7 @@ spec:
     keepHistory: false
   values:
     controllers:
-      *app:
+      mautrix-facebook:
         type: statefulset
 
         annotations:

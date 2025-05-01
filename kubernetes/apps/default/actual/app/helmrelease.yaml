@@ -29,7 +29,7 @@ spec:
               repository: ghcr.io/actualbudget/actual-server
               tag: 25.4.0
             env:
-              ACTUAL_PORT: &httpPort 5006
+              ACTUAL_PORT: &port 5006
             probes:
               liveness:
                 enabled: true
@@ -39,7 +39,7 @@ spec:
                 spec:
                   httpGet:
                     path: /
-                    port: *httpPort
+                    port: *port
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1
@@ -56,20 +56,20 @@ spec:
         controller: actual
         ports:
           http:
-            port: *httpPort
+            port: *port
 
-    ingress:
+    route:
       app:
-        className: "external"
-        annotations:
-          external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
-        hosts:
-          - host: "{{ .Release.Name }}.${SECRET_DOMAIN}"
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
+        hostnames:
+          - "{{ .Release.Name }}.${SECRET_DOMAIN}"
+        parentRefs:
+          - name: external
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
 
     persistence:
       data:

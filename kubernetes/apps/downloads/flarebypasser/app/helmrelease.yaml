@@ -20,7 +20,7 @@ spec:
       retries: 3
   values:
     controllers:
-      *app:
+      flarebypasser:
         replicas: 1
         strategy: RollingUpdate
 

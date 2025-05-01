@@ -22,7 +22,7 @@ spec:
     keepHistory: false
   values:
     controllers:
-      *app:
+      thelounge:
         annotations:
           reloader.stakater.com/auto: "true"
 

@@ -12,7 +12,7 @@ spec:
     namespace: flux-system
   values:
     controllers:
-      *app:
+      readarr:
         containers:
           app:
             image:

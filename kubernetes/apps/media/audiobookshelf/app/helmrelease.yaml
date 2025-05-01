@@ -15,7 +15,7 @@ spec:
     keepHistory: false
   values:
     controllers:
-      *app:
+      audiobookshelf:
         pod:
           securityContext:
             runAsUser: ${APP_UID}

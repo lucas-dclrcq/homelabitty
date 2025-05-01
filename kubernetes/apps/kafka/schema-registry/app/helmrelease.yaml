@@ -21,7 +21,7 @@ spec:
     keepHistory: false
   values:
     controllers:
-      *app:
+      schema-registry:
         containers:
           app:
             image:

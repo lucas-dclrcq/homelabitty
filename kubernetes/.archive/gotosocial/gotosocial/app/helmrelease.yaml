@@ -16,7 +16,7 @@ spec:
         namespace: flux-system
   values:
     controllers:
-      *app:
+      gotosocial:
         type: deployment
         replicas: 1
 

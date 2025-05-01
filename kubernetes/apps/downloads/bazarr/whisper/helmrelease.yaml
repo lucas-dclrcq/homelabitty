@@ -19,7 +19,7 @@ spec:
       retries: 3
   values:
     controllers:
-      *app:
+      whisper:
         annotations:
           reloader.stakater.com/auto: "true"
 
