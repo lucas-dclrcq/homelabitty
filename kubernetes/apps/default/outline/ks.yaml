@@ -28,3 +28,4 @@ spec:
       APP: *app
       GATUS_SUBDOMAIN: docs
       VOLSYNC_CAPACITY: 5Gi
+      DRAGONFLY_ARGS_DEFAULT_LUA_FLAGS: allow-undeclared-keys
