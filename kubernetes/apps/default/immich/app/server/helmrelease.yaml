@@ -108,7 +108,7 @@ spec:
     route:
       app:
         hostnames:
-          - "photos.${LIMITED_DOMAIN}"
+          - "photos.${SECRET_DOMAIN}"
         parentRefs:
           - name: external
             namespace: network
