@@ -11,6 +11,9 @@ spec:
     - group: gateway.envoyproxy.io
       kind: SecurityPolicy
       namespace: downloads
+    - group: gateway.envoyproxy.io
+      kind: SecurityPolicy
+      namespace: media
   to:
     - group: ""
       kind: Service
