@@ -40,6 +40,7 @@ spec:
               LOG_LEVEL: warn
               NODE_TLS_REJECT_UNAUTHORIZED: "0"
               DEFAULT_LANGUAGE: fr_FR
+              FILE_STORAGE: local
               FILE_STORAGE_LOCAL_ROOT_DIR: &storage_path /var/lib/outline/data
               FILE_STORAGE_UPLOAD_MAX_SIZE: "26214400"
               WEB_CONCURRENCY: "10"
