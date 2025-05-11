@@ -12,6 +12,7 @@ spec:
       app.kubernetes.io/name: *app
   components:
     - ../../../../components/gatus/external
+    - ../../../../components/dragonfly
   path: ./kubernetes/apps/default/immich/app
   prune: true
   sourceRef:

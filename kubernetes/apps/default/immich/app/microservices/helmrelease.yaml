@@ -40,8 +40,6 @@ spec:
             envFrom:
               - secretRef:
                   name: immich-secret
-              - secretRef:
-                  name: immich-db-secret
 
             resources:
               requests:
