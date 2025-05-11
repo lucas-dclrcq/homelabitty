@@ -82,7 +82,7 @@ spec:
     route:
       app:
         hostnames:
-          - "{{ .Release.Name }}.${LIMITED_DOMAIN}"
+          - "uploads.${SECRET_DOMAIN}"
         parentRefs:
           - name: external
             namespace: network
