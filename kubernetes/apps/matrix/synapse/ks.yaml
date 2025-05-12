@@ -11,6 +11,7 @@ spec:
       app.kubernetes.io/name: *app
   components:
     - ../../../../components/volsync
+    - ../../../../components/dragonfly
   path: ./kubernetes/apps/matrix/synapse/app
   prune: true
   sourceRef:

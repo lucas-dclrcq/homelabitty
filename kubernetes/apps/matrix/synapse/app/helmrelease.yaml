@@ -157,16 +157,13 @@ spec:
       host: "postgres-16-primary.infrastructure.svc.cluster.local"
       port: 5432
       username: "synapse"
-      existingSecret: "synapse-db-secret"
+      existingSecret: "synapse-secret"
       existingSecretPasswordKey: POSTGRES_SYNAPSE_PASSWORD
       database: "synapse"
 
     externalRedis:
       host: dragonfly.infrastructure.svc.cluster.local
       port: 6379
-      dbid: 1
-      existingSecret: "synapse-secret"
-      existingSecretPasswordKey: REDIS_PASSWORD
 
     synapse:
       strategy:
