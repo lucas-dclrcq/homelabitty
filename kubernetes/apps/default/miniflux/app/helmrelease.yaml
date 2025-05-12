@@ -42,8 +42,6 @@ spec:
             envFrom:
               - secretRef:
                   name: miniflux-secret
-              - secretRef:
-                  name: miniflux-db-secret
 
             probes:
               liveness:
