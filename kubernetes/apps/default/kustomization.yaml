@@ -18,10 +18,10 @@ resources:
   - ./nextcloud/ks.yaml
   - ./cupsd/ks.yaml
   - ./trilium/ks.yaml
-  - ./wikijs/ks.yaml
   - ./bytestash/ks.yaml
   - ./filebrowser/ks.yaml
   - ./thelounge/ks.yaml
   - ./planka/ks.yaml
   - ./grocy/ks.yaml
   - ./outline/ks.yaml
+  - ./grist/ks.yaml

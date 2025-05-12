@@ -3,7 +3,7 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app wikijs
+  name: &app grist
   namespace: flux-system
 spec:
   targetNamespace: default
@@ -12,7 +12,8 @@ spec:
       app.kubernetes.io/name: *app
   components:
     - ../../../../components/gatus/external
-  path: ./kubernetes/apps/default/wikijs/app
+    - ../../../../components/volsync
+  path: ./kubernetes/apps/default/grist/app
   prune: true
   sourceRef:
     kind: GitRepository
@@ -24,4 +25,5 @@ spec:
   postBuild:
     substitute:
       APP: *app
-      GATUS_SUBDOMAIN: wiki
+      VOLSYNC_CAPACITY: 5Gi
+      GATUS_SUBDOMAIN: sheets

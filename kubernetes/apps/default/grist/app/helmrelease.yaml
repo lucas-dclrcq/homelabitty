@@ -3,16 +3,16 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &app wikijs
+  name: &app grist
 spec:
-  interval: 30m
+  interval: 1h
   chartRef:
     kind: OCIRepository
     name: app-template
     namespace: flux-system
   install:
     remediation:
-      retries: -1
+      retries: 3
   upgrade:
     cleanupOnFail: true
     remediation:
@@ -20,42 +20,42 @@ spec:
       retries: 3
   values:
     controllers:
-      wikijs:
-        strategy: RollingUpdate
+      grist:
         annotations:
           reloader.stakater.com/auto: "true"
-
         containers:
           app:
             image:
-              repository: ghcr.io/requarks/wiki
-              tag: 2.5.307
-
-            env:
-              TZ: "${TIMEZONE}"
-              APP_URL: "https://wiki.${SECRET_DOMAIN}"
+              repository: docker.io/gristlabs/grist
+              tag: 1.5.2
 
             envFrom:
               - secretRef:
-                  name: wikijs-secret
+                  name: grist-secret
+
+            env:
+              GRIST_ORG_IN_PATH: true
+              GRIST_FORCE_LOGIN: true
+              APP_HOME_URL: https://sheets.hoohoot.org
 
             resources:
               requests:
                 cpu: 10m
+                memory: 250Mi
               limits:
-                memory: 256Mi
+                memory: 750Mi
 
     service:
       app:
         controller: *app
         ports:
           http:
-            port: &port 3000
+            port: &port 8484
 
     route:
       app:
         hostnames:
-          - "wiki.${SECRET_DOMAIN}"
+          - "sheets.${SECRET_DOMAIN}"
         parentRefs:
           - name: external
             namespace: network
@@ -64,3 +64,11 @@ spec:
           - backendRefs:
               - name: *app
                 port: *port
+            timeouts:
+              request: 0s # websocket, never time out
+              backendRequest: 0s # websocket, never time out
+    persistence:
+      data:
+        existingClaim: *app
+        globalMounts:
+          - path: /persist
