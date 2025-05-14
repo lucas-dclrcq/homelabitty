@@ -208,6 +208,10 @@ spec:
       databases: ["outline"]
       password:
         type: AlphaNumeric
+    - name: "vikunja"
+      databases: ["vikunja"]
+      password:
+        type: AlphaNumeric
   backups:
     pgbackrest:
       configuration:

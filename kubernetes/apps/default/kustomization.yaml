@@ -25,3 +25,4 @@ resources:
   - ./grocy/ks.yaml
   - ./outline/ks.yaml
   - ./grist/ks.yaml
+  - ./vikunja/ks.yaml
