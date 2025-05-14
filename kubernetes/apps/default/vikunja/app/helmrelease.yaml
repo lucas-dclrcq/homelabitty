@@ -32,14 +32,13 @@ spec:
 
             envFrom:
               - secretRef:
-                  name: vikunja-secret
+                  name: &secret vikunja-secret
 
             env:
-              VIKUNJA_SERVICE_PUBLICURL: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
-              VIKUNJA_MAILER_HOST: smtp-relay.default.svc.cluster.local.
+              VIKUNJA_SERVICE_PUBLICURL: &host "tasks.${SECRET_DOMAIN}"
+              VIKUNJA_MAILER_HOST: "smtp-relay.infrastructure.svc.cluster.local"
               VIKUNJA_MAILER_PORT: "2525"
               VIKUNJA_MAILER_FROMEMAIL: Vikunja <vikunja@${SECRET_DOMAIN}>
-              VIKUNJA_LOG_LEVEL: "DEBUG"
 
             resources:
               requests:
@@ -74,3 +73,10 @@ spec:
         existingClaim: *app
         globalMounts:
           - path: /app/vikunja/files
+      vikunja-config:
+        type: secret
+        name: *secret
+        globalMounts:
+          - path: /app/vikunja/config.yaml
+            subPath: config.yaml
+            readOnly: true
