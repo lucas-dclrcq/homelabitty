@@ -13,6 +13,7 @@ spec:
   components:
     - ../../../../components/gatus/external
     - ../../../../components/volsync
+    - ../../../../components/dragonfly
   path: ./kubernetes/apps/default/vikunja/app
   prune: true
   sourceRef:

@@ -39,13 +39,16 @@ spec:
               VIKUNJA_MAILER_HOST: "smtp-relay.infrastructure.svc.cluster.local"
               VIKUNJA_MAILER_PORT: "2525"
               VIKUNJA_MAILER_FROMEMAIL: Vikunja <vikunja@${SECRET_DOMAIN}>
+              VIKUNJA_KEYVALUE_TYPE: redis
+              VIKUNJA_REDIS_ENABLED: "true"
+              VIKUNJA_REDIS_HOST: vikunja-dragonfly.default.svc.cluster.local:6379
 
             resources:
               requests:
                 cpu: 5m
-                memory: 10Mi
-              limits:
                 memory: 100Mi
+              limits:
+                memory: 500Mi
 
     service:
       app:
