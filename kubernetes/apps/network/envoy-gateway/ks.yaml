@@ -10,8 +10,6 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  dependsOn:
-    - name: certificates
   path: ./kubernetes/apps/network/envoy-gateway/app
   prune: false
   sourceRef:
@@ -34,7 +32,6 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
-    - name: certificates
     - name: envoy-gateway
   path: ./kubernetes/apps/network/envoy-gateway/config
   prune: false

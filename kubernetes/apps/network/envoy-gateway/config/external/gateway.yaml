@@ -34,4 +34,4 @@ spec:
       tls:
         certificateRefs:
           - kind: Secret
-            name: "${SECRET_DOMAIN/./-}-production-tls-clean"
+            name: "${SECRET_DOMAIN/./-}-production-tls"
