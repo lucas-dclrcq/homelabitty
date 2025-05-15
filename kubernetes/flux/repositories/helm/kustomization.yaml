@@ -28,7 +28,6 @@ resources:
   - ./node-feature-discovery.yaml
   - ./emqx.yaml
   - ./bank-vaults.yaml
-  - ./external-secrets.yaml
   - ./codecentric.yaml
   - ./jpgouin.yaml
   - ./bitnami.yaml

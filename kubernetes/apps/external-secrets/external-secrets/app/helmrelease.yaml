@@ -6,14 +6,9 @@ metadata:
   name: external-secrets
 spec:
   interval: 30m
-  chart:
-    spec:
-      chart: external-secrets
-      version: 0.17.0
-      sourceRef:
-        kind: HelmRepository
-        name: external-secrets
-        namespace: flux-system
+  chartRef:
+    kind: OCIRepository
+    name: external-secrets
   install:
     remediation:
       retries: 3
@@ -32,11 +27,19 @@ spec:
       interval: 1m
     replicaCount: 2
     leaderElect: true
+    image:
+      repository: ghcr.io/external-secrets/external-secrets
     webhook:
+      image:
+        repository: ghcr.io/external-secrets/external-secrets
       serviceMonitor:
         enabled: true
         interval: 1m
     certController:
+      image:
+        repository: ghcr.io/external-secrets/external-secrets
       serviceMonitor:
         enabled: true
         interval: 1m
+    grafanaDashboard:
+      enabled: true
