@@ -5,4 +5,5 @@ namespace: auth
 components:
   - ../../components/common
 resources:
+  - ./postgrescluster.yaml
   - ./authentik/ks.yaml
