@@ -15,6 +15,7 @@ spec:
     - ../../../../components/volsync
   dependsOn:
     - name: external-secrets-stores
+      namespace: external-secrets
   path: ./kubernetes/apps/downloads/sabnzbd/app
   prune: true
   sourceRef:

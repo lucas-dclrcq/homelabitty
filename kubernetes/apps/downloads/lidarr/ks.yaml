@@ -15,6 +15,7 @@ spec:
     - ../../../../components/security-policy/forward-auth
   dependsOn:
     - name: external-secrets-stores
+      namespace: external-secrets
   path: ./kubernetes/apps/downloads/lidarr/app
   prune: true
   sourceRef:
