@@ -6,7 +6,7 @@ metadata:
   annotations:
     strimzi.io/use-connector-resources: "true"
 spec:
-  version: 3.8.0
+  version: 4.0.0
   replicas: 1
   bootstrapServers: hoohoot-kafka-bootstrap:9093
   tls:
