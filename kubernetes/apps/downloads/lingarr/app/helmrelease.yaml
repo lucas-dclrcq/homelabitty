@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &app kapowarr
+  name: &app lingarr
 spec:
   interval: 1h
   chartRef:
@@ -19,22 +19,25 @@ spec:
       retries: 3
   values:
     controllers:
-      kapowarr:
+      lingarr:
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
           app:
             image:
-              repository: mrcas/kapowarr
-              tag: v1.2.0@sha256:484f7decc7cc7af77542aba5516f48a62b17f72116ac7309d1709b72bb7d0ba2
+              repository: docker.io/lingarr/lingarr
+              tag: 0.9.7@sha256:f314ad9eeadf4fcf79bfae1456f8b3376563b6d1dfeca3f365fd5c72e78d2aaa
             env:
               TZ: "${TIMEZONE}"
+            envFrom:
+              - secretRef:
+                  name: lingarr-secret
             resources:
               requests:
                 cpu: 15m
                 memory: 100M
               limits:
-                memory: 1G
+                memory: 1Gi
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
@@ -47,7 +50,7 @@ spec:
         controller: *app
         ports:
           http:
-            port: &port 5656
+            port: &port 9876
     route:
       app:
         hostnames:
@@ -64,7 +67,7 @@ spec:
       config:
         existingClaim: *app
         globalMounts:
-          - path: /app/db
+          - path: /app/config
       data:
         type: nfs
         server: "truenas.${INTERNAL_DOMAIN}"
