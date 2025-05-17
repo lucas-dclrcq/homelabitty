@@ -13,13 +13,19 @@ spec:
     - ../../../../components/volsync
     - ../../../../components/dragonfly
   path: ./kubernetes/apps/matrix/synapse/app
+  dependsOn:
+    - name: rook-ceph-cluster
+      namespace: flux-system
+    - name: external-secrets-stores
+      namespace: external-secrets
+    - name: envoy-gateway
+      namespace: flux-system
   prune: true
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
-  wait: true
-  interval: 30m
-  retryInterval: 1m
+  interval: 1h
+  retryInterval: 2m
   timeout: 5m
   postBuild:
     substitute:

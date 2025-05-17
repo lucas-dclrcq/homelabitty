@@ -1,4 +1,5 @@
 ---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
@@ -11,14 +12,22 @@ spec:
       app.kubernetes.io/name: *app
   components:
     - ../../../../components/volsync
+  dependsOn:
+    - name: synapse
+      namespace: flux-system
+    - name: rook-ceph-cluster
+      namespace: flux-system
+    - name: external-secrets-stores
+      namespace: external-secrets
+    - name: envoy-gateway
+      namespace: flux-system
   path: ./kubernetes/apps/matrix/mautrix-facebook/app
   prune: true
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
-  wait: true
-  interval: 30m
-  retryInterval: 1m
+  interval: 1h
+  retryInterval: 2m
   timeout: 5m
   postBuild:
     substitute:
