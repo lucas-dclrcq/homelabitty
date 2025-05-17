@@ -114,6 +114,9 @@ spec:
           - backendRefs:
               - name: *app
                 port: *s3Port
+            timeouts:
+              request: 0s # never time out
+              backendRequest: 0s # never time out
     persistence:
       config:
         type: nfs
