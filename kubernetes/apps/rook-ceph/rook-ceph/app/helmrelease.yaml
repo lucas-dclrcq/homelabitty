@@ -5,23 +5,17 @@ kind: HelmRelease
 metadata:
   name: rook-ceph-operator
 spec:
-  interval: 30m
+  interval: 1h
   timeout: 15m
-  chart:
-    spec:
-      chart: rook-ceph
-      version: v1.17.2
-      sourceRef:
-        kind: HelmRepository
-        name: rook-ceph
-        namespace: flux-system
+  chartRef:
+    kind: OCIRepository
+    name: rook-ceph
   install:
     remediation:
       retries: -1
   upgrade:
     cleanupOnFail: true
     remediation:
-      strategy: rollback
       retries: 3
   values:
     csi:
