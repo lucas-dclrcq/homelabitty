@@ -38,23 +38,8 @@ spec:
         tls: true
       - name: external
         port: 9094
-        type: ingress
-        tls: true
-        configuration:
-          class: internal
-          bootstrap:
-            host: kafka-bootstrap.${LIMITED_DOMAIN}
-          brokers:
-            - broker: 0
-              host: kafka-0.${LIMITED_DOMAIN}
-            - broker: 1
-              host: kafka-1.${LIMITED_DOMAIN}
-            - broker: 2
-              host: kafka-2.${LIMITED_DOMAIN}
-          brokerCertChainAndKey:
-            secretName: "${LIMITED_DOMAIN/./-}-production-tls"
-            certificate: tls.crt
-            key: tls.key
+        type: loadbalancer
+        tls: false
     config:
       auto.create.topics.enable: "false"
       offsets.topic.replication.factor: 3
