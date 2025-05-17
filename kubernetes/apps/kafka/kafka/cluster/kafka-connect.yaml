@@ -35,17 +35,6 @@ spec:
         artifacts:
           - type: zip
             url: https://github.com/lensesio/stream-reactor/releases/download/8.1.16/kafka-connect-mqtt-8.1.16.zip
-      - name: influxdb-connector
-        artifacts:
-          - type: zip
-            url: https://github.com/lensesio/stream-reactor/releases/download/8.1.16/kafka-connect-influxdb-8.1.16.zip
-      - name: debezium-postgresql
-        artifacts:
-          - type: maven
-            repository: https://repo1.maven.org/maven2
-            group: io.debezium
-            artifact: debezium-connector-postgres
-            version: 3.0.2.Final
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
