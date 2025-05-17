@@ -8,3 +8,4 @@ resources:
   - ./kafka-connect.yaml
   - ./kafka-bridge.yaml
   - ./connectors
+  - ./httproute.yaml
