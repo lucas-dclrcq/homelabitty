@@ -46,7 +46,7 @@ spec:
                 - name: MINIO_BUCKET
                   value: vault-backup
                 - name: MINIO_URL
-                  value: https://s3.hoohoot.org
+                  value: http://minio.infrastructure.svc.cluster.local:9000
               envFrom:
                 - secretRef:
                     name: vault-snapshot-s3
