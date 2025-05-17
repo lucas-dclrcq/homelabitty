@@ -5,3 +5,5 @@ kind: Kustomization
 resources:
   - ./externalsecret.yaml
   - ./postgrescluster.yaml
+  - ./rbac.yaml
+  - ./clustersecretstore.yaml

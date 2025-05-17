@@ -26,13 +26,16 @@ spec:
           app:
             image:
               repository: ghcr.io/lucas-dclrcq/home-sensors-processor
-              tag: latest@sha256:28765342332b9753265c160e786bc5e8f0aff9444e6ac5d34ddc44a3bafe8795
+              tag: latest@sha256:f673ccf9ef39c133921cdbe922bacf04f0622d86d9db9fe771326a635a7a5e38
 
             env:
               QUARKUS_HTTP_PORT: &port 80
               KAFKA_BOOTSTRAP_SERVERS: hoohoot-kafka-bootstrap:9092
-              QUARKUS_KAFKA_STREAMS_SCHEMA_REGISTRY_URL: http://schema-registry:8081
               QUARKUS_KAFKA_STREAMS_APPLICATION_ID: homelab-sensors-processor
+
+            envFrom:
+              - secretRef:
+                  name: sensors-processor-secret
 
             probes:
               liveness:
