@@ -19,4 +19,3 @@ resources:
   - ./radarr/ks.yaml
   - ./bazarr/ks.yaml
  # - ./lingarr/ks.yaml
-  - ./mylar3/ks.yaml
