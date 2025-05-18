@@ -26,7 +26,7 @@ spec:
           app:
             image:
               repository: ghcr.io/lucas-dclrcq/home-sensors-processor
-              tag: latest@sha256:5ff19ef75327070caa4e89788da7c943d39eaa5e30e2fe71bb56a06b8a617d09
+              tag: latest@sha256:c8d75f1be4f3b0eaa9b5792a23aa931c9b6aca89ffe7f0ecd459cdb98b62b867
 
             env:
               QUARKUS_HTTP_PORT: &port 80
