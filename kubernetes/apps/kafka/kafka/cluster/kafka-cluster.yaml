@@ -71,5 +71,6 @@ spec:
       size: 50Gi
       class: openebs-hostpath
   entityOperator:
-    topicOperator: {}
+    topicOperator:
+      watchAnyNamespace: true
     userOperator: {}
