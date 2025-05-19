@@ -30,10 +30,11 @@ spec:
 
             env:
               QUARKUS_HTTP_PORT: &port 80
-              KAFKA_BOOTSTRAP_SERVERS: hoohoot-kafka-bootstrap:9092
+              KAFKA_BOOTSTRAP_SERVERS: hoohoot-kafka-bootstrap.kafka.svc.cluster.local:9092
               QUARKUS_KAFKA_STREAMS_APPLICATION_ID: homelab-sensors-processor
               KAFKA_GROUP_ID: homelab-sensors-consumers
               KAFKA_AUTO_OFFSET_RESET: latest
+              LINKY_MEASURE_WINDOW: 15
 
             envFrom:
               - secretRef:
