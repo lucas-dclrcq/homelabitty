@@ -304,6 +304,13 @@ spec:
               value: Prometheus
             - name: "DS_VICTORIAMETRICS"
               value: Prometheus
+        vikunja:
+          # renovate: depName="Vikunja"
+          gnetId: 21928
+          version: 1
+          datasource:
+            - name: "DS_PROMETHEUS"
+              value: Prometheus
         autometrics:
           # renovate: depName="Autometrics Overview"
           gnetId: 19668
