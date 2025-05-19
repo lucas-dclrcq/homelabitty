@@ -34,14 +34,25 @@ spec:
               - secretRef:
                   name: &secret vikunja-secret
 
-            env:
-              VIKUNJA_SERVICE_PUBLICURL: &host "tasks.${SECRET_DOMAIN}"
-              VIKUNJA_MAILER_HOST: "smtp-relay.infrastructure.svc.cluster.local"
-              VIKUNJA_MAILER_PORT: "2525"
-              VIKUNJA_MAILER_FROMEMAIL: Vikunja <vikunja@${SECRET_DOMAIN}>
-              VIKUNJA_KEYVALUE_TYPE: redis
-              VIKUNJA_REDIS_ENABLED: "true"
-              VIKUNJA_REDIS_HOST: vikunja-dragonfly.default.svc.cluster.local:6379
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/v1/info
+                    port: &port 3456
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop: ["ALL"]
 
             resources:
               requests:
@@ -50,17 +61,27 @@ spec:
               limits:
                 memory: 500Mi
 
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: ${APP_UID}
+        runAsGroup: ${APP_UID}
+        fsGroup: ${APP_GID}
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile:
+          type: RuntimeDefault
+
     service:
       app:
         controller: *app
         ports:
           http:
-            port: &port 3456
+            port: *port
 
     route:
       app:
         hostnames:
-          - *host
+          - "tasks.${SECRET_DOMAIN}"
         parentRefs:
           - name: external
             namespace: network
@@ -72,7 +93,6 @@ spec:
 
     persistence:
       config:
-        enabled: true
         existingClaim: *app
         globalMounts:
           - path: /app/vikunja/files
