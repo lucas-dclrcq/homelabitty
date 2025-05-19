@@ -21,7 +21,6 @@ resources:
   - ./bytestash/ks.yaml
   - ./filebrowser/ks.yaml
   - ./thelounge/ks.yaml
-  - ./planka/ks.yaml
   - ./outline/ks.yaml
   - ./grist/ks.yaml
   - ./vikunja/ks.yaml
