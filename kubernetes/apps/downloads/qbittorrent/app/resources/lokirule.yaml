@@ -1,0 +1,13 @@
+---
+groups:
+  - name: qbittorrent
+    rules:
+      - alert: QBittorrentVPNDown
+        expr: |
+          sum by (app) (count_over_time({app=~"qbittorrent"} |~ "ERROR External IP is empty. Potential VPN or internet connection issue."[5m])) > 0
+        for: 5m
+        annotations:
+          summary: >-
+            {{ $labels.app }} is having VPN connectivity issues
+        labels:
+          severity: critical

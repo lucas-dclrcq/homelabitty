@@ -9,6 +9,12 @@ configMapGenerator:
   - name: qbittorrent-coredns
     files:
       - ./config/Corefile
+  - name: qbittorrent-loki-rules
+    files:
+      - qbittorrent.yaml=./resources/lokirule.yaml
+    options:
+      labels:
+        loki_rule: "true"
 generatorOptions:
   disableNameSuffixHash: true
   annotations:
