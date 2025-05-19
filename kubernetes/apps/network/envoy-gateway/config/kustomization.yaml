@@ -7,3 +7,4 @@ resources:
   - ./servicemonitor.yaml
   - ./internal
   - ./external
+  - ./redirect.yaml
