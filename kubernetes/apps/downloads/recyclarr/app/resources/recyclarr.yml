@@ -26,6 +26,10 @@ sonarr:
       # FR-ANIME-VOSTFR
       - template: sonarr-v4-quality-profile-1080p-french-anime-vostfr
       - template: sonarr-v4-custom-formats-1080p-french-anime-vostfr
+    quality_profiles:
+      - name: FR-MULTi-VF-WEB-1080p
+        upgrade:
+          allowed: false
     custom_formats:
       # Optional
       - trash_ids:
@@ -119,6 +123,10 @@ radarr:
       # FR-MULTi-VF-HD
       - template: radarr-quality-profile-hd-bluray-web-french-multi-vf
       - template: radarr-custom-formats-hd-bluray-web-french-multi-vf
+    quality_profiles:
+      - name: FR-MULTi-VF-HD
+        upgrade:
+          allowed: false
     custom_formats:
       # Optional
       - trash_ids:
