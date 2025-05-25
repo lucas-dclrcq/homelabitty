@@ -30,6 +30,15 @@ sonarr:
       - name: FR-MULTi-VF-WEB-1080p
         upgrade:
           allowed: false
+      - name: FR-ANIME-VOSTFR
+        upgrade:
+          allowed: false
+      - name: FR-MULTi-VO-WEB-1080p
+        upgrade:
+          allowed: false
+      - name: WEB-1080p
+        upgrade:
+          allowed: false
     custom_formats:
       # Optional
       - trash_ids:
