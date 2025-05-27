@@ -4,3 +4,14 @@ kind: Kustomization
 resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
+configMapGenerator:
+  - name: home-sensors-dashboard
+    files:
+      - home-sensors.json=./resources/grafana_dashboard.json
+generatorOptions:
+  annotations:
+    kustomize.toolkit.fluxcd.io/substitute: disabled
+    grafana_folder: Default
+  labels:
+    grafana_dashboard: "true"
+  disableNameSuffixHash: true

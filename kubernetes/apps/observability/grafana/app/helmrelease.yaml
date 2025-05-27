@@ -427,7 +427,7 @@ spec:
             sectionName: https
 
     persistence:
-      enabled: true
+      enabled: false
       existingClaim: grafana
 
     testFramework:
