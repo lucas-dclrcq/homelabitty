@@ -5,7 +5,7 @@
         "builtIn": 1,
         "datasource": {
           "type": "grafana-postgresql-datasource",
-          "uid": "PF7D8AB79CB6B7962"
+          "uid": "timeseriesdb"
         },
         "enable": true,
         "hide": true,
@@ -24,7 +24,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 333,
+  "id": 0,
   "links": [],
   "panels": [
     {
@@ -43,7 +43,7 @@
     {
       "datasource": {
         "type": "grafana-postgresql-datasource",
-        "uid": "PF7D8AB79CB6B7962"
+        "uid": "timeseriesdb"
       },
       "fieldConfig": {
         "defaults": {
@@ -112,9 +112,30 @@
         {
           "datasource": {
             "type": "grafana-postgresql-datasource",
-            "uid": "PF7D8AB79CB6B7962"
+            "uid": "timeseriesdb"
           },
-          "refId": "A"
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT observed_at, temperature \nFROM temperatures \nWHERE room = $room \nORDER BY observed_at DESC \nLIMIT 1 ",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
         }
       ],
       "title": "Temperature / $room",
@@ -123,7 +144,7 @@
     {
       "datasource": {
         "type": "grafana-postgresql-datasource",
-        "uid": "fem6ki293iu4gf"
+        "uid": "timeseriesdb"
       },
       "fieldConfig": {
         "defaults": {
@@ -188,7 +209,7 @@
         {
           "datasource": {
             "type": "grafana-postgresql-datasource",
-            "uid": "fem6ki293iu4gf"
+            "uid": "timeseriesdb"
           },
           "editorMode": "code",
           "format": "table",
@@ -273,7 +294,7 @@
     {
       "datasource": {
         "type": "grafana-postgresql-datasource",
-        "uid": "fem6ki293iu4gf"
+        "uid": "timeseriesdb"
       },
       "fieldConfig": {
         "defaults": {
@@ -358,7 +379,7 @@
         {
           "datasource": {
             "type": "grafana-postgresql-datasource",
-            "uid": "fem6ki293iu4gf"
+            "uid": "timeseriesdb"
           },
           "editorMode": "code",
           "format": "time_series",
@@ -441,7 +462,7 @@
     {
       "datasource": {
         "type": "grafana-postgresql-datasource",
-        "uid": "fem6ki293iu4gf"
+        "uid": "timeseriesdb"
       },
       "fieldConfig": {
         "defaults": {
@@ -533,7 +554,7 @@
         {
           "datasource": {
             "type": "grafana-postgresql-datasource",
-            "uid": "fem6ki293iu4gf"
+            "uid": "timeseriesdb"
           },
           "editorMode": "code",
           "format": "time_series",
@@ -616,7 +637,7 @@
     {
       "datasource": {
         "type": "grafana-postgresql-datasource",
-        "uid": "fem6ki293iu4gf"
+        "uid": "timeseriesdb"
       },
       "fieldConfig": {
         "defaults": {
@@ -706,7 +727,7 @@
         {
           "datasource": {
             "type": "grafana-postgresql-datasource",
-            "uid": "fem6ki293iu4gf"
+            "uid": "timeseriesdb"
           },
           "editorMode": "code",
           "format": "table",
@@ -740,7 +761,7 @@
     {
       "datasource": {
         "type": "grafana-postgresql-datasource",
-        "uid": "fem6ki293iu4gf"
+        "uid": "timeseriesdb"
       },
       "fieldConfig": {
         "defaults": {
@@ -830,7 +851,7 @@
         {
           "datasource": {
             "type": "grafana-postgresql-datasource",
-            "uid": "fem6ki293iu4gf"
+            "uid": "timeseriesdb"
           },
           "editorMode": "code",
           "format": "table",
@@ -864,7 +885,7 @@
     {
       "datasource": {
         "type": "grafana-postgresql-datasource",
-        "uid": "fem6ki293iu4gf"
+        "uid": "timeseriesdb"
       },
       "fieldConfig": {
         "defaults": {
@@ -954,7 +975,7 @@
         {
           "datasource": {
             "type": "grafana-postgresql-datasource",
-            "uid": "fem6ki293iu4gf"
+            "uid": "timeseriesdb"
           },
           "editorMode": "code",
           "format": "table",
@@ -988,7 +1009,7 @@
     {
       "datasource": {
         "type": "grafana-postgresql-datasource",
-        "uid": "fem6ki293iu4gf"
+        "uid": "timeseriesdb"
       },
       "fieldConfig": {
         "defaults": {
@@ -1078,7 +1099,7 @@
         {
           "datasource": {
             "type": "grafana-postgresql-datasource",
-            "uid": "fem6ki293iu4gf"
+            "uid": "timeseriesdb"
           },
           "editorMode": "code",
           "format": "table",
@@ -1125,7 +1146,7 @@
     {
       "datasource": {
         "type": "grafana-postgresql-datasource",
-        "uid": "fem6ki293iu4gf"
+        "uid": "timeseriesdb"
       },
       "fieldConfig": {
         "defaults": {
@@ -1209,7 +1230,7 @@
         {
           "datasource": {
             "type": "grafana-postgresql-datasource",
-            "uid": "fem6ki293iu4gf"
+            "uid": "timeseriesdb"
           },
           "editorMode": "code",
           "format": "table",
@@ -1241,7 +1262,7 @@
     {
       "datasource": {
         "type": "grafana-postgresql-datasource",
-        "uid": "fem6ki293iu4gf"
+        "uid": "timeseriesdb"
       },
       "fieldConfig": {
         "defaults": {
@@ -1294,7 +1315,7 @@
         {
           "datasource": {
             "type": "grafana-postgresql-datasource",
-            "uid": "fem6ki293iu4gf"
+            "uid": "timeseriesdb"
           },
           "editorMode": "code",
           "format": "table",
@@ -1326,7 +1347,7 @@
     {
       "datasource": {
         "type": "grafana-postgresql-datasource",
-        "uid": "fem6ki293iu4gf"
+        "uid": "timeseriesdb"
       },
       "fieldConfig": {
         "defaults": {
@@ -1379,7 +1400,7 @@
         {
           "datasource": {
             "type": "grafana-postgresql-datasource",
-            "uid": "fem6ki293iu4gf"
+            "uid": "timeseriesdb"
           },
           "editorMode": "code",
           "format": "table",
@@ -1411,7 +1432,7 @@
     {
       "datasource": {
         "type": "grafana-postgresql-datasource",
-        "uid": "fem6ki293iu4gf"
+        "uid": "timeseriesdb"
       },
       "fieldConfig": {
         "defaults": {
@@ -1495,7 +1516,7 @@
         {
           "datasource": {
             "type": "grafana-postgresql-datasource",
-            "uid": "fem6ki293iu4gf"
+            "uid": "timeseriesdb"
           },
           "editorMode": "code",
           "format": "time_series",
@@ -1528,7 +1549,7 @@
     {
       "datasource": {
         "type": "grafana-postgresql-datasource",
-        "uid": "fem6ki293iu4gf"
+        "uid": "timeseriesdb"
       },
       "fieldConfig": {
         "defaults": {
@@ -1581,7 +1602,7 @@
         {
           "datasource": {
             "type": "grafana-postgresql-datasource",
-            "uid": "fem6ki293iu4gf"
+            "uid": "timeseriesdb"
           },
           "editorMode": "code",
           "format": "table",
@@ -1613,7 +1634,7 @@
     {
       "datasource": {
         "type": "grafana-postgresql-datasource",
-        "uid": "fem6ki293iu4gf"
+        "uid": "timeseriesdb"
       },
       "fieldConfig": {
         "defaults": {
@@ -1666,7 +1687,7 @@
         {
           "datasource": {
             "type": "grafana-postgresql-datasource",
-            "uid": "fem6ki293iu4gf"
+            "uid": "timeseriesdb"
           },
           "editorMode": "code",
           "format": "table",
@@ -1698,7 +1719,7 @@
     {
       "datasource": {
         "type": "grafana-postgresql-datasource",
-        "uid": "fem6ki293iu4gf"
+        "uid": "timeseriesdb"
       },
       "fieldConfig": {
         "defaults": {
@@ -1782,7 +1803,7 @@
         {
           "datasource": {
             "type": "grafana-postgresql-datasource",
-            "uid": "fem6ki293iu4gf"
+            "uid": "timeseriesdb"
           },
           "editorMode": "code",
           "format": "time_series",
@@ -1825,7 +1846,7 @@
         },
         "datasource": {
           "type": "grafana-postgresql-datasource",
-          "uid": "PF7D8AB79CB6B7962"
+          "uid": "timeseriesdb"
         },
         "definition": "SELECT DISTINCT room FROM temperatures",
         "includeAll": true,
@@ -1847,6 +1868,6 @@
   "timezone": "browser",
   "title": "Home Sensors",
   "uid": "aa20e84f-3239-45ff-902e-d87e1cf6533c",
-  "version": 20,
+  "version": 0,
   "weekStart": "monday"
 }
