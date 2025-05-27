@@ -379,9 +379,6 @@ spec:
           gnetId: 12904
           revision: 2
           datasource: Prometheus
-        external-secrets:
-          url: https://raw.githubusercontent.com/external-secrets/external-secrets/main/docs/snippets/dashboard.json
-          datasource: Prometheus
         apc-ups:
           # renovate: depName="APC UPS (SNMP)"
           gnetId: 12340
