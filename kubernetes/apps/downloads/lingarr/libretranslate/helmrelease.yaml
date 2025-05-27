@@ -1,0 +1,59 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app libretranslate
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+    namespace: flux-system
+  install:
+    remediation:
+      retries: -1
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  values:
+    controllers:
+      libretranslate:
+        containers:
+          app:
+            image:
+              repository: libretranslate/libretranslate
+              tag: v1.6.5@sha256:a3518195e4e810ba0d9dd251a851f24918059d757ef3c5cf8e0f881daf4242fc
+            env:
+              LT_LOAD_ONLY: "en,fr"
+              LT_DISABLE_WEB_UI: "false"
+            resources:
+              requests:
+                cpu: 15m
+                memory: 100M
+              limits:
+                memory: 1Gi
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: &port 5000
+    route:
+      app:
+        hostnames:
+          - "{{ .Release.Name }}.${LIMITED_DOMAIN}"
+        parentRefs:
+          - name: internal
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
+    persistence:
+      config:
+        existingClaim: *app
+        globalMounts:
+          - path: /home/libretranslate/.local/share/argos-translate
