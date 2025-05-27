@@ -4,8 +4,8 @@
       {
         "builtIn": 1,
         "datasource": {
-          "type": "grafana",
-          "uid": "-- Grafana --"
+          "type": "grafana-postgresql-datasource",
+          "uid": "PF7D8AB79CB6B7962"
         },
         "enable": true,
         "hide": true,
@@ -43,7 +43,7 @@
     {
       "datasource": {
         "type": "grafana-postgresql-datasource",
-        "uid": "fem6ki293iu4gf"
+        "uid": "PF7D8AB79CB6B7962"
       },
       "fieldConfig": {
         "defaults": {
@@ -112,83 +112,9 @@
         {
           "datasource": {
             "type": "grafana-postgresql-datasource",
-            "uid": "fem6ki293iu4gf"
+            "uid": "PF7D8AB79CB6B7962"
           },
-          "editorMode": "code",
-          "format": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT observed_at, temperature \nFROM temperatures \nWHERE room = $room \nORDER BY observed_at DESC \nLIMIT 1 ",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [
-                  {
-                    "name": "observed_at",
-                    "type": "functionParameter"
-                  }
-                ],
-                "type": "function"
-              },
-              {
-                "parameters": [
-                  {
-                    "name": "temperature",
-                    "type": "functionParameter"
-                  }
-                ],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 1,
-            "orderBy": {
-              "property": {
-                "name": [
-                  "observed_at"
-                ],
-                "type": "string"
-              },
-              "type": "property"
-            },
-            "orderByDirection": "DESC",
-            "whereJsonTree": {
-              "children1": [
-                {
-                  "id": "aa9bb8a9-89ab-4cde-b012-3196df916ed5",
-                  "properties": {
-                    "field": "room",
-                    "fieldSrc": "field",
-                    "operator": "equal",
-                    "value": [
-                      "$room"
-                    ],
-                    "valueError": [
-                      null
-                    ],
-                    "valueSrc": [
-                      "value"
-                    ],
-                    "valueType": [
-                      "text"
-                    ]
-                  },
-                  "type": "rule"
-                }
-              ],
-              "id": "88a8aa89-0123-4456-b89a-b196df7da388",
-              "type": "group"
-            },
-            "whereString": "room = '$room'"
-          },
-          "table": "temperatures"
+          "refId": "A"
         }
       ],
       "title": "Temperature / $room",
@@ -1899,7 +1825,7 @@
         },
         "datasource": {
           "type": "grafana-postgresql-datasource",
-          "uid": "fem6ki293iu4gf"
+          "uid": "PF7D8AB79CB6B7962"
         },
         "definition": "SELECT DISTINCT room FROM temperatures",
         "includeAll": true,
