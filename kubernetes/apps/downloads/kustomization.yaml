@@ -18,4 +18,4 @@ resources:
   - ./sonarr/ks.yaml
   - ./radarr/ks.yaml
   - ./bazarr/ks.yaml
- # - ./lingarr/ks.yaml
+  - ./lingarr/ks.yaml
