@@ -20,31 +20,22 @@ spec:
   values:
     controllers:
       mas:
-        annotations:
-          reloader.stakater.com/auto: "true"
+        strategy: Recreate
         containers:
           app:
             image:
               repository: ghcr.io/element-hq/matrix-authentication-service
               tag: 0.16@sha256:07c1d1c181f3436bcdb0ad1699d9a7b722d89adc5b06b2c85237577aeebd0e0b
+            command: ["/usr/local/bin/mas-cli"]
+            args: ["server"]
             env:
-              TZ: "${TIMEZONE}"
-            envFrom:
-              - secretRef:
-                  name: mas-secret
+              MAS_CONFIG: /config/config.yaml
             resources:
               requests:
                 cpu: 15m
                 memory: 100M
               limits:
                 memory: 500Mi
-    defaultPodOptions:
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: ${APP_UID}
-        runAsGroup: ${APP_GID}
-        fsGroup: ${APP_GID}
-        fsGroupChangePolicy: OnRootMismatch
     service:
       app:
         controller: *app
@@ -54,9 +45,9 @@ spec:
     route:
       app:
         hostnames:
-          - "{{ .Release.Name }}.${LIMITED_DOMAIN}"
+          - "{{ .Release.Name }}.${SECRET_DOMAIN}"
         parentRefs:
-          - name: internal
+          - name: external
             namespace: network
             sectionName: https
         rules:
@@ -65,12 +56,6 @@ spec:
                 port: *port
     persistence:
       config:
-        existingClaim: *app
-        globalMounts:
-          - path: /app/config
-      data:
-        type: nfs
-        server: "truenas.${INTERNAL_DOMAIN}"
-        path: /mnt/tank/Media
-        globalMounts:
-          - path: /media
+        enabled: true
+        type: secret
+        name: mas-secret

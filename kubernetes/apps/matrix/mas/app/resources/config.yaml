@@ -1,4 +1,5 @@
 ---
+# yaml-language-server: $schema=https://element-hq.github.io/matrix-authentication-service/config.schema.json
 http:
   listeners:
     - name: web
@@ -23,7 +24,6 @@ http:
     - 10.69.0.0/16
     - 10.96.0.0/16
   public_base: "https://mas.${SECRET_DOMAIN}"
-  issuer: http://[::]:8080/
 database:
   uri: "{{ .pg_uri }}"
   max_connections: 10
