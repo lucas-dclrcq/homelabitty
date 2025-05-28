@@ -64,6 +64,8 @@ spec:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
+        serviceAccount:
+          identifier: *app
         pod:
           securityContext:
             runAsUser: 65534
@@ -97,5 +99,5 @@ spec:
             scrapeTimeout: 10s
 
     serviceAccount:
-      create: true
-      name: *app
+      dragonfly-operator:
+        enabled: true
