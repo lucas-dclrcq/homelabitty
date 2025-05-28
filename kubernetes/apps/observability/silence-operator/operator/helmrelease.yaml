@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: silence-operator
+  name: &app silence-operator
 spec:
   interval: 30m
   chartRef:
@@ -59,7 +59,8 @@ spec:
               capabilities:
                 drop:
                   - ALL
-
+        serviceAccount:
+          identifier: *app
     serviceAccount:
-      create: true
-      name: silence-operator
+      silence-operator:
+        enabled: true
