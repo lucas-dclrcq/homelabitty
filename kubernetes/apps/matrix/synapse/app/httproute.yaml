@@ -42,6 +42,14 @@ spec:
   rules:
     - backendRefs:
         - kind: Service
+          name: mas
+          port: 8080
+      matches:
+        - path:
+            type: RegularExpression
+            value: ^/_matrix/client/(.*)/(login|logout|refresh)
+    - backendRefs:
+        - kind: Service
           name: synapse-matrix-synapse
           port: 8008
       matches:
