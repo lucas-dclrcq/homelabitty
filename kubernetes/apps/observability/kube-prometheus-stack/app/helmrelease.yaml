@@ -43,8 +43,8 @@ spec:
           hostnames: ["alertmanager.${LIMITED_DOMAIN}"]
           parentRefs:
             - name: internal
-              namespace: kube-system
-              sectionName: network
+              namespace: network
+              sectionName: https
       alertmanagerSpec:
         alertmanagerConfiguration:
           name: alertmanager
