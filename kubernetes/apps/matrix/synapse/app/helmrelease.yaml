@@ -129,21 +129,6 @@ spec:
         - '192.168.0.0/16'
         - '10.0.0.0/8'
       url_preview_enabled: true
-      oidc_providers:
-        - idp_id: authentik
-          idp_name: Hoohoot SSO
-          discover: true
-          issuer: "https://sso.${SECRET_DOMAIN}/application/o/matrix/"
-          client_id: "${MATRIX_CLIENT_ID}"
-          client_secret: "${MATRIX_CLIENT_SECRET}"
-          scopes:
-            - "openid"
-            - "profile"
-            - "email"
-          user_mapping_provider:
-            config:
-              localpart_template: "{{ user.nickname }}"
-              display_name_template: "{{ user.name | capitalize }}"
     ingress:
       enabled: false
 
@@ -191,6 +176,9 @@ spec:
         - name: mautrix-discord-registration
           secret:
             secretName: mautrix-discord-secret
+        - name: synapse-mas-secret
+          secret:
+            secretName: synapse-mas-secret
       extraVolumeMounts:
         - name: mautrix-whatsapp-registration
           mountPath: /mautrix-whatsapp
@@ -204,7 +192,10 @@ spec:
         - name: mautrix-discord-registration
           mountPath: /mautrix-discord
           readOnly: true
-
+        - name: synapse-mas-secret
+          mountPath: /synapse/config/conf.d/mas_config.yaml
+          subpath: mas_config.yaml
+          readOnly: true
     signingkey:
       job:
         enabled: false

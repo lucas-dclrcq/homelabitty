@@ -8,3 +8,9 @@ resources:
   - ./podmonitor.yaml
   - ./prometheusrule.yaml
   - ./httproute.yaml
+configMapGenerator:
+  - name: mas-synapse-config
+    files:
+      - mas_config.yaml=./resources/mas_config.yaml
+generatorOptions:
+  disableNameSuffixHash: true
