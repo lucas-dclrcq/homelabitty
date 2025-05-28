@@ -212,6 +212,10 @@ spec:
       databases: ["vikunja"]
       password:
         type: AlphaNumeric
+    - name: "mas"
+      databases: ["mas"]
+      password:
+        type: AlphaNumeric
   backups:
     pgbackrest:
       configuration:
