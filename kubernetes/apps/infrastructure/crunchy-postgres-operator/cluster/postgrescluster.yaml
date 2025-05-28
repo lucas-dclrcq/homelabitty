@@ -4,6 +4,10 @@ apiVersion: postgres-operator.crunchydata.com/v1beta1
 kind: PostgresCluster
 metadata:
   name: &name postgres-16
+  labels:
+    crunchy-users.henrywhitaker3.github.com/watch: "true"
+  annotations:
+    crunchy-users.henrywhitaker3.github.com/superuser: "postgres"
 spec:
   postgresVersion: 16
 
@@ -29,11 +33,6 @@ spec:
           bucket: "postgres-backup"
           endpoint: "s3.${SECRET_DOMAIN}"
           region: "us-east-1"
-
-  metadata:
-    labels:
-      crunchy-userinit.ramblurr.github.com/enabled: "true"
-      crunchy-userinit.ramblurr.github.com/superuser: "postgres"
 
   service:
     type: LoadBalancer

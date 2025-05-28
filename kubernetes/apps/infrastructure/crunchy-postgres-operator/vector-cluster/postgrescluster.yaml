@@ -4,9 +4,25 @@ apiVersion: postgres-operator.crunchydata.com/v1beta1
 kind: PostgresCluster
 metadata:
   name: &name postgres-16-vector
+  labels:
+    crunchy-users.henrywhitaker3.github.com/watch: "true"
+  annotations:
+    crunchy-users.henrywhitaker3.github.com/superuser: "postgres"
+    crunchy-users.henrywhitaker3.github.com/extensions: |
+      [
+        {
+          "database": "immich",
+          "extension": "vchord"
+        },
+        {
+          "database": "immich",
+          "extension": "earthdistance",
+          "cascade": true
+        }
+      ]
 spec:
   postgresVersion: 16
-  image: ghcr.io/drag0n141/cdpgvector:0.4.0@sha256:9a646daf58cdef4255a47093ec984cac2d779f802b256957831fa9c2a8f2a332
+  image: ghcr.io/zednotdead/cdpgvectorchord:16-0.3.0@sha256:99ffcbc9e887fa4a981f61ff68dcf59bf8bf611f688217ed5f8d0ba07a67eff1
 
   dataSource:
     pgbackrest:
@@ -31,17 +47,11 @@ spec:
           endpoint: "s3.${SECRET_DOMAIN}"
           region: "us-east-1"
 
-  metadata:
-    labels:
-      crunchy-userinit.ramblurr.github.com/enabled: "true"
-      crunchy-userinit.ramblurr.github.com/superuser: "postgres"
-
   service:
     type: LoadBalancer
     metadata:
       annotations:
         external-dns.alpha.kubernetes.io/hostname: "vector.postgres.${LIMITED_DOMAIN}"
-        io.cilium/lb-ipam-ips: "${LB_IP_PG_VECTOR}"
 
   patroni:
     dynamicConfiguration:
@@ -50,7 +60,7 @@ spec:
         synchronous_commit: "on"
         parameters:
           max_connections: 500
-          shared_preload_libraries: "vectors.so"
+          shared_preload_libraries: "vchord.so"
           search_path: '"$user", public, vectors"'
         pg_hba:
           - hostnossl all all 10.69.0.0/16 md5
@@ -61,7 +71,7 @@ spec:
       metadata:
         labels:
           app.kubernetes.io/name: crunchy-postgres-vector
-      replicas: &replica 1
+      replicas: &replica 3
       dataVolumeClaimSpec:
         storageClassName: openebs-hostpath
         accessModes:
