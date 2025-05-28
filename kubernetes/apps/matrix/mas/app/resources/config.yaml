@@ -41,16 +41,16 @@ email:
 secrets:
   encryption: "{{ .SECRETS_ENCRYPTION }}"
   keys:
-    - kid: { { .SECRETS_KEYS_0_KID } }
+    - kid: "{{ .SECRETS_KEYS_0_KID }}"
       key: |
         {{ .SECRETS_KEYS_0_KEY }}
-    - kid: { { .SECRETS_KEYS_1_KID } }
+    - kid: "{{ .SECRETS_KEYS_1_KID }}"
       key: |
-        {{ .SECRETS_KEYS_1_KEY }}
-    - kid: { { .SECRETS_KEYS_2_KID } }
+        "{{ .SECRETS_KEYS_1_KEY }}"
+    - kid: "{{ .SECRETS_KEYS_2_KID }}"
       key: |
         {{ .SECRETS_KEYS_2_KEY }}
-    - kid: { { .SECRETS_KEYS_3_KID } }
+    - kid: "{{ .SECRETS_KEYS_3_KID }}"
       key: |
         {{ .SECRETS_KEYS_3_KEY }}
 passwords:
