@@ -12,3 +12,4 @@ resources:
   - ./mautrix-instagram/ks.yaml
   - ./mautrix-facebook/ks.yaml
   - ./mautrix-whatsapp/ks.yaml
+  - ./mas/ks.yaml
