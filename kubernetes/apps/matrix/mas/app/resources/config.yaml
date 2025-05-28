@@ -42,17 +42,13 @@ secrets:
   encryption: "{{ .SECRETS_ENCRYPTION }}"
   keys:
     - kid: "{{ .SECRETS_KEYS_0_KID }}"
-      key: |
-        {{ .SECRETS_KEYS_0_KEY }}
+      key: "{{ .SECRETS_KEYS_0_KEY }}"
     - kid: "{{ .SECRETS_KEYS_1_KID }}"
-      key: |
-        "{{ .SECRETS_KEYS_1_KEY }}"
+      key: "{{ .SECRETS_KEYS_1_KEY }}"
     - kid: "{{ .SECRETS_KEYS_2_KID }}"
-      key: |
-        {{ .SECRETS_KEYS_2_KEY }}
+      key: "{{ .SECRETS_KEYS_2_KEY }}"
     - kid: "{{ .SECRETS_KEYS_3_KID }}"
-      key: |
-        {{ .SECRETS_KEYS_3_KEY }}
+      key: "{{ .SECRETS_KEYS_3_KEY }}"
 passwords:
   enabled: true
   schemes:
