@@ -37,7 +37,7 @@ email:
   transport: smtp
   mode: plain
   port: 2525
-  host: smtp-relay.infrastructure.svc.cluster.local
+  hostname: smtp-relay.infrastructure.svc.cluster.local
 secrets:
   encryption: "{{ .SECRETS_ENCRYPTION }}"
   keys:
