@@ -30,7 +30,7 @@ spec:
           main:
             image:
               repository: quay.io/influxdb/influxdb3-core
-              tag: latest@sha256:3ec5af8654252831d3ec4c6de61c4106e39616bb6ffdc3d3fee129b2e27988be
+              tag: latest@sha256:1431f21c16e7c7af724da8938bd9dc3b9df07f132c0c97c434bce246de610cc4
 
             args:
               - --node-id=node0
