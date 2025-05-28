@@ -12,6 +12,60 @@
       "separateMinorPatch": true
     },
     {
+      "description": ["AWS Cli"],
+      "matchPackageNames": ["amazon/aws-cli"],
+      "matchDatasources": ["docker"],
+      "separateMinorPatch": true,
+      "patch": {
+        "enabled": false
+      }
+    },
+    {
+      description: "Cert-Manager Group",
+      groupName: "Cert-Manager",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["/cert-manager/"],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+    },
+    {
+      description: "Cilium Group",
+      groupName: "Cilium",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["/cilium/"],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+    },
+    {
+      description: "CoreDNS Group",
+      groupName: "CoreDNS",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["/coredns/"],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+    },
+    {
+      description: "External Secrets Operator Group",
+      groupName: "External Secrets Operator",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["/external-secrets/"],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+    },
+    {
+      description: "Flux Operator Group",
+      groupName: "Flux Operator",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["/flux-operator/", "/flux-instance/"],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+    },
+    {
       "description": "Immich Group",
       "groupName": "Immich",
       "matchPackagePatterns": ["immich"],
@@ -23,14 +77,15 @@
       }
     },
     {
-      "description": ["AWS Cli"],
-      "matchPackageNames": ["amazon/aws-cli"],
-      "matchDatasources": ["docker"],
-      "separateMinorPatch": true,
-      "patch": {
-        "enabled": false
-      }
+      description: "Intel Device Plugins Group",
+      groupName: "Intel-Device-Plugins",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["/intel-device-plugins-operator/", "/intel-device-plugins-gpu/"],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
     },
+
     {
       "description": ["Flux Group"],
       "groupName": "Flux",
@@ -61,6 +116,15 @@
         "commitMessageTopic": "{{{groupName}}} group"
       },
       "separateMinorPatch": true
+    },
+    {
+      description: "Spegel Group",
+      groupName: "Spegel",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["/spegel/"],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group"
+      }
     },
     {
       "description": ["Talos Group"],
