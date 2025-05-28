@@ -129,8 +129,25 @@ spec:
         - '192.168.0.0/16'
         - '10.0.0.0/8'
       url_preview_enabled: true
+
     ingress:
       enabled: false
+
+    gateway:
+      enabled: true
+      parentRefs:
+        - name: external
+          namespace: network
+          sectionName: https
+      paths:
+        - backendRefs:
+            - kind: Service
+              name: mas
+              port: 8080
+          matches:
+            - path:
+                type: RegularExpression
+                value: ^/_matrix/client/(.*)/(login|logout|refresh)
 
     postgresql:
       enabled: false

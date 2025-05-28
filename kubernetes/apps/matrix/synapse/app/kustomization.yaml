@@ -7,7 +7,6 @@ resources:
   - ./helmrelease.yaml
   - ./podmonitor.yaml
   - ./prometheusrule.yaml
-  - ./httproute.yaml
 configMapGenerator:
   - name: mas-synapse-config
     files:
