@@ -24,7 +24,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 0,
+  "id": 4374203771064320,
   "links": [],
   "panels": [
     {
@@ -66,7 +66,7 @@
               },
               {
                 "color": "green",
-                "value": 20
+                "value": 19
               },
               {
                 "color": "yellow",
@@ -1851,6 +1851,7 @@
         "definition": "SELECT DISTINCT room FROM temperatures",
         "includeAll": true,
         "label": "Room",
+        "multi": true,
         "name": "room",
         "options": [],
         "query": "SELECT DISTINCT room FROM temperatures",
@@ -1868,6 +1869,6 @@
   "timezone": "browser",
   "title": "Home Sensors",
   "uid": "aa20e84f-3239-45ff-902e-d87e1cf6533c",
-  "version": 0,
+  "version": 1,
   "weekStart": "monday"
 }
