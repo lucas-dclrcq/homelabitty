@@ -6,14 +6,9 @@ metadata:
   name: &app external-dns-cloudflare
 spec:
   interval: 30m
-  chart:
-    spec:
-      chart: external-dns
-      version: 1.15.0
-      sourceRef:
-        kind: HelmRepository
-        name: external-dns
-        namespace: flux-system
+  chartRef:
+    kind: OCIRepository
+    name: cloudflare-dns
   install:
     crds: CreateReplace
     remediation:
@@ -34,13 +29,17 @@ spec:
           secretKeyRef:
             name: &secret external-dns-cloudflare-secret
             key: *name
+      - name: &name CF_ZONE_ID
+        valueFrom:
+          secretKeyRef:
+            name: *secret
+            key: *name
     extraArgs:
       - --cloudflare-dns-records-per-page=1000
       - --crd-source-apiversion=externaldns.k8s.io/v1alpha1
       - --crd-source-kind=DNSEndpoint
-      - --events
-      - --ignore-ingress-tls-spec
-      - --ingress-class=external
+      - --gateway-name=external
+      - --zone-id-filter=$(CF_ZONE_ID)
     policy: sync
     sources: ["gateway-httproute", "crd"]
     txtOwnerId: default
