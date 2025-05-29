@@ -13,6 +13,7 @@ spec:
   values:
     controllers:
       auto-compressor:
+        enabled: false
         type: cronjob
 
         cronjob:
