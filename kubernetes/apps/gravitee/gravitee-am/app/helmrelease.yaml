@@ -49,3 +49,6 @@ spec:
 
     ui:
       baseURL: /management
+      portal:
+        userCreation:
+          enabled: true
