@@ -38,6 +38,8 @@ spec:
 
             env:
               TZ: ${TIMEZONE}
+              MACHINE_LEARNING_CACHE_FOLDER: /cache
+              TRANSFORMERS_CACHE: /cache
 
             envFrom:
               - secretRef:
@@ -94,19 +96,6 @@ spec:
         globalMounts:
           - path: /usr/src/app/upload
       cache:
-        type: emptyDir
+        existingClaim: *app
         globalMounts:
           - path: /cache
-      geocoding-dump:
-        type: emptyDir
-        globalMounts:
-          - path: /usr/src/app/.reverse-geocoding-dump
-      tmp:
-        type: emptyDir
-        globalMounts:
-          - path: /tmp
-      transformers-cache:
-        enabled: true
-        type: emptyDir
-        globalMounts:
-          - path: /usr/src/app/.transformers_cache
