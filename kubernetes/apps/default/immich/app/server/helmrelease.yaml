@@ -123,3 +123,13 @@ spec:
         path: /mnt/tank/Photos
         globalMounts:
           - path: /usr/src/app/upload
+      geocoding-dump:
+        enabled: true
+        type: emptyDir
+        globalMounts:
+          - path: /usr/src/app/.reverse-geocoding-dump
+      transformers-cache:
+        enabled: true
+        type: emptyDir
+        globalMounts:
+          - path: /usr/src/app/.transformers_cache
