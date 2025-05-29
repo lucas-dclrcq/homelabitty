@@ -46,6 +46,25 @@ spec:
 
     gateway:
       type: jdbc
+      ingress:
+        hosts:
+          - gateway.api.${LIMITED_DOMAIN}
+
+    api:
+      ingress:
+        management:
+          hosts:
+            - management.api.${LIMITED_DOMAIN}
+        portal:
+          hosts:
+            - management.api.${LIMITED_DOMAIN}
+
+    portal:
+      ingress:
+        hosts:
+          - portal.api.${LIMITED_DOMAIN}
 
     ui:
-      baseURL: /management
+      ingress:
+        hosts:
+          - ui.api.${LIMITED_DOMAIN}
