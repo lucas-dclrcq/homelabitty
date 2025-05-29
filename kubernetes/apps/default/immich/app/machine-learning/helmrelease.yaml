@@ -96,6 +96,6 @@ spec:
         globalMounts:
           - path: /usr/src/app/upload
       cache:
-        existingClaim: *app
+        existingClaim: immich
         globalMounts:
           - path: /cache
