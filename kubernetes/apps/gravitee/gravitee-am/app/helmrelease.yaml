@@ -46,3 +46,6 @@ spec:
 
     gateway:
       type: jdbc
+
+    ui:
+      baseURL: /management
