@@ -5,7 +5,7 @@ metadata:
   name: gravitee-am
 spec:
   hostnames:
-    - am.${LIMITED_DOMAIN}
+    - api.${LIMITED_DOMAIN}
   parentRefs:
     - name: internal
       namespace: network
