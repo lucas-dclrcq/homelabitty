@@ -215,6 +215,10 @@ spec:
       databases: ["mas"]
       password:
         type: AlphaNumeric
+    - name: "graviteeam"
+      databases: ["graviteeam"]
+      password:
+        type: AlphaNumeric
   backups:
     pgbackrest:
       configuration:
