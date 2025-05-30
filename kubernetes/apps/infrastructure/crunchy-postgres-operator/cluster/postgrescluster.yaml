@@ -219,6 +219,10 @@ spec:
       databases: ["graviteeam"]
       password:
         type: AlphaNumeric
+    - name: "graviteeapim"
+      databases: ["graviteeapim"]
+      password:
+        type: AlphaNumeric
   backups:
     pgbackrest:
       configuration:
