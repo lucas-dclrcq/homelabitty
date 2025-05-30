@@ -7,4 +7,3 @@ components:
   - ../../components/common
 resources:
   - ./helmrepository.yaml
-  - ./gravitee-apim/ks.yaml
