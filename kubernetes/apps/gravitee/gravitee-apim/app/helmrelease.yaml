@@ -63,6 +63,7 @@ spec:
       ingress:
         hosts:
           - api-management-ui.${LIMITED_DOMAIN}
+
     jdbc:
       url: kubernetes://gravitee/secrets/gravitee-apim-secret/jdbc_uri
       driver: https://jdbc.postgresql.org/download/postgresql-42.2.20.jar

@@ -52,7 +52,7 @@ metadata:
   name: gravitee-apim-portal
 spec:
   hostnames:
-    - api-gateway.${LIMITED_DOMAIN}
+    - api-portal.${LIMITED_DOMAIN}
   parentRefs:
     - name: internal
       namespace: network
