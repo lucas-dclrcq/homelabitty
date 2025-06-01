@@ -52,17 +52,17 @@ spec:
     gateway:
       ingress:
         hosts:
-          - api-gateway.${LIMITED_DOMAIN}
+          - api.${LIMITED_DOMAIN}
 
     portal:
       ingress:
         hosts:
-          - api-portal.${LIMITED_DOMAIN}
+          - api.${LIMITED_DOMAIN}
 
     ui:
       ingress:
         hosts:
-          - api-management-ui.${LIMITED_DOMAIN}
+          - api.${LIMITED_DOMAIN}
 
     jdbc:
       url: kubernetes://gravitee/secrets/gravitee-apim-secret/jdbc_uri
