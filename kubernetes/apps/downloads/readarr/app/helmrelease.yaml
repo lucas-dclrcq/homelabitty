@@ -17,7 +17,7 @@ spec:
           app:
             image:
               repository: ghcr.io/home-operations/readarr
-              tag: 0.4.16@sha256:48e19032f93cdf2428e29b3c6a2ac12e502c7219ae4035022cb2d4427fdf61cc
+              tag: 0.4.16@sha256:29712f76a7f7a45ba93854b313cb36d1fa8370a6affdebd93a7b6397446099ad
 
             env:
               TZ: "${TIMEZONE}"
