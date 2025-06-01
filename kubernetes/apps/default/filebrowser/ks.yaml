@@ -13,6 +13,7 @@ spec:
   components:
     - ../../../../components/volsync
     - ../../../../components/security-policy/forward-auth
+    - ../../../../components/keda/nfs-scaler
   path: ./kubernetes/apps/default/filebrowser/app
   prune: true
   sourceRef:

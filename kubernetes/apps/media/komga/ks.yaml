@@ -13,6 +13,7 @@ spec:
   components:
     - ../../../../components/gatus/external
     - ../../../../components/volsync
+    - ../../../../components/keda/nfs-scaler
   path: ./kubernetes/apps/media/komga/app
   prune: true
   sourceRef:
