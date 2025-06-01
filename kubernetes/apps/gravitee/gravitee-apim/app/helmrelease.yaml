@@ -28,10 +28,11 @@ spec:
     keepHistory: false
   values:
     es:
-      enabled: false
+      endpoints:
+        - http://graviteeio-apim-elasticsearch-ingest-hl:9200
 
     elasticsearch:
-      enabled: false
+      enabled: true
 
     mongodb:
       enabled: false
