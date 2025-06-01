@@ -79,7 +79,7 @@ spec:
         containers:
           main:
             image:
-              tag: latest@sha256:9423a81b6382049f043fb30a946cfea790d6910a692b7aa3560eda1f5d42e47e
+              tag: latest@sha256:77b39d24e73d4ee1fe0a2c10a3eee39aa270bf764caf67681ed3a001fbc6e362
     service:
       main:
         controller: homelab-manager
