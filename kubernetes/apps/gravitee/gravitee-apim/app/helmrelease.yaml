@@ -57,7 +57,7 @@ spec:
     portal:
       ingress:
         hosts:
-          - api.${LIMITED_DOMAIN}
+          - portal.${LIMITED_DOMAIN}
 
     ui:
       ingress:
