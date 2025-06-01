@@ -75,6 +75,11 @@ spec:
                 memory: 64M
               limits:
                 memory: 128M
+      main:
+        containers:
+          main:
+            image:
+              tag: latest@sha256:9423a81b6382049f043fb30a946cfea790d6910a692b7aa3560eda1f5d42e47e
     service:
       main:
         controller: homelab-manager
