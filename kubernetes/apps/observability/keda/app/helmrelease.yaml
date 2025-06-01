@@ -4,24 +4,15 @@ kind: HelmRelease
 metadata:
   name: keda
 spec:
-  chart:
-    spec:
-      chart: keda
-      sourceRef:
-        kind: HelmRepository
-        name: kedacore
-        namespace: flux-system
-      version: 2.17.1
+  chartRef:
+    kind: OCIRepository
+    name: keda
   install:
-    crds: Create
-    timeout: 7m
-  interval: 1m0s
-  timeout: 7m
-  releaseName: keda
-  targetNamespace: observability
+    remediation:
+      retries: -1
   upgrade:
-    crds: CreateReplace
     cleanupOnFail: true
     remediation:
-      strategy: rollback
       retries: 3
+  values:
+    enableServiceLinks: false
