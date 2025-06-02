@@ -1,0 +1,54 @@
+apiVersion: gravitee.io/v1alpha1
+kind: ApiV4Definition
+metadata:
+  name: lidarr
+spec:
+  contextRef:
+    name: default-context
+    namespace: gravitee
+  name: Lidarr
+  description: "Lidarr API"
+  version: "1.0"
+  type: PROXY
+  state: STARTED
+  listeners:
+    - type: HTTP
+      paths:
+        - path: "/lidarr"
+      entrypoints:
+        - type: http-proxy
+          qos: AUTO
+  endpointGroups:
+    - name: Default HTTP proxy group
+      type: http-proxy
+      endpoints:
+        - name: Default HTTP proxy
+          type: http-proxy
+          inheritConfiguration: false
+          configuration:
+            target: http://lidarr.downloads.svc.cluster.local:8686
+          secondary: false
+  flowExecution:
+    mode: DEFAULT
+    matchRequired: false
+  plans:
+    KeyLess:
+      name: "Free plan"
+      description: "This plan does not require any authentication"
+      security:
+        type: "KEY_LESS"
+  lifecycleState: PUBLISHED
+  pages:
+    docs-folder:
+      name: specifications
+      type: FOLDER
+      published: true
+    swagger:
+      name: "api-docs"
+      type: SWAGGER
+      parent: docs-folder
+      source:
+        type: "http-fetcher"
+        configuration:
+          url: https://raw.githubusercontent.com/lidarr/Lidarr/develop/src/Lidarr.Api.V1/openapi.json
+      published: true
