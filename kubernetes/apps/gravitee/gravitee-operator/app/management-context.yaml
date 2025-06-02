@@ -7,6 +7,5 @@ spec:
   environmentId: DEFAULT
   organizationId: DEFAULT
   auth:
-    credentials:
-      username: admin
-      password: admin
+    secretRef:
+      name: gravitee-gko-secret
