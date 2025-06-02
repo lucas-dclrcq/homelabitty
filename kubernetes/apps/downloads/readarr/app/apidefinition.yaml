@@ -1,0 +1,39 @@
+apiVersion: gravitee.io/v1alpha1
+kind: ApiV4Definition
+metadata:
+  name: readarr
+spec:
+  contextRef:
+    name: default-context
+    namespace: gravitee
+  name: Readarr
+  description: "Readarr API"
+  version: "1.0"
+  type: PROXY
+  state: "PUBLISHED"
+  listeners:
+    - type: HTTP
+      paths:
+        - path: "/readarr"
+      entrypoints:
+        - type: http-proxy
+          qos: AUTO
+  endpointGroups:
+    - name: Default HTTP proxy group
+      type: http-proxy
+      endpoints:
+        - name: Default HTTP proxy
+          type: http-proxy
+          inheritConfiguration: false
+          configuration:
+            target: http://readarr.downloads.svc.cluster.local:8787
+          secondary: false
+  flowExecution:
+    mode: DEFAULT
+    matchRequired: false
+  plans:
+    KeyLess:
+      name: "Free plan"
+      description: "This plan does not require any authentication"
+      security:
+        type: "KEY_LESS"
