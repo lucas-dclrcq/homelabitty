@@ -5,6 +5,7 @@ resources:
   - ./referencegrant.yaml
   - ./externalsecret.yaml
   - ./helmrelease.yaml
+  - ./brand-configmap.yaml
 configMapGenerator:
   - name: authentik-dashboard
     files:

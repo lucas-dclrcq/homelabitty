@@ -17,6 +17,21 @@ spec:
       interval: 5m
   values:
     global:
+      volumeMounts:
+        - name: brand-assets
+          mountPath: /media
+          readOnly: true
+      volumes:
+        - name: brand-assets
+          projected:
+            defaultMode: 0775
+            sources:
+              - configMap:
+                  name: authentik-brand-assets
+                  items:
+                    - key: brand_icon.svg
+                      path: brand_icon.svg
+
       podAnnotations:
         reloader.stakater.com/auto: "true"
 
