@@ -10,6 +10,8 @@ spec:
   description: "Lidarr API"
   version: "1.0"
   type: PROXY
+  categories:
+    - downloads
   state: STARTED
   listeners:
     - type: HTTP
