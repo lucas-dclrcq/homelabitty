@@ -10,7 +10,7 @@ spec:
   description: "Readarr API"
   version: "1.0"
   type: PROXY
-  state: "PUBLISHED"
+  state: STARTED
   listeners:
     - type: HTTP
       paths:
@@ -37,3 +37,18 @@ spec:
       description: "This plan does not require any authentication"
       security:
         type: "KEY_LESS"
+  lifecycleState: PUBLISHED
+  pages:
+    docs-folder:
+      name: specifications
+      type: FOLDER
+      published: true
+    swagger:
+      name: "api-docs"
+      type: SWAGGER
+      parent: docs-folder
+      source:
+        type: "http-fetcher"
+        configuration:
+          url: https://raw.githubusercontent.com/Readarr/Readarr/develop/src/Readarr.Api.V1/openapi.json
+      published: true

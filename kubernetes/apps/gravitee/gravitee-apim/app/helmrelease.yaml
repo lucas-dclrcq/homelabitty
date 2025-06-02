@@ -33,6 +33,15 @@ spec:
 
     elasticsearch:
       enabled: true
+      master:
+        masterOnly: false
+        replicaCount: 1
+      data:
+        replicaCount: 0
+      coordinating:
+        replicaCount: 0
+      ingest:
+        replicaCount: 0
 
     mongodb:
       enabled: false
@@ -41,6 +50,8 @@ spec:
       type: jdbc
 
     api:
+      autoscaling:
+        enabled: false
       ingress:
         management:
           hosts:
@@ -50,6 +61,8 @@ spec:
             - api-management-api.${LIMITED_DOMAIN}
 
     gateway:
+      autoscaling:
+        enabled: false
       ingress:
         hosts:
           - api.${LIMITED_DOMAIN}
@@ -60,6 +73,8 @@ spec:
           - portal.${LIMITED_DOMAIN}
 
     ui:
+      autoscaling:
+        enabled: false
       ingress:
         hosts:
           - api.${LIMITED_DOMAIN}
