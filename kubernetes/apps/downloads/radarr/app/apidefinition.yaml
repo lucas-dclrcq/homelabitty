@@ -2,14 +2,14 @@
 apiVersion: gravitee.io/v1alpha1
 kind: ApiV4Definition
 metadata:
-  name: lidarr
+  name: radarr
 spec:
   contextRef:
     name: default-context
     namespace: gravitee
-  name: Lidarr
-  description: "Lidarr API"
-  version: "1.0"
+  name: Radarr
+  description: "Radarr API"
+  version: "3.0"
   type: PROXY
   categories:
     - downloads
@@ -17,7 +17,7 @@ spec:
   listeners:
     - type: HTTP
       paths:
-        - path: "/lidarr"
+        - path: "/radarr"
       entrypoints:
         - type: http-proxy
           qos: AUTO
@@ -27,10 +27,28 @@ spec:
       endpoints:
         - name: Default HTTP proxy
           type: http-proxy
-          inheritConfiguration: false
+          inheritConfiguration: true
           configuration:
-            target: http://lidarr.downloads.svc.cluster.local:8686
+            target: http://radarr.downloads.svc.cluster.local
           secondary: false
+          services:
+            healthCheck:
+              overrideConfiguration: true
+              configuration:
+                schedule: "*/5 * * * * *"
+                headers: []
+                overrideEndpointPath: true
+                method: GET
+                failureThreshold: 2
+                assertion: "{#response.status == 200}"
+                successThreshold: 2
+                target: "/ping"
+              enabled: true
+              type: http-health-check
+      sharedConfiguration:
+        headers:
+          - name: "X-Api-Key"
+            value: "toto"
   flowExecution:
     mode: DEFAULT
     matchRequired: false
@@ -58,11 +76,11 @@ spec:
         tryItAnonymous: "false"
         maxDisplayedTags: "-1"
         entrypointsAsServers: "true"
-        entrypointAsBasePath: "false"
+        entrypointAsBasePath: "true"
         showExtensions: "false"
         tryIt: "true"
       source:
         type: "http-fetcher"
         configuration:
-          url: https://raw.githubusercontent.com/lidarr/Lidarr/develop/src/Lidarr.Api.V1/openapi.json
+          url: https://raw.githubusercontent.com/Radarr/Radarr/develop/src/Radarr.Api.V3/openapi.json
       published: true
