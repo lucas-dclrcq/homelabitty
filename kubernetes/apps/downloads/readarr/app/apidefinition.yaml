@@ -1,3 +1,4 @@
+---
 apiVersion: gravitee.io/v1alpha1
 kind: ApiV4Definition
 metadata:
@@ -26,10 +27,28 @@ spec:
       endpoints:
         - name: Default HTTP proxy
           type: http-proxy
-          inheritConfiguration: false
+          inheritConfiguration: true
           configuration:
             target: http://readarr.downloads.svc.cluster.local:8787
           secondary: false
+          services:
+            healthCheck:
+              overrideConfiguration: true
+              configuration:
+                schedule: "*/5 * * * * *"
+                headers: []
+                overrideEndpointPath: true
+                method: GET
+                failureThreshold: 2
+                assertion: "{#response.status == 200}"
+                successThreshold: 2
+                target: "/ping"
+              enabled: true
+              type: http-health-check
+      sharedConfiguration:
+        headers:
+          - name: "X-Api-Key"
+            value: "toto"
   flowExecution:
     mode: DEFAULT
     matchRequired: false
@@ -41,14 +60,25 @@ spec:
         type: "KEY_LESS"
   lifecycleState: PUBLISHED
   pages:
-    docs-folder:
-      name: specifications
-      type: FOLDER
-      published: true
     swagger:
       name: "api-docs"
       type: SWAGGER
-      parent: docs-folder
+      homepage: true
+      configuration:
+        displayOperationId: "false"
+        viewer: "Swagger"
+        enableFiltering: "false"
+        showURL: "false"
+        tryItURL: ""
+        usePkce: "false"
+        docExpansion: "none"
+        showCommonExtensions: "false"
+        tryItAnonymous: "false"
+        maxDisplayedTags: "-1"
+        entrypointsAsServers: "true"
+        entrypointAsBasePath: "true"
+        showExtensions: "false"
+        tryIt: "true"
       source:
         type: "http-fetcher"
         configuration:

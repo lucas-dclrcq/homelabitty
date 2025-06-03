@@ -27,10 +27,28 @@ spec:
       endpoints:
         - name: Default HTTP proxy
           type: http-proxy
-          inheritConfiguration: false
+          inheritConfiguration: true
           configuration:
             target: http://lidarr.downloads.svc.cluster.local:8686
           secondary: false
+          services:
+            healthCheck:
+              overrideConfiguration: true
+              configuration:
+                schedule: "*/5 * * * * *"
+                headers: []
+                overrideEndpointPath: true
+                method: GET
+                failureThreshold: 2
+                assertion: "{#response.status == 200}"
+                successThreshold: 2
+                target: "/ping"
+              enabled: true
+              type: http-health-check
+      sharedConfiguration:
+        headers:
+          - name: "X-Api-Key"
+            value: "toto"
   flowExecution:
     mode: DEFAULT
     matchRequired: false
@@ -58,7 +76,7 @@ spec:
         tryItAnonymous: "false"
         maxDisplayedTags: "-1"
         entrypointsAsServers: "true"
-        entrypointAsBasePath: "false"
+        entrypointAsBasePath: "true"
         showExtensions: "false"
         tryIt: "true"
       source:
