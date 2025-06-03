@@ -28,7 +28,7 @@ spec:
           app:
             image:
               repository: ghcr.io/element-hq/element-web
-              tag: v1.11.101@sha256:c414fc71bf444c43bdbf48dcc181c4254061533e6194333f67c1da7247dc30bf
+              tag: v1.11.102@sha256:bcc0186488f98bdb0a531fd7780050d64f12b3c8658848204e277707a52727f7
 
     service:
       app:
