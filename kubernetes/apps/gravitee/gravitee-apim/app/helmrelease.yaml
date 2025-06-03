@@ -29,7 +29,7 @@ spec:
   values:
     es:
       endpoints:
-        - http://graviteeio-apim-elasticsearch-ingest-hl:9200
+        - http://graviteeio-apim-elasticsearch:9200
 
     elasticsearch:
       enabled: true
