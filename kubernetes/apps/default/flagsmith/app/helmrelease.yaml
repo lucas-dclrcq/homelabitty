@@ -1,0 +1,43 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2beta1.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: flagsmith
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: flagsmith
+      version: 0.72.1
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: flagsmith-charts
+        namespace: flux-system
+  values:
+    api:
+      bootstrap:
+        enabled: true
+
+    devPostgresql:
+      enabled: false
+
+    databaseExternal:
+      enabled: true
+      urlFromExistingSecret:
+        enabled: true
+        name: flagsmith-secret
+        key: DATABASE_URL
+
+    influxdb2:
+      enabled: false
+
+    influxdbExternal:
+      enabled: false
+
+    ingress:
+      frontend:
+        enabled: false
+      api:
+        enabled: false
