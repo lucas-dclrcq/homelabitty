@@ -8,7 +8,6 @@ spec:
   matchers:
     - name: alertname
       value: KubeHpaMaxedOut
-      isRegex: false
     - name: horizontalpodautoscaler
       value: keda-hpa-.*
       isRegex: true
