@@ -82,18 +82,18 @@ task talos:upgrade-k8s
 
 ## 🔧 Hardware
 
-| Name      | Device                   | CPU               | OS Disk    | Data Disk(s)            | RAM  | OS            | Purpose           |
-|-----------|--------------------------|-------------------|------------|-------------------------|------|---------------|-------------------|
-| Fitz      | Dell Optiplex 3080 Micro | i5-10500T         | 500GB NVMe | 1TB SSD                 | 32GB | Talos         | K8S Control Plane |
-| Nighteyes | Dell Optiplex 3080 Micro | i5-10500T         | 500GB NVMe | 1TB SSD                 | 32GB | Talos         | K8S Control Plane |
-| Chade     | Dell Optiplex 3080 Micro | i5-10500T         | 500GB NVMe | 1TB SSD                 | 32GB | Talos         | K8S Control Plane |
-| Fool      | Dell Optiplex 3090 Micro | i5-10500T         | 500GB NVMe | 1TB SSD                 | 64GB | Talos         | K8S Worker        |
-| Burrich   | Dell Optiplex 3090 Micro | i5-10500T         | 500GB NVMe | 1TB SSD                 | 64GB | Talos         | K8S Worker        |
-| Bee       | Dell Optiplex 3090 Micro | i5-10500T         | 500GB NVMe | 1TB SSD                 | 64GB | Talos         | K8S Worker        |
-| Verity    | DIY NAS                  | Ryzen 5 Pro 5650G | 1TB NVMe   | 4*18TB (mirrored vdevs) | 32GB | TrueNAS SCALE | NAS (NFS/Backup)  |
-| Shrewd    | Synology DS1520+         | -                 | -          | 5*4TB (RAID 5)          | -    | -             | NAS (NFS/Backup)  |
-| Chivalry  | UniFi Dream Pro Max      | -                 | -          | -                       | -    | -             | Router            |
-| Molly     | UniFi Switch Pro Max 24  | -                 | -          | -                       | -    | -             | 2.5Gb Switch      |
+| Name      | Device                   | CPU               | OS Disk    | Data Disk(s)                      | RAM  | OS            | Purpose           |
+|-----------|--------------------------|-------------------|------------|-----------------------------------|------|---------------|-------------------|
+| Fitz      | Dell Optiplex 3080 Micro | i5-10500T         | 500GB NVMe | 1TB SSD                           | 32GB | Talos         | K8S Control Plane |
+| Nighteyes | Dell Optiplex 3080 Micro | i5-10500T         | 500GB NVMe | 1TB SSD                           | 32GB | Talos         | K8S Control Plane |
+| Chade     | Dell Optiplex 3080 Micro | i5-10500T         | 500GB NVMe | 1TB SSD                           | 32GB | Talos         | K8S Control Plane |
+| Fool      | Dell Optiplex 3090 Micro | i5-10500T         | 500GB NVMe | 1TB SSD                           | 64GB | Talos         | K8S Worker        |
+| Burrich   | Dell Optiplex 3090 Micro | i5-10500T         | 500GB NVMe | 1TB SSD                           | 64GB | Talos         | K8S Worker        |
+| Bee       | Dell Optiplex 3090 Micro | i5-10500T         | 500GB NVMe | 1TB SSD                           | 64GB | Talos         | K8S Worker        |
+| Verity    | DIY NAS                  | Ryzen 5 Pro 5650G | 1TB NVMe   | 4*18TB + 2\*22TB (mirrored vdevs) | 32GB | TrueNAS SCALE | NAS (NFS/Backup)  |
+| Shrewd    | Synology DS1520+         | -                 | -          | 5*4TB (RAID 5)                    | -    | -             | NAS (NFS/Backup)  |
+| Chivalry  | UniFi Dream Pro Max      | -                 | -          | -                                 | -    | -             | Router            |
+| Molly     | UniFi Switch Pro Max 24  | -                 | -          | -                                 | -    | -             | 2.5Gb Switch      |
 
 ## ☁️ Cloud Services
 
