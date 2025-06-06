@@ -24,4 +24,3 @@ resources:
   - ./outline/ks.yaml
   - ./grist/ks.yaml
   - ./vikunja/ks.yaml
-  - ./flagsmith/ks.yaml
