@@ -7,35 +7,25 @@ metadata:
 spec:
   interval: 30m
   timeout: 15m
-  chart:
-    spec:
-      chart: kube-prometheus-stack
-      version: 73.2.0
-      sourceRef:
-        kind: HelmRepository
-        name: prometheus-community
-        namespace: flux-system
+  chartRef:
+    kind: OCIRepository
+    name: kube-prometheus-stack
   install:
-    crds: Skip
     remediation:
-      retries: 3
+      retries: -1
   upgrade:
     cleanupOnFail: true
-    crds: Skip
     remediation:
-      strategy: rollback
       retries: 3
-  dependsOn:
-    - name: prometheus-operator-crds
-      namespace: observability
-    - name: openebs
-      namespace: openebs-system
-    - name: rook-ceph-cluster
-      namespace: rook-ceph
   values:
     crds:
-      enabled: false
+      enabled: true
+      upgradeJob:
+        enabled: true
+        forceConflicts: true
+
     cleanPrometheusOperatorObjectNames: true
+
     alertmanager:
       route:
         main:
@@ -52,23 +42,10 @@ spec:
             resolveTimeout: 5m
         externalUrl: https://alertmanager.${LIMITED_DOMAIN}
 
-    kubeApiServer:
-      serviceMonitor:
-        selector:
-          k8s-app: kube-apiserver
-
-    kubeScheduler:
-      service:
-        selector:
-          k8s-app: kube-scheduler
-
-    kubeControllerManager: &kubeControllerManager
-      service:
-        selector:
-          k8s-app: kube-controller-manager
-
     kubeEtcd:
-      <<: *kubeControllerManager # etcd runs on control plane nodes
+      service:
+        selector:
+          component: kube-apiserver # etcd runs on control plane nodes
 
     kubeProxy:
       enabled: false
@@ -83,19 +60,20 @@ spec:
               namespace: network
               sectionName: https
       prometheusSpec:
-        scrapeInterval: 1m # Must match interval in Grafana Helm chart
-        podMonitorSelector: &selector
-          matchLabels: null
-        probeSelector: *selector
-        ruleSelector: *selector
-        scrapeConfigSelector: *selector
-        serviceMonitorSelector: *selector
-        enableAdminAPI: true
-        walCompression: true
-        enableFeatures:
-          - auto-gomemlimit
-          - memory-snapshot-on-shutdown
-          - new-service-discovery-manager
+        image:
+          registry: docker.io
+          repository: prompp/prompp
+          tag: 2.53.2-0.2.5
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 64535
+          runAsGroup: 64535
+          fsGroup: 64535
+        podMonitorSelectorNilUsesHelmValues: false
+        probeSelectorNilUsesHelmValues: false
+        ruleSelectorNilUsesHelmValues: false
+        scrapeConfigSelectorNilUsesHelmValues: false
+        serviceMonitorSelectorNilUsesHelmValues: false
         retention: 30d
         retentionSize: 70GB
         resources:
