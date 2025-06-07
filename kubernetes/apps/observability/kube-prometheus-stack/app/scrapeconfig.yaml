@@ -23,7 +23,7 @@ metadata:
 spec:
   staticConfigs:
     - targets:
-        - truenas.${INTERNAL_DOMAIN}:9633
+        - truenas.${INTERNAL_DOMAIN}:9101
   metricsPath: /metrics
   relabelings:
     - action: replace
