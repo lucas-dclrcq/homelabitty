@@ -86,12 +86,6 @@ spec:
     persistence:
       config:
         existingClaim: *app
-      downloads:
-        type: nfs
-        server: "truenas.${INTERNAL_DOMAIN}"
-        path: /mnt/tank/Media/Youtube
-        globalMounts:
-          - path: /downloads
       media:
         type: nfs
         server: "truenas.${INTERNAL_DOMAIN}"
