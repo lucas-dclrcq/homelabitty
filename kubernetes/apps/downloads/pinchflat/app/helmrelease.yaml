@@ -89,9 +89,9 @@ spec:
       media:
         type: nfs
         server: "truenas.${INTERNAL_DOMAIN}"
-        path: /mnt/tank/Media
+        path: /mnt/tank/Media/Web
         globalMounts:
-          - path: /media
+          - path: /downloads
       tmpfs:
         type: emptyDir
         advancedMounts:
