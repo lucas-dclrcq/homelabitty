@@ -129,6 +129,8 @@ spec:
         - '192.168.0.0/16'
         - '10.0.0.0/8'
       url_preview_enabled: true
+      experimental_features:
+        msc3575_enabled: true
 
     ingress:
       enabled: false
