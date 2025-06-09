@@ -215,12 +215,12 @@ spec:
       databases: ["mas"]
       password:
         type: AlphaNumeric
-    - name: "graviteeam"
-      databases: ["graviteeam"]
-      password:
-        type: AlphaNumeric
     - name: "graviteeapim"
       databases: ["graviteeapim"]
+      password:
+        type: AlphaNumeric
+    - name: "filature"
+      databases: ["filature"]
       password:
         type: AlphaNumeric
   backups:
