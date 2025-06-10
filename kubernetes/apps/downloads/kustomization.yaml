@@ -10,7 +10,6 @@ resources:
   - ./readarr/ks.yaml
   - ./lidarr/ks.yaml
   - ./flaresolverr/ks.yaml
-  - ./flarebypasser/ks.yaml
   - ./autobrr/ks.yaml
   - ./recyclarr/ks.yaml
   - ./slskd/ks.yaml
