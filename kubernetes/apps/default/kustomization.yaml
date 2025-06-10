@@ -14,7 +14,6 @@ resources:
   - ./actual/ks.yaml
   - ./wallabag/ks.yaml
   - ./immich/ks.yaml
-  - ./tandoor/ks.yaml
   - ./homelab-manager/ks.yaml
   - ./nextcloud/ks.yaml
   - ./bytestash/ks.yaml
