@@ -17,7 +17,6 @@ resources:
   - ./tandoor/ks.yaml
   - ./homelab-manager/ks.yaml
   - ./nextcloud/ks.yaml
-  - ./cupsd/ks.yaml
   - ./bytestash/ks.yaml
   - ./filebrowser/ks.yaml
   - ./thelounge/ks.yaml
