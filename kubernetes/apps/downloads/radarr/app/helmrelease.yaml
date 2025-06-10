@@ -49,8 +49,6 @@ spec:
             envFrom:
               - secretRef:
                   name: radarr-secret
-              - secretRef:
-                  name: radarr-db-secret
 
             probes:
               liveness: &probes
@@ -80,9 +78,9 @@ spec:
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
-        runAsUser: 1026
-        runAsGroup: 100
-        fsGroup: 100
+        runAsUser: ${APP_UID}
+        runAsGroup: ${APP_GID}
+        fsGroup: ${APP_GID}
         fsGroupChangePolicy: OnRootMismatch
         supplementalGroups: [10000]
         seccompProfile: { type: RuntimeDefault }
@@ -107,20 +105,11 @@ spec:
               - name: *app
                 port: *port
 
-
     persistence:
       config:
         existingClaim: radarr
       tmp:
         type: emptyDir
-      scripts:
-        type: configMap
-        name: radarr-configmap
-        defaultMode: 0775
-        globalMounts:
-          - path: /scripts/pushover-notify.sh
-            subPath: pushover-notify.sh
-            readOnly: true
       media:
         type: nfs
         server: "truenas.${INTERNAL_DOMAIN}"
