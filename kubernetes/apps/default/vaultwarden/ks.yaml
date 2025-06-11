@@ -28,4 +28,3 @@ spec:
       APP: *app
       VOLSYNC_CAPACITY: 2Gi
       GATUS_SUBDOMAIN: passwords
-      VOLSYNC_CRONSTRING: "5 * * * *"

@@ -27,4 +27,3 @@ spec:
       APP: *app
       VOLSYNC_CAPACITY: 5Gi
       GATUS_SUBDOMAIN: "requests"
-      VOLSYNC_CRONSTRING: "20 * * * *"

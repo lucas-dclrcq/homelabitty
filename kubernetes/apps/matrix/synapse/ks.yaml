@@ -31,5 +31,4 @@ spec:
     substitute:
       APP: *app
       VOLSYNC_CAPACITY: 50Gi
-      VOLSYNC_CRONSTRING: "15 * * * *"
       DRAGONFLY_ARGS_DEFAULT_LUA_FLAGS: allow-undeclared-keys
