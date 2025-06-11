@@ -272,3 +272,11 @@ controlPlane:
             listen-metrics-urls: http://0.0.0.0:2381
           advertisedSubnets:
             - 192.168.1.0/24
+
+    # Enable MutatingAdmissionPolicy
+    - |-
+      cluster:
+        apiServer:
+          extraArgs:
+            runtime-config: admissionregistration.k8s.io/v1alpha1=true
+            feature-gates: MutatingAdmissionPolicy=true
