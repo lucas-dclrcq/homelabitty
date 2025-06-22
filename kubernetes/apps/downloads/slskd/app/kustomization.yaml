@@ -6,7 +6,6 @@ resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
   - ./servicemonitor.yaml
-  - ./apidefinition.yaml
 configMapGenerator:
   - name: slskd-configmap
     files:
