@@ -8,20 +8,20 @@ spec:
   interval: 5s
   module: icmp
   prober:
-    url: blackbox-exporter.observability.svc.cluster.local:9115
+    url: blackbox-exporter.observability.svc.cluster.local.:9115
   targets:
     staticConfig:
       static:
-        - "truenas.${INTERNAL_DOMAIN}"
-        - "nas.${INTERNAL_DOMAIN}"
-        - "ups.${INTERNAL_DOMAIN}"
+        - "truenas.${INTERNAL_DOMAIN}."
+        - "nas.${INTERNAL_DOMAIN}."
+        - "ups.${INTERNAL_DOMAIN}."
         # Nodes
-        - "bee.${INTERNAL_DOMAIN}"
-        - "burrich.${INTERNAL_DOMAIN}"
-        - "chade.${INTERNAL_DOMAIN}"
-        - "fitz.${INTERNAL_DOMAIN}"
-        - "fool.${INTERNAL_DOMAIN}"
-        - "nighteyes.${INTERNAL_DOMAIN}"
+        - "bee.${INTERNAL_DOMAIN}."
+        - "burrich.${INTERNAL_DOMAIN}."
+        - "chade.${INTERNAL_DOMAIN}."
+        - "fitz.${INTERNAL_DOMAIN}."
+        - "fool.${INTERNAL_DOMAIN}."
+        - "nighteyes.${INTERNAL_DOMAIN}."
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/monitoring.coreos.com/probe_v1.json
 apiVersion: monitoring.coreos.com/v1
@@ -31,8 +31,8 @@ metadata:
 spec:
   module: tcp_connect
   prober:
-    url: blackbox-exporter.observability.svc.cluster.local:9115
+    url: blackbox-exporter.observability.svc.cluster.local.:9115
   targets:
     staticConfig:
       static:
-        - "truenas.${INTERNAL_DOMAIN}:2049"
+        - "truenas.${INTERNAL_DOMAIN}.:2049"
