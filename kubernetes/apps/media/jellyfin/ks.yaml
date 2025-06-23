@@ -13,7 +13,6 @@ spec:
   components:
     - ../../../../components/gatus/external
     - ../../../../components/volsync
-    - ../../../../components/keda/nfs-scaler
   path: ./kubernetes/apps/media/jellyfin/app
   prune: true
   sourceRef:

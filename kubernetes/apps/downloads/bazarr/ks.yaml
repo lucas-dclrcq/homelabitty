@@ -13,7 +13,6 @@ spec:
   components:
     - ../../../../components/gatus/guarded
     - ../../../../components/volsync
-    - ../../../../components/keda/nfs-scaler
   path: ./kubernetes/apps/downloads/bazarr/app
   prune: true
   sourceRef:

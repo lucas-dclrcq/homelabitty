@@ -13,7 +13,6 @@ spec:
   components:
     - ../../../../components/volsync
     - ../../../../components/security-policy/forward-auth
-    - ../../../../components/keda/nfs-scaler
   dependsOn:
     - name: external-secrets-stores
       namespace: external-secrets

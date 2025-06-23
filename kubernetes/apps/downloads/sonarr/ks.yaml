@@ -12,7 +12,6 @@ spec:
       app.kubernetes.io/name: *app
   components:
     - ../../../../components/volsync
-    - ../../../../components/keda/nfs-scaler
   dependsOn:
     - name: crunchy-postgres-operator-cluster
   path: ./kubernetes/apps/downloads/sonarr/app

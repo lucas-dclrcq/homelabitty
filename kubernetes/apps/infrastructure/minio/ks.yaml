@@ -10,8 +10,6 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  components:
-    - ../../../../components/keda/nfs-scaler
   path: ./kubernetes/apps/infrastructure/minio/app
   prune: true
   sourceRef:

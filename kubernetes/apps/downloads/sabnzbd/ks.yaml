@@ -13,7 +13,6 @@ spec:
   components:
     - ../../../../components/gatus/guarded
     - ../../../../components/volsync
-    - ../../../../components/keda/nfs-scaler
   dependsOn:
     - name: external-secrets-stores
       namespace: external-secrets
