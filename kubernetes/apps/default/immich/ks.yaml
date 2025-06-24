@@ -13,7 +13,6 @@ spec:
   components:
     - ../../../../components/gatus/external
     - ../../../../components/dragonfly
-    - ../../../../components/volsync
   path: ./kubernetes/apps/default/immich/app
   prune: true
   sourceRef:
@@ -29,4 +28,3 @@ spec:
       APP: *app
       GATUS_SUBDOMAIN: photos
       DRAGONFLY_ARGS_DEFAULT_LUA_FLAGS: allow-undeclared-keys
-      VOLSYNC_CAPACITY: 20Gi
