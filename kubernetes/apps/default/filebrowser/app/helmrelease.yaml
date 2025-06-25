@@ -28,7 +28,7 @@ spec:
           app:
             image:
               repository: docker.io/filebrowser/filebrowser
-              tag: v2.33.6
+              tag: v2.33.7
 
             env:
               TZ: "${TIMEZONE}"
