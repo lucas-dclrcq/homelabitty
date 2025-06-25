@@ -44,12 +44,13 @@ spec:
                   periodSeconds: 10
                   timeoutSeconds: 1
                   failureThreshold: 3
+
             resources:
               requests:
-                cpu: 12m
-                memory: 128M
+                cpu: 10m
+                memory: 100Mi
               limits:
-                memory: 512M
+                memory: 100Mi
 
     service:
       app:

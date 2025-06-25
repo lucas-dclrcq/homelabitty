@@ -51,11 +51,13 @@ spec:
               capabilities: { drop: ["ALL"] }
               seccompProfile:
                 type: RuntimeDefault
+
             resources:
               requests:
                 cpu: 10m
+                memory: 100Mi
               limits:
-                memory: 64Mi
+                memory: 100Mi
 
     defaultPodOptions:
       securityContext:

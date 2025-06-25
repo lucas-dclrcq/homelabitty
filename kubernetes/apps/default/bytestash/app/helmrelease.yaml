@@ -49,11 +49,10 @@ spec:
 
             resources:
               requests:
-                cpu: 25m
-                memory: 105M
+                cpu: 10m
+                memory: 100Mi
               limits:
-                cpu: 50m
-                memory: 250Mi
+                memory: 100Mi
 
     service:
       app:
