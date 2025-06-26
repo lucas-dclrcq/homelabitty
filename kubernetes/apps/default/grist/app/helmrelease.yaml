@@ -27,7 +27,7 @@ spec:
           app:
             image:
               repository: docker.io/gristlabs/grist
-              tag: 1.6.0
+              tag: 1.6.1
 
             envFrom:
               - secretRef:
