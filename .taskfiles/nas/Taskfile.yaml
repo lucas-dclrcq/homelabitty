@@ -1,0 +1,7 @@
+---
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: '3'
+
+tasks:
+  scale-down-nfs:
+    cmd: ./scripts/scale_nas_apps.sh {{.CLI_ARGS}}

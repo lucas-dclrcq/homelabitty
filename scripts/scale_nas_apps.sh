@@ -20,7 +20,6 @@ fi
 echo "Scaling NAS applications with replicas=$replicas"
 
 kubectl scale deployment -n default filebrowser  --replicas $replicas
-kubectl scale deployment -n default immich-microservices  --replicas $replicas
 kubectl scale deployment -n default immich-machine-learning  --replicas $replicas
 kubectl scale deployment -n default immich-server  --replicas $replicas
 kubectl scale deployment -n downloads bazarr  --replicas $replicas
@@ -36,5 +35,6 @@ kubectl scale deployment -n media audiobookshelf --replicas $replicas
 kubectl scale deployment -n media jellyfin --replicas $replicas
 kubectl scale deployment -n media komga --replicas $replicas
 kubectl scale deployment -n media navidrome --replicas $replicas
+kubectl scale deployment -n volsync-system volsync --replicas $replicas
 
 echo "NAS applications scaled $1"

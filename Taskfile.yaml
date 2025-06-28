@@ -37,6 +37,7 @@ includes:
   rook:
     taskfile: .taskfiles/Rook
   volsync: .taskfiles/volsync
+  nas: .taskfiles/nas
 
 tasks:
 
