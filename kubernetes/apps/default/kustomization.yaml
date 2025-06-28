@@ -23,4 +23,4 @@ resources:
   - ./grist/ks.yaml
   - ./vikunja/ks.yaml
   - ./it-tools/ks.yaml
-#  - ./filature/ks.yaml
+  - ./filature/ks.yaml
