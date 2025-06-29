@@ -15,12 +15,11 @@ spec:
       filature:
         annotations:
           reloader.stakater.com/auto: "true"
-
         containers:
           main:
             image:
               repository: ghcr.io/lucas-dclrcq/filature
-              tag: development@sha256:31502e04991253ddc287f52a92bb7c5edc12cbadfd8d6675d10e6a8754b7b67f
+              tag: jvm-development@adccdd9f7e991b049f34c4e299134e3d3f598ee7ab556abbf89be2adba008bb4
             env:
               QUARKUS_HTTP_PORT: &port 80
             envFrom:
@@ -55,14 +54,12 @@ spec:
                 memory: 256Mi
               limits:
                 memory: 1Gi
-
     service:
       main:
         controller: filature
         ports:
           http:
             port: *port
-
     route:
       app:
         hostnames:
@@ -75,7 +72,6 @@ spec:
           - backendRefs:
               - name: *app
                 port: *port
-
     persistence:
       tmp:
         type: emptyDir
