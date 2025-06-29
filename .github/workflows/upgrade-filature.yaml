@@ -1,0 +1,31 @@
+name: Upgrade Filature
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_sha:
+        description: "Filature docker image sha"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  upgrade:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+      - name: Update HelmRelease File
+        env:
+          SHA256: ${{ inputs.image_sha }}
+        run: |
+          VERSION="jvm-development@${SHA256}" yq eval '.spec.values.controllers.filature.containers.main.image.tag = strenv(VERSION)' \
+            -i kubernetes/apps/default/filature/app/helmrelease.yaml
+      - uses: EndBug/add-and-commit@v9
+        with:
+          message: 'chore(filature): upgrade to latest'
+          add: 'kubernetes/apps/default/filature/app/helmrelease.yaml --force'
+          committer_name: Homelab Bot
+          committer_email: homelab@bot.com
+          push: true
