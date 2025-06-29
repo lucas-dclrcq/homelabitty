@@ -20,7 +20,7 @@ spec:
           main:
             image:
               repository: ghcr.io/lucas-dclrcq/filature
-              tag: development@sha256:e1590e0a4e85ac0b15e18d19eb7da279da385034a27d9194959e8eb7e5761a5d
+              tag: development@sha256:31502e04991253ddc287f52a92bb7c5edc12cbadfd8d6675d10e6a8754b7b67f
             env:
               QUARKUS_HTTP_PORT: &port 80
             envFrom:
