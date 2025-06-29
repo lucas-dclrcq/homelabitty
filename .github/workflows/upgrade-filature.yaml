@@ -20,7 +20,7 @@ jobs:
         env:
           SHA256: ${{ inputs.image_sha }}
         run: |
-          VERSION="jvm-development@${SHA256}" yq eval '.spec.values.controllers.filature.containers.main.image.tag = strenv(VERSION)' \
+          VERSION="jvm-development@sha256:${SHA256}" yq eval '.spec.values.controllers.filature.containers.main.image.tag = strenv(VERSION)' \
             -i kubernetes/apps/default/filature/app/helmrelease.yaml
       - uses: EndBug/add-and-commit@v9
         with:
