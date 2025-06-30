@@ -30,8 +30,8 @@ spec:
         containers:
           app:
             image:
-              repository: ghcr.io/hotio/lidarr
-              tag: pr-plugins@sha256:3af6b137b04903e76d3dd42c42bb1adf15e3f4d515adb4a37c417b424463f6cd
+              repository: docker.io/blampe/lidarr
+              tag: lidarr-plugins-2.13.0.4661
 
             env:
               TZ: ${TIMEZONE}
