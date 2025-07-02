@@ -32,7 +32,7 @@ spec:
 
             env:
               TZ: "${TIMEZONE}"
-              FB_ROOT: /uploads
+              FB_ROOT: /media
               FB_LOG: stdout
 
             probes:
@@ -80,7 +80,7 @@ spec:
     route:
       app:
         hostnames:
-          - "uploads.${SECRET_DOMAIN}"
+          - "filebrowser.${SECRET_DOMAIN}"
         parentRefs:
           - name: external
             namespace: network
@@ -99,6 +99,6 @@ spec:
       uploads:
         type: nfs
         server: "truenas.${INTERNAL_DOMAIN}"
-        path: /mnt/tank/Media/Uploads
+        path: /mnt/tank/Media
         globalMounts:
-          - path: /uploads
+          - path: /media
