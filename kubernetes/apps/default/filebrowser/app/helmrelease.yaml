@@ -32,10 +32,8 @@ spec:
 
             env:
               TZ: "${TIMEZONE}"
-              FB_DATABASE: /config/filebrowser.db
               FB_ROOT: /uploads
               FB_LOG: stdout
-              FB_NOAUTH: true
 
             probes:
               liveness: &probes
@@ -96,6 +94,7 @@ spec:
       config:
         existingClaim: *app
         globalMounts:
+          - path: /database
           - path: /config
       uploads:
         type: nfs
