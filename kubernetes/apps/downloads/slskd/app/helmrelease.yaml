@@ -60,6 +60,12 @@ spec:
                   timeoutSeconds: 1
                   failureThreshold: 3
               readiness: *probes
+              startup:
+                enabled: true
+                spec:
+                  initialDelaySeconds: 30
+                  failureThreshold: 30
+                  periodSeconds: 10
 
             securityContext:
               allowPrivilegeEscalation: false
