@@ -63,8 +63,7 @@ spec:
               startup:
                 enabled: true
                 spec:
-                  initialDelaySeconds: 30
-                  failureThreshold: 30
+                  failureThreshold: 60
                   periodSeconds: 10
 
             securityContext:
