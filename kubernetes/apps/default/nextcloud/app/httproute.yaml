@@ -22,6 +22,12 @@ spec:
         - path:
             type: Exact
             value: /robots.txt
+      filters:
+        - type: ExtensionRef
+          extensionRef:
+            group: gateway.envoyproxy.io
+            kind: HTTPRouteFilter
+            name: nextcloud-security-headers
     # Redirect carddav
     - matches:
         - path:
@@ -141,6 +147,13 @@ spec:
             group: gateway.envoyproxy.io
             kind: HTTPRouteFilter
             name: vade-retro-satanas
+    - backendRefs: *backendRef
+      matches:
+        - path:
+            type: PathPrefix
+            value: /settings/ajax/checksetup
+      timeouts:
+        request: 300s
 ---
 apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: HTTPRouteFilter
@@ -153,3 +166,24 @@ spec:
     body:
       type: Inline
       inline: "Vade Retro, Satanas!"
+---
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: HTTPRouteFilter
+metadata:
+  name: nextcloud-security-headers
+spec:
+  rules:
+    - filters:
+        - type: ResponseHeaderModifier
+          responseHeaderModifier:
+            add:
+              - name: Strict-Transport-Security
+                value: max-age=15768000; includeSubDomains; preload;
+              - name: X-XSS-Protection
+                value: 1; mode=block
+              - name: Referrer-Policy
+                value: no-referrer
+              - name: X-Content-Type-Options
+                value: no-sniff
+              - name: X-Frame-Options
+                value: SAMEORIGIN
