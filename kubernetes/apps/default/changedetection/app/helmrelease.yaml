@@ -56,7 +56,7 @@ spec:
               - {name: ENABLE_DEBUGGER, value: "false"}
               - {name: PREBOOT_CHROME, value: "true"}
               - {name: CONNECTION_TIMEOUT, value: "300000"}
-              - {name: MAX_CONCURRENT_SESSIONS, value: "10"}
+              - {name: MAX_CONCURRENT_SESSIONS, value: "1"}
               - {name: CHROME_REFRESH_TIME, value: "600000"}
               - {name: DEFAULT_BLOCK_ADS, value: "true"}
               - {name: DEFAULT_STEALTH, value: "true"}
@@ -66,7 +66,7 @@ spec:
                 cpu: 10m
                 memory: 1Gi
               limits:
-                memory: 1Gi
+                memory: 2Gi
 
     service:
       app:

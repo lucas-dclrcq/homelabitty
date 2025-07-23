@@ -36,11 +36,33 @@ spec:
               requests:
                 memory: 512Mi
               limits:
-                memory: 1Gi
+                memory: 2Gi
+
+            env:
+              PLAYWRIGHT_WS_URL: "ws://localhost:3001/chrome"
 
             envFrom:
               - secretRef:
                   name: linkwarden-secret
+
+          browser:
+            image:
+              repository: docker.io/browserless/chrome
+              tag: latest@sha256:57d19e414d9fe4ae9d2ab12ba768c97f38d51246c5b31af55a009205c136012f
+              pullPolicy: IfNotPresent
+
+            env:
+              - { name: CONNECTION_TIMEOUT, value: "300000" }
+              - { name: MAX_CONCURRENT_SESSIONS, value: "1" }
+              - { name: DATA_DIR, value: "/profile" }
+              - { name: PORT, value: "3001" }
+
+            resources:
+              requests:
+                cpu: 10m
+                memory: 1Gi
+              limits:
+                memory: 4Gi
     service:
       app:
         controller: linkwarden
@@ -65,10 +87,18 @@ spec:
       config:
         enabled: true
         existingClaim: *app
-        globalMounts:
-          - path: /data/config
+        advancedMounts:
+          linkwarden:
+            app:
+              - path: /data/config
+                subPath: linkwarden
+              - path: /data/.next/cache
+                subPath: linkwarden_cache
+            browser:
+              - path: /profile
+                subPath: chrome
       next-cache:
         enabled: true
         type: emptyDir
         globalMounts:
-          - path: /data/.next/cache
+          - path: /tmp
