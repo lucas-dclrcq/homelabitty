@@ -223,6 +223,10 @@ spec:
       databases: ["filature"]
       password:
         type: AlphaNumeric
+    - name: "veille"
+      databases: ["veille"]
+      password:
+        type: AlphaNumeric
   backups:
     pgbackrest:
       configuration:
