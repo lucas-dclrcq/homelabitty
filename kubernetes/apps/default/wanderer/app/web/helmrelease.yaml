@@ -41,21 +41,20 @@ spec:
         controller: web
         ports:
           http:
-            port: 3000
+            port: &port 3000
 
-    ingress:
-      web:
-        className: internal
-        hosts:
-          - host: &host "wanderer.${SECRET_DOMAIN}"
-            paths:
-              - path: /
-                service:
-                  identifier: web
-                  port: http
-        tls:
-          - hosts:
-              - *host
+    route:
+      app:
+        hostnames:
+          - "wanderer.${SECRET_DOMAIN}"
+        parentRefs:
+          - name: external
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
 
     persistence:
       web:
