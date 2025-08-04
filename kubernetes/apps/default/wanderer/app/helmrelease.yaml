@@ -85,7 +85,7 @@ spec:
             sectionName: https
         rules:
           - backendRefs:
-              - name: *app
+              - name: web
                 port: *webport
       admin:
         hostnames:
@@ -96,7 +96,7 @@ spec:
             sectionName: https
         rules:
           - backendRefs:
-              - name: *app
+              - name: db
                 port: *dbport
 
     persistence:
