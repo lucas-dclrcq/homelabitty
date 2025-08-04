@@ -40,6 +40,16 @@ spec:
               limits:
                 memory: 500Mi
 
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: "${APP_UID}"
+        runAsGroup: "${APP_GID}"
+        fsGroup: "${APP_GID}"
+        fsGroupChangePolicy: OnRootMismatch
+        supplementalGroups: [10000]
+        seccompProfile: { type: RuntimeDefault }
+
     service:
       app:
         controller: *app
@@ -68,3 +78,5 @@ spec:
             subPath: data
           - path: /app/backups
             subPath: backups
+          - path: /app/.next/cache
+            subPath: cache
