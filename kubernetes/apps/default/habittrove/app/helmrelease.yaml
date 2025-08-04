@@ -1,0 +1,70 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app habittrove
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+    namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  values:
+    controllers:
+      habittrove:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: dohsimpson/habittrove
+              tag: v0.2.23
+
+            envFrom:
+              - secretRef:
+                  name: habittrove-secret
+
+            resources:
+              requests:
+                cpu: 10m
+                memory: 100Mi
+              limits:
+                memory: 500Mi
+
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: &port 3000
+
+    route:
+      app:
+        hostnames:
+          - "habits.${LIMITED_DOMAIN}"
+        parentRefs:
+          - name: internal
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
+
+    persistence:
+      data:
+        existingClaim: *app
+        globalMounts:
+          - path: /app/data
+            subPath: data
+          - path: /app/backups
+            subPath: backups

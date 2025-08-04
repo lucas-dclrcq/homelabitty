@@ -27,3 +27,4 @@ resources:
   - ./dumbassets/ks.yaml
   - ./linkwarden/ks.yaml
   - ./wanderer/ks.yaml
+  - ./habittrove/ks.yaml
