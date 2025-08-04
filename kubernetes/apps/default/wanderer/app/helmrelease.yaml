@@ -85,7 +85,7 @@ spec:
             sectionName: https
         rules:
           - backendRefs:
-              - name: web
+              - name: wanderer-web
                 port: *webport
       admin:
         hostnames:
@@ -96,7 +96,7 @@ spec:
             sectionName: https
         rules:
           - backendRefs:
-              - name: db
+              - name: wanderer-db
                 port: *dbport
 
     persistence:
