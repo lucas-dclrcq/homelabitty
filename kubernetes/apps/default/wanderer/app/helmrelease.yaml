@@ -112,3 +112,9 @@ spec:
           db:
             db:
               - path: /pb_data
+      search:
+        existingClaim: wanderer-search
+        advancedMounts:
+          search:
+            search:
+              - path: /meili_data/data.ms
