@@ -89,9 +89,9 @@ spec:
                 port: *webport
       admin:
         hostnames:
-          - "wanderer-admin.${SECRET_DOMAIN}"
+          - "wanderer-admin.${LIMITED_DOMAIN}"
         parentRefs:
-          - name: external
+          - name: internal
             namespace: network
             sectionName: https
         rules:
