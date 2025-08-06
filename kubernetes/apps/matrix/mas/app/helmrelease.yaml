@@ -25,7 +25,7 @@ spec:
           app:
             image:
               repository: ghcr.io/element-hq/matrix-authentication-service
-              tag: 0.19@sha256:36d2a5a34307546dca25d8b6094e322f4fd907eb634fccc04aca37becd112f4e
+              tag: 0.20@sha256:339a82e0d64205d346aa5886b1eeab4cfff4ba1879d59a9bf5e5e88f28d0f82f
             command: ["/usr/local/bin/mas-cli"]
             args: ["server"]
             env:
