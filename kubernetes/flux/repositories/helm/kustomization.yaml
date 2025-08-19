@@ -47,3 +47,4 @@ resources:
   - ./influxdata.yaml
   - ./kedacore.yaml
   - ./flagsmith.yaml
+  - ./livekit.yaml
