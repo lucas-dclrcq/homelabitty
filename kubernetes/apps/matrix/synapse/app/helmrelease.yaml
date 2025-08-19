@@ -27,6 +27,10 @@ spec:
       client:
         m.homeserver:
           base_url: "https://matrix.${SECRET_DOMAIN}"
+        # Element Call / LiveKit RTC configuration
+        "org.matrix.msc4143.rtc_foci":
+          - type: "livekit"
+            livekit_service_url: "https://livekit.${SECRET_DOMAIN}"
 
     workers:
       default:
@@ -126,11 +130,23 @@ spec:
       use_appservice_legacy_authorization: true
       url_preview_ip_range_blacklist:
         - "127.0.0.0/8"
-        - '192.168.0.0/16'
-        - '10.0.0.0/8'
+        - "192.168.0.0/16"
+        - "10.0.0.0/8"
       url_preview_enabled: true
       experimental_features:
+        # Element Call / LiveKit support
+        msc4140_enabled: true # Delayed events for proper call participation signalling
+        msc4143_enabled: true # MatrixRTC signaling
+        # Existing features
         msc3575_enabled: true
+
+      # Rate limiting adjustments for call-related events
+      rc_message:
+        per_second: 5
+        burst_count: 20
+
+      # Maximum delay for events (required for MSC4140)
+      max_event_delay_duration: "24h"
 
     ingress:
       enabled: false
