@@ -26,5 +26,5 @@ resources:
   - ./filature/ks.yaml
   - ./dumbassets/ks.yaml
   - ./linkwarden/ks.yaml
-  - ./wanderer/ks.yaml
+#  - ./wanderer/ks.yaml
   - ./habittrove/ks.yaml
