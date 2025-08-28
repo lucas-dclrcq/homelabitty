@@ -9,5 +9,8 @@ configMapGenerator:
   - name: lidarr-cache-warmer-config-tpl
     files:
       - config.ini=./resources/config.ini
+  - name: lidarr-cache-warmer-manual-entries
+    files:
+      - manual_entries.yml=./resources/manual_entries.yml
 generatorOptions:
   disableNameSuffixHash: true

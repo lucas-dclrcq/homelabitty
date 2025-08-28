@@ -51,3 +51,9 @@ spec:
         globalMounts:
           - subPath: config.ini
             path: /data/config.ini
+      manual-entries:
+        type: configMap
+        name: lidarr-cache-warmer-manual-entries
+        globalMounts:
+          - subPath: manual_entries.yml
+            path: /data/manual_entries.yml
