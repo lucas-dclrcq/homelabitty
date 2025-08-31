@@ -4,3 +4,9 @@ kind: Kustomization
 resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
+configMapGenerator:
+  - name: ygg-custom-definition
+    files:
+      - yggtorrent.yml=./resources/yggtorrent.yml
+generatorOptions:
+  disableNameSuffixHash: true
