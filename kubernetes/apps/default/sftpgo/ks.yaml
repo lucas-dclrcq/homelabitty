@@ -3,7 +3,7 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app filebrowser
+  name: &app sftpgo
   namespace: &namespace default
 spec:
   targetNamespace: *namespace
@@ -12,8 +12,7 @@ spec:
       app.kubernetes.io/name: *app
   components:
     - ../../../../components/volsync
-    - ../../../../components/security-policy/forward-auth
-  path: ./kubernetes/apps/default/filebrowser/app
+  path: ./kubernetes/apps/default/sftpgo/app
   prune: true
   sourceRef:
     kind: GitRepository
@@ -26,4 +25,4 @@ spec:
   postBuild:
     substitute:
       APP: *app
-      VOLSYNC_CAPACITY: 1Gi
+      VOLSYNC_CAPACITY: 5Gi
