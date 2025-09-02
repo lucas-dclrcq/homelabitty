@@ -227,6 +227,10 @@ spec:
       databases: ["veille"]
       password:
         type: AlphaNumeric
+    - name: "sftpgo"
+      databases: ["sftpgo"]
+      password:
+        type: AlphaNumeric
   backups:
     pgbackrest:
       configuration:

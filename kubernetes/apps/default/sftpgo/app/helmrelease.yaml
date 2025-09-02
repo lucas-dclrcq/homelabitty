@@ -37,6 +37,10 @@ spec:
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
 
+            envFrom:
+              - secretRef:
+                  name: sftpgo-secret
+
             probes:
               liveness:
                 enabled: true
