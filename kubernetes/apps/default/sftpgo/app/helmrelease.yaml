@@ -115,16 +115,16 @@ spec:
             sectionName: https
         rules:
           - backendRefs:
-              - name: *app
+              - name: sftpgo-main
                 port: 8080
 
     persistence:
       config:
         existingClaim: *app
         globalMounts:
-          - subPath: srv
-            path: /srv/sftpgo
-          - subPath: home
+          - subPath: data
+            path: /srv/sftpgo/data
+          - subPath: config
             path: /var/lib/sftpgo
       media:
         type: nfs
