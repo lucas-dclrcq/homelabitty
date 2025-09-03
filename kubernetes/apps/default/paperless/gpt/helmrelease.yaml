@@ -24,7 +24,7 @@ spec:
               PAPERLESS_PUBLIC_URL: https://paperless.${SECRET_DOMAIN}
               LLM_PROVIDER: openai
               LLM_MODEL: gpt-4o
-              LLM_LANGUAGE: German
+              LLM_LANGUAGE: French
               OCR_PROVIDER: llm
               VISION_LLM_PROVIDER: openai
               VISION_LLM_MODEL: gpt-4o
@@ -69,9 +69,9 @@ spec:
     route:
       app:
         hostnames:
-          - "{{ .Release.Name }}.${SECRET_DOMAIN}"
+          - "{{ .Release.Name }}.${LIMITED_DOMAIN}"
         parentRefs:
-          - name: external
+          - name: internal
             namespace: network
             sectionName: https
         rules:
