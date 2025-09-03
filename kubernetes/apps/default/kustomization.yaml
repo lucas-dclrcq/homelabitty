@@ -27,3 +27,4 @@ resources:
   - ./linkwarden/ks.yaml
 #  - ./wanderer/ks.yaml
   - ./habittrove/ks.yaml
+  - ./paperless/ks.yaml
