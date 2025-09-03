@@ -1,0 +1,98 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app paperless-gpt
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+  values:
+    controllers:
+      paperless-gpt:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/icereed/paperless-gpt
+              tag: v0.22.0@sha256:58840e45ebe67b5b717f80783414b4e9c4f57188e73051c0c83db805377e231f
+            env:
+              TZ: ${TIMEZONE}
+              PAPERLESS_BASE_URL: http://paperless.default.svc.cluster.local:8000
+              PAPERLESS_PUBLIC_URL: https://paperless.${SECRET_DOMAIN}
+              LLM_PROVIDER: openai
+              LLM_MODEL: gpt-4o
+              LLM_LANGUAGE: German
+              OCR_PROVIDER: llm
+              VISION_LLM_PROVIDER: openai
+              VISION_LLM_MODEL: gpt-4o
+              OCR_LIMIT_PAGES: 5
+              OCR_PROCESS_MODE: image
+              PDF_SKIP_EXISTING_OCR: false
+              PDF_OCR_TAGGING: false
+              PDF_UPLOAD: true
+              PDF_COPY_METADATA: true
+              AUTO_GENERATE_TAGS: false
+              AUTO_TAG: AI-GPT-Auto
+              AUTO_OCR_TAG: AI-OCR-Auto
+              MANUAL_TAG: AI-GPT
+            envFrom:
+              - secretRef:
+                  name: paperless-gpt-secret
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+            resources:
+              requests:
+                cpu: 10m
+                memory: 256Mi
+              limits:
+                memory: 1Gi
+
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: "${APP_UID}"
+        runAsGroup: "${APP_GID}"
+        fsGroup: "${APP_GID}"
+        fsGroupChangePolicy: OnRootMismatch
+
+    service:
+      app:
+        ports:
+          http:
+            port: &port 8080
+
+    route:
+      app:
+        hostnames:
+          - "{{ .Release.Name }}.${SECRET_DOMAIN}"
+        parentRefs:
+          - name: external
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
+
+    persistence:
+      data:
+        existingClaim: *app
+        advancedMounts:
+          paperless-gpt:
+            app:
+              - path: /app/db
+                subPath: db
+              - path: /app/prompts
+                subPath: prompts
+      tmpfs:
+        type: emptyDir
+        advancedMounts:
+          paperless-gpt:
+            app:
+              - path: /tmp
+                subPath: tmp
