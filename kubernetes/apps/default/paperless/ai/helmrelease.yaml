@@ -20,16 +20,7 @@ spec:
               tag: 3.0.7@sha256:25e1c501891e2d409f1df92e64e4e20b379a0197b7cd35cf98b49184d9da6814
             env:
               TZ: ${TIMEZONE}
-              ACTIVATE_TAGGING: no
-              AI_PROVIDER: openai
-              OPENAI_MODEL: gpt-4o
-              PAPERLESS_API_URL: http://paperless.default.svc.cluster.local:8000/api
-              PROCESS_PREDEFINED_DOCUMENTS: yes
-              USE_EXISTING_DATA: yes
-              RESTRICT_TO_EXISTING_TAGS: yes
-              RESTRICT_TO_EXISTING_DOCUMENT_TYPES: yes
-              SCAN_INTERVAL: "*/30 * * * *"
-              TAGS: AI
+
             envFrom:
               - secretRef:
                   name: paperless-ai-secret
