@@ -28,3 +28,4 @@ resources:
 #  - ./wanderer/ks.yaml
   - ./habittrove/ks.yaml
   - ./paperless/ks.yaml
+  - ./n8n/ks.yaml
