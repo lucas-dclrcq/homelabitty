@@ -31,7 +31,7 @@ spec:
           app:
             image:
               repository: ghcr.io/devianteng/lidarr-cache-warmer
-              tag: latest@sha256:d339a8660b6e9ba17ee7632393257c0c302df28988b710b2cf423831f944a985
+              tag: latest@sha256:4f0e0727f4bbfdac3adef4b7ce2b66d7cecfeea13457ec11e3420acc1fee208a
 
             env:
               CONFIG_PATH: /data/config.ini
