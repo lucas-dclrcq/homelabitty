@@ -13,3 +13,4 @@ resources:
   - ./keda/ks.yaml
   - ./silence-operator/ks.yaml
   - ./karma/ks.yaml
+  - ./tempo/ks.yaml
