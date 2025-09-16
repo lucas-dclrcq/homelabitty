@@ -138,23 +138,25 @@ loki.write "default" {
 }
 
 // TEMPO
-
 // OTLP receiver configuration
 otelcol.receiver.otlp "otlp_receiver" {
   grpc {
     endpoint = "0.0.0.0:4317"
+  }
 
   http {
-    endpoint = "0.0.0.0:
+    endpoint = "0.0.0.0"
     cors {
       allowed_origins = ["*"]
       allowed_headers = ["*"]
       max_age         = 600
     }
+  }
 
   output {
     traces = [otelcol.exporter.otlp.tempo.input]
   }
+}
 
 // OTLP exporter to Tempo
 otelcol.exporter.otlp "tempo" {
