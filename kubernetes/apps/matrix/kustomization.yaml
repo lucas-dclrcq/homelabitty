@@ -12,3 +12,5 @@ resources:
   - ./mautrix-facebook/ks.yaml
   - ./mautrix-whatsapp/ks.yaml
   - ./mas/ks.yaml
+  - ./livekit/ks.yaml
+  - ./livekit-jwt/ks.yaml
