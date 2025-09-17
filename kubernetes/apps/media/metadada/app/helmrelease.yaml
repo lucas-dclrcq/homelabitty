@@ -33,6 +33,7 @@ spec:
               tag: latest@sha256:9ab67fc561552e7a0ce970b11daf3e4cd7f93f4b9b11e40a2b1a7a43d332e533
 
             args:
+              - mbmeta
               - serve
 
             resources:
