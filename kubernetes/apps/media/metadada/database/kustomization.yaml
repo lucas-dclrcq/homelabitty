@@ -7,3 +7,4 @@ resources:
   - ./postgrescluster.yaml
   - ./rbac.yaml
   - ./clustersecretstore.yaml
+  - ./podmonitor.yaml
