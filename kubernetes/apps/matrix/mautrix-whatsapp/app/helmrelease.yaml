@@ -32,7 +32,7 @@ spec:
           main:
             image:
               repository: dock.mau.dev/mautrix/whatsapp
-              tag: v0.12.4
+              tag: v0.12.5
 
             env:
               TZ: "${TIMEZONE}"
