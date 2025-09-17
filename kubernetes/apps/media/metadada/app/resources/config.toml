@@ -1,0 +1,17 @@
+[db]
+user = "{{  .pg_user }}"
+password = "{{ .pg_password }}"
+host = "{{ .pg_uri }}"
+port = "{{ .pg_port }}"
+name = "{{ .pg_dbname }}"
+
+[meili]
+url = "http://metadada-meilisearch.media.svc.cluster.local:7700"
+api_key = "{{ .MEILI_MASTER_KEY }}"
+
+[api]
+port = 3000
+
+[sync]
+artist_batch_size = 10_000
+album_batch_size = 5_000

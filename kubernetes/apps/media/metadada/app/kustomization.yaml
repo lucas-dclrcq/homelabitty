@@ -5,3 +5,9 @@ resources:
   - ./helmrelease.yaml
   - ./externalsecret.yaml
   - ./pvc.yaml
+configMapGenerator:
+  - name: metadada-config-tpl
+    files:
+      - config.toml=./resources/config.toml
+generatorOptions:
+  disableNameSuffixHash: true

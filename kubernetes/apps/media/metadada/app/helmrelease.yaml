@@ -30,11 +30,10 @@ spec:
           main:
             image:
               repository: ghcr.io/oknozor/metadada
-              tag: latest@sha256:5418e8cff260cbdaa0eee2b895b9d768aa09813dceba11917ce0142ebb108646
+              tag: latest@sha256:9ab67fc561552e7a0ce970b11daf3e4cd7f93f4b9b11e40a2b1a7a43d332e533
 
-            envFrom:
-              - secretRef:
-                  name: metadada-secret
+            args:
+              - serve
 
             resources:
               requests:
@@ -54,31 +53,7 @@ spec:
 
             envFrom:
               - secretRef:
-                  name: metadada-secret
-
-            resources:
-              requests:
-                cpu: 10m
-                memory: 100Mi
-              limits:
-                memory: 1Gi
-
-      meilisearchui:
-        annotations:
-          reloader.stakater.com/auto: "true"
-        containers:
-          main:
-            image:
-              repository: riccoxie/meilisearch-ui
-              tag: latest
-
-            envFrom:
-              - secretRef:
-                  name: metadada-secret
-
-            env:
-              SINGLETON_MODE: "true"
-              SINGLETON_HOST: metadada-meilisearchui.media.svc.cluster.local:7700
+                  name: metadada-meilisearch-secret
 
             resources:
               requests:
@@ -88,7 +63,7 @@ spec:
                 memory: 1Gi
 
     service:
-      main:
+      app:
         controller: main
         ports:
           http:
@@ -98,29 +73,19 @@ spec:
         ports:
           http:
             port: 7700
-      meilisearchui:
-        controller: meilisearchui
-        ports:
-          http:
-            port: &meilisearchUiPort 24900
-
-    route:
-      app:
-        hostnames:
-          - "metadada-meilisearch-ui.${LIMITED_DOMAIN}"
-        parentRefs:
-          - name: internal
-            namespace: network
-            sectionName: https
-        rules:
-          - backendRefs:
-              - name: metadada-meilisearchui
-                port: *meilisearchUiPort
 
     persistence:
-      config:
+      data:
         existingClaim: metadada-meilisearch
         advancedMounts:
           meilisearch:
             main:
               - path: /meili_data
+      config:
+        type: secret
+        name: metadada-app-config
+        advancedMounts:
+          main:
+            main:
+              - subPath: config.toml
+                path: /config.toml
