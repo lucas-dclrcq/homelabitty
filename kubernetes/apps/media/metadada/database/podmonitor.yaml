@@ -34,4 +34,3 @@ spec:
   selector:
     matchLabels:
       postgres-operator.crunchydata.com/cluster: metadada
-      postgres-operator.crunchydata.com/crunchy-postgres-exporter: "true"
