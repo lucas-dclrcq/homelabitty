@@ -3,7 +3,7 @@ user = "{{  .pg_user }}"
 password = "{{ .pg_password }}"
 host = "{{ .pg_host }}"
 port = "{{ .pg_port }}"
-name = "{{ .pg_dbname }}"
+name = "metadada"
 
 [meili]
 url = "http://metadada-meilisearch.media.svc.cluster.local:7700"
