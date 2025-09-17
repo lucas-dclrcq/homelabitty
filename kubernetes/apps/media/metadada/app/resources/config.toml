@@ -1,7 +1,7 @@
 [db]
 user = "{{  .pg_user }}"
 password = "{{ .pg_password }}"
-host = "{{ .pg_uri }}"
+host = "{{ .pg_host }}"
 port = "{{ .pg_port }}"
 name = "{{ .pg_dbname }}"
 
