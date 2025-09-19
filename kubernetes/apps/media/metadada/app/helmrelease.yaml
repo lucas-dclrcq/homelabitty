@@ -30,18 +30,16 @@ spec:
           main:
             image:
               repository: ghcr.io/oknozor/metadada
-              tag: latest@sha256:580c58664dda282be3a859e72a623c9ca3df0c247d3ff6c0cf25b3799b740931
+              tag: latest@sha256:7d6905c0a037f9e0561df082ea12677e6e802d83c059dc15fad3d5c9a0e79bb6
             args:
               - mbmeta
               - serve
-
             resources:
               requests:
                 cpu: 100m
                 memory: 1Gi
               limits:
                 memory: 8Gi
-
       meilisearch:
         annotations:
           reloader.stakater.com/auto: "true"
@@ -50,18 +48,15 @@ spec:
             image:
               repository: getmeili/meilisearch
               tag: v1.20.0
-
             envFrom:
               - secretRef:
                   name: metadada-meilisearch-secret
-
             resources:
               requests:
                 cpu: 10m
                 memory: 100Mi
               limits:
                 memory: 8Gi
-
     service:
       app:
         controller: main
@@ -73,7 +68,6 @@ spec:
         ports:
           http:
             port: 7700
-
     persistence:
       data:
         existingClaim: metadada-meilisearch
