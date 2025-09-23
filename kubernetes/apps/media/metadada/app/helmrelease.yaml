@@ -32,7 +32,7 @@ spec:
               repository: ghcr.io/oknozor/metadada
               tag: latest@sha256:2f2febe590b3c36cebe515df769fa416bd78a1ab059c581dcc7a3c236525fadf
             args:
-              - mbmeta
+              - metadada
               - serve
             resources:
               requests:
