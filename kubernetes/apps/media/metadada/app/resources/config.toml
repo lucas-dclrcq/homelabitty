@@ -15,3 +15,60 @@ port = 3000
 [sync]
 artist_batch_size = 10_000
 album_batch_size = 5_000
+
+[musicbrainz]
+url = "https://metabrainz.org/api/musicbrainz"
+token = "{{ .MUSICBRAINZ_TOKEN }}"
+
+[schema]
+keep_only = [
+  "musicbrainz",
+  "cover_art_archive",
+  "dbmirror2",
+]
+
+[tables]
+keep_only = [
+  "replication_control",
+  "artist",
+  "artist_gid_redirect",
+  "artist_alias",
+  "artist_type",
+  "artist_meta",
+  "url",
+  "l_artist_url",
+  "genre",
+  "tag",
+  "artist_tag",
+  "release_group",
+  "release_group_gid_redirect",
+  "release_group_primary_type",
+  "release_group_secondary_type",
+  "release_group_secondary_type_join",
+  "release_group_meta",
+  "release",
+  "release_status",
+  "artist_credit_name",
+  "release_group_alias",
+  "l_release_group_url",
+  "release_group_tag",
+  "release_gid_redirect",
+  "release_country",
+  "release_unknown_country",
+  "release_label",
+  "label",
+  "area",
+  "country_area",
+  "medium",
+  "medium_format",
+  "track",
+  "track_gid_redirect",
+  "recording",
+  "recording_gid_redirect",
+  "art_type",
+  "cover_art",
+  "cover_art_type",
+  "cover_art",
+  "image_type",
+  "release_group_cover_art",
+]
