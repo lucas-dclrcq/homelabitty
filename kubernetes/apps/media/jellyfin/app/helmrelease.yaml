@@ -29,7 +29,7 @@ spec:
           reloader.stakater.com/auto: "true"
 
         containers:
-          app:
+          jellyfin:
             image:
               repository: ghcr.io/jellyfin/jellyfin
               tag: 10.10.7@sha256:e4d1dc5374344446a3a78e43dd211247f22afba84ea2e5a13cbe1a94e1ff2141
@@ -48,10 +48,10 @@ spec:
                   httpGet:
                     path: /health
                     port: &port 8096
-                  initialDelaySeconds: 0
+                  initialDelaySeconds: 10
                   periodSeconds: 10
                   timeoutSeconds: 3
-                  failureThreshold: 3
+                  failureThreshold: 5
               readiness: *probes
               startup:
                 enabled: false
@@ -65,11 +65,46 @@ spec:
                 gpu.intel.com/i915: 1
                 memory: 16Gi
 
+          jellysearch:
+            image:
+              repository: domistyle/jellysearch
+              tag: latest@sha256:e758fefa1020c0a6fb2504f48d150f9ed454a5155ca61bf2d89ff9df50ea171d
+            env:
+              INDEX_CRON: "0 0 0/2 ? * * *"
+              JELLYFIN_URL: "https://jellyfin.hoohoot.org"
+              MEILI_URL: "http://jellyfin-meilisearch.media.svc.cluster.local:7700"
+              MEILI_MASTER_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: jellyfin-secret
+                    key: MEILI_MASTER_KEY
+
+      meilisearch:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          main:
+            image:
+              repository: getmeili/meilisearch
+              tag: v1.22.0
+            env:
+              MEILI_MASTER_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: jellyfin-secret
+                    key: MEILI_MASTER_KEY
+            resources:
+              requests:
+                cpu: 10m
+                memory: 100Mi
+              limits:
+                memory: 2Gi
+
     defaultPodOptions:
       securityContext:
-        runAsUser: 1026
-        runAsGroup: 100
-        fsGroup: 100
+        runAsUser: "${APP_UID}"
+        runAsGroup: "${APP_GID}"
+        fsGroup: "${APP_GID}"
         fsGroupChangePolicy: OnRootMismatch
       affinity:
         nodeAffinity:
@@ -81,11 +116,16 @@ spec:
                     operator: "In"
                     values: ["bee", "burrich", "fool"]
     service:
-      app:
+      jellyfin:
         controller: *app
         ports:
           http:
             port: *port
+      meilisearch:
+        controller: meilisearch
+        ports:
+          http:
+            port: 7700
 
     route:
       app:
@@ -97,33 +137,63 @@ spec:
             sectionName: https
         rules:
           - backendRefs:
-              - name: *app
+              - name: jellyfin-jellyfin
+                port: 5000
+            matches:
+              - path:
+                  type: PathPrefix
+                  value: /Genres
+              - queryParams:
+                  - type: RegularExpression
+                    name: "SearchTerm"
+                    value: ".*"
+              - queryParams:
+                  - type: Exact
+                    name: "searchTerm"
+                    value: ".*"
+          - backendRefs:
+              - name: jellyfin-jellyfin
                 port: *port
-            timeouts:
-              request: "600s"
-
+            matches:
+              - path:
+                  type: PathPrefix
+                  value: /
     persistence:
       config:
         enabled: true
         existingClaim: *app
-        globalMounts:
-          - path: /config
-
+        advancedMounts:
+          jellyfin:
+            jellyfin:
+              - path: /config
+            jellysearch:
+              - path: /config
+                readOnly: true
       media:
         type: nfs
         server: "truenas.${INTERNAL_DOMAIN}"
         path: /mnt/tank/Media
-        globalMounts:
-          - path: /media
-
+        advancedMounts:
+          jellyfin:
+            jellyfin:
+              - path: /media
       transcode:
         enabled: true
         type: emptyDir
-        globalMounts:
-          - path: /transcode
-
+        advancedMounts:
+          jellyfin:
+            jellyfin:
+              - path: /transcode
       cache:
         enabled: true
         type: emptyDir
-        globalMounts:
-          - path: /cache
+        advancedMounts:
+          jellyfin:
+            jellyfin:
+              - path: /cache
+      meilisearch:
+        existingClaim: jellyfin-meilisearch
+        advancedMounts:
+          meilisearch:
+            main:
+              - path: /meili_data
