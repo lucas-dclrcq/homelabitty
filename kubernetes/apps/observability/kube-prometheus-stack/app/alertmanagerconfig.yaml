@@ -59,6 +59,7 @@ spec:
         - urlSecret:
             name: *secret
             key: GATUS_HEARTBEAT_URL
+          httpMethod: POST
           httpConfig:
             authorization:
               type: Bearer
