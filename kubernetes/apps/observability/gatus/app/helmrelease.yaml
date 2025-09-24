@@ -123,9 +123,9 @@ spec:
     route:
       app:
         hostnames:
-          - "status.${SECRET_DOMAIN}"
+          - "status.${LIMITED_DOMAIN}"
         parentRefs:
-          - name: external
+          - name: internal
             namespace: network
             sectionName: https
         rules:
