@@ -47,7 +47,7 @@ spec:
           main:
             image:
               repository: getmeili/meilisearch
-              tag: v1.20.0
+              tag: v1.22.0
             envFrom:
               - secretRef:
                   name: metadada-meilisearch-secret
