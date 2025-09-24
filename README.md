@@ -26,6 +26,8 @@ _... managed with Flux, Renovate, and GitHub Actions_ 🤖
 </div>
 <div align="center">
 
+![Alert Manager Heartbeat](https://healthchecks.io/b/2/54405929-0cab-4e44-9404-07ac4f54da8a.svg)
+
 [![Node-Count](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.hoohoot.org%2Fcluster_node_count&style=flat-square&label=Nodes)](https://github.com/kashalls/kromgo)
 &nbsp;&nbsp;
 [![Nodes-Memory](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.hoohoot.org%2Fcluster_total_ram&style=flat-square&label=RAM)](https://github.com/kashalls/kromgo)
