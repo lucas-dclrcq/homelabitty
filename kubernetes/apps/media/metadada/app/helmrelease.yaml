@@ -30,7 +30,7 @@ spec:
           main:
             image:
               repository: ghcr.io/oknozor/metadada
-              tag: latest@sha256:2bcc2d1778f7e336b8ed747c8224370d564d4512d6cbdd9d7dac382e713bd616
+              tag: latest@sha256:52f6fdb3670d41e9cf9b81010c7b71745a1894c05d47e969e26577e572f7fbbc
             args:
               - metadada
               - serve
