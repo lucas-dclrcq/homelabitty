@@ -71,7 +71,7 @@ spec:
               tag: latest@sha256:e758fefa1020c0a6fb2504f48d150f9ed454a5155ca61bf2d89ff9df50ea171d
             env:
               INDEX_CRON: "0 0 0/2 ? * * *"
-              JELLYFIN_URL: "https://jellyfin.hoohoot.org"
+              JELLYFIN_URL: "http://localhost:8096"
               MEILI_URL: "http://jellyfin-meilisearch.media.svc.cluster.local:7700"
               MEILI_MASTER_KEY:
                 valueFrom:
