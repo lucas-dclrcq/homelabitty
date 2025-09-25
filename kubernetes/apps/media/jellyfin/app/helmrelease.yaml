@@ -142,9 +142,6 @@ spec:
               - name: *app
                 port: 5000
             matches:
-              - path:
-                  type: PathPrefix
-                  value: /Genres
               - queryParams:
                   - type: RegularExpression
                     name: "SearchTerm"
