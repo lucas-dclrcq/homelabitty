@@ -121,6 +121,8 @@ spec:
         ports:
           http:
             port: *port
+          jellysearch:
+            port: 5000
       meilisearch:
         controller: meilisearch
         ports:
@@ -137,7 +139,7 @@ spec:
             sectionName: https
         rules:
           - backendRefs:
-              - name: jellyfin-jellyfin
+              - name: *app
                 port: 5000
             matches:
               - path:
@@ -152,7 +154,7 @@ spec:
                     name: "searchTerm"
                     value: ".*"
           - backendRefs:
-              - name: jellyfin-jellyfin
+              - name: *app
                 port: *port
             matches:
               - path:
