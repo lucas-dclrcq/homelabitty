@@ -83,3 +83,9 @@ spec:
             main:
               - subPath: config.toml
                 path: /config.toml
+      tmp:
+        type: emptyDir
+        advancedMounts:
+          main:
+            main:
+              - path: /tmp
