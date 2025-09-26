@@ -19,12 +19,10 @@ spec:
 
   patroni: # turn on sync writes to at least 1 other replica
     dynamicConfiguration:
-      synchronous_mode: true
       postgresql:
         parameters:
           max_connections: 100
         max_wal_size: 5GB
-        synchronous_commit: "on"
         pg_hba:
           - hostnossl all all 10.69.0.0/16 md5
           - hostnossl all all 192.168.1.1/24 md5
