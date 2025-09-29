@@ -61,3 +61,9 @@ spec:
         - "metadada"
       password:
         type: AlphaNumeric
+    - name: "musicbrainz"
+      databases:
+        - "musicbrainz"
+      options: "SUPERUSER"
+      password:
+        type: AlphaNumeric
