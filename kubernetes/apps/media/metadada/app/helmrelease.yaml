@@ -47,7 +47,8 @@ spec:
           main:
             image:
               repository: getmeili/meilisearch
-              tag: v1.20.0
+              tag: v1.22.1
+            command: ["/bin/meilisearch", "--experimental-dumpless-upgrade"]
             envFrom:
               - secretRef:
                   name: metadada-meilisearch-secret
