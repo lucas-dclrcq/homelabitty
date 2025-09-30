@@ -5,26 +5,10 @@ kind: HelmRelease
 metadata:
   name: &app snmp-exporter
 spec:
-  interval: 30m
-  chart:
-    spec:
-      chart: prometheus-snmp-exporter
-      version: 9.6.2
-      sourceRef:
-        kind: HelmRepository
-        name: prometheus-community
-        namespace: flux-system
-  install:
-    remediation:
-      retries: 3
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      strategy: rollback
-      retries: 3
-  dependsOn:
-    - name: kube-prometheus-stack
-      namespace: observability
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: *app
   values:
     fullnameOverride: *app
     serviceMonitor:
