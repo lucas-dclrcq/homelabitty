@@ -1,7 +1,7 @@
 <div align="center">
 
 
-<img src="https://raw.githubusercontent.com/onedr0p/home-ops/main/docs/src/assets/logo.png" align="center" width="144px" height="144px"/>
+<img src="./docs/assets/brand_icon.svg" align="center"/>
 
 ### My Homelab Gitops repository
 
