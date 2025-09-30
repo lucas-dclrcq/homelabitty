@@ -11,6 +11,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   components:
+    - ../../../../components/defaults
     - ../../../../components/dragonfly
     - ../../../../components/volsync
   path: ./kubernetes/apps/default/paperless/app
