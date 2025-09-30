@@ -1,7 +1,7 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/budimanjojo/talhelper/master/pkg/config/schemas/talconfig.json
 ---
 # renovate: datasource=docker depName=ghcr.io/siderolabs/installer
-talosVersion: 1.10.4
+talosVersion: 1.10.6
 # renovate: datasource=docker depName=ghcr.io/siderolabs/kubelet
 kubernetesVersion: v1.33.4
 
@@ -25,7 +25,6 @@ nodes:
     ipAddress: "192.168.1.11"
     installDiskSelector:
       type: nvme
-    talosImageURL: &imageUrl factory.talos.dev/installer/4b3cd373a192c8469e859b7a0cfbed3ecc3577c4a2d346a37b0aeff9cd17cdb0
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
@@ -44,7 +43,6 @@ nodes:
     ipAddress: "192.168.1.12"
     installDiskSelector:
       type: nvme
-    talosImageURL: *imageUrl
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
@@ -63,7 +61,6 @@ nodes:
     ipAddress: "192.168.1.13"
     installDiskSelector:
       type: nvme
-    talosImageURL: *imageUrl
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
@@ -82,7 +79,6 @@ nodes:
     ipAddress: "192.168.1.14"
     installDiskSelector:
       type: nvme
-    talosImageURL: *imageUrl
     controlPlane: false
     networkInterfaces:
       - deviceSelector:
@@ -99,7 +95,6 @@ nodes:
     ipAddress: "192.168.1.15"
     installDiskSelector:
       type: nvme
-    talosImageURL: *imageUrl
     controlPlane: false
     networkInterfaces:
       - deviceSelector:
@@ -116,7 +111,6 @@ nodes:
     ipAddress: "192.168.1.16"
     installDiskSelector:
       type: nvme
-    talosImageURL: *imageUrl
     controlPlane: false
     networkInterfaces:
       - deviceSelector:
@@ -221,17 +215,6 @@ patches:
             source: /var/openebs/local
             options: ["bind", "rshared", "rw"]
 
-  - |-
-    machine:
-      install:
-        extraKernelArgs:
-          - apparmor=0           # Less security, More speed
-          - init_on_alloc=0      # Less security, More speed
-          - init_on_free=0       # Less security, More speed
-          - mitigations=off      # Less security, More speed
-          - security=none        # Less security, More speed
-          - net.ifnames=1        # Enable predictable NIC naming
-
   # Host DNS
   - |-
     machine:
@@ -243,6 +226,22 @@ patches:
 
 # Controller patches
 controlPlane:
+  schematic:
+    customization:
+      extraKernelArgs:
+        - intel_iommu=on
+        - iommu=pt
+        - apparmor=0
+        - init_on_free=0
+        - init_on_alloc=0
+        - mitigations=off
+        - security=none
+        - net.ifnames=1
+      systemExtensions:
+        officialExtensions:
+          - siderolabs/i915
+          - siderolabs/intel-ucode
+          - siderolabs/mei
   patches:
     # Cluster configuration
     - |-

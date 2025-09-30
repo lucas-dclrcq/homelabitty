@@ -72,7 +72,7 @@ task talos:apply-node HOSTNAME=? MODE=?
 
 ```sh
 # Upgrade node to a newer Talos version
-task talos:upgrade-node HOSTNAME=?
+task talos:upgrade-node NODE=?
 # e.g. task talos:upgrade HOSTNAME=k8s-0
 ```
 

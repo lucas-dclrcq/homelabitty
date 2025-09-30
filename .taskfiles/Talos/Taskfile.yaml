@@ -23,45 +23,41 @@ tasks:
       - which talhelper
 
   apply-node:
-    desc: Apply Talos config to a node [HOSTNAME=required]
-    cmds:
-      - talosctl --nodes {{.HOSTNAME}} apply-config --mode={{.MODE}} --file {{.TALHELPER_CLUSTER_DIR}}/{{.CLUSTER_NAME}}-{{.HOSTNAME}}.yaml
-      - talosctl --nodes {{.HOSTNAME}} health --wait-timeout=10m --server=false
-    vars:
-      CLUSTER_NAME:
-        sh: yq '.clusterName' {{.TALHELPER_CONFIG_FILE}}
-      MODE: '{{.MODE | default "auto"}}'
-    requires:
-      vars: [HOSTNAME]
+    desc: Apply Talos config to a node [NODE=required]
     preconditions:
-      - talosctl --nodes {{.HOSTNAME}} get machineconfig &>/dev/null
-      - talosctl config info &>/dev/null
-      - test -f {{.TALHELPER_CLUSTER_DIR}}/{{.CLUSTER_NAME}}-{{.HOSTNAME}}.yaml
-      - test -f {{.TALOSCONFIG}}
-      - which talosctl yq
+      - which talosctl
+      - test -f "${TALOSCONFIG}"
+      - talosctl --nodes {{.NODE}} get machineconfig
+    requires:
+      vars:
+        - NODE
+    vars:
+      FILE:
+        sh: ls {{.TALHELPER_CLUSTER_DIR}}/hoohoot-{{.NODE}}.yaml
+    cmds:
+      - task: _apply-machineconfig
+        vars:
+          FILENAME: "{{.FILE}}"
+          HOSTNAME: "{{.NODE}}"
+      - talosctl --nodes {{.NODE}} health
 
   upgrade-node:
-    desc: Upgrade Talos on a single node [HOSTNAME=required]
-    cmds:
-      - task: down
-      - talosctl --nodes {{.HOSTNAME}} upgrade --image="factory.talos.dev/installer{{if eq .TALOS_SECUREBOOT "true"}}-secureboot{{end}}/{{.TALOS_SCHEMATIC_ID}}:{{.TALOS_VERSION}}" --timeout=10m
-      - talosctl --nodes {{.HOSTNAME}} health --wait-timeout=10m --server=false
-      - task: up
-    vars:
-      TALOS_SCHEMATIC_ID:
-        sh: kubectl get node {{.HOSTNAME}} --output=jsonpath='{.metadata.annotations.extensions\.talos\.dev/schematic}'
-      TALOS_SECUREBOOT:
-        sh: talosctl --nodes {{.HOSTNAME}} get securitystate --output=jsonpath='{.spec.secureBoot}'
-      TALOS_VERSION:
-        sh: yq '.talosVersion' {{.TALHELPER_CONFIG_FILE}}
-    requires:
-      vars: [HOSTNAME]
+    desc: Upgrade Talos on a single node [NODE=required]
     preconditions:
-      - curl -fsSL -o /dev/null --fail https://github.com/siderolabs/talos/releases/tag/{{.TALOS_VERSION}}
-      - talosctl --nodes {{.HOSTNAME}} get machineconfig &>/dev/null
-      - talosctl config info &>/dev/null
-      - test -f {{.TALOSCONFIG}}
-      - which kubectl talosctl yq
+      - which talosctl
+      - test -f "${TALOSCONFIG}"
+      - talosctl --nodes {{.NODE}} get machineconfig
+    requires:
+      vars:
+        - NODE
+    vars:
+      FILE:
+        sh: ls {{.TALHELPER_CLUSTER_DIR}}/hoohoot-{{.NODE}}.yaml
+      TALOS_IMAGE:
+        sh: yq '.machine.install.image' < "{{.FILE}}"
+    cmds:
+      - talosctl --nodes {{.NODE}} upgrade --image="{{.TALOS_IMAGE}}" --timeout=10m
+      - talosctl --nodes {{.NODE}} health
 
   upgrade-k8s:
     desc: Upgrade Kubernetes
@@ -97,3 +93,24 @@ tasks:
     cmd: flux --namespace flux-system resume kustomization --all
     preconditions:
       - which flux
+
+
+  _apply-machineconfig:
+    internal: true
+    desc: Apply a single Talos machineConfig to a Talos node
+    preconditions:
+      - which talosctl
+      - test -f "{{.FILENAME}}"
+    requires:
+      vars:
+        - HOSTNAME
+        - FILENAME
+    vars:
+      MODE: '{{.MODE | default "auto"}}'
+    cmds:
+      - talosctl apply-config
+        --nodes "{{.HOSTNAME}}"
+        --file "{{.FILENAME}}"
+        --mode="{{.MODE}}"
+        {{ if eq "true" .INSECURE }}--insecure{{ end }}
+        {{ if eq "true" .DRY_RUN }}--dry-run{{ end }}
