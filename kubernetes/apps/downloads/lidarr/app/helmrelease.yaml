@@ -5,11 +5,10 @@ kind: HelmRelease
 metadata:
   name: &app lidarr
 spec:
-  interval: 15m
+  interval: 1h
   chartRef:
     kind: OCIRepository
-    name: app-template
-    namespace: flux-system
+    name: *app
   maxHistory: 3
   install:
     remediation:
