@@ -86,7 +86,7 @@ spec:
           main:
             image:
               repository: getmeili/meilisearch
-              tag: v1.22.1
+              tag: v1.22.2
             command: ["/bin/meilisearch", "--experimental-dumpless-upgrade"]
             env:
               MEILI_MASTER_KEY:
