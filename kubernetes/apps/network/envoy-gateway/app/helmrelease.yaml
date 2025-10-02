@@ -5,25 +5,17 @@ kind: HelmRelease
 metadata:
   name: envoy-gateway
 spec:
-  interval: 15m
+  interval: 1h
   chartRef:
     kind: OCIRepository
     name: envoy-gateway
-  install:
-    createNamespace: true
-    crds: CreateReplace
-    remediation:
-      retries: 5
-  upgrade:
-    remediation:
-      retries: 5
   values:
-    deployment:
-      replicas: 2
+    global:
+      imageRegistry: mirror.gcr.io
     config:
       envoyGateway:
-        gateway:
-          controllerName: gateway.envoyproxy.io/gatewayclass-controller
-      logging:
-        level:
-          default: debug
+        provider:
+          type: Kubernetes
+          kubernetes:
+            deploy:
+              type: GatewayNamespace
