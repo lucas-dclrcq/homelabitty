@@ -7,15 +7,11 @@ metadata:
   annotations:
     external-dns.alpha.kubernetes.io/target: &hostname gateway-ext.${SECRET_DOMAIN}
 spec:
-  gatewayClassName: envoy-gateway
+  gatewayClassName: envoy
   infrastructure:
     annotations:
       external-dns.alpha.kubernetes.io/hostname: *hostname
       lbipam.cilium.io/ips: "${LB_GATEWAY_EXT}"
-    parametersRef:
-      group: gateway.envoyproxy.io
-      kind: EnvoyProxy
-      name: external-proxy-config
   listeners:
     - name: http
       protocol: HTTP
