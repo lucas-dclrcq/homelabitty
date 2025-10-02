@@ -8,3 +8,5 @@ resources:
   - ./internal
   - ./external
   - ./redirect.yaml
+  - ./backend-traffic-policy.yaml
+  - ./client-traffic-policy.yaml
