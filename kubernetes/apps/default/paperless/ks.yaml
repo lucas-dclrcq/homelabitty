@@ -20,9 +20,7 @@ spec:
     name: home-kubernetes
     namespace: flux-system
   wait: false
-  interval: 30m
-  retryInterval: 1m
-  timeout: 5m
+  interval: 1h
   postBuild:
     substitute:
       APP: *app
@@ -48,9 +46,7 @@ spec:
     name: home-kubernetes
     namespace: flux-system
   wait: false
-  interval: 30m
-  retryInterval: 1m
-  timeout: 5m
+  interval: 1h
   postBuild:
     substitute:
       APP: *app

@@ -22,7 +22,6 @@ resources:
   - ./outline/ks.yaml
   - ./grist/ks.yaml
   - ./vikunja/ks.yaml
-#  - ./filature/ks.yaml
   - ./linkwarden/ks.yaml
   - ./habittrove/ks.yaml
   - ./paperless/ks.yaml

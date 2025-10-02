@@ -19,9 +19,7 @@ spec:
     name: home-kubernetes
     namespace: *namespace
   wait: true
-  interval: 30m
-  retryInterval: 1m
-  timeout: 5m
+  interval: 1h
   postBuild:
     substitute:
       APP: *app
