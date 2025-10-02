@@ -6,16 +6,23 @@ metadata:
   name: &app external-dns-cloudflare
   namespace: flux-system
 spec:
+  healthChecks:
+    - apiVersion: helm.toolkit.fluxcd.io/v2
+      kind: HelmRelease
+      name: external-dns-cloudflare
+      namespace: network
+    - apiVersion: apiextensions.k8s.io/v1
+      kind: CustomResourceDefinition
+      name: dnsendpoints.externaldns.k8s.io
   targetNamespace: network
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
   path: ./kubernetes/apps/network/external-dns/cloudflare
-  prune: false
+  prune: true
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
-  wait: true
   interval: 1h
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
@@ -30,9 +37,9 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   path: ./kubernetes/apps/network/external-dns/unifi
-  prune: false
+  prune: true
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
-  wait: true
+  wait: false
   interval: 1h
