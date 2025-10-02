@@ -10,8 +10,7 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *appname
-  interval: 30m
-  timeout: 5m
+  interval: 1h
   path: "./kubernetes/apps/observability/silence-operator/operator"
   prune: true
   sourceRef:
@@ -30,8 +29,7 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *appname
-  interval: 30m
-  timeout: 5m
+  interval: 1h
   path: "./kubernetes/apps/observability/silence-operator/silences"
   prune: true
   sourceRef:

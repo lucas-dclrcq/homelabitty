@@ -9,16 +9,7 @@ spec:
   chartRef:
     kind: OCIRepository
     name: silence-operator
-  install:
-    remediation:
-      retries: -1
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      retries: 3
   values:
-    crds:
-      install: true
     alertmanagerAddress: http://kube-prometheus-stack-alertmanager:9093
     image:
       registry: quay.io
