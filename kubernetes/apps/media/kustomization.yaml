@@ -12,4 +12,3 @@ resources:
   - ./audiobookshelf/ks.yaml
   - ./komga/ks.yaml
   - ./the-elder-scrobz/ks.yaml
-  - ./metadada/ks.yaml
