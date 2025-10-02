@@ -59,6 +59,9 @@ spec:
 
     route:
       app:
+        annotations:
+          gatus.home-operations.com/endpoint: |-
+            group: Misc
         hostnames:
           - "docs.${SECRET_DOMAIN}"
         parentRefs:

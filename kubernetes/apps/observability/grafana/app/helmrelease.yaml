@@ -440,6 +440,9 @@ spec:
     route:
       main:
         enabled: true
+        annotations:
+          gatus.home-operations.com/endpoint: |-
+            group: Observability
         hostnames:
           - "grafana.${SECRET_DOMAIN}"
         parentRefs:

@@ -7,7 +7,7 @@ spec:
   hostnames:
     - hubble.${LIMITED_DOMAIN}
   parentRefs:
-    - name: external
+    - name: internal
       namespace: network
       sectionName: https
   rules:

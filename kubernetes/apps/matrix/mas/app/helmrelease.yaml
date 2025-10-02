@@ -44,6 +44,9 @@ spec:
             port: &port 8080
     route:
       app:
+        annotations:
+          gatus.home-operations.com/endpoint: |-
+            group: Matrix
         hostnames:
           - "{{ .Release.Name }}.${SECRET_DOMAIN}"
         parentRefs:

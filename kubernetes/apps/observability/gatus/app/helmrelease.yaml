@@ -24,7 +24,6 @@ spec:
               repository: ghcr.io/home-operations/gatus-sidecar
               tag: 0.0.3@sha256:9d227ecdd2b1db04f484c108d58f6defb3f72447c44ddb8f609d2e66f77f52d4
             args:
-              - --auto-routes
               - --gateway=external
             resources:
               requests:
@@ -127,8 +126,8 @@ spec:
       config:
         type: emptyDir
       config-file:
-        type: configMap
-        name: gatus-config
+        type: secret
+        name: gatus-secret
         globalMounts:
           - path: /config/config.yaml
             subPath: config.yaml

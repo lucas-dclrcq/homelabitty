@@ -137,6 +137,10 @@ spec:
 
     gateway:
       enabled: true
+      annotations:
+        gatus.home-operations.com/endpoint: |-
+          url: https://${SECRET_DOMAIN}/.well-known/matrix/client
+          group: Matrix
       parentRefs:
         - name: external
           namespace: network

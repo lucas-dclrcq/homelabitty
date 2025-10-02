@@ -98,6 +98,9 @@ spec:
 
     route:
       api:
+        annotations:
+          gatus.home-operations.com/endpoint: |-
+            group: Media
         hostnames:
           - "music-api.${SECRET_DOMAIN}"
         parentRefs:
@@ -109,6 +112,9 @@ spec:
               - name: *app
                 port: *port
       main:
+        annotations:
+          gatus.home-operations.com/endpoint: |-
+            group: Media
         hostnames:
           - "music.${SECRET_DOMAIN}"
         parentRefs:

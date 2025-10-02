@@ -10,5 +10,21 @@ web:
   port: $${WEB_PORT}
 
 ui:
-  title: Health Status
-  header: Health Status
+  header: Hoohoot
+  link: https://status.${SECRET_DOMAIN}
+  dark-mode: false
+  default-sort-by: group
+  buttons:
+    - name: "Home"
+      link: "https://sso.${SECRET_DOMAIN}"
+
+alerting:
+  matrix:
+    server-url: "http://synapse-matrix-synapse.matrix.svc.cluster.local:8008"
+    access-token: {{ .MATRIX_TOKEN }}
+    internal-room-id: "!IccgAPArvRtfPCBFPF:${SECRET_DOMAIN}"
+    default-alert:
+      description: health-check failed
+      send-on-resolved: true
+      failure-threshold: 3
+      success-threshold: 3
