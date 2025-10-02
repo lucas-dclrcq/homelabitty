@@ -12,7 +12,6 @@ spec:
       app.kubernetes.io/name: *app
   components:
     - ../../../../components/dragonfly
-    - ../../../../components/gatus/external
     - ../../../../components/volsync
   path: ./kubernetes/apps/default/outline/app
   prune: true

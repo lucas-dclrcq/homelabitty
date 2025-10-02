@@ -19,23 +19,19 @@ spec:
           reloader.stakater.com/auto: "true"
 
         initContainers:
-          init-config:
+          gatus-sidecar:
             image:
-              repository: ghcr.io/kiwigrid/k8s-sidecar
-              tag: 1.30.10@sha256:835d79d8fbae62e42d8a86929d4e3c5eec2e869255dd37756b5a3166c2f22309
-            env:
-              FOLDER: /config
-              LABEL: gatus.io/enabled
-              NAMESPACE: ALL
-              RESOURCE: both
-              UNIQUE_FILENAMES: true
-              METHOD: WATCH
-            restartPolicy: Always
-            resources: &resources
+              repository: ghcr.io/home-operations/gatus-sidecar
+              tag: 0.0.3@sha256:9d227ecdd2b1db04f484c108d58f6defb3f72447c44ddb8f609d2e66f77f52d4
+            args:
+              - --auto-routes
+              - --gateway=external
+            resources:
               requests:
                 cpu: 10m
               limits:
-                memory: 256Mi
+                memory: 64Mi
+            restartPolicy: Always
 
         containers:
           app:
@@ -47,13 +43,6 @@ spec:
               GATUS_CONFIG_PATH: /config
               GATUS_DELAY_START_SECONDS: 5
               WEB_PORT: &port 80
-
-            envFrom:
-              - secretRef:
-                  name: gatus-secret
-              - secretRef:
-                  name: gatus-db-secret
-
             probes:
               liveness: &probes
                 enabled: true
@@ -67,26 +56,21 @@ spec:
                   timeoutSeconds: 1
                   failureThreshold: 3
               readiness: *probes
-
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
-            resources: *resources
-        serviceAccount:
-          identifier: *app
-    defaultPodOptions:
-      dnsConfig:
-        options:
-          - { name: ndots, value: "1" }
+            resources:
+              requests:
+                cpu: 100m
+              limits:
+                memory: 256Mi
 
+    defaultPodOptions:
       securityContext:
         runAsNonRoot: true
-        runAsUser: 65534
-        runAsGroup: 65534
-        fsGroup: 65534
-        fsGroupChangePolicy: OnRootMismatch
-        seccompProfile: { type: RuntimeDefault }
+        runAsUser: "${APP_UID}"
+        runAsGroup: "${APP_GID}"
 
     service:
       app:
@@ -97,23 +81,13 @@ spec:
 
     serviceMonitor:
       app:
-        serviceName: *app
         endpoints:
           - port: http
-            scheme: http
-            path: /metrics
-            interval: 1m
-            scrapeTimeout: 10s
-            metricRelabelings:
-              - action: labeldrop
-                regex: (pod)
-              - action: replace
-                sourceLabels: ["service"]
-                targetLabel: instance
 
     route:
       app:
         hostnames:
+          - "{{ .Release.Name }}.${LIMITED_DOMAIN}"
           - "status.${LIMITED_DOMAIN}"
         parentRefs:
           - name: internal
@@ -123,6 +97,27 @@ spec:
           - backendRefs:
               - name: *app
                 port: *port
+
+    rbac:
+      roles:
+        gatus:
+          type: ClusterRole
+          rules:
+            - apiGroups:
+                - gateway.networking.k8s.io
+              resources:
+                - httproutes
+              verbs:
+                - get
+                - watch
+                - list
+      bindings:
+        gatus:
+          type: ClusterRoleBinding
+          roleRef:
+            identifier: gatus
+          subjects:
+            - identifier: gatus
 
     serviceAccount:
       gatus:

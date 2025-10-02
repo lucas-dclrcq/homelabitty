@@ -12,7 +12,6 @@ spec:
       app.kubernetes.io/name: *app
   components:
     - ../../../../components/volsync
-    - ../../../../components/gatus/external
   path: ./kubernetes/apps/observability/grafana/app
   prune: true
   sourceRef:

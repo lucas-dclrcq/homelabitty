@@ -11,7 +11,6 @@ spec:
       app.kubernetes.io/name: *app
   path: ./kubernetes/apps/auth/authentik/app
   components:
-    - ../../../../components/gatus/external
     - ../../../../components/dragonfly
   prune: true
   sourceRef:

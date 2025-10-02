@@ -10,8 +10,6 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  components:
-    - ../../../../components/gatus/external
   path: ./kubernetes/apps/matrix/element/app
   dependsOn:
     - name: synapse
