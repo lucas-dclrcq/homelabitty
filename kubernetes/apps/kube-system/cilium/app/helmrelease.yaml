@@ -18,6 +18,7 @@ spec:
       retries: 3
   values:
     autoDirectNodeRoutes: true
+    # https://docs.cilium.io/en/stable/network/kubernetes/bandwidth-manager/
 #    bandwidthManager:
 #      enabled: true
 #      bbr: true
@@ -26,6 +27,7 @@ spec:
       masquerade: true
 #      preallocateMaps: true
 #      tproxy: true
+    # https://docs.cilium.io/en/stable/operations/performance/tuning/#ebpf-clock-probe
 #    bpfClockProbe: true
     bgpControlPlane:
       enabled: true
