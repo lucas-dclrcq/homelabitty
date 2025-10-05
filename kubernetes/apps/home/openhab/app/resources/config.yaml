@@ -1,0 +1,15 @@
+version: 1
+
+things:
+  homeconnect:api_bridge:df5f62f755:
+    isBridge: true
+    config:
+      clientId: {{ .HOMECONNECT_CLIENT_ID }}
+      clientSecret: {{ .HOMECONNECT_CLIENT_SECRET }}
+  mqtt:broker:f5178f73d8:
+    isBridge: true
+    config:
+      host: emqx-headless.infrastructure.svc.cluster.local
+      username: {{ .MQTT_USERNAME }}
+      password: {{ .MQTT_PASSWORD }}
+      clientid: openhab

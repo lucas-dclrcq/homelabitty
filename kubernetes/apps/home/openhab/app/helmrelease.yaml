@@ -54,7 +54,7 @@ spec:
                 port: *port
 
     persistence:
-      config:
+      data:
         enabled: true
         existingClaim: *app
         globalMounts:
@@ -64,3 +64,10 @@ spec:
             subPath: openhab_conf
           - path: /openhab/userdata
             subPath: openhab_userdata
+      config:
+        type: secret
+        name: openhab-config-secret
+        globalMounts:
+          - subPath: config.yaml
+            readOnly: false
+            path: /openhab/conf/yaml/config.yaml
