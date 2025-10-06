@@ -64,6 +64,12 @@ spec:
           - backendRefs:
               - name: *app
                 port: *port
+            filters:
+              - type: ResponseHeaderModifier
+                responseHeaderModifier:
+                  add:
+                    - name: "X-Frame-Options"
+                      value: "SAMEORIGIN"
     persistence:
       cache:
         existingClaim: *app
