@@ -15,6 +15,9 @@ spec:
         - name: brand-assets
           mountPath: /media
           readOnly: true
+        - name: "${SECRET_DOMAIN/./-}-production-tls"
+          mountPath: /certs
+          readOnly: true
       volumes:
         - name: brand-assets
           projected:
@@ -25,6 +28,14 @@ spec:
                   items:
                     - key: brand_icon.svg
                       path: brand_icon.svg
+        - name: "${SECRET_DOMAIN/./-}-production-tls"
+          secret:
+            secretName: "${SECRET_DOMAIN/./-}-production-tls"
+            items:
+              - key: tls.crt
+                path: "${SECRET_DOMAIN/./-}-production-tls.pem"
+              - key: tls.key
+                path: "${SECRET_DOMAIN/./-}-production-tls.key"
 
       podAnnotations:
         reloader.stakater.com/auto: "true"
