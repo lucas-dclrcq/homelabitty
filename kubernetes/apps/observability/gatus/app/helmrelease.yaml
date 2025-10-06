@@ -24,7 +24,7 @@ spec:
               repository: ghcr.io/home-operations/gatus-sidecar
               tag: 0.0.6@sha256:99c193a9ddc6561c8f7a8573c8a0199de5cfc2e1490fb0bb3dd277c12ea06335
             args:
-              - --gateway=external
+              - --auto-httproute
             resources:
               requests:
                 cpu: 10m
@@ -103,9 +103,26 @@ spec:
           type: ClusterRole
           rules:
             - apiGroups:
+                - ""
+              resources:
+                - services
+              verbs:
+                - get
+                - watch
+                - list
+            - apiGroups:
                 - gateway.networking.k8s.io
               resources:
+                - gateways
                 - httproutes
+              verbs:
+                - get
+                - watch
+                - list
+            - apiGroups:
+                - networking.k8s.io
+              resources:
+                - ingresses
               verbs:
                 - get
                 - watch
