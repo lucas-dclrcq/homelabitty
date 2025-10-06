@@ -26,7 +26,6 @@ spec:
   kafka:
     version: 4.0.0
     metadataVersion: 4.0-IV3
-    replicas: 3
     listeners:
       - name: plain
         port: 9092
@@ -66,10 +65,6 @@ spec:
       default.replication.factor: 3
       min.insync.replicas: 2
       group.min.session.timeout.ms: 250
-    storage:
-      type: persistent-claim
-      size: 50Gi
-      class: openebs-hostpath
   entityOperator:
     topicOperator: {}
     userOperator: {}
