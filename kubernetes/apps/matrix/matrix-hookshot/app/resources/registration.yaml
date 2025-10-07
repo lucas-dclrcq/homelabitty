@@ -1,0 +1,26 @@
+---
+id: matrix-hookshot
+url: https://matrix.${SECRET_DOMAIN}
+as_token: {{ .AS_TOKEN }}
+hs_token: {{ .HS_TOKEN }}
+sender_localpart: hookshot
+rate_limited: false
+namespaces:
+  rooms: []
+  users:
+    - regex: "@_github_.*:${SECRET_DOMAIN}"
+      exclusive: true
+    - regex: "@_gitlab_.*:${SECRET_DOMAIN}"
+      exclusive: true
+    - regex: "@_jira_.*:${SECRET_DOMAIN}"
+      exclusive: true
+    - regex: "@_webhooks_.*:${SECRET_DOMAIN}" # Where _webhooks_ is set by userIdPrefix in config.yml
+      exclusive: true
+    - regex: "@feeds:${SECRET_DOMAIN}" # Matches the localpart of all serviceBots in config.yml
+      exclusive: true
+  aliases:
+    - regex: "#github_.+:${SECRET_DOMAIN}"
+      exclusive: true
+de.sorunome.msc2409.push_ephemeral: false
+push_ephemeral: false
+org.matrix.msc3202: false
