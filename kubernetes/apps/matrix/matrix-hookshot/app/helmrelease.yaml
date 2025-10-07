@@ -23,7 +23,7 @@ spec:
   values:
     controllers:
       matrix-hookshot:
-        replicas: 2
+        replicas: 0
         type: statefulset
         annotations:
           reloader.stakater.com/auto: "true"
