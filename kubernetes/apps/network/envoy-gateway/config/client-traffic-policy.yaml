@@ -5,15 +5,15 @@ kind: ClientTrafficPolicy
 metadata:
   name: envoy
 spec:
-  clientIPDetection:
-    xForwardedFor:
-      numTrustedHops: 1
-  connection:
-    bufferLimit: 64Mi
-    maxAcceptPerSocketEvent: 0
-  http2:
-    onInvalidMessage: TerminateStream
-  http3: {}
+#  clientIPDetection:
+#    xForwardedFor:
+#      numTrustedHops: 1
+#  connection:
+#    bufferLimit: 64Mi
+#    maxAcceptPerSocketEvent: 0
+#  http2:
+#    onInvalidMessage: TerminateStream
+#  http3: {}
   targetSelectors:
     - group: gateway.networking.k8s.io
       kind: Gateway
@@ -21,8 +21,8 @@ spec:
   timeout:
     http:
       requestReceivedTimeout: 0s
-  tls:
-    minVersion: "1.2"
-    alpnProtocols:
-      - h2
-      - http/1.1
+#  tls:
+#    minVersion: "1.2"
+#    alpnProtocols:
+#      - h2
+#      - http/1.1
