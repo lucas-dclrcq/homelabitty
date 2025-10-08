@@ -22,7 +22,7 @@ spec:
               repository: ghcr.io/searxng/searxng
               tag: 2025.5.17-86373e7@sha256:2f45ccc0b330faa47d8706de883c6e583b38806e32b51172d93c381ce1d92f0b
             env:
-              SEARXNG_BASE_URL: https://search.${LIMITED_DOMAIN}
+              SEARXNG_BASE_URL: https://search.${SECRET_DOMAIN}
               SEARXNG_PORT: &port 8080
               SEARXNG_REDIS_URL: "redis://{{ .Release.Name }}-dragonfly:6379"
             envFrom:
@@ -65,9 +65,9 @@ spec:
             port: *port
     route:
       app:
-        hostnames: ["search.${LIMITED_DOMAIN}"]
+        hostnames: ["search.${SECRET_DOMAIN}"]
         parentRefs:
-          - name: internal
+          - name: external
             namespace: network
             sectionName: https
     persistence:
