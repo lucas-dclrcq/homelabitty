@@ -235,6 +235,10 @@ spec:
       databases: ["paperless"]
       password:
         type: AlphaNumeric
+    - name: "openwebui"
+      databases: ["openwebui"]
+      password:
+        type: AlphaNumeric
   backups:
     pgbackrest:
       configuration:
