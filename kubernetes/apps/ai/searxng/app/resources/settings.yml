@@ -14,6 +14,7 @@ search:
     - all
     - en
     - en-US
+    - fr
   formats:
     - html
     - json
@@ -34,7 +35,13 @@ categories_as_tabs:
   general:
   images:
   videos:
+  news:
   map:
+  music:
+  it:
+  science:
+  files:
+  social media:
 
 enabled_plugins:
   - Basic Calculator
