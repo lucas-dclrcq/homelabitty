@@ -1,4 +1,4 @@
-GET {{jellyfin_url}}/Search/Hints?ApiKey={{jellyfin_api_key}}&searchTerm=sev&includeItemTypes=Series
+GET {{jellyfin_url}}/Search/Hints?ApiKey={{jellyfin_api_key}}&searchTerm=Mourir &includeItemTypes=Movies
 Accept: application/json
 Content-Type: application/json
 

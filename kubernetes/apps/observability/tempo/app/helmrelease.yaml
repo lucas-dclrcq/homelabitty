@@ -26,7 +26,6 @@ spec:
   values:
     replicas: 2
     tempo:
-      reportingEnabled: false
       metricsGenerator:
         enabled: false
       storage:
@@ -34,6 +33,21 @@ spec:
           backend: s3
           s3:
             insecure: true                                 # optional. enable if endpoint is http
+      retention: 24h
+      reportingEnabled: false
+      receivers:
+        otlp:
+          protocols:
+            grpc:
+              endpoint: 0.0.0.0:4317
+            http:
+              endpoint: 0.0.0.0:4318
+
+      ingester:
+        max_block_duration: 5m
+      compactor:
+        compaction:
+          block_retention: 24h
     persistence:
       enabled: false
     tempoQuery:
