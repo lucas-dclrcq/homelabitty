@@ -59,7 +59,7 @@ github:
   auth:
     # Authentication for the GitHub App.
     id: ${GITHUB_APP_ID}
-    privateKeyFile: github-key.pem
+    privateKeyFile: /data/github-key.pem
   webhook:
     # Webhook settings for the GitHub app.
     secret: ${GITHUB_WEBHOOK_SECRET}
