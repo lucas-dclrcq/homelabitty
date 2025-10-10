@@ -16,6 +16,8 @@ spec:
         namespace: flux-system
       interval: 5m
   values:
+    image:
+      tag: v1.139.2
     serverName: "${SECRET_DOMAIN}"
     publicServerName: "matrix.${SECRET_DOMAIN}"
 
