@@ -5,10 +5,10 @@ bridge:
   url: https://matrix.${SECRET_DOMAIN}
   mediaUrl: https://matrix.${SECRET_DOMAIN}
   port: 9993
-  bindAddress: 127.0.0.1
+  bindAddress: 0.0.0.0
 logging:
   # Logging settings. You can have a severity debug,info,warn,error
-  level: info
+  level: debug
   colorize: true
   json: true
   timestampFormat: HH:mm:ss:SSS
@@ -48,25 +48,39 @@ listeners:
 #    ./cryptostore
 
 permissions:
-  # (Optional) Permissions for using the bridge. See docs/setup.md#permissions for help
-  - actor: example.com
+  # Allow this specific user to do any action
+  - actor: "@lucasd:${SECRET_DOMAIN}"
     services:
-      - service: "@lucasd:${SECRET_DOMAIN}"
+      - service: "*"
         level: admin
-
+  # Allow all users to send commands to existing services
+  - actor: "*"
+    services:
+      - service: "*"
+        level: commands
+  # Allow users on this domain to enable notifications on any service.
+  - actor: "*"
+    services:
+      - service: "*"
+        level: notifications
+  # Allow users on this domain to create connections.
+  - actor: "*"
+    services:
+      - service: "*"
+        level: manageConnections
 github:
   # (Optional) Configure this to enable GitHub support
   auth:
     # Authentication for the GitHub App.
-    id: ${GITHUB_APP_ID}
+    id: {{ .GITHUB_APP_ID }}
     privateKeyFile: /data/github-key.pem
   webhook:
     # Webhook settings for the GitHub app.
-    secret: ${GITHUB_WEBHOOK_SECRET}
+    secret: {{ .GITHUB_WEBHOOK_SECRET }}
   oauth:
     # (Optional) Settings for allowing users to sign in via OAuth.
-    client_id: ${GITHUB_OAUTH_CLIENT_ID}
-    client_secret: ${GITHUB_OAUTH_CLIENT_SECRET}
+    client_id: {{ .GITHUB_OAUTH_CLIENT_ID }}
+    client_secret: {{ .GITHUB_OAUTH_CLIENT_SECRET }}
     redirect_uri: https://matrix-hookshot.${SECRET_DOMAIN}/oauth/
   defaultOptions:
     # (Optional) Default options for GitHub connections.

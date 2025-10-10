@@ -1,6 +1,6 @@
 ---
 id: matrix-hookshot
-url: https://matrix.${SECRET_DOMAIN}
+url: http://matrix-hookshot.matrix.svc.cluster.local:9993
 as_token: {{ .AS_TOKEN }}
 hs_token: {{ .HS_TOKEN }}
 sender_localpart: hookshot
