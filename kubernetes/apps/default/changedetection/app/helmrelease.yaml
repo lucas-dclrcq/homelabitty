@@ -16,7 +16,7 @@ spec:
           main:
             image:
               repository: ghcr.io/dgtlmoon/changedetection.io
-              tag: "0.50.21@sha256:cd58af18d890533049895990a5ab21b885ae4b6108a999d7cb4d1f49da6d7b30"
+              tag: "0.50.24@sha256:20a4501d304a397139176bf4fd9136011fff2d01044df3575a9e8f2ee35eb0bf"
 
             env:
               TZ: ${CONFIG_TIMEZONE}
