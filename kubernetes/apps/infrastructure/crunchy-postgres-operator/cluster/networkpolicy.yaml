@@ -12,9 +12,6 @@ spec:
   egress:
     - toEndpoints:
         - matchLabels:
+            postgres-operator.crunchydata.com/cluster: postgres-16
             app.kubernetes.io/name: crunchy-postgres
-            postgres-operator.crunchydata.com/cluster: postgres-16
-    - toEndpoints:
-        - matchLabels:
-            app.kubernetes.io/name: crunchy-postgres-pgbouncer
-            postgres-operator.crunchydata.com/cluster: postgres-16
+            io.kubernetes.pod.namespace: infrastructure

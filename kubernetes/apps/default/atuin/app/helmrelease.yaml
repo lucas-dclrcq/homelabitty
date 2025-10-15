@@ -13,9 +13,13 @@ spec:
     controllers:
       atuin:
         strategy: RollingUpdate
+        pod:
+          labels:
+            ingress.home.arpa/envoy-external: allow
+            ingress.home.arpa/prometheus: allow
+            egress.home.arpa/postgres-main: allow
         annotations:
           reloader.stakater.com/auto: "true"
-
         containers:
           app:
             image:
