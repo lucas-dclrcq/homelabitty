@@ -13,6 +13,10 @@ spec:
     controllers:
       echo-server:
         strategy: RollingUpdate
+        pod:
+          labels:
+            ingress.home.arpa/envoy-external: allow
+            ingress.home.arpa/prometheus: allow
         containers:
           app:
             image:

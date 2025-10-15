@@ -6,3 +6,4 @@ resources:
   - ./ocirepository.yaml
   - ./helmrelease.yaml
   - ./servicemonitor.yaml
+  - ./netpol.yaml

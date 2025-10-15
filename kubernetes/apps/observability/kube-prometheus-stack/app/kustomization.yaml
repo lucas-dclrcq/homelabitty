@@ -9,3 +9,4 @@ resources:
   - ./helmrelease.yaml
   - ./prometheusrule.yaml
   - ./scrapeconfig.yaml
+  - ./networkpolicy.yaml
