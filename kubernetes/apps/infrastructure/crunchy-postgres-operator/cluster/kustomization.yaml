@@ -6,4 +6,5 @@ resources:
   - ./secret.sops.yaml
   - ./postgrescluster.yaml
   - ./podmonitor.yaml
+  - ./networkpolicy.yaml
 #  - ./restore.yaml

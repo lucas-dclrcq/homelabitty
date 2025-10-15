@@ -16,6 +16,9 @@ spec:
           reloader.stakater.com/auto: "true"
 
         pod:
+          labels:
+            ingress.home.arpa/envoy-external: allow
+            egress.home.arpa/postgres-main: allow
           securityContext:
             runAsUser: 1026
             runAsGroup: 100
