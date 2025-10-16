@@ -7,3 +7,4 @@ resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
   - ./podmonitor.yaml
+  - ./kafka-topics.yaml
