@@ -12,6 +12,9 @@ spec:
   values:
     controllers:
       bytestash:
+        pod:
+          labels:
+            ingress.home.arpa/envoy-external: allow
         containers:
           main:
             image:
