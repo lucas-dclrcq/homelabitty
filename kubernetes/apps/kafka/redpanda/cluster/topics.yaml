@@ -1,0 +1,17 @@
+---
+apiVersion: cluster.redpanda.com/v1alpha2
+kind: Topic
+metadata:
+  name: incoming-notifications
+spec:
+  partitions: 1
+  replicationFactor: 3
+  kafkaApiSpec:
+    brokers:
+      - "redpanda-0.redpanda.kafka.svc.cluster.local:9093"
+      - "redpanda-1.redpanda.kafka.svc.cluster.local:9093"
+      - "redpanda-2.redpanda.kafka.svc.cluster.local:9093"
+    tls:
+      caCertSecretRef:
+        name: "redpanda-default-cert"
+        key: "ca.crt"
