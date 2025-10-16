@@ -1,0 +1,12 @@
+input:
+  label: zigbee2mqtt
+  mqtt:
+    urls:
+      - emqx-listeners.infrastructure.svc.cluster.local:1883
+    client_id: "redpanda-connect-zigbee2mqtt"
+    connect_timeout: 30s
+    topics:
+      - "zigbee2mqtt/+"
+    auto_replay_nacks: true
+    user: ${MQTT_USERNAME}
+    password: ${MQTT_PASSWORD}
