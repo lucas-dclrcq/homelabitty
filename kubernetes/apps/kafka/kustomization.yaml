@@ -9,3 +9,4 @@ resources:
   - ./kafka/ks.yaml
   - ./conduktor/ks.yaml
   - ./schema-registry/ks.yaml
+  - ./redpanda/ks.yaml
