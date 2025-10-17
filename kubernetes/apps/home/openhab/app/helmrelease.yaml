@@ -18,7 +18,7 @@ spec:
           app:
             image:
               repository: openhab/openhab
-              tag: 5.0.1-alpine
+              tag: 5.0.2-alpine
 
             env:
               EXTRA_JAVA_OPTS: "-Duser.timezone=${TIMEZONE}"
