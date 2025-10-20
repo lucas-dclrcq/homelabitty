@@ -1,13 +1,14 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "packageRules": [
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  packageRules: [
     {
-      "description": ["Auto-merge container digests updates for trusted containers"],
-      "matchDatasources": ["docker"],
-      "automerge": true,
-      "automergeType": "branch",
-      "matchUpdateTypes": ["digest"],
-      "matchPackageNames": ["/home-operations/"]
+      description: "Auto-merge trusted container digests",
+      matchDatasources: ["docker"],
+      automerge: true,
+      automergeType: "pr",
+      matchUpdateTypes: ["digest"],
+      matchPackageNames: ["/home-operations/"],
+      ignoreTests: false,
     },
     {
       description: "Auto-merge OCI Charts",
@@ -48,6 +49,6 @@
       matchUpdateTypes: ["minor", "patch"],
       matchPackageNames: ["/external-dns/", "/gateway-api/", "/prometheus-operator/"],
       ignoreTests: true,
-    }
-  ]
+    },
+  ],
 }
