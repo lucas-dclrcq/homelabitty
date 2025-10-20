@@ -22,7 +22,7 @@ jobs:
         run: |
           VERSION="jvm-development@sha256:${SHA256}" yq eval '.spec.values.controllers.filature.containers.main.image.tag = strenv(VERSION)' \
             -i kubernetes/apps/default/filature/app/helmrelease.yaml
-      - uses: EndBug/add-and-commit@v9
+      - uses: EndBug/add-and-commit@a94899bca583c204427a224a7af87c02f9b325d5 # v9
         with:
           message: 'chore(filature): upgrade to latest'
           add: 'kubernetes/apps/default/filature/app/helmrelease.yaml --force'
