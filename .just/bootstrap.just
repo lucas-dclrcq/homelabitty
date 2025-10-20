@@ -7,8 +7,12 @@ kubernetes_dir := justfile_dir() + '/kubernetes'
 controller := `talosctl config info -o yaml | yq -e '.endpoints[0]'`
 nodes := `talosctl config info -o yaml | yq -e '.nodes | join (" ")'`
 
+[private]
+default:
+    just --list bootsrap
+
 [doc('Bootstrap Cluster')]
-default: talos kubernetes kubeconfig wait namespaces resources crds apps
+bootstrap: talos kubernetes kubeconfig wait namespaces resources crds apps
 
 [doc('Install Talos')]
 talos: (with-banner "Installing Talos")
