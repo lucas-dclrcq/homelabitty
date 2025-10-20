@@ -26,6 +26,8 @@ wiki
 # Bootstrap
 /config.yaml
 
-requests/http-client.private.env.json
+hack/requests/http-client.private.env.json
 cluster-keys.json
 book
+
+.cache_ggshield
