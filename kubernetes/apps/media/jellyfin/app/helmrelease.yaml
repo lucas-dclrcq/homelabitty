@@ -144,18 +144,6 @@ spec:
         rules:
           - backendRefs:
               - name: *app
-                port: 5000
-            matches:
-              - queryParams:
-                  - type: RegularExpression
-                    name: "SearchTerm"
-                    value: ".*"
-              - queryParams:
-                  - type: RegularExpression
-                    name: "searchTerm"
-                    value: ".*"
-          - backendRefs:
-              - name: *app
                 port: *port
             matches:
               - path:
