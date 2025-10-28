@@ -12,12 +12,17 @@ spec:
   values:
     global:
       volumeMounts:
+        - mountPath: /media
+          name: authentik-media
 #        - name: brand-assets
 #          mountPath: /media
         - name: "${SECRET_DOMAIN/./-}-production-tls"
           mountPath: /certs
           readOnly: true
       volumes:
+        - name: authentik-media
+          persistentVolumeClaim:
+            claimName: *app
         - name: brand-assets
           projected:
             defaultMode: 0775
