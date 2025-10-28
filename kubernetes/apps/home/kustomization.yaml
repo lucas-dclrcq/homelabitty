@@ -10,4 +10,4 @@ resources:
   - ./timeseriesdb/ks.yaml
   - ./sensors-processor/ks.yaml
 #  - ./frigate/ks.yaml
-  - ./openhab/ks.yaml
+  - ./home-assistant/ks.yaml

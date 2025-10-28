@@ -3,7 +3,7 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &appname openhab
+  name: &appname home-assistant
   namespace: &namespace home
 spec:
   targetNamespace: *namespace
@@ -14,7 +14,7 @@ spec:
     - ../../../../components/volsync
   interval: 30m
   timeout: 5m
-  path: ./kubernetes/apps/home/openhab/app
+  path: "./kubernetes/apps/home/home-assistant/app"
   prune: true
   sourceRef:
     kind: GitRepository
