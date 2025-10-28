@@ -10,8 +10,6 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   path: ./kubernetes/apps/auth/authentik/app
-  components:
-    - ../../../../components/dragonfly
   prune: true
   sourceRef:
     kind: GitRepository

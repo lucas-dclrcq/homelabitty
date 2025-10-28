@@ -14,7 +14,6 @@ spec:
       volumeMounts:
         - name: brand-assets
           mountPath: /media
-          readOnly: true
         - name: "${SECRET_DOMAIN/./-}-production-tls"
           mountPath: /certs
           readOnly: true
