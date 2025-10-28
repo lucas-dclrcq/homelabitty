@@ -12,26 +12,15 @@ spec:
   values:
     global:
       volumeMounts:
-        - mountPath: /media
-          name: authentik-media
-#        - name: brand-assets
-#          mountPath: /media
+#        - mountPath: /media
+#          name: authentik-media
         - name: "${SECRET_DOMAIN/./-}-production-tls"
           mountPath: /certs
           readOnly: true
       volumes:
-        - name: authentik-media
-          persistentVolumeClaim:
-            claimName: *app
-        - name: brand-assets
-          projected:
-            defaultMode: 0775
-            sources:
-              - configMap:
-                  name: authentik-brand-assets
-                  items:
-                    - key: brand_icon.svg
-                      path: brand_icon.svg
+#        - name: authentik-media
+#          persistentVolumeClaim:
+#            claimName: *app
         - name: "${SECRET_DOMAIN/./-}-production-tls"
           secret:
             secretName: "${SECRET_DOMAIN/./-}-production-tls"
