@@ -1,0 +1,65 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app multi-scrobbler
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  values:
+    controllers:
+      multi-scrobbler:
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+        containers:
+          app:
+            image:
+              repository: ghcr.io/foxxmd/multi-scrobbler
+              tag: 0.10.0
+
+            env:
+              TZ: ${TIMEZONE}
+              BASE_URL: "https://{{ .Release.Name }}.${LIMITED_DOMAIN}"
+              CACHE_SCROBBLE: valkey
+              CACHE_SCROBBLE_CONN: "redis://{{ .Release.Name }}-dragonfly:6379"
+
+            resources:
+              requests:
+                cpu: 15m
+                memory: 100Mi
+              limits:
+                memory: 500Mi
+
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: &port 9078
+
+    route:
+      app:
+        annotations:
+          gatus.home-operations.com/endpoint: |-
+            group: Media
+        hostnames:
+          - "{{ .Release.Name }}.${LIMITED_DOMAIN}"
+        parentRefs:
+          - name: internal
+            namespace: network
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
+
+    persistence:
+      config:
+        type: secret
+        name: multi-scrobbler-secret
+        globalMounts:
+          - subPath: config.json
+            path: /config/config.json

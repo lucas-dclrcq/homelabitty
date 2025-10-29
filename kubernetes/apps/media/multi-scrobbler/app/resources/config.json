@@ -1,0 +1,43 @@
+{
+  "sources": [
+    {
+      "type": "subsonic",
+      "name": "navidromeLucas",
+      "clients": ["listenbrainz", "lastfm"],
+      "data": {
+        "user": "{{ .SUBSONIC_USER }}",
+        "password": "{{ .SUBSONIC_PASSWORD }}",
+        "url": "http://navidrome.media.svc.cluster.local:8080"
+      }
+    }
+  ],
+  "clients": [
+    {
+      "type": "listenbrainz",
+      "name": "listenbrainz",
+      "enable": true,
+      "configureAs": "client",
+      "data": {
+        "token": "{{ .LZ_TOKEN }}",
+        "username": "{{ .LZ_USER }}"
+      },
+      "options": {
+        "nowPlaying": true
+      }
+    },
+    {
+      "type": "lastfm",
+      "name": "lastfm",
+      "enable": true,
+      "configureAs": "client",
+      "data": {
+        "apiKey": "{{ .LASTFM_API_KEY }}",
+        "secret": "{{ .LASTFM_SECRET }}",
+        "redirectUri": "https://multi-scrobbler.${LIMITED_DOMAIN}/lastfm/callback"
+      },
+      "options": {
+        "nowPlaying": true
+      }
+    }
+  ]
+}
