@@ -1,0 +1,17 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/monitoring.coreos.com/prometheusrule_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: vault-rules
+spec:
+  groups:
+    - name: vault.rules
+      rules:
+        - alert: VaultSealed
+          annotations:
+            summary: Vault is unsealed
+          expr: vault_core_unsealed == 0
+          for: 1m
+          labels:
+            severity: critical

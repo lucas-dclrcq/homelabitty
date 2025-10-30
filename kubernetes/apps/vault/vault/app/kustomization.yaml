@@ -7,3 +7,4 @@ resources:
   - ./httproute.yaml
   - ./grafanadashboard.yaml
   - ./servicemonitor.yaml
+  - ./prometheusrule.yaml
