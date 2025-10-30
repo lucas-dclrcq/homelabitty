@@ -13,6 +13,7 @@ spec:
     groupWait: 1m
     receiver: pushover
     repeatInterval: 12h
+    continue: true
     routes:
       - receiver: "null"
         matchers:
@@ -28,6 +29,7 @@ spec:
             value: Watchdog
             matchType: =
       - receiver: pushover
+        continue: true
         matchers:
           - name: severity
             value: critical
