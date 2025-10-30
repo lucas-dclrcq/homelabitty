@@ -27,7 +27,7 @@ spec:
   datasources:
     - datasourceName: prometheus
       inputName: DS_PROMETHEUS
-  url: https://github.com/kieraneglin/pinchflat/raw/refs/heads/master/priv/grafana/beam.json
+  url: https://raw.githubusercontent.com/kieraneglin/pinchflat/refs/heads/master/priv/grafana/beam.json
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadashboard_v1beta1.json
 apiVersion: grafana.integreatly.org/v1beta1
@@ -42,7 +42,7 @@ spec:
   datasources:
     - datasourceName: prometheus
       inputName: DS_PROMETHEUS
-  url: https://github.com/kieraneglin/pinchflat/raw/refs/heads/master/priv/grafana/ecto.json
+  url: https://raw.githubusercontent.com/kieraneglin/pinchflat/refs/heads/master/priv/grafana/ecto.json
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadashboard_v1beta1.json
 apiVersion: grafana.integreatly.org/v1beta1
@@ -57,7 +57,7 @@ spec:
   datasources:
     - datasourceName: prometheus
       inputName: DS_PROMETHEUS
-  url: https://github.com/kieraneglin/pinchflat/raw/refs/heads/master/priv/grafana/oban.json
+  url: https://raw.githubusercontent.com/kieraneglin/pinchflat/refs/heads/master/priv/grafana/oban.json
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadashboard_v1beta1.json
 apiVersion: grafana.integreatly.org/v1beta1
@@ -72,7 +72,7 @@ spec:
   datasources:
     - datasourceName: prometheus
       inputName: DS_PROMETHEUS
-  url: https://github.com/kieraneglin/pinchflat/raw/refs/heads/master/priv/grafana/phoenix.json
+  url: https://raw.githubusercontent.com/kieraneglin/pinchflat/refs/heads/master/priv/grafana/phoenix.json
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadashboard_v1beta1.json
 apiVersion: grafana.integreatly.org/v1beta1
@@ -87,4 +87,4 @@ spec:
   datasources:
     - datasourceName: prometheus
       inputName: DS_PROMETHEUS
-  url: https://github.com/kieraneglin/pinchflat/raw/refs/heads/master/priv/grafana/phoenix_live_view.json
+  url: https://raw.githubusercontent.com/kieraneglin/pinchflat/refs/heads/master/priv/grafana/phoenix_live_view.json
