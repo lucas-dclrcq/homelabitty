@@ -5,23 +5,10 @@ kind: HelmRelease
 metadata:
   name: &app jellyfin
 spec:
-  interval: 30m
+  interval: 1h
   chartRef:
     kind: OCIRepository
-    name: app-template
-    namespace: flux-system
-  maxHistory: 2
-  install:
-    createNamespace: true
-    remediation:
-      retries: -1
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      strategy: rollback
-      retries: 3
-  uninstall:
-    keepHistory: false
+    name: *app
   values:
     controllers:
       jellyfin:
@@ -32,7 +19,7 @@ spec:
           jellyfin:
             image:
               repository: ghcr.io/jellyfin/jellyfin
-              tag: 10.10.7@sha256:e4d1dc5374344446a3a78e43dd211247f22afba84ea2e5a13cbe1a94e1ff2141
+              tag: 10.11.1@sha256:66f8c685241cb6d1611ddf90c593d47f18fb851d07d696b821280497f6f2b5b7
 
             env:
               DOTNET_SYSTEM_IO_DISABLEFILELOCKING: "true"
@@ -48,13 +35,16 @@ spec:
                   httpGet:
                     path: /health
                     port: &port 8096
-                  initialDelaySeconds: 10
+                  initialDelaySeconds: 0
                   periodSeconds: 10
-                  timeoutSeconds: 3
-                  failureThreshold: 5
+                  timeoutSeconds: 1
+                  failureThreshold: 3
               readiness: *probes
               startup:
-                enabled: false
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 10
 
             resources:
               requests:
@@ -64,42 +54,6 @@ spec:
               limits:
                 gpu.intel.com/i915: 1
                 memory: 16Gi
-
-          jellysearch:
-            image:
-              repository: domistyle/jellysearch
-              tag: latest@sha256:e758fefa1020c0a6fb2504f48d150f9ed454a5155ca61bf2d89ff9df50ea171d
-            env:
-              INDEX_CRON: "0 0 0/2 ? * * *"
-              JELLYFIN_URL: "http://localhost:8096"
-              MEILI_URL: "http://jellyfin-meilisearch.media.svc.cluster.local:7700"
-              MEILI_MASTER_KEY:
-                valueFrom:
-                  secretKeyRef:
-                    name: jellyfin-secret
-                    key: MEILI_MASTER_KEY
-
-      meilisearch:
-        annotations:
-          reloader.stakater.com/auto: "true"
-        containers:
-          main:
-            image:
-              repository: getmeili/meilisearch
-              tag: v1.24.0
-            command: ["/bin/meilisearch", "--experimental-dumpless-upgrade"]
-            env:
-              MEILI_MASTER_KEY:
-                valueFrom:
-                  secretKeyRef:
-                    name: jellyfin-secret
-                    key: MEILI_MASTER_KEY
-            resources:
-              requests:
-                cpu: 10m
-                memory: 100Mi
-              limits:
-                memory: 2Gi
 
     defaultPodOptions:
       securityContext:
@@ -115,20 +69,17 @@ spec:
                 matchExpressions:
                   - key: "kubernetes.io/hostname"
                     operator: "In"
-                    values: ["bee", "burrich", "fool"]
+                    values:
+                      - "bee"
+                      - "burrich"
+                      - "fool"
+
     service:
       jellyfin:
         controller: *app
         ports:
           http:
             port: *port
-          jellysearch:
-            port: 5000
-      meilisearch:
-        controller: meilisearch
-        ports:
-          http:
-            port: 7700
 
     route:
       app:
@@ -157,9 +108,6 @@ spec:
           jellyfin:
             jellyfin:
               - path: /config
-            jellysearch:
-              - path: /config
-                readOnly: true
       media:
         type: nfs
         server: "truenas.${INTERNAL_DOMAIN}"
@@ -182,9 +130,3 @@ spec:
           jellyfin:
             jellyfin:
               - path: /cache
-      meilisearch:
-        existingClaim: jellyfin-meilisearch
-        advancedMounts:
-          meilisearch:
-            main:
-              - path: /meili_data
