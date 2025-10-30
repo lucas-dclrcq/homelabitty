@@ -39,7 +39,9 @@ spec:
               - secretRef:
                   name: atuin-secret
 
-            args: ["server", "start"]
+            args:
+              - "server"
+              - "start"
 
             probes:
               liveness: &probes
@@ -58,7 +60,7 @@ spec:
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
+              capabilities: {drop: ["ALL"]}
 
             resources:
               requests:
@@ -72,7 +74,7 @@ spec:
         runAsNonRoot: true
         runAsUser: 65534
         runAsGroup: 65534
-        seccompProfile: { type: RuntimeDefault }
+        seccompProfile: {type: RuntimeDefault}
 
     service:
       app:
@@ -83,16 +85,6 @@ spec:
             port: *port
           metrics:
             port: *metricsPort
-
-    serviceMonitor:
-      app:
-        serviceName: atuin
-        endpoints:
-          - port: metrics
-            scheme: http
-            path: /metrics
-            interval: 1m
-            scrapeTimeout: 10s
 
     route:
       app:

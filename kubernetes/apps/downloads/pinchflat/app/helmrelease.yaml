@@ -30,6 +30,7 @@ spec:
               TZ: ${TIMEZONE}
               TZ_DATA_DIR: /tmp/elixir_tz_data
               PORT: &port 80
+              ENABLE_PROMETHEUS: "true"
             probes:
               liveness: &probes
                 enabled: true
@@ -46,7 +47,7 @@ spec:
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
+              capabilities: {drop: ["ALL"]}
             resources:
               requests:
                 cpu: 10m
@@ -61,21 +62,33 @@ spec:
         runAsGroup: ${APP_GID}
         fsGroup: ${APP_GID}
         fsGroupChangePolicy: OnRootMismatch
-        supplementalGroups: [44]
+        supplementalGroups:
+          - 44
 
     service:
       app:
-        controller: pinchflat
+        controller: *app
         ports:
           http:
             port: *port
+
+    serviceMonitor:
+      app:
+        serviceName: *app
+        endpoints:
+          - port: metrics
+            scheme: http
+            path: /metrics
+            interval: 1m
+            scrapeTimeout: 10s
 
     route:
       app:
         annotations:
           gatus.home-operations.com/endpoint: |-
             group: Media
-        hostnames: ["{{ .Release.Name }}.${SECRET_DOMAIN}"]
+        hostnames:
+          - "{{ .Release.Name }}.${SECRET_DOMAIN}"
         parentRefs:
           - name: external
             namespace: network
