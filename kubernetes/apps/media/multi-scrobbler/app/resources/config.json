@@ -1,16 +1,11 @@
 {
   "sources": [
     {
-      "type": "subsonic",
+      "type": "endpointlz",
+      "enable": true,
       "name": "navidromeLucas",
-      "clients": ["listenbrainz", "lastfm"],
       "data": {
-        "user": "{{ .SUBSONIC_USER }}",
-        "password": "{{ .SUBSONIC_PASSWORD }}",
-        "url": "http://navidrome.media.svc.cluster.local:8080",
-        "usersAllow": [
-          "lucasd"
-        ]
+        "token": "${SCROBBLE_TOKEN}"
       }
     }
   ],
@@ -29,9 +24,23 @@
       }
     },
     {
+      "type": "listenbrainz",
+      "name": "the-elder-scrobz",
+      "enable": true,
+      "configureAs": "client",
+      "data": {
+        "token": "${SCROBBLE_TOKEN}",
+        "username": "{{ .LZ_USER }}",
+        "url": "http://the-elder-scrobz.media.svc.cluster.local:3000/api/v1"
+      },
+      "options": {
+        "nowPlaying": true
+      }
+    },
+    {
       "type": "lastfm",
       "name": "lastfm",
-      "enable": true,
+      "enable": false,
       "configureAs": "client",
       "data": {
         "apiKey": "{{ .LASTFM_API_KEY }}",
