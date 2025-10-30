@@ -66,33 +66,6 @@ spec:
                 cpu: 100m
               limits:
                 memory: 1Gi
-          exporter:
-            image:
-              repository: ghcr.io/onedr0p/exportarr
-              tag: v2.3.0@sha256:af535d94061cf97a52e1661945ffba78c03f9443eae7c0da1a80a5a4be56b520
-
-            args:
-              - prowlarr
-
-            env:
-              PORT: &metrics_port 9090
-              URL: http://localhost
-              API_KEY:
-                valueFrom:
-                  secretKeyRef:
-                    key: PROWLARR__AUTH__APIKEY
-                    name: prowlarr-secret
-            probes:
-              liveness:
-                enabled: true
-              readiness:
-                enabled: true
-
-            resources:
-              requests:
-                cpu: 10m
-              limits:
-                memory: 128Mi
 
     defaultPodOptions:
       securityContext:
@@ -109,18 +82,6 @@ spec:
         ports:
           http:
             port: *port
-          exporter:
-            port: *metrics_port
-
-    serviceMonitor:
-      app:
-        serviceName: *app
-        endpoints:
-          - port: exporter
-            scheme: http
-            path: /metrics
-            interval: 30s
-            scrapeTimeout: 10s
 
     route:
       app:
