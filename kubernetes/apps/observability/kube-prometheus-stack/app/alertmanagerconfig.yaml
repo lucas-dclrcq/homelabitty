@@ -32,6 +32,11 @@ spec:
           - name: severity
             value: critical
             matchType: =
+      - receiver: matrix
+        matchers:
+          - name: severity
+            value: critical
+            matchType: =
   inhibitRules:
     - equal:
         - "alertname"
@@ -50,6 +55,9 @@ spec:
         - urlSecret:
             name: &secret alertmanager-secret
             key: ALERTMANAGER_HEARTBEAT_URL
+    - name: matrix
+      webhookConfigs:
+        - url: "http://matrix-alertmanager.matrix.svc.cluster.local/alerts?secret=noneedforasecrethere"
     - name: pushover
       pushoverConfigs:
         - html: true

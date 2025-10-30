@@ -1,0 +1,45 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app matrix-alertmanager
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  values:
+    controllers:
+      main:
+        containers:
+          app:
+            image:
+              repository: docker.io/jaywink/matrix-alertmanager
+              tag: v0.9.0
+
+            env:
+              APP_PORT: &port 80
+              MATRIX_HOMESERVER_URL: "http://synapse-matrix-synapse.matrix.svc.cluster.local:8008"
+              MATRIX_ROOMS: matrix/!YmXbOIUzQbqDFNVqYP:${SECRET_DOMAIN}
+              MATRIX_USER: "@bot:${SECRET_DOMAIN}"
+              MENTION_ROOM: 0
+              APP_ALERTMANAGER_SECRET: "noneedforasecrethere"
+
+            envFrom:
+              - secretRef:
+                  name: matrix-alertmanager-secret
+
+            resources:
+              requests:
+                cpu: 15m
+                memory: 50Mi
+              limits:
+                memory: 250Mi
+
+    service:
+      app:
+        controller: main
+        ports:
+          http:
+            port: *port

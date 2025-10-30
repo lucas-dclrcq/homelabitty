@@ -13,3 +13,4 @@ resources:
   - ./mautrix-whatsapp/ks.yaml
   - ./mas/ks.yaml
   - ./matrix-hookshot/ks.yaml
+  - ./matrix-alertmanager/ks.yaml
