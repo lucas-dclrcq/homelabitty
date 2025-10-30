@@ -42,7 +42,24 @@ spec:
         raft:
           enabled: true
           setNodeId: true
-
+          config: |
+            ui = true
+            listener "tcp" {
+              tls_disable = 1
+              address = "[::]:8200"
+              cluster_address = "[::]:8201"
+              telemetry {
+                unauthenticated_metrics_access = "true"
+              }
+            }
+            telemetry {
+              prometheus_retention_time = "1m",
+              disable_hostname = true
+            }
+            storage "raft" {
+              path = "/vault/data"
+            }
+            service_registration "kubernetes" {}
     ui:
       enabled: true
       serviceType: "ClusterIP"

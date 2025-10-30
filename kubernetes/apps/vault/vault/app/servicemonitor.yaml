@@ -1,0 +1,23 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: vault
+spec:
+  jobLabel: vault
+  namespaceSelector:
+    matchNames:
+      - vault
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: vault
+      vault-active: "true"
+  endpoints:
+    - interval: 30s
+      path: /v1/sys/metrics
+      port: http
+      scheme: http
+      scrapeTimeout: 10s
+      params:
+        format:
+          - prometheus
