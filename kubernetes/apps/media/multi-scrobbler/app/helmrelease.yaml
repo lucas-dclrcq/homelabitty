@@ -26,6 +26,7 @@ spec:
               BASE_URL: "https://{{ .Release.Name }}.${LIMITED_DOMAIN}"
               CACHE_SCROBBLE: valkey
               CACHE_SCROBBLE_CONN: "redis://{{ .Release.Name }}-dragonfly:6379"
+              DEBUG_MODE: "true"
 
             resources:
               requests:
