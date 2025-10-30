@@ -10,3 +10,4 @@ resources:
   - ./prometheusrule.yaml
   - ./scrapeconfig.yaml
   - ./networkpolicy.yaml
+  - ./grafanadashboard.yaml

@@ -6,3 +6,5 @@ namespace: flux-system
 resources:
   - ./podmonitor.yaml
   - ./prometheusrule.yaml
+  - ./grafanadashboard.yaml
+

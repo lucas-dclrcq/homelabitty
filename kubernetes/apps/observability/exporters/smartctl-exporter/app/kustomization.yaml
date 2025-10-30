@@ -6,13 +6,4 @@ resources:
   - ./ocirepository.yaml
   - ./helmrelease.yaml
   - ./prometheusrule.yaml
-configMapGenerator:
-  - name: smartctl-exporter-dashboard
-    files:
-      - smartctl-dashboard.json=./resources/grafana_dashboard.json
-commonAnnotations:
-  grafana_folder: default
-generatorOptions:
-  disableNameSuffixHash: true
-  labels:
-    grafana_dashboard: "1"
+  - ./grafanadashboard.yaml
