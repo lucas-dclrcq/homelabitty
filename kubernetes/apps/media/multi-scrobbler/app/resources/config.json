@@ -7,7 +7,10 @@
       "data": {
         "user": "{{ .SUBSONIC_USER }}",
         "password": "{{ .SUBSONIC_PASSWORD }}",
-        "url": "http://navidrome.media.svc.cluster.local:8080"
+        "url": "http://navidrome.media.svc.cluster.local:8080",
+        "usersAllow": [
+          "lucasd"
+        ]
       }
     }
   ],
