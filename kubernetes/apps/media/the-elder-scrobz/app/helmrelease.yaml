@@ -67,7 +67,7 @@ spec:
             matches:
               - headers:
                   - name: "Authorization"
-                    value: "${SCROBBLE_TOKEN}"
+                    value: "Token ${SCROBBLE_TOKEN}"
             filters:
               - type: URLRewrite
                 urlRewrite:

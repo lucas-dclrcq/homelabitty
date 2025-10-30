@@ -31,7 +31,7 @@
       "data": {
         "token": "${SCROBBLE_TOKEN}",
         "username": "{{ .LZ_USER }}",
-        "url": "http://the-elder-scrobz.media.svc.cluster.local:3000/api/v1"
+        "url": "http://the-elder-scrobz.media.svc.cluster.local:3000/api/v1/1/"
       },
       "options": {
         "nowPlaying": true
