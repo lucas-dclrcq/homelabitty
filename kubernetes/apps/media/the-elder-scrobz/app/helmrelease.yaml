@@ -61,19 +61,19 @@ spec:
             namespace: network
             sectionName: https
         rules:
-          - backendRefs:
-              - name: multi-scrobbler
-                port: 9078
-            matches:
-              - headers:
-                  - name: "Authorization"
-                    value: "Token ${SCROBBLE_TOKEN}"
-            filters:
-              - type: URLRewrite
-                urlRewrite:
-                  path:
-                    type: ReplaceFullPath
-                    replaceFullPath: /1/submit-listens
+#          - backendRefs:
+#              - name: multi-scrobbler
+#                port: 9078
+#            matches:
+#              - headers:
+#                  - name: "Authorization"
+#                    value: "Token ${SCROBBLE_TOKEN}"
+#            filters:
+#              - type: URLRewrite
+#                urlRewrite:
+#                  path:
+#                    type: ReplaceFullPath
+#                    replaceFullPath: /1/submit-listens
           - backendRefs:
               - name: *app
                 port: *port
