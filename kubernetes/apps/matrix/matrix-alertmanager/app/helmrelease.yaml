@@ -21,7 +21,7 @@ spec:
             env:
               APP_PORT: &port 80
               MATRIX_HOMESERVER_URL: "http://synapse-matrix-synapse.matrix.svc.cluster.local:8008"
-              MATRIX_ROOMS: matrix/!YmXbOIUzQbqDFNVqYP:${SECRET_DOMAIN}
+              MATRIX_ROOMS: observability/alertmanager/matrix/!YmXbOIUzQbqDFNVqYP:${SECRET_DOMAIN}
               MATRIX_USER: "@bot:${SECRET_DOMAIN}"
               MENTION_ROOM: 0
               APP_ALERTMANAGER_SECRET: "noneedforasecrethere"
