@@ -63,7 +63,7 @@ spec:
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
 metadata:
-  name: crunchy-postgresql-service_health
+  name: crunchy-postgresql-service-health
 spec:
   allowCrossNamespaceImport: true
   instanceSelector:
