@@ -66,7 +66,7 @@ spec:
                 port: 9078
             matches:
               - path:
-                  - value: /api/v1/1
+                  value: /api/v1/1
                 headers:
                   - name: "Authorization"
                     value: "Token ${SCROBBLE_TOKEN}"
@@ -75,7 +75,7 @@ spec:
                 urlRewrite:
                   path:
                     type: ReplacePrefixMatch
-                    replaceFullPath: /1
+                    replacePrefixMatch: /1
           - backendRefs:
               - name: *app
                 port: *port
