@@ -1,0 +1,23 @@
+---
+- name: Install common packages
+  apt:
+    name:
+      - curl
+      - jq
+      - unzip
+      - wget
+      - vim
+    state: present
+
+- name: Create homelab group
+  group:
+    name: homelab
+    gid: 1500
+    state: present
+
+- name: Add ansible_user to homelab group
+  user:
+    name: "{{ ansible_user }}"
+    groups: homelab
+    append: true
+

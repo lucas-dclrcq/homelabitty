@@ -1,0 +1,31 @@
+---
+#- name: Ensure mount directory exists
+#  ansible.builtin.file:
+#    path: /mnt/music
+#    state: directory
+#    mode: '0755'
+
+- name: Install NFS client package
+  ansible.builtin.package:
+    name: nfs-common
+    state: present
+
+- name: Mount NFS share
+  ansible.posix.mount:
+    path: /mnt/music
+    src: truenas.lulice.lan:/mnt/tank/Media/Music
+    fstype: nfs
+    opts: defaults
+    state: mounted
+
+- name: Install MPD package
+  ansible.builtin.package:
+    name: mpd
+    state: present
+
+- name: Start and enable MPD service
+  ansible.builtin.service:
+    name: mpd
+    state: started
+    enabled: true
+

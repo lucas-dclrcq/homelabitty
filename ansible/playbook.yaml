@@ -1,0 +1,12 @@
+---
+- name: Apply common configuration to all nodes
+  hosts: all
+  become: true
+  roles:
+    - common
+
+- name: Configure Music player
+  hosts: music
+  become: true
+  roles:
+    - music
