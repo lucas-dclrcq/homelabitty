@@ -13,70 +13,9 @@ spec:
     controllers:
       qbittorrent:
         annotations:
-          configmap.reloader.stakater.com/reload: qbittorrent-scripts,qbittorrent-dnsdist
-          secret.reloader.stakater.com/reload: qbittorrent-secret
-
-        pod:
-          securityContext:
-            fsGroup: 100
-            fsGroupChangePolicy: "OnRootMismatch"
-          terminationGracePeriodSeconds: 120
-
-        initContainers:
-          coredns:
-            image:
-              repository: mirror.gcr.io/coredns/coredns
-              tag: 1.13.1
-            args:
-              - -conf
-              - /etc/coredns/Corefile
-            restartPolicy: Always
-
-          gluetun:
-            dependsOn:
-              - coredns
-            image:
-              repository: ghcr.io/qdm12/gluetun
-              tag: v3.40.0
-
-            env:
-              DOT: "off"
-              DNS_ADDRESS: "127.0.0.2"
-              HTTP_CONTROL_SERVER_AUTH_CONFIG_FILEPATH: &gluetunAuthPath /gluetun/auth.toml
-              VPN_TYPE: wireguard
-              VPN_SERVICE_PROVIDER: protonvpn
-              VPN_INTERFACE: wg0
-              VPN_PORT_FORWARDING: "on"
-              PORT_FORWARD_ONLY: "on"
-              FIREWALL_INPUT_PORTS: 8080
-              FIREWALL_OUTBOUND_SUBNETS: 10.96.0.0/16,10.69.0.0/16
-
-            envFrom:
-              - secretRef:
-                  name: qbittorrent-secret
-
-            lifecycle:
-              postStart:
-                exec:
-                  command:
-                    - /bin/sh
-                    - -c
-                    - (ip rule del table 51820; ip -6 rule del table 51820) || true
-
-            resources:
-              limits:
-                squat.ai/tun: "1"
-            restartPolicy: Always
-            securityContext:
-              capabilities:
-                add:
-                  - NET_ADMIN
-              allowPrivilegeEscalation: false
-
+          reloader.stakater.com/auto: "true"
         containers:
           app:
-            nameOverride: qbittorrent
-
             image:
               repository: ghcr.io/home-operations/qbittorrent
               tag: 5.1.2@sha256:31ac39705e31f7cdcc04dc46c1c0b0cdf8dc6f9865d4894efc097a33adc41524
@@ -86,63 +25,105 @@ spec:
               QBT_WEBUI_PORT: &port 8080
 
             probes:
-              liveness:
+              liveness: &probes
                 enabled: true
-              readiness:
-                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/v2/app/version
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
               startup:
                 enabled: true
                 spec:
                   failureThreshold: 30
-                  periodSeconds: 5
-
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: [ "ALL" ] }
             resources:
               requests:
                 cpu: 49m
                 memory: 1024Mi
               limits:
                 memory: 8192Mi
-
-            securityContext:
-              runAsUser: 1026
-              runAsGroup: 100
-              runAsNonRoot: true
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities:
-                drop:
-                  - ALL
-
-          port-forward:
+          portmanager:
             image:
-              repository: ghcr.io/bjw-s-labs/gluetun-qb-port-sync
-              tag: 0.0.4@sha256:6060da1978c5ec8ea1cad56d8538f35b504b1dcb3fc9845f1f69b18d1b36020a
-            env:
-              GLUETUN_CONTROL_SERVER_HOST: localhost
-              GLUETUN_CONTROL_SERVER_PORT: 8000
-              GLUETUN_CONTROL_SERVER_API_KEY:
-                valueFrom:
-                  secretKeyRef:
-                    name: qbittorrent-secret
-                    key: GLUETUN_API_KEY
-              QBITTORRENT_HOST: localhost
-              QBITTORRENT_WEBUI_PORT: *port
-              CRON_ENABLED: true
-              CRON_SCHEDULE: "*/5 * * * *"
-              LOG_TIMESTAMP: false
-            securityContext:
-              runAsUser: 1026
-              runAsGroup: 100
-              runAsNonRoot: true
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities:
-                drop:
-                  - ALL
+              repository: docker.io/library/alpine
+              tag: "3.22"
+            command:
+              - /bin/sh
+              - -c
+              - |
+                apk add --no-cache libnatpmp curl jq
+
+                PROTON_GW="10.2.0.1"  # WireGuard gateway
+                QBIT_API="http://localhost:8080"
+                OLD_PORT=0
+                while true; do
+                  echo "$(date): Requesting port from Proton VPN..."
+
+                  # Request port from Proton (TCP, 60 second lease)
+                  PROTON_OUTPUT=$(natpmpc -g $PROTON_GW -a 1 0 tcp 60 2>&1)
+                  PORT=$(echo "$PROTON_OUTPUT" | grep "Mapped public port" | awk '{print $4}')
+
+                  if [ -n "$PORT" ] && [ "$PORT" -gt 0 ]; then
+                    if [ "$PORT" -ne "$OLD_PORT" ]; then
+                      echo "Got port $PORT from Proton"
+
+                      # Also request UDP
+                      natpmpc -g $PROTON_GW -a 1 0 udp 60 >/dev/null 2>&1
+
+                      # Update qBittorrent listening port
+                      echo "Updating qBittorrent to use port $PORT..."
+                      curl -s --data "json={\"listen_port\":$PORT}" \
+                        $QBIT_API/api/v2/app/setPreferences
+
+                      echo "Port forward active: $PORT"
+                      OLD_PORT=$PORT
+                    else
+                      echo "Port didn't change"
+                    fi
+                  else
+                    echo "Failed to get port from Proton VPN"
+                  fi
+
+                  # Renew every 45 seconds (before 60s timeout)
+                  sleep 45
+                done
+
+    defaultPodOptions:
+      annotations:
+        k8s.v1.cni.cncf.io/networks: |-
+          [{
+            "name": "vpn",
+            "namespace": "kube-system",
+            "ips": ["192.168.70.10/24"],
+            "mac": "32:0b:d8:1f:b6:e4"
+          }]
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: ${APP_UID}
+        runAsGroup: ${APP_GID}
+        fsGroup: ${APP_GID}
+        fsGroupChangePolicy: OnRootMismatch
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 15
+              preference:
+                matchExpressions:
+                  - key: "kubernetes.io/hostname"
+                    operator: "In"
+                    values:
+                      - "burrich"
 
     service:
       app:
-        controller: qbittorrent
         ports:
           http:
             port: *port
@@ -162,21 +143,10 @@ spec:
           - backendRefs:
               - name: *app
                 port: *port
-
     persistence:
       config:
         enabled: true
         existingClaim: qbittorrent
-        advancedMounts:
-          qbittorrent:
-            app:
-              - path: /config
-      empty-config:
-        type: emptyDir
-        advancedMounts:
-          qbittorrent:
-            port-forward:
-              - path: /config
       media:
         type: nfs
         server: "truenas.${INTERNAL_DOMAIN}"
@@ -185,20 +155,5 @@ spec:
           qbittorrent:
             app:
               - path: /media/Downloads/qbittorrent
-      gluetun-auth:
-        type: secret
-        name: qbittorrent-gluetun-secret
-        advancedMounts:
-          qbittorrent:
-            gluetun:
-              - path: *gluetunAuthPath
-                subPath: auth.toml
-      coredns:
-        type: configMap
-        name: qbittorrent-coredns
-        advancedMounts:
-          qbittorrent:
-            coredns:
-              - path: /etc/coredns/Corefile
-                subPath: Corefile
-                readOnly: true
+      tmp:
+        type: emptyDir
