@@ -7,6 +7,17 @@
       "data": {
         "token": "${SCROBBLE_TOKEN}"
       }
+    },
+    {
+      "enable": true,
+      "name": "MPDMusicPlayer",
+      "data": {
+        "url": "music.hoohoot.xyz:6600"
+      },
+      "options": {
+        "disableDiscovery": false
+      },
+      "type": "mpd"
     }
   ],
   "clients": [
@@ -40,7 +51,7 @@
     {
       "type": "lastfm",
       "name": "lastfm",
-      "enable": false,
+      "enable": true,
       "configureAs": "client",
       "data": {
         "apiKey": "{{ .LASTFM_API_KEY }}",
