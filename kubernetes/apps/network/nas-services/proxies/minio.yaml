@@ -11,7 +11,7 @@ spec:
   parentRefs:
     - name: external
       namespace: network
-      sectionName: https
+
   rules:
     - backendRefs:
         - name: minio
@@ -31,7 +31,7 @@ spec:
   parentRefs:
     - name: external
       namespace: network
-      sectionName: https
+
   rules:
     - backendRefs:
         - name: minio

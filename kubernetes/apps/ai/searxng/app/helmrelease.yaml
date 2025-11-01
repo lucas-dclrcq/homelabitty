@@ -73,7 +73,7 @@ spec:
         parentRefs:
           - name: external
             namespace: network
-            sectionName: https
+
     persistence:
       config:
         type: configMap

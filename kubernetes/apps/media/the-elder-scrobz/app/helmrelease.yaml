@@ -59,7 +59,7 @@ spec:
         parentRefs:
           - name: external
             namespace: network
-            sectionName: https
+
         rules:
           #          - backendRefs:
           #              - name: multi-scrobbler

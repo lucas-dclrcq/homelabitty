@@ -147,7 +147,7 @@ spec:
       parentRefs:
         - name: external
           namespace: network
-          sectionName: https
+
       paths:
         - backendRefs:
             - kind: Service
