@@ -23,6 +23,7 @@ spec:
             env:
               UMASK: "022"
               QBT_WEBUI_PORT: &port 8080
+              QBT_TORRENTING_PORT: 60469
 
             probes:
               liveness: &probes
@@ -51,51 +52,6 @@ spec:
                 memory: 1024Mi
               limits:
                 memory: 8192Mi
-          portmanager:
-            image:
-              repository: docker.io/library/alpine
-              tag: "3.22"
-            command:
-              - /bin/sh
-              - -c
-              - |
-                apk add --no-cache libnatpmp curl jq
-
-                PROTON_GW="10.2.0.1"  # WireGuard gateway
-                QBIT_API="http://localhost:8080"
-                OLD_PORT=0
-                while true; do
-                  echo "$(date): Requesting port from Proton VPN..."
-
-                  # Request port from Proton (TCP, 60 second lease)
-                  PROTON_OUTPUT=$(natpmpc -g $PROTON_GW -a 1 0 tcp 60 2>&1)
-                  PORT=$(echo "$PROTON_OUTPUT" | grep "Mapped public port" | awk '{print $4}')
-
-                  if [ -n "$PORT" ] && [ "$PORT" -gt 0 ]; then
-                    if [ "$PORT" -ne "$OLD_PORT" ]; then
-                      echo "Got port $PORT from Proton"
-
-                      # Also request UDP
-                      natpmpc -g $PROTON_GW -a 1 0 udp 60 >/dev/null 2>&1
-
-                      # Update qBittorrent listening port
-                      echo "Updating qBittorrent to use port $PORT..."
-                      curl -s --data "json={\"listen_port\":$PORT}" \
-                        $QBIT_API/api/v2/app/setPreferences
-
-                      echo "Port forward active: $PORT"
-                      OLD_PORT=$PORT
-                    else
-                      echo "Port didn't change"
-                    fi
-                  else
-                    echo "Failed to get port from Proton VPN"
-                  fi
-
-                  # Renew every 45 seconds (before 60s timeout)
-                  sleep 45
-                done
-
     defaultPodOptions:
       annotations:
         k8s.v1.cni.cncf.io/networks: |-

@@ -63,7 +63,6 @@ spec:
             - name: external
               namespace: network
 
-
     worker:
       autoscaling:
         enabled: true

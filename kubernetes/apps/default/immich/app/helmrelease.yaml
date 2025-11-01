@@ -64,7 +64,8 @@ spec:
         annotations:
           gatus.home-operations.com/endpoint: |-
             group: Misc
-        hostnames: ["photos.${SECRET_DOMAIN}"]
+        hostnames:
+          - "photos.${SECRET_DOMAIN}"
         parentRefs:
           - name: external
             namespace: network

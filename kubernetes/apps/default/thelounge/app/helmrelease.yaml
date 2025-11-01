@@ -29,7 +29,7 @@ spec:
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
+              capabilities: {drop: ["ALL"]}
 
             probes:
               liveness:
@@ -51,8 +51,9 @@ spec:
         runAsGroup: "${APP_GID}"
         fsGroup: "${APP_GID}"
         fsGroupChangePolicy: OnRootMismatch
-        supplementalGroups: [10000]
-        seccompProfile: { type: RuntimeDefault }
+        supplementalGroups:
+          - 10000
+        seccompProfile: {type: RuntimeDefault}
 
     service:
       app:

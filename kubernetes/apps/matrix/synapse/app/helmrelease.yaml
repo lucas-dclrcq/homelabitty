@@ -51,7 +51,8 @@ spec:
         enabled: false
         generic: true
         replicaCount: 2
-        listeners: [client]
+        listeners:
+          - client
         csPaths:
           ## Client API requests
           - "/_matrix/client/(api/v1|r0|v3|unstable)/createRoom$"
@@ -97,7 +98,8 @@ spec:
       synchrotron:
         enabled: false
         generic: true
-        listeners: [client]
+        listeners:
+          - client
         csPaths:
           - "/_matrix/client/(v2_alpha|r0|v3)/sync$"
           - "/_matrix/client/(api/v1|v2_alpha|r0|v3)/events$"

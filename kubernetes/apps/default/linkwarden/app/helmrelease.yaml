@@ -44,10 +44,10 @@ spec:
               pullPolicy: IfNotPresent
 
             env:
-              - { name: CONNECTION_TIMEOUT, value: "300000" }
-              - { name: MAX_CONCURRENT_SESSIONS, value: "1" }
-              - { name: DATA_DIR, value: "/profile" }
-              - { name: PORT, value: "3001" }
+              - {name: CONNECTION_TIMEOUT, value: "300000"}
+              - {name: MAX_CONCURRENT_SESSIONS, value: "1"}
+              - {name: DATA_DIR, value: "/profile"}
+              - {name: PORT, value: "3001",}
 
             resources:
               requests:

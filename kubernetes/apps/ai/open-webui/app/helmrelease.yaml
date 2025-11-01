@@ -47,7 +47,6 @@ spec:
           - name: external
             namespace: network
 
-
     persistence:
       config:
         enabled: true

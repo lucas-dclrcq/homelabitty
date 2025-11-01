@@ -69,7 +69,6 @@ spec:
               - name: *app
                 port: *port
 
-
     persistence:
       data:
         existingClaim: *app

@@ -35,7 +35,7 @@ spec:
         runAsNonRoot: true
         runAsUser: "${APP_UID}"
         runAsGroup: "${APP_GID}"
-        seccompProfile: { type: RuntimeDefault }
+        seccompProfile: {type: RuntimeDefault}
       topologySpreadConstraints:
         - maxSkew: 1
           topologyKey: kubernetes.io/hostname

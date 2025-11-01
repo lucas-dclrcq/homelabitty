@@ -5,7 +5,8 @@ kind: HTTPRoute
 metadata:
   name: rook-ceph-dashboard
 spec:
-  hostnames: ["rook.${LIMITED_DOMAIN}"]
+  hostnames:
+    - "rook.${LIMITED_DOMAIN}"
   parentRefs:
     - name: internal
       namespace: network

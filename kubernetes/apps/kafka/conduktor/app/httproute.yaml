@@ -5,7 +5,8 @@ kind: HTTPRoute
 metadata:
   name: conduktor
 spec:
-  hostnames: ["conduktor.${LIMITED_DOMAIN}"]
+  hostnames:
+    - "conduktor.${LIMITED_DOMAIN}"
   parentRefs:
     - name: internal
       namespace: network
