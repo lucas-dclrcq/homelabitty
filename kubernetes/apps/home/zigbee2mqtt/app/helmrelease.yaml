@@ -74,7 +74,6 @@ spec:
               limits:
                 memory: 1Gi
 
-
     defaultPodOptions:
       nodeSelector:
         zigbee.feature.node.kubernetes.io/adapter: "true"
@@ -88,6 +87,9 @@ spec:
 
     route:
       app:
+        annotations:
+          gatus.home-operations.com/endpoint: |-
+            group: Home
         hostnames:
           - "{{ .Release.Name }}.${LIMITED_DOMAIN}"
         parentRefs:

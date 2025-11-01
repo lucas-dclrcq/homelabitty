@@ -39,6 +39,9 @@ spec:
 
     route:
       app:
+        annotations:
+          gatus.home-operations.com/endpoint: |-
+            group: Matrix
         hostnames:
           - "{{ .Release.Name }}.${LIMITED_DOMAIN}"
         parentRefs:

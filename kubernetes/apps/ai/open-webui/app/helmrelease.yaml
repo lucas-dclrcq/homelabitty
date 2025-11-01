@@ -38,7 +38,11 @@ spec:
 
     route:
       app:
-        hostnames: ["ai.${SECRET_DOMAIN}"]
+        annotations:
+          gatus.home-operations.com/endpoint: |-
+            group: AI
+        hostnames:
+          - "ai.${SECRET_DOMAIN}"
         parentRefs:
           - name: external
             namespace: network

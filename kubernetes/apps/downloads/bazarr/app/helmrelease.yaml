@@ -55,7 +55,7 @@ spec:
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
+              capabilities: {drop: ["ALL"]}
 
             resources:
               requests:
@@ -71,8 +71,9 @@ spec:
         runAsGroup: ${APP_GID}
         fsGroup: ${APP_GID}
         fsGroupChangePolicy: OnRootMismatch
-        supplementalGroups: [10000]
-        seccompProfile: { type: RuntimeDefault }
+        supplementalGroups:
+          - 10000
+        seccompProfile: {type: RuntimeDefault}
 
     service:
       app:
@@ -83,6 +84,9 @@ spec:
 
     route:
       app:
+        annotations:
+          gatus.home-operations.com/endpoint: |-
+            group: Downloads
         hostnames:
           - "{{ .Release.Name }}.${LIMITED_DOMAIN}"
         parentRefs:

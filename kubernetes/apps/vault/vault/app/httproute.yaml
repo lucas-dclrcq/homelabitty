@@ -3,6 +3,9 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
   name: vault
+  annotations:
+    gatus.home-operations.com/endpoint: |-
+      group: Vault
 spec:
   hostnames:
     - vault.${LIMITED_DOMAIN}

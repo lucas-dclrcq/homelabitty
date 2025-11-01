@@ -12,15 +12,15 @@ spec:
   values:
     global:
       volumeMounts:
-#        - mountPath: /media
-#          name: authentik-media
+        #        - mountPath: /media
+        #          name: authentik-media
         - name: "${SECRET_DOMAIN/./-}-production-tls"
           mountPath: /certs
           readOnly: true
       volumes:
-#        - name: authentik-media
-#          persistentVolumeClaim:
-#            claimName: *app
+        #        - name: authentik-media
+        #          persistentVolumeClaim:
+        #            claimName: *app
         - name: "${SECRET_DOMAIN/./-}-production-tls"
           secret:
             secretName: "${SECRET_DOMAIN/./-}-production-tls"
@@ -53,6 +53,9 @@ spec:
 
       route:
         main:
+          annotations:
+            gatus.home-operations.com/endpoint: |-
+              group: Auth
           enabled: true
           hostnames:
             - "sso.${SECRET_DOMAIN}"

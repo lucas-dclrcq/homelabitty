@@ -86,7 +86,7 @@ spec:
       app:
         annotations:
           gatus.home-operations.com/endpoint: |-
-            group: Media
+            group: Downloads
         hostnames:
           - "{{ .Release.Name }}.${SECRET_DOMAIN}"
         parentRefs:

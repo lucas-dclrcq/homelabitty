@@ -29,8 +29,12 @@ spec:
     alertmanager:
       route:
         main:
+          annotations:
+            gatus.home-operations.com/endpoint: |-
+              group: Observability
           enabled: true
-          hostnames: ["alertmanager.${LIMITED_DOMAIN}"]
+          hostnames:
+            - "alertmanager.${LIMITED_DOMAIN}"
           parentRefs:
             - name: internal
               namespace: network
@@ -53,8 +57,12 @@ spec:
     prometheus:
       route:
         main:
+          annotations:
+            gatus.home-operations.com/endpoint: |-
+              group: Observability
           enabled: true
-          hostnames: ["prometheus.${LIMITED_DOMAIN}"]
+          hostnames:
+            - "prometheus.${LIMITED_DOMAIN}"
           parentRefs:
             - name: internal
               namespace: network
@@ -99,7 +107,8 @@ spec:
             - action: replace
               regex: (.*)
               replacement: $1
-              sourceLabels: ["__meta_kubernetes_pod_node_name"]
+              sourceLabels:
+                - "__meta_kubernetes_pod_node_name"
               targetLabel: kubernetes_node
 
     kube-state-metrics:
@@ -115,7 +124,8 @@ spec:
             - action: replace
               regex: (.*)
               replacement: $1
-              sourceLabels: ["__meta_kubernetes_pod_node_name"]
+              sourceLabels:
+                - "__meta_kubernetes_pod_node_name"
               targetLabel: kubernetes_node
 
     grafana:

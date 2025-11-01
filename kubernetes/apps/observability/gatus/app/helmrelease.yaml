@@ -58,7 +58,7 @@ spec:
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
+              capabilities: {drop: ["ALL"]}
             resources:
               requests:
                 cpu: 100m
@@ -85,6 +85,9 @@ spec:
 
     route:
       app:
+        annotations:
+          gatus.home-operations.com/endpoint: |-
+            group: Observability
         hostnames:
           - "{{ .Release.Name }}.${LIMITED_DOMAIN}"
           - "status.${LIMITED_DOMAIN}"

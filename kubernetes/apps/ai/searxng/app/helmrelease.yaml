@@ -65,7 +65,11 @@ spec:
             port: *port
     route:
       app:
-        hostnames: ["search.${SECRET_DOMAIN}"]
+        annotations:
+          gatus.home-operations.com/endpoint: |-
+            group: AI
+        hostnames:
+          - "search.${SECRET_DOMAIN}"
         parentRefs:
           - name: external
             namespace: network

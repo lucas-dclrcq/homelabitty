@@ -61,7 +61,7 @@ spec:
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
+              capabilities: {drop: ["ALL"]}
 
             resources:
               requests:
@@ -94,6 +94,9 @@ spec:
 
     route:
       app:
+        annotations:
+          gatus.home-operations.com/endpoint: |-
+            group: Downloads
         hostnames:
           - "{{ .Release.Name }}.${LIMITED_DOMAIN}"
         parentRefs:
