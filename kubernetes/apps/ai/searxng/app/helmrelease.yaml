@@ -63,6 +63,21 @@ spec:
         ports:
           http:
             port: *port
+
+
+    serviceMonitor:
+      app:
+        serviceName: *app
+        endpoints:
+          - port: http
+            scheme: http
+            path: /metrics
+            interval: 1m
+            basicAuth:
+              username: toto
+              password: dumbpassword
+            scrapeTimeout: 10s
+
     route:
       app:
         annotations:
@@ -73,7 +88,23 @@ spec:
         parentRefs:
           - name: external
             namespace: network
-
+        rules:
+          - matches:
+              - path:
+                  type: PathPrefix
+                  value: /metrics
+            filters:
+              - requestRedirect:
+                  scheme: https
+                  statusCode: 301
+                type: RequestRedirect
+          - backendRefs:
+              - name: *app
+                port: *port
+            matches:
+              - path:
+                  type: PathPrefix
+                  value: /
     persistence:
       config:
         type: configMap

@@ -88,159 +88,198 @@ spec:
       password:
         type: AlphaNumeric
     - name: "radarr"
-      databases: ["radarr_main"]
+      databases:
+        - "radarr_main"
       password:
         type: AlphaNumeric
     - name: "lidarr"
-      databases: ["lidarr_main"]
+      databases:
+        - "lidarr_main"
       password:
         type: AlphaNumeric
     - name: "sonarr"
-      databases: ["sonarr_main"]
+      databases:
+        - "sonarr_main"
       password:
         type: AlphaNumeric
     - name: "keycloak"
-      databases: ["keycloak"]
+      databases:
+        - "keycloak"
       password:
         type: AlphaNumeric
     - name: "miniflux"
-      databases: ["miniflux"]
+      databases:
+        - "miniflux"
       password:
         type: AlphaNumeric
     - name: "bazarr"
-      databases: ["bazarr"]
+      databases:
+        - "bazarr"
       password:
         type: AlphaNumeric
     - name: "sso"
-      databases: ["sso"]
+      databases:
+        - "sso"
       password:
         type: AlphaNumeric
     - name: "linkwarden"
-      databases: ["linkwarden"]
+      databases:
+        - "linkwarden"
       password:
         type: AlphaNumeric
     - name: "nc"
-      databases: ["nc"]
+      databases:
+        - "nc"
       password:
         type: AlphaNumeric
     - name: "synapse"
-      databases: ["synapse"]
+      databases:
+        - "synapse"
       password:
         type: AlphaNumeric
     - name: "matrixbridge"
-      databases: ["matrixbridge"]
+      databases:
+        - "matrixbridge"
       password:
         type: AlphaNumeric
     - name: "gatus"
-      databases: ["gatus"]
+      databases:
+        - "gatus"
       password:
         type: AlphaNumeric
     - name: "atuin"
-      databases: ["atuin"]
+      databases:
+        - "atuin"
       password:
         type: AlphaNumeric
     - name: "vaultwarden"
-      databases: ["vaultwarden"]
+      databases:
+        - "vaultwarden"
       password:
         type: AlphaNumeric
     - name: "jellystat"
-      databases: ["jellystat"]
+      databases:
+        - "jellystat"
       password:
         type: AlphaNumeric
     - name: "wallabag"
-      databases: ["wallabag"]
+      databases:
+        - "wallabag"
       password:
         type: AlphaNumeric
     - name: "tandoor"
-      databases: ["tandoor"]
+      databases:
+        - "tandoor"
       password:
         type: AlphaNumeric
     - name: "conduktor"
-      databases: ["conduktor"]
+      databases:
+        - "conduktor"
       password:
         type: AlphaNumeric
     - name: "piped"
-      databases: ["piped"]
+      databases:
+        - "piped"
       password:
         type: AlphaNumeric
     - name: "wikijs"
-      databases: ["wikijs"]
+      databases:
+        - "wikijs"
       password:
         type: AlphaNumeric
     - name: "teable"
-      databases: ["teable"]
+      databases:
+        - "teable"
       password:
         type: AlphaNumeric
     - name: "gotosocial"
-      databases: ["gotosocial"]
+      databases:
+        - "gotosocial"
       password:
         type: AlphaNumeric
     - name: "planka"
-      databases: ["planka"]
+      databases:
+        - "planka"
       password:
         type: AlphaNumeric
     - name: "mautrixdiscord"
-      databases: ["mautrixdiscord"]
+      databases:
+        - "mautrixdiscord"
       password:
         type: AlphaNumeric
     - name: "mautrixinstagram"
-      databases: ["mautrixinstagram"]
+      databases:
+        - "mautrixinstagram"
       password:
         type: AlphaNumeric
     - name: "mautrixfacebook"
-      databases: ["mautrixfacebook"]
+      databases:
+        - "mautrixfacebook"
       password:
         type: AlphaNumeric
     - name: "mautrixwhatsapp"
-      databases: ["mautrixwhatsapp"]
+      databases:
+        - "mautrixwhatsapp"
       password:
         type: AlphaNumeric
     - name: "elderscrobz"
-      databases: ["elderscrobz"]
+      databases:
+        - "elderscrobz"
       password:
         type: AlphaNumeric
     - name: "flagsmith"
-      databases: ["flagsmith"]
+      databases:
+        - "flagsmith"
       password:
         type: AlphaNumeric
     - name: "outline"
-      databases: ["outline"]
+      databases:
+        - "outline"
       password:
         type: AlphaNumeric
     - name: "vikunja"
-      databases: ["vikunja"]
+      databases:
+        - "vikunja"
       password:
         type: AlphaNumeric
     - name: "mas"
-      databases: ["mas"]
+      databases:
+        - "mas"
       password:
         type: AlphaNumeric
     - name: "graviteeapim"
-      databases: ["graviteeapim"]
+      databases:
+        - "graviteeapim"
       password:
         type: AlphaNumeric
     - name: "filature"
-      databases: ["filature"]
+      databases:
+        - "filature"
       password:
         type: AlphaNumeric
     - name: "veille"
-      databases: ["veille"]
+      databases:
+        - "veille"
       password:
         type: AlphaNumeric
     - name: "sftpgo"
-      databases: ["sftpgo"]
+      databases:
+        - "sftpgo"
       password:
         type: AlphaNumeric
     - name: "paperless"
-      databases: ["paperless"]
+      databases:
+        - "paperless"
       password:
         type: AlphaNumeric
     - name: "openwebui"
-      databases: ["openwebui"]
+      databases:
+        - "openwebui"
       password:
         type: AlphaNumeric
     - name: "umami"
-      databases: [ "umami" ]
+      databases:
+        - "umami"
       password:
         type: AlphaNumeric
   backups:
