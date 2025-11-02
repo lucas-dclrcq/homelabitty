@@ -19,7 +19,7 @@ spec:
           main:
             image:
               repository: ghcr.io/oknozor/the-elder-scrobz
-              tag: latest@sha256:2c0101c2c482fb590dc9460bb1aacc5cd56931c8c58b0734561262254656003f
+              tag: latest@sha256:2ab07cc16bbed021c140fe9e8e282f0530a4cb8488844a7881b939f2b9e03083
             env:
               SCROBZ__debug: "false"
               SCROBZ__port: &port 3000
@@ -59,7 +59,6 @@ spec:
         parentRefs:
           - name: external
             namespace: network
-
         rules:
           #          - backendRefs:
           #              - name: multi-scrobbler
