@@ -30,7 +30,7 @@ spec:
       - receiver: matrix
         matchers:
           - name: severity
-            value: critical
+            value: critical|error
             matchType: =
     groupBy:
       - alertname
