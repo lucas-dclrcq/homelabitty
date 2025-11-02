@@ -103,15 +103,19 @@ nodes:
     schematic:
       customization: *customization
     networkInterfaces:
-      - deviceSelector:
-          hardwareAddr: "00:00:22:50:26:d8"
+      - interface: bond0
+        bond:
+          mode: active-backup
+          deviceSelectors:
+            - hardwareAddr: "00:00:22:50:26:d8"
         dhcp: true
-        addresses:
-          - "192.168.1.14/24"
-        routes:
-          - network: 0.0.0.0/0
-            gateway: "192.168.1.1"
         mtu: 1500
+        vip:
+          ip: 192.168.1.42
+        vlans: &vlans
+          - vlanId: 70
+            mtu: 1500
+            dhcp: false
 
   - hostname: "burrich"
     ipAddress: "192.168.1.15"
@@ -127,12 +131,10 @@ nodes:
           deviceSelectors:
             - hardwareAddr: "00:00:22:50:26:1e"
         dhcp: true
-        vlans:
-          - vlanId: 70
-            mtu: 1500
-            dhcp: true
-            dhcpOptions:
-              routeMetric: 4096
+        mtu: 1500
+        vip:
+          ip: 192.168.1.42
+        vlans: *vlans
 
   - hostname: "bee"
     ipAddress: "192.168.1.16"
@@ -142,15 +144,16 @@ nodes:
     schematic:
       customization: *customization
     networkInterfaces:
-      - deviceSelector:
-          hardwareAddr: "00:00:22:50:26:d5"
+      - interface: bond0
+        bond:
+          mode: active-backup
+          deviceSelectors:
+            - hardwareAddr: "00:00:22:50:26:d5"
         dhcp: true
-        addresses:
-          - "192.168.1.16/24"
-        routes:
-          - network: 0.0.0.0/0
-            gateway: "192.168.1.1"
         mtu: 1500
+        vip:
+          ip: 192.168.1.42
+        vlans: *vlans
 
 patches:
   - "@./patches/global/machine-features.yaml"
