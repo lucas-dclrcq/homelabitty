@@ -31,7 +31,7 @@ nodes:
         extraKernelArgs:
           - -init_on_alloc # Less security, faster puter
           - -init_on_free # Less security, faster puter
-          - selinux # Less security, faster puter
+          - -selinux # Less security, faster puter
           - apparmor=0
           - init_on_alloc=0 # Less security, faster puter
           - init_on_free=0 # Less security, faster puter
@@ -51,10 +51,16 @@ nodes:
           mode: active-backup
           deviceSelectors:
             - hardwareAddr: "00:00:22:50:26:c6"
+              driver: igc
         dhcp: true
         mtu: 1500
-        vlans: &vlans
-          - vlanId: 70
+        vlans:
+          - # VPN
+            vlanId: 70
+            mtu: 1500
+            dhcp: false
+          - # IOT
+            vlanId: 30
             mtu: 1500
             dhcp: false
         vip:
@@ -73,9 +79,18 @@ nodes:
           mode: active-backup
           deviceSelectors:
             - hardwareAddr: "00:00:22:50:25:cf"
+              driver: igc
         dhcp: true
         mtu: 1500
-        vlans: *vlans
+        vlans:
+          - # VPN
+            vlanId: 70
+            mtu: 1500
+            dhcp: false
+          - # IOT
+            vlanId: 30
+            mtu: 1500
+            dhcp: false
         vip:
           ip: "192.168.1.42"
 
@@ -92,9 +107,18 @@ nodes:
           mode: active-backup
           deviceSelectors:
             - hardwareAddr: "00:00:22:50:26:55"
+              driver: igc
         dhcp: true
         mtu: 1500
-        vlans: *vlans
+        vlans:
+          - # VPN
+            vlanId: 70
+            mtu: 1500
+            dhcp: false
+          - # IOT
+            vlanId: 30
+            mtu: 1500
+            dhcp: false
         vip:
           ip: "192.168.1.42"
 
@@ -111,9 +135,18 @@ nodes:
           mode: active-backup
           deviceSelectors:
             - hardwareAddr: "00:00:22:50:26:d8"
+              driver: igc
         dhcp: true
         mtu: 1500
-        vlans: *vlans
+        vlans:
+          - # VPN
+            vlanId: 70
+            mtu: 1500
+            dhcp: false
+          - # IOT
+            vlanId: 30
+            mtu: 1500
+            dhcp: false
 
   - hostname: "burrich"
     ipAddress: "192.168.1.15"
@@ -128,9 +161,18 @@ nodes:
           mode: active-backup
           deviceSelectors:
             - hardwareAddr: "00:00:22:50:26:1e"
+              driver: igc
         dhcp: true
         mtu: 1500
-        vlans: *vlans
+        vlans:
+          - # VPN
+            vlanId: 70
+            mtu: 1500
+            dhcp: false
+          - # IOT
+            vlanId: 30
+            mtu: 1500
+            dhcp: false
 
   - hostname: "bee"
     ipAddress: "192.168.1.16"
@@ -145,10 +187,18 @@ nodes:
           mode: active-backup
           deviceSelectors:
             - hardwareAddr: "00:00:22:50:26:d5"
+              driver: igc
         dhcp: true
         mtu: 1500
-        vlans: *vlans
-
+        vlans:
+          - # VPN
+            vlanId: 70
+            mtu: 1500
+            dhcp: false
+          - # IOT
+            vlanId: 30
+            mtu: 1500
+            dhcp: false
 patches:
   - "@./patches/global/machine-features.yaml"
   - "@./patches/global/machine-files.yaml"
