@@ -99,9 +99,9 @@ upgrade-node node:
 #    curl -sX POST --data-binary "@{{talos_dir}}/schematic.yaml" \
 #        "https://factory.talos.dev/schematics" | jq -r '.id'
 #
-#[doc('Reboot Node')]
-#reboot-node node:
-#    talosctl -n {{node}} reboot -m powercycle
+[doc('Reboot Node')]
+reboot-node node:
+    talosctl -n {{node}} reboot -m powercycle
 #
 #[doc('Render Config')]
 #render-config node:
