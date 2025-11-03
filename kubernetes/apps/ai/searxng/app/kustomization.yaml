@@ -6,6 +6,7 @@ resources:
   - ./ocirepository.yaml
   - ./externalsecret.yaml
   - ./helmrelease.yaml
+  - ./httproutefilter.yaml
 configMapGenerator:
   - name: searxng-configmap
     files:

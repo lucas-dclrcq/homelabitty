@@ -64,20 +64,6 @@ spec:
           http:
             port: *port
 
-
-    serviceMonitor:
-      app:
-        serviceName: *app
-        endpoints:
-          - port: http
-            scheme: http
-            path: /metrics
-            interval: 1m
-            basicAuth:
-              username: toto
-              password: dumbpassword
-            scrapeTimeout: 10s
-
     route:
       app:
         annotations:
@@ -94,10 +80,11 @@ spec:
                   type: PathPrefix
                   value: /metrics
             filters:
-              - requestRedirect:
-                  scheme: https
-                  statusCode: 301
-                type: RequestRedirect
+              - type: ExtensionRef
+                extensionRef:
+                  group: gateway.envoyproxy.io
+                  kind: HTTPRouteFilter
+                  name: not-found-page
           - backendRefs:
               - name: *app
                 port: *port
