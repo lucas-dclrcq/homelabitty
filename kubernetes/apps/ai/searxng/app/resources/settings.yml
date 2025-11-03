@@ -21,7 +21,7 @@ search:
 
 general:
   instance_name: Hoohoot Search
-  open_metrics: 'dumbpassword'
+  open_metrics: ''
 
 ui:
   default_theme: simple
