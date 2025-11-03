@@ -43,15 +43,17 @@ nodes:
             - siderolabs/intel-ucode
             - siderolabs/mei
     networkInterfaces:
-      - deviceSelector:
-          hardwareAddr: "00:00:22:50:26:c6"
+      - interface: bond0
+        bond:
+          mode: active-backup
+          deviceSelectors:
+            - hardwareAddr: "00:00:22:50:26:c6"
         dhcp: true
-        addresses:
-          - "192.168.1.11/24"
-        routes:
-          - network: 0.0.0.0/0
-            gateway: "192.168.1.1"
         mtu: 1500
+        vlans: &vlans
+          - vlanId: 70
+            mtu: 1500
+            dhcp: false
         vip:
           ip: "192.168.1.42"
 
@@ -63,15 +65,14 @@ nodes:
     schematic:
       customization: *customization
     networkInterfaces:
-      - deviceSelector:
-          hardwareAddr: "00:00:22:50:25:cf"
+      - interface: bond0
+        bond:
+          mode: active-backup
+          deviceSelectors:
+            - hardwareAddr: "00:00:22:50:25:cf"
         dhcp: true
-        addresses:
-          - "192.168.1.12/24"
-        routes:
-          - network: 0.0.0.0/0
-            gateway: "192.168.1.1"
         mtu: 1500
+        vlans: *vlans
         vip:
           ip: "192.168.1.42"
 
@@ -83,15 +84,14 @@ nodes:
     schematic:
       customization: *customization
     networkInterfaces:
-      - deviceSelector:
-          hardwareAddr: "00:00:22:50:26:55"
+      - interface: bond0
+        bond:
+          mode: active-backup
+          deviceSelectors:
+            - hardwareAddr: "00:00:22:50:26:55"
         dhcp: true
-        addresses:
-          - "192.168.1.13/24"
-        routes:
-          - network: 0.0.0.0/0
-            gateway: "192.168.1.1"
         mtu: 1500
+        vlans: *vlans
         vip:
           ip: "192.168.1.42"
 
@@ -110,12 +110,7 @@ nodes:
             - hardwareAddr: "00:00:22:50:26:d8"
         dhcp: true
         mtu: 1500
-        vip:
-          ip: 192.168.1.42
-        vlans: &vlans
-          - vlanId: 70
-            mtu: 1500
-            dhcp: false
+        vlans: *vlans
 
   - hostname: "burrich"
     ipAddress: "192.168.1.15"
@@ -132,8 +127,6 @@ nodes:
             - hardwareAddr: "00:00:22:50:26:1e"
         dhcp: true
         mtu: 1500
-        vip:
-          ip: 192.168.1.42
         vlans: *vlans
 
   - hostname: "bee"
@@ -151,8 +144,6 @@ nodes:
             - hardwareAddr: "00:00:22:50:26:d5"
         dhcp: true
         mtu: 1500
-        vip:
-          ip: 192.168.1.42
         vlans: *vlans
 
 patches:
