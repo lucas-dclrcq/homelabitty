@@ -9,7 +9,7 @@
       }
     },
     {
-      "enable": true,
+      "enable": false,
       "name": "MPDMusicPlayer",
       "data": {
         "url": "music.hoohoot.xyz:6600"
@@ -51,7 +51,7 @@
     {
       "type": "lastfm",
       "name": "lastfm",
-      "enable": true,
+      "enable": false,
       "configureAs": "client",
       "data": {
         "apiKey": "{{ .LASTFM_API_KEY }}",
