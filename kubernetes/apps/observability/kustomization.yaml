@@ -11,7 +11,7 @@ resources:
   - ./kromgo/ks.yaml
   - ./gatus/ks.yaml
   - ./keda/ks.yaml
-  - ./silence-operator/ks.yaml
+  #- ./silence-operator/ks.yaml
   - ./karma/ks.yaml
   - ./tempo/ks.yaml
   - ./umami/ks.yaml
