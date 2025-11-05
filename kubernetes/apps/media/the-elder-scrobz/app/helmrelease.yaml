@@ -60,21 +60,21 @@ spec:
           - name: external
             namespace: network
         rules:
-          - backendRefs:
-              - name: multi-scrobbler
-                port: 9078
-            matches:
-              - path:
-                  value: /api/v1/1
-                headers:
-                  - name: "Authorization"
-                    value: "Token ${SCROBBLE_TOKEN}"
-            filters:
-              - type: URLRewrite
-                urlRewrite:
-                  path:
-                    type: ReplacePrefixMatch
-                    replacePrefixMatch: /1
+#          - backendRefs:
+#              - name: multi-scrobbler
+#                port: 9078
+#            matches:
+#              - path:
+#                  value: /api/v1/1
+#                headers:
+#                  - name: "Authorization"
+#                    value: "Token ${SCROBBLE_TOKEN}"
+#            filters:
+#              - type: URLRewrite
+#                urlRewrite:
+#                  path:
+#                    type: ReplacePrefixMatch
+#                    replacePrefixMatch: /1
           - backendRefs:
               - name: *app
                 port: *port
