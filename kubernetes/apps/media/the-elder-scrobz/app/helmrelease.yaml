@@ -19,7 +19,7 @@ spec:
           main:
             image:
               repository: ghcr.io/oknozor/the-elder-scrobz
-              tag: latest@sha256:8f5e0db191283aa9e0659dcc12192bd5aace039a517ae0e439e6fdb584d63e75
+              tag: latest@sha256:400bcf2b183a57fdb044bbef6cc41b1a17e6a67cb5b7a1e418e7d28dd918ce23
             env:
               SCROBZ__debug: "false"
               SCROBZ__port: &port 3000
@@ -60,21 +60,21 @@ spec:
           - name: external
             namespace: network
         rules:
-#          - backendRefs:
-#              - name: multi-scrobbler
-#                port: 9078
-#            matches:
-#              - path:
-#                  value: /api/v1/1
-#                headers:
-#                  - name: "Authorization"
-#                    value: "Token ${SCROBBLE_TOKEN}"
-#            filters:
-#              - type: URLRewrite
-#                urlRewrite:
-#                  path:
-#                    type: ReplacePrefixMatch
-#                    replacePrefixMatch: /1
+          #          - backendRefs:
+          #              - name: multi-scrobbler
+          #                port: 9078
+          #            matches:
+          #              - path:
+          #                  value: /api/v1/1
+          #                headers:
+          #                  - name: "Authorization"
+          #                    value: "Token ${SCROBBLE_TOKEN}"
+          #            filters:
+          #              - type: URLRewrite
+          #                urlRewrite:
+          #                  path:
+          #                    type: ReplacePrefixMatch
+          #                    replacePrefixMatch: /1
           - backendRefs:
               - name: *app
                 port: *port
