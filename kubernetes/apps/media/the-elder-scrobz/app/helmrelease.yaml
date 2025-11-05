@@ -91,3 +91,9 @@ spec:
           the-elder-scrobz:
             main:
               - path: /.cache
+      tmp:
+        type: emptyDir
+        advancedMounts:
+          the-elder-scrobz:
+            main:
+              - path: /tmp
