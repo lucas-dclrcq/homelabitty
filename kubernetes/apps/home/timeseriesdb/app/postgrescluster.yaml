@@ -64,7 +64,11 @@ spec:
         - "garmin"
       password:
         type: AlphaNumeric
-
+    - name: "homeassistant"
+      databases:
+        - "homeassistant"
+      password:
+        type: AlphaNumeric
   backups:
     pgbackrest:
       configuration: &backupConfig
