@@ -24,13 +24,6 @@ spec:
               USE_X_SETTINGS: 1
               PLAYWRIGHT_DRIVER_URL: ws://localhost:3000/?stealth=1&--disable-web-security=true&--user-data-dir=~/browserless-cache-123
 
-            resources:
-              requests:
-                cpu: 10m
-                memory: 106Mi
-              limits:
-                memory: 106Mi
-
           browser:
             image:
               repository: docker.io/browserless/chrome
