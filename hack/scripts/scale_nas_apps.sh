@@ -19,7 +19,8 @@ fi
 
 echo "Scaling NAS applications with replicas=$replicas"
 
-kubectl scale deployment -n default filebrowser  --replicas $replicas
+kubectl scale deployment -n default sftpgo  --replicas $replicas
+kubectl scale deployment -n default nextcloud  --replicas $replicas
 kubectl scale deployment -n default immich-machine-learning  --replicas $replicas
 kubectl scale deployment -n default immich-server  --replicas $replicas
 kubectl scale deployment -n downloads bazarr  --replicas $replicas
@@ -29,6 +30,8 @@ kubectl scale deployment -n downloads radarr  --replicas $replicas
 kubectl scale deployment -n downloads readarr  --replicas $replicas
 kubectl scale deployment -n downloads sabnzbd  --replicas $replicas
 kubectl scale deployment -n downloads sonarr  --replicas $replicas
+kubectl scale deployment -n downloads slskd  --replicas $replicas
+kubectl scale deployment -n downloads pinchflat  --replicas $replicas
 kubectl scale deployment -n home frigate  --replicas $replicas
 kubectl scale deployment -n infrastructure minio --replicas $replicas
 kubectl scale deployment -n media audiobookshelf --replicas $replicas
