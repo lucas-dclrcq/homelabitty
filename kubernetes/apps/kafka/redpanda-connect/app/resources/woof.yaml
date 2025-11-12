@@ -1,9 +1,0 @@
----
-input:
-  generate:
-    mapping: root = "woof" # Generates a message with the word "woof" at regular intervals.
-    interval: 5s
-    count: 0
-output:
-  stdout:
-    codec: lines
