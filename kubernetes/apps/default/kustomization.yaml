@@ -26,3 +26,4 @@ resources:
   - ./habittrove/ks.yaml
   - ./paperless/ks.yaml
   - ./n8n/ks.yaml
+  - ./sqq-inscription/ks.yaml
