@@ -38,7 +38,7 @@ spec:
               SLSKD_APP_DIR: /config
               SLSKD_HTTP_PORT: &port 80
               SLSKD_NO_HTTPS: true
-              SLSKD_SLSK_LISTEN_PORT: &soulseekPort 50300
+              SLSKD_SLSK_LISTEN_PORT: 28458
               SLSKD_UPLOAD_SLOTS: "5"
               SLSKD_UPLOAD_SPEED_LIMIT: "12207" # 100 mbits/s
 
@@ -78,29 +78,28 @@ spec:
                 memory: 4Gi
 
     defaultPodOptions:
+      annotations:
+        k8s.v1.cni.cncf.io/networks: |-
+          [{
+            "name": "vpn",
+            "namespace": "kube-system",
+            "ips": ["192.168.70.11/24"],
+            "mac": "32:0b:d8:1f:b6:e5"
+          }]
       securityContext:
         runAsNonRoot: true
-        runAsUser: 1026
-        runAsGroup: 100
-        fsGroup: 100
+        runAsUser: "${APP_UID}"
+        runAsGroup: "${APP_GID}"
+        fsGroup: "${APP_GID}"
         fsGroupChangePolicy: OnRootMismatch
-        supplementalGroups:
-          - 10000
         seccompProfile: {type: RuntimeDefault}
 
     service:
       app:
         controller: slskd
-        type: LoadBalancer
-        annotations:
-          io.cilium/lb-ipam-ips: "${LB_IP_SLSKD}"
         ports:
           http:
             port: *port
-          soulseek:
-            enabled: true
-            port: *soulseekPort
-            protocol: TCP
 
     route:
       app:
