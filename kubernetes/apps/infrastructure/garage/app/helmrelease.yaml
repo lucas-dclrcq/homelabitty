@@ -1,0 +1,83 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app garage
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  values:
+    controllers:
+      garage:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: dxflrs/garage
+              tag: v2.1.0@sha256:4c9b34c113e61358466e83fd6e7d66e6d18657ede14b776eb78a93ee8da7cf6a
+            env:
+              TZ: "${TIMEZONE}"
+            envFrom:
+              - secretRef:
+                  name: garage-secret
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: {drop: [ALL]}
+            resources:
+              requests:
+                cpu: 100m
+              limits:
+                memory: 512Mi
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: ${APP_UID}
+        runAsGroup: ${APP_GID}
+        fsGroup: ${APP_GID}
+        fsGroupChangePolicy: OnRootMismatch
+        supplementalGroups:
+          - 10000
+        seccompProfile: {type: RuntimeDefault}
+    service:
+      app:
+        ports:
+          s3:
+            port: &port 3900
+          api:
+            port: 3903
+    route:
+      app:
+        hostnames:
+          - "garage.${SECRET_DOMAIN}"
+        parentRefs:
+          - name: external
+            namespace: network
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
+    persistence:
+      config:
+        enabled: true
+        type: configMap
+        name: garage-configmap
+        globalMounts:
+          - path: /etc/garage.toml
+            subPath: configuration.toml
+      data:
+        type: nfs
+        server: truenas.${INTERNAL_DOMAIN}
+        path: /mnt/tank/Apps/Garage/data
+        globalMounts:
+          - path: /data
+      meta:
+        type: nfs
+        server: truenas.${INTERNAL_DOMAIN}
+        path: /mnt/tank/Apps/Garage/meta
+        globalMounts:
+          - path: /meta

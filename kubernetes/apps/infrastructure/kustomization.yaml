@@ -10,3 +10,4 @@ resources:
   - ./smtp-relay/ks.yaml
   - ./minio/ks.yaml
   - ./ntfy/ks.yaml
+  - ./garage/ks.yaml
