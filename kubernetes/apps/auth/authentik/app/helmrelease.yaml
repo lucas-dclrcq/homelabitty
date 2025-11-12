@@ -12,15 +12,10 @@ spec:
   values:
     global:
       volumeMounts:
-        #        - mountPath: /media
-        #          name: authentik-media
         - name: "${SECRET_DOMAIN/./-}-production-tls"
           mountPath: /certs
           readOnly: true
       volumes:
-        #        - name: authentik-media
-        #          persistentVolumeClaim:
-        #            claimName: *app
         - name: "${SECRET_DOMAIN/./-}-production-tls"
           secret:
             secretName: "${SECRET_DOMAIN/./-}-production-tls"

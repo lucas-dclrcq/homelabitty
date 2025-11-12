@@ -14,5 +14,10 @@ s3_region = "eu-west-1"
 api_bind_addr = "[::]:3900"
 root_domain = ".garage.${SECRET_DOMAIN}"
 
+[s3_web]
+bind_addr = "[::]:3902"
+root_domain = ".garage.${SECRET_DOMAIN}"
+index = "index.html"
+
 [admin]
 api_bind_addr = "[::]:3903"

@@ -53,6 +53,8 @@ spec:
             port: &port 3900
           api:
             port: 3903
+          web:
+            port: &webPort 3902
     route:
       app:
         hostnames:
@@ -64,6 +66,16 @@ spec:
           - backendRefs:
               - name: *app
                 port: *port
+      authentik:
+        hostnames:
+          - "authentik-static.${SECRET_DOMAIN}"
+        parentRefs:
+          - name: external
+            namespace: network
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *webPort
     persistence:
       config:
         enabled: true
