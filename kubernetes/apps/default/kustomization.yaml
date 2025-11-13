@@ -27,3 +27,4 @@ resources:
   - ./paperless/ks.yaml
   - ./n8n/ks.yaml
   - ./sqq-inscription/ks.yaml
+  - ./rustical/ks.yaml
