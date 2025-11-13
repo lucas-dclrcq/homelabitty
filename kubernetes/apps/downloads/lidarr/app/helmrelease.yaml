@@ -30,7 +30,7 @@ spec:
           app:
             image:
               repository: ghcr.io/hotio/lidarr
-              tag: pr-plugins-2.14.1.4703@sha256:04261cc919a8095aa646b329b638c103d0c2bdcb8eefcf1fdec7100c707dbf2e
+              tag: pr-plugins-99a6f00@sha256:57a02751e3a8fe85909ef3eaf6f80ad1ac76b279d0511c3595a45bc81b476c75
 
             env:
               TZ: ${TIMEZONE}
