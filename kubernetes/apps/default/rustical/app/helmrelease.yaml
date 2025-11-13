@@ -19,7 +19,7 @@ spec:
         fsGroupChangePolicy: "OnRootMismatch"
 
     controllers:
-      rustical :
+      rustical:
         containers:
           app:
             image:
@@ -43,23 +43,21 @@ spec:
 
             resources:
               requests:
-                memory: 250Mi
+                memory: 50Mi
                 cpu: 50m
               limits:
-                memory: 500Mi
-
+                memory: 100Mi
 
     service:
       app:
         controller: *app
         ports:
           http:
-            port: 80
-            targetPort: 4000
-
+            port: 4000
     route:
       app:
-        hostnames: [ "{{ .Release.Name }}.${SECRET_DOMAIN}" ]
+        hostnames:
+          - "{{ .Release.Name }}.${SECRET_DOMAIN}"
         parentRefs:
           - name: external
             namespace: network
