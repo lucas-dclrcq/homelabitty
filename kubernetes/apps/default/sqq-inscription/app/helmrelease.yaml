@@ -17,7 +17,7 @@ spec:
           main:
             image:
               repository: ghcr.io/superquinquin-sur-deule/sqq-inscription
-              tag: latest
+              tag: latest@sha256:d57541b00b1d2a7f967096d71b9371e8c6d6e5c6d90af5d02205972eaf6aa7f7
 
             resources:
               requests:
