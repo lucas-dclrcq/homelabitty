@@ -1,0 +1,24 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app librechat
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  values:
+    librechat-rag-api:
+      enabled: true
+    mongodb:
+      global:
+        security:
+          allowInsecureImages: true
+      image:
+        registry: registry-1.docker.io
+        repository: bitnami/mongodb
+        tag: latest
+      persistence:
+        storageClass: ceph-block
