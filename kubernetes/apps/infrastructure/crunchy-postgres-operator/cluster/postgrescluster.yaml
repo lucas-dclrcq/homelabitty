@@ -282,6 +282,11 @@ spec:
         - "umami"
       password:
         type: AlphaNumeric
+    - name: "booklore"
+      databases:
+        - "booklore"
+      password:
+        type: AlphaNumeric
   backups:
     pgbackrest:
       configuration:

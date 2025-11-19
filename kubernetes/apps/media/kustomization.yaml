@@ -13,3 +13,4 @@ resources:
   - ./komga/ks.yaml
   - ./the-elder-scrobz/ks.yaml
   - ./multi-scrobbler/ks.yaml
+  - ./booklore/ks.yaml
