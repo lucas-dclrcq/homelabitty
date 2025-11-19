@@ -10,8 +10,19 @@ spec:
     kind: OCIRepository
     name: *app
   values:
+    librechat:
+      configEnv:
+        OPENID_ISSUER: https://sso.${SECRET_DOMAIN}/application/o/librechat/.well-known/openid-configuration
+        OPENID_CLIENT_ID: "$${OPENID_CLIENT_ID}"
+        OPENID_CLIENT_SECRET: "$${OPENID_CLIENT_SECRET}"
+        OPENID_SESSION_SECRET: "$${OPENID_SESSION_SECRET}"
+        OPENID_CALLBACK_URL: /oauth/openid/callback
+        OPENID_SCOPE: openid profile email
+        OPENID_BUTTON_LABEL: SSO
+        OPENID_GENERATE_NONCE: "true"
+        OPENID_USE_END_SESSION_ENDPOINT: "true"
     librechat-rag-api:
-      enabled: true
+      enabled: false
     mongodb:
       global:
         security:
