@@ -10,8 +10,79 @@ spec:
     kind: OCIRepository
     name: *app
   values:
+    app:
+      image:
+        tag: 0.7.4
+    controller:
+      agentImage:
+        tag: 0.7.4
+      image:
+        tag: 0.7.4
+    tools:
+      image:
+        tag: 0.7.4
+    ui:
+      image:
+        tag: 0.7.4
+    agents:
+      istio-agent:
+        enabled: false
+      argo-rollouts-agent:
+        enabled: false
+
     providers:
       default: openAI
       openAI:
         apiKeySecretRef: kagent-secret
         apiKeySecretKey: OPENAI_API_KEY
+  postRenderers:
+    - kustomize:
+        patches:
+          - patch: |-
+              - op: replace
+                path: /metadata/labels/app.kubernetes.io~1version
+                value: 0.7.4
+            target:
+              kind: ServiceAccount
+          - patch: |-
+              - op: replace
+                path: /metadata/labels/app.kubernetes.io~1version
+                value: 0.7.4
+            target:
+              kind: Secret
+          - patch: |-
+              - op: replace
+                path: /metadata/labels/app.kubernetes.io~1version
+                value: 0.7.4
+            target:
+              kind: ClusterRole
+          - patch: |-
+              - op: replace
+                path: /metadata/labels/app.kubernetes.io~1version
+                value: 0.7.4
+            target:
+              kind: ClusterRoleBinding
+          - patch: |-
+              - op: replace
+                path: /metadata/labels/app.kubernetes.io~1version
+                value: 0.7.4
+            target:
+              kind: Service
+          - patch: |-
+              - op: replace
+                path: /metadata/labels/app.kubernetes.io~1version
+                value: 0.7.4
+            target:
+              kind: ModelConfig
+          - patch: |-
+              - op: replace
+                path: /metadata/labels/app.kubernetes.io~1version
+                value: 0.7.4
+            target:
+              kind: Deployment
+          - patch: |-
+              - op: replace
+                path: /metadata/labels/app.kubernetes.io~1version
+                value: 0.7.4
+            target:
+              kind: RemoteMCPServer
