@@ -38,7 +38,7 @@ spec:
         apiKeySecretKey: OPENAI_API_KEY
     grafana-mcp:
       grafana:
-        url: http://grafana-service.monitoring.svc.cluster.local:3000/api
+        url: http://grafana-service.observability.svc.cluster.local:3000
         apiKey: "glsa_C0dlJB36KvhuZsSuXncpFr4Hy4qoHP9R_3b43880b"
   postRenderers:
     - kustomize:
