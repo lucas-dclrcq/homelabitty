@@ -31,12 +31,15 @@ spec:
         enabled: false
       kgateway-agent:
         enabled: false
-
     providers:
       default: openAI
       openAI:
         apiKeySecretRef: kagent-secret
         apiKeySecretKey: OPENAI_API_KEY
+    grafana-mcp:
+      grafana:
+        url: http://grafana-service.monitoring.svc.cluster.local:3000/api
+        apiKey: "glsa_C0dlJB36KvhuZsSuXncpFr4Hy4qoHP9R_3b43880b"
   postRenderers:
     - kustomize:
         patches:
