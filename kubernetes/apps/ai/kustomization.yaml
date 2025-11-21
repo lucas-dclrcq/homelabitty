@@ -10,3 +10,4 @@ resources:
   - ./searxng/ks.yaml
   - ./librechat/ks.yaml
   - ./kagent/ks.yaml
+  - ./ollama/ks.yaml
