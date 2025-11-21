@@ -3,20 +3,14 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: tuppr
+  name: &app tuppr
 spec:
   interval: 1h
   chartRef:
     kind: OCIRepository
-    name: tuppr
-  install:
-    crds: CreateReplace
-    remediation:
-      retries: -1
-  upgrade:
-    cleanupOnFail: true
-    crds: CreateReplace
-    remediation:
-      retries: 3
+    name: *app
   values:
     replicaCount: 2
+    monitoring:
+      serviceMonitor:
+        enabled: true
