@@ -14,13 +14,9 @@ _... managed with Flux, Renovate, and GitHub Actions_ 🤖
 <div align="center">
 
 
-[![Talos](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.hoohoot.org%2Ftalos_version&style=flat-square&label=Talos)](https://github.com/kashalls/kromgo)
+[![Talos](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.hoohoot.org%2Ftalos_version&style=for-the-badge&logo=talos&logoColor=white&color=blue&label=%20)](https://talos.dev)
 &nbsp;&nbsp;
-[![k8s](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.hoohoot.org%2Fkubernetes_version&style=flat-square&label=K8S)](https://github.com/kashalls/kromgo)
-&nbsp;&nbsp;
-[![Age-Days](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.hoohoot.org%2Fcluster_age_days&style=flat-square&label=Age)](https://github.com/kashalls/kromgo)
-&nbsp;&nbsp;
-[![Uptime-Days](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.hoohoot.org%2Fcluster_uptime_days&style=flat-square&label=Uptime)](https://github.com/kashalls/kromgo)
+[![Kubernetes](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.hoohoot.org%2Fkubernetes_version&style=for-the-badge&logo=kubernetes&logoColor=white&color=blue&label=%20)](https://kubernetes.io)
 &nbsp;&nbsp;
 
 </div>
@@ -39,6 +35,10 @@ _... managed with Flux, Renovate, and GitHub Actions_ 🤖
 [![Memory-Usage](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.hoohoot.org%2Fcluster_memory_usage&style=flat-square&label=Memory)](https://github.com/kashalls/kromgo)
 &nbsp;&nbsp;
 [![Power-Usage](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.hoohoot.org%2Fcluster_power_usage&style=flat-square&label=Power)](https://github.com/kashalls/kromgo)
+&nbsp;&nbsp;
+[![Age-Days](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.hoohoot.org%2Fcluster_age_days&style=flat-square&label=Age)](https://github.com/kashalls/kromgo)
+&nbsp;&nbsp;
+[![Uptime-Days](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.hoohoot.org%2Fcluster_uptime_days&style=flat-square&label=Uptime)](https://github.com/kashalls/kromgo)
 &nbsp;&nbsp;
 </div>
 
