@@ -12,9 +12,7 @@ spec:
   values:
     controllers:
       gatus:
-        strategy: RollingUpdate
-        labels:
-          postgres: "true"
+        type: statefulset
         annotations:
           reloader.stakater.com/auto: "true"
 
