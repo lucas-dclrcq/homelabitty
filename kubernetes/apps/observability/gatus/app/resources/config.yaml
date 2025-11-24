@@ -33,7 +33,6 @@ storage:
   caching: true
   path: $${GATUS_CONFIG_PATH}/gatus.db
 
-
 ui:
   header: Hoohoot
   link: https://status.${SECRET_DOMAIN}
@@ -46,7 +45,7 @@ ui:
 alerting:
   matrix:
     server-url: "http://synapse-matrix-synapse.matrix.svc.cluster.local:8008"
-    access-token: {{ .MATRIX_TOKEN }}
+    access-token: {? {.MATRIX_TOKEN: ''} : ''}
     internal-room-id: "!IccgAPArvRtfPCBFPF:${SECRET_DOMAIN}"
     default-alert:
       description: health-check failed
