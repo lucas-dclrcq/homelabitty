@@ -18,4 +18,6 @@ spec:
               name: cloudflare-secret
               key: CLOUDFLARE_API_TOKEN
         selector:
-          dnsZones: ["${SECRET_DOMAIN}", "${LIMITED_DOMAIN}"]
+          dnsZones:
+            - "${SECRET_DOMAIN}"
+            - "${LIMITED_DOMAIN}"
