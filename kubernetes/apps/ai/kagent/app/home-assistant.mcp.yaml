@@ -4,9 +4,12 @@ kind: RemoteMCPServer
 metadata:
   name: homeassistant-mcp
 spec:
-  description: Grafana MCP server
+  description: Home Assistant MCP Server
   protocol: STREAMABLE_HTTP
-  sseReadTimeout: 5m0s
-  terminateOnClose: true
-  timeout: 30s
   url: http://home-assistant.home.svc.cluster.local:8123/api/mcp
+  headersFrom:
+    - name: Authorization
+      valueFrom:
+        name: kagent-secret
+        key: HOMEASSISTANT_AUTH_HEADER
+        type: Secret
