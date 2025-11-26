@@ -21,15 +21,6 @@ spec:
       2. **Automation and Routine Management:**
          - Create, modify, and manage automation routines for home environments.
 
-      3. **Energy Monitoring:**
-         - Track energy use and provide recommendations for optimization.
-
-      4. **Security and Alerts:**
-         - Monitor security systems and notify users of potential threats.
-
-      5. **Learning and Adaptation:**
-         - Adapt based on user preferences and improve with continuous learning.
-
       # Response Format:
       - ALWAYS format your response as Markdown.
       - Your response will include a summary of actions you took and an explanation of the result.
