@@ -287,6 +287,11 @@ spec:
         - "booklore"
       password:
         type: AlphaNumeric
+    - name: "sqq"
+      databases:
+        - "sqq"
+      password:
+        type: AlphaNumeric
   backups:
     pgbackrest:
       configuration:
