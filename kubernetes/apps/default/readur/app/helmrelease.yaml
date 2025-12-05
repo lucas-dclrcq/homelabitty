@@ -1,0 +1,109 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/app-template-4.4.0/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app readur
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  interval: 1h
+  values:
+    controllers:
+      readur:
+        annotations:
+          secret.reloader.stakater.com/reload: &secret readur-secret
+
+        containers:
+          readur:
+            image:
+              repository: ghcr.io/readur/readur
+              tag: 2.6.3@sha256:78d1fabe3798b3abad8311ddd79d4aadc7756c1472a8bc5d7985e00bfc9ae5cc
+
+            env:
+              # Server Configuration
+              SERVER_HOST: "0.0.0.0"
+              SERVER_PORT: &port 8000
+              # OIDC
+              OIDC_ENABLED: true
+              # File Management
+              UPLOAD_PATH: &uploads "/app/uploads"
+              WATCH_FOLDER: &watch "/app/watch"
+              ALLOWED_FILE_TYPES: "pdf,txt,doc,docx,png,jpg,jpeg"
+              MAX_FILE_SIZE_MB: "50"
+              MAX_FILE_AGE_HOURS: "24"
+              # OCR Settings
+              OCR_LANGUAGE: "fra+eng"
+              CONCURRENT_OCR_JOBS: "4"
+              OCR_TIMEOUT_SECONDS: "300"
+              # Performance
+              MEMORY_LIMIT_MB: "512"
+              CPU_PRIORITY: "normal"
+              # File Watching
+              WATCH_INTERVAL_SECONDS: "30"
+              FILE_STABILITY_CHECK_MS: "1000"
+              ALLOW_LOCAL_AUTH: false
+
+            envFrom:
+              - secretRef:
+                  name: *secret
+
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/health
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: {drop: ["ALL"]}
+            resources:
+              requests:
+                cpu: 100m
+              limits:
+                memory: 4Gi
+
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: ${APP_UID}
+        runAsGroup: ${APP_GID}
+        fsGroup: ${APP_GID}
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile: {type: RuntimeDefault}
+
+    service:
+      readur:
+        controller: readur
+        enabled: true
+        ports:
+          http:
+            port: *port
+
+    route:
+      readur:
+        hostnames:
+          - "readur.${LIMITED_DOMAIN}"
+        parentRefs:
+          - name: internal
+            namespace: network
+
+    persistence:
+      media:
+        type: nfs
+        server: "truenas.${INTERNAL_DOMAIN}"
+        path: /mnt/tank/Apps/readur
+        globalMounts:
+          - subPath: watch
+            path: *watch
+          - subPath: uploads
+            path: *uploads

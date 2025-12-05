@@ -292,6 +292,11 @@ spec:
         - "sqq"
       password:
         type: AlphaNumeric
+    - name: "readur"
+      databases:
+        - "readur"
+      password:
+        type: AlphaNumeric
   backups:
     pgbackrest:
       configuration:
