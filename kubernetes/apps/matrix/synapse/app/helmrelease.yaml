@@ -12,8 +12,7 @@ spec:
       version: 3.12.16
       sourceRef:
         kind: HelmRepository
-        name: ananace-charts
-        namespace: flux-system
+        name: ananace
       interval: 5m
   values:
     serverName: "${SECRET_DOMAIN}"
@@ -43,7 +42,7 @@ spec:
 
       federation_sender:
         enabled: false
-        replicaCount: 2
+        replicaCount: 1
 
       generic_worker:
         enabled: false
@@ -156,7 +155,7 @@ spec:
           matches:
             - path:
                 type: RegularExpression
-                value: ^/_matrix/client/(.*)/(login|logout|refresh)
+                value: "^/_matrix/client/.*/(login|logout|refresh)(/.*)?$"
 
     postgresql:
       enabled: false
