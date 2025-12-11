@@ -28,4 +28,4 @@ resources:
   - ./n8n/ks.yaml
   - ./sqq-inscription/ks.yaml
   - ./rustical/ks.yaml
-  - ./readur/ks.yaml
+  - ./bichon/ks.yaml

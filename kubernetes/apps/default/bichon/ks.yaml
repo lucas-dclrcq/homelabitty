@@ -3,14 +3,14 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app readur
+  name: &app bichon
   namespace: &namespace default
 spec:
   targetNamespace: *namespace
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  path: ./kubernetes/apps/default/readur/app
+  path: ./kubernetes/apps/default/bichon/app
   prune: true
   sourceRef:
     kind: GitRepository
