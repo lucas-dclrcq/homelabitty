@@ -16,7 +16,7 @@ spec:
           booklore:
             image:
               repository: ghcr.io/booklore-app/booklore
-              tag: v1.13.2
+              tag: v1.14.1
 
             env:
               TZ: ${TIMEZONE}
