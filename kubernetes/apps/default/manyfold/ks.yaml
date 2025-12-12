@@ -3,7 +3,7 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app linkwarden
+  name: &app manyfold
   namespace: &namespace default
 spec:
   targetNamespace: *namespace
@@ -12,7 +12,7 @@ spec:
       app.kubernetes.io/name: *app
   components:
     - ../../../../components/volsync
-  path: ./kubernetes/apps/default/linkwarden/app
+  path: ./kubernetes/apps/default/manyfold/app
   prune: true
   sourceRef:
     kind: GitRepository
@@ -23,5 +23,4 @@ spec:
   postBuild:
     substitute:
       APP: *app
-      GATUS_SUBDOMAIN: veille
       VOLSYNC_CAPACITY: 5Gi

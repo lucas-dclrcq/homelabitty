@@ -22,10 +22,10 @@ resources:
   - ./outline/ks.yaml
   - ./grist/ks.yaml
   - ./vikunja/ks.yaml
-  - ./linkwarden/ks.yaml
   - ./habittrove/ks.yaml
   - ./paperless/ks.yaml
   - ./n8n/ks.yaml
   - ./sqq-inscription/ks.yaml
   - ./rustical/ks.yaml
   - ./bichon/ks.yaml
+  - ./manyfold/ks.yaml

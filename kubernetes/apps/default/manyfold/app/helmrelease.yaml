@@ -1,0 +1,164 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: manyfold
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: manyfold
+  interval: 30m
+  values:
+    controllers:
+      manyfold:
+        forceRename: manyfold
+        annotations:
+          secret.reloader.stakater.com/reload: manyfold-secret
+
+        pod:
+          securityContext:
+            fsGroup: ${APP_GID}
+            fsGroupChangePolicy: "OnRootMismatch"
+            runAsGroup: ${APP_GID}
+            runAsUser: ${APP_UID}
+
+        initContainers:
+          chown-tmpdirs:
+            image:
+              repository: docker.io/library/alpine
+              tag: "3.23"
+            command:
+              - /bin/sh
+              - -c
+            args:
+              - |
+                chmod o-rwx /tmp
+            securityContext:
+              runAsUser: 0
+
+        containers:
+          main:
+            image:
+              repository: ghcr.io/bjw-s-labs/manyfold
+              tag: 0.129.4@sha256:74ae285e07eba2c8535461df255c0cfa5a089dfb0b6f3b50d2442c66eefd6047
+
+            env:
+              DATABASE_URL: sqlite3:/data/database/manyfold.sqlite3
+              MULTIUSER: false
+              PORT: &httpPort 3214
+              REDIS_URL: redis://manyfold-redis.default.svc.cluster.local:6379
+              REGISTRATION: false
+              SECRET_KEY_BASE:
+                valueFrom:
+                  secretKeyRef:
+                    name: manyfold-secret
+                    key: MANYFOLD_SECRET_KEY
+
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health
+                    port: *httpPort
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+
+            resources:
+              requests:
+                cpu: 20m
+                memory: 128Mi
+              limits:
+                memory: 1536Mi
+
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
+
+      redis:
+        pod:
+          securityContext:
+            runAsUser: 65534
+            runAsGroup: 65534
+        strategy: RollingUpdate
+        containers:
+          redis:
+            image:
+              repository: ghcr.io/valkey-io/valkey
+              tag: 9.0.1
+            args:
+              - --save
+              - ""
+              - --appendonly
+              - "no"
+            resources:
+              requests:
+                cpu: 5m
+                memory: 32Mi
+              limits:
+                memory: 128Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
+
+    service:
+      app:
+        forceRename: manyfold
+        primary: true
+        controller: manyfold
+        ports:
+          http:
+            port: *httpPort
+
+      redis:
+        controller: redis
+        ports:
+          http:
+            port: 6379
+
+    persistence:
+      data:
+        existingClaim: manyfold
+        advancedMounts:
+          manyfold:
+            main:
+              - path: /data/database
+                subPath: database
+              - path: /data/libraries/main
+                subPath: libraries/main
+      tmpfs:
+        type: emptyDir
+        advancedMounts:
+          manyfold:
+            main: &tmpdirs
+              - path: /tmp
+                subPath: host-tmp
+              - path: /app/tmp
+                subPath: app-tmp
+              - path: /app/log
+                subPath: app-log
+            chown-tmpdirs: *tmpdirs
+
+    route:
+      app:
+        hostnames:
+          - manyfold.${LIMITED_DOMAIN}
+        parentRefs:
+          - name: internal
+            namespace: network
+
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: *httpPort
