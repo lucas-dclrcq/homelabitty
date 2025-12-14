@@ -17,7 +17,7 @@ spec:
           main:
             image:
               repository: ghcr.io/superquinquin-sur-deule/sqq-inscription
-              tag: latest@sha256:fcab49114545ec6e5192f455adf51bb4dc8177fb25fa92eb2b35cb4a24dbcd7b
+              tag: latest@sha256:597fe8f3b8cc6cc54b137f61a6d2703f127d48970d68d5de3333ff74d283c22c
 
             envFrom:
               - secretRef:
@@ -40,7 +40,7 @@ spec:
     route:
       app:
         hostnames:
-          - "{{ .Release.Name }}.${SECRET_DOMAIN}"
+          - "souscription-superquinquin-sur-deule.${SECRET_DOMAIN}"
         parentRefs:
           - name: external
             namespace: network
