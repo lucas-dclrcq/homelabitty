@@ -148,8 +148,6 @@ spec:
         enabled: true
 
     persistence:
-      config:
-        type: emptyDir
       config-file:
         type: secret
         name: gatus-secret
