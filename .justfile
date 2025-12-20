@@ -18,6 +18,9 @@ mod ansible '.just/ansible.just'
 [doc('Talos Recipes')]
 mod talos '.just/talos.just'
 
+[doc('Rook Ceph Recipes')]
+mod rook '.just/rook.just'
+
 [private]
 default:
     just --list
