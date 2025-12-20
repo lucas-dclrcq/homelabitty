@@ -5,4 +5,3 @@ kind: Kustomization
 resources:
   - ./truenas_memory_usage.yaml
   - ./nfs_mount_diskspace.yaml
-  - ./keda_hpa.yaml
