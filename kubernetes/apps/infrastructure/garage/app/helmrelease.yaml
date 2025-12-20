@@ -57,6 +57,8 @@ spec:
             port: &webPort 3902
     route:
       app:
+        annotations:
+          gatus.home-operations.com/enabled: "false"
         hostnames:
           - "garage.${SECRET_DOMAIN}"
         parentRefs:
@@ -67,6 +69,8 @@ spec:
               - name: *app
                 port: *port
       authentik:
+        annotations:
+          gatus.home-operations.com/enabled: "false"
         hostnames:
           - "authentik-static.${SECRET_DOMAIN}"
         parentRefs:
