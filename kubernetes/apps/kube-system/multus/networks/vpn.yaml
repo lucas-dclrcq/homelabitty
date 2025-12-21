@@ -8,12 +8,10 @@ spec:
   config: |-
     {
       "cniVersion": "0.3.1",
-      "name": "vpn",
       "plugins": [
         {
-          "type": "macvlan",
+          "type": "ipvlan",
           "master": "bond0.70",
-          "mode": "bridge",
           "ipam": {
             "type": "static",
             "routes": [
