@@ -24,7 +24,7 @@ spec:
           app:
             image:
               repository: ghcr.io/lennart-k/rustical
-              tag: 0.11.5@sha256:f014dc570b81217aa32faccad21a2b77e70492a77f1cf9d20bc78cc59c4bb1de
+              tag: 0.11.6@sha256:c6341d4bedcaa98c0c481fcc33299e8ec5a05004cc467c6c2dd8ed625e19301b
 
             envFrom:
               - secretRef:
