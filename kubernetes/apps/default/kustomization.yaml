@@ -29,3 +29,4 @@ resources:
   - ./rustical/ks.yaml
   - ./bichon/ks.yaml
   - ./manyfold/ks.yaml
+  - ./the-recipe-db/ks.yaml
