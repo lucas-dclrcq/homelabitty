@@ -18,4 +18,3 @@ resources:
   - ./radarr/ks.yaml
   - ./bazarr/ks.yaml
   - ./pinchflat/ks.yaml
-  - ./qui/ks.yaml
