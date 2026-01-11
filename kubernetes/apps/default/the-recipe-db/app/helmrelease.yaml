@@ -16,7 +16,7 @@ spec:
           main:
             image:
               repository: ghcr.io/lucas-dclrcq/the-recipe-db
-              tag: 1.0-snapshot@sha256:0b69a089d29cbae67e0ba76e0b20543f487e325450248719262e40c783bc06c5
+              tag: 1.0-snapshot@sha256:26296e2694913436a2e0b052b694eefb6ffb4d5e449ea6fa453b2f3409e265c8
 
             envFrom:
               - secretRef:
