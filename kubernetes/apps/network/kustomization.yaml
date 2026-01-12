@@ -8,4 +8,3 @@ resources:
   - ./external-dns/ks.yaml
   - ./nas-services/ks.yaml
   - ./envoy-gateway/ks.yaml
-  - ./netshoot/ks.yaml

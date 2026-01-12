@@ -9,5 +9,4 @@ resources:
   - ./open-webui/ks.yaml
   - ./searxng/ks.yaml
   - ./librechat/ks.yaml
-  - ./kagent/ks.yaml
   - ./ollama/ks.yaml
