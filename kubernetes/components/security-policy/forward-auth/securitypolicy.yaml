@@ -6,6 +6,7 @@ metadata:
 spec:
   extAuth:
     failOpen: false
+    recomputeRoute: true
     headersToExtAuth:
       - X-Forwarded-Proto
       - cookie
