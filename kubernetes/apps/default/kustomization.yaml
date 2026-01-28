@@ -30,3 +30,4 @@ resources:
   - ./bichon/ks.yaml
   - ./manyfold/ks.yaml
   - ./the-recipe-db/ks.yaml
+  - ./spoolman/ks.yaml

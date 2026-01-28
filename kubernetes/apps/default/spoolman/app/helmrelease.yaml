@@ -1,0 +1,84 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app spoolman
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  interval: 30m
+  values:
+    controllers:
+      spoolman:
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+        pod:
+          securityContext:
+            fsGroup: 1500
+            fsGroupChangePolicy: OnRootMismatch
+            runAsGroup: 1500
+            runAsNonRoot: true
+            runAsUser: 1026
+
+        containers:
+          app:
+            image:
+              repository: ghcr.io/donkie/spoolman
+              tag: 0.23.0@sha256:6606dcbbabfc75db207c07d5a8db6162b1e5ed0768750881f306b6328e14145b
+            command:
+              - uvicorn
+              - spoolman.main:app
+              - --host
+              - 0.0.0.0
+            env:
+              SPOOLMAN_PORT: &httpPort 8000
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/v1/health
+                    port: *httpPort
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+            resources:
+              requests:
+                cpu: 12m
+                memory: 128Mi
+              limits:
+                memory: 512Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
+
+    service:
+      app:
+        ports:
+          http:
+            port: *httpPort
+
+    persistence:
+      data:
+        existingClaim: *app
+        advancedMounts:
+          spoolman:
+            app:
+              - path: /home/app/.local/share/spoolman
+
+    route:
+      app:
+        hostnames:
+          - spoolman.${LIMITED_DOMAIN}
+        parentRefs:
+          - name: internal
+            namespace: network
