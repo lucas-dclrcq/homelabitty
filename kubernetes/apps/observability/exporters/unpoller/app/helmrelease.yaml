@@ -16,7 +16,7 @@ spec:
           app:
             image:
               repository: ghcr.io/unpoller/unpoller
-              tag: v2.21.0@sha256:a08b532be181256318211b6170691e316d29ac04575bc54d59620189953f03aa
+              tag: v2.28.0@sha256:d1259a81826c61263f862a888ae7d7a339f085c610f51b2d764fe6da6a839f48
 
             env:
               TZ: "${TIMEZONE}"
