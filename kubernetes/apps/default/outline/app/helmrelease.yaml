@@ -18,7 +18,7 @@ spec:
           app:
             image:
               repository: docker.io/outlinewiki/outline
-              tag: 1.1.0@sha256:51db3e893d3eabdbf9092712c9c8ed5362efb20e4c1d35b941ccacaed1c0f010
+              tag: 1.4.0
 
             envFrom:
               - secretRef:
@@ -35,11 +35,6 @@ spec:
               FILE_STORAGE_LOCAL_ROOT_DIR: &storage_path /var/lib/outline/data
               FILE_STORAGE_UPLOAD_MAX_SIZE: "26214400"
               WEB_CONCURRENCY: "10"
-
-            command:
-              - /bin/sh
-              - -c
-              - yarn db:migrate --env=production-ssl-disabled && yarn start --env=production-ssl-disabled
 
             resources:
               requests:
