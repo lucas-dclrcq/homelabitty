@@ -7,3 +7,4 @@ components:
 resources:
   - ./authentik/ks.yaml
   - ./keycloak/ks.yaml
+  - ./keycloak-operator/ks.yaml
