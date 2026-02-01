@@ -302,6 +302,11 @@ spec:
         - "therecipedb"
       password:
         type: AlphaNumeric
+    - name: "keycloakx"
+      databases:
+        - "keycloakx"
+      password:
+        type: AlphaNumeric
   backups:
     pgbackrest:
       configuration:

@@ -1,0 +1,119 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app keycloak
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  values:
+    controllers:
+      keycloak:
+        replicas: 1
+        annotations:
+          reloader.stakater.com/auto: "true"
+        strategy: Recreate
+        containers:
+          app:
+            image:
+              repository: quay.io/keycloak/keycloak
+              tag: "26.5.2"
+
+            env:
+              TZ: ${TIMEZONE}
+              KC_HOSTNAME: "https://auth.${SECRET_DOMAIN}"
+              KC_HOSTNAME_ADMIN: "https://auth-console.${LIMITED_DOMAIN}"
+              KC_DB: postgres
+              KC_FEATURES: passkeys,scripts,update-email
+              KC_PROXY_HEADERS: "xforwarded"
+              KC_HTTP_ENABLED: "true"
+              KC_HEALTH_ENABLED: "true"
+              KC_SPI_CORS_ENABLED: "true"
+              KC_CACHE: "ispn"
+              POD_ID:
+                valueFrom:
+                  fieldRef:
+                    fieldPath: status.podIP
+              KC_CACHE_EMBEDDED_NETWORK_BIND_ADDRESS: "$${POD_ID}"
+              KC_SPI_CORS_ORIGINS: "*"
+              KC_SPI_CORS_METHODS: "GET,HEAD,OPTIONS,POST,PUT,DELETE"
+              KC_SPI_CORS_HEADERS: "Authorization,Content-Type,Accept,Origin,X-Requested-With"
+              KC_SPI_CORS_EXPOSED_HEADERS: "Content-Disposition,Content-Length,Content-Type"
+              KC_SPI_CORS_ALLOW_CREDENTIALS: "true"
+              KC_SPI_CORS_MAX_AGE: "3600"
+
+            envFrom:
+              - secretRef:
+                  name: keycloak-secret
+
+            args:
+              - "start"
+
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health/live
+                    port: 9000
+                  periodSeconds: 10
+                  failureThreshold: 3
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health/ready
+                    port: 9000
+                  periodSeconds: 10
+                  failureThreshold: 3
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health/started
+                    port: 9000
+                  periodSeconds: 1
+                  failureThreshold: 600
+
+            resources:
+              requests:
+                cpu: 100m
+                memory: 256Mi
+              limits:
+                cpu: 1000m
+                memory: 1Gi
+
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: 8080
+
+    route:
+      main:
+        annotations:
+          gatus.home-operations.com/endpoint: |-
+            group: Auth
+        enabled: true
+        hostnames:
+          - "auth.${SECRET_DOMAIN}"
+        parentRefs:
+          - name: external
+            namespace: network
+      console:
+        annotations:
+          gatus.home-operations.com/endpoint: |-
+            group: Auth
+        enabled: true
+        hostnames:
+          - "auth-console.${LIMITED_DOMAIN}"
+        parentRefs:
+          - name: internal
+            namespace: network
