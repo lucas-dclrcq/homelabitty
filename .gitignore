@@ -31,3 +31,6 @@ cluster-keys.json
 book
 
 .cache_ggshield
+
+.mcp.json
+.claude

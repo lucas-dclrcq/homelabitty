@@ -12,7 +12,7 @@ spec:
       "plugins": [
         {
           "type": "macvlan",
-          "master": "bond0.30",
+          "master": "iot0",
           "mode": "bridge",
           "ipam": {
             "type": "static",

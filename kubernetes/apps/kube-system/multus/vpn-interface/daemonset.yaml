@@ -1,0 +1,82 @@
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: vpn-interface
+spec:
+  selector:
+    matchLabels:
+      app: vpn-interface
+  template:
+    metadata:
+      labels:
+        app: vpn-interface
+    spec:
+      hostNetwork: true
+      hostPID: true
+      tolerations:
+        - operator: Exists
+      initContainers:
+        - name: create
+          image: nicolaka/netshoot:latest
+          securityContext:
+            privileged: true
+          resources:
+            limits:
+              memory: 32Mi
+            requests:
+              cpu: 1m
+              memory: 16Mi
+          command:
+            - sh
+            - -c
+            - |
+              NIC=$(cat /sys/class/net/bond0/bonding/slaves 2>/dev/null | awk '{print $1}')
+              if [ -z "$NIC" ]; then
+                echo "ERROR: no bond slave found"
+                exit 1
+              fi
+              echo "Physical NIC: $NIC"
+              for IFACE in vpn0:70 iot0:30; do
+                NAME=${IFACE%%:*}
+                VLAN=${IFACE##*:}
+                if ! ip link show "$NAME" >/dev/null 2>&1; then
+                  echo "Creating $NAME (VLAN $VLAN on $NIC)..."
+                  ip link add link "$NIC" name "$NAME" type vlan id "$VLAN"
+                fi
+                ip link set "$NAME" mtu 1500 up
+                tc qdisc replace dev "$NAME" root fq_codel
+                ip link set "$NAME" txqueuelen 1000
+                echo "$NAME ready:"
+                ip -d link show "$NAME"
+              done
+      containers:
+        - name: watch
+          image: nicolaka/netshoot:latest
+          securityContext:
+            privileged: true
+          resources:
+            limits:
+              memory: 32Mi
+            requests:
+              cpu: 1m
+              memory: 16Mi
+          command:
+            - sh
+            - -c
+            - |
+              while true; do
+                for IFACE in vpn0:70 iot0:30; do
+                  NAME=${IFACE%%:*}
+                  VLAN=${IFACE##*:}
+                  if ! ip link show "$NAME" >/dev/null 2>&1; then
+                    NIC=$(cat /sys/class/net/bond0/bonding/slaves 2>/dev/null | awk '{print $1}')
+                    echo "$(date): Recreating $NAME (VLAN $VLAN) on $NIC"
+                    ip link add link "$NIC" name "$NAME" type vlan id "$VLAN" 2>/dev/null
+                    ip link set "$NAME" mtu 1500 up 2>/dev/null
+                    tc qdisc replace dev "$NAME" root fq_codel 2>&1
+                    ip link set "$NAME" txqueuelen 1000 2>&1
+                  fi
+                done
+                sleep 30
+              done

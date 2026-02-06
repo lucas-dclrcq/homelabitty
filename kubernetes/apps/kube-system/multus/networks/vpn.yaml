@@ -11,7 +11,7 @@ spec:
       "plugins": [
         {
           "type": "ipvlan",
-          "master": "bond0.70",
+          "master": "vpn0",
           "ipam": {
             "type": "static",
             "routes": [
