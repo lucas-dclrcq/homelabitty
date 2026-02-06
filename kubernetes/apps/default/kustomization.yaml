@@ -26,6 +26,7 @@ resources:
   - ./paperless/ks.yaml
   - ./n8n/ks.yaml
   - ./sqq-inscription/ks.yaml
+  - ./sqq-inscription-staging/ks.yaml
   - ./rustical/ks.yaml
   - ./bichon/ks.yaml
   - ./manyfold/ks.yaml

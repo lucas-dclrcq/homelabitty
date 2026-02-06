@@ -292,6 +292,11 @@ spec:
         - "sqq"
       password:
         type: AlphaNumeric
+    - name: "sqqstaging"
+      databases:
+        - "sqqstaging"
+      password:
+        type: AlphaNumeric
     - name: "readur"
       databases:
         - "readur"
