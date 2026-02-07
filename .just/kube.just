@@ -29,6 +29,12 @@ snapshot:
         kubectl -n "$ns" patch replicationsources "$name" --type merge -p '{"spec":{"trigger":{"manual":"$(date +%s)"}}}'; \
     done
 
+[doc('Force a VolSync backup for an app')]
+backup namespace app:
+    kubectl -n {{ namespace }} patch replicationsources {{ app }} --type merge -p '{"spec":{"trigger":{"manual":"'$(date +%s)'"}}}'
+    until kubectl -n {{ namespace }} get job/volsync-src-{{ app }} &>/dev/null; do sleep 5; done
+    kubectl -n {{ namespace }} wait job/volsync-src-{{ app }} --for=condition=complete --timeout=120m
+
 [doc('Suspend or resume VolSync')]
 volsync state:
     flux -n volsync-system {{ state }} kustomization volsync

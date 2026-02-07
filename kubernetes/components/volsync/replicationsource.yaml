@@ -7,21 +7,20 @@ metadata:
 spec:
   sourcePVC: "${APP}"
   trigger:
-    schedule: "0 * * * *"
-  restic:
-    copyMethod: "${VOLSYNC_COPYMETHOD:-Snapshot}"
-    pruneIntervalDays: 14
-    repository: "${APP}-volsync-secret"
-    volumeSnapshotClassName: "${VOLSYNC_SNAPSHOTCLASS:-csi-ceph-blockpool}"
-    cacheCapacity: "${VOLSYNC_CACHE_CAPACITY:-5Gi}"
-    cacheStorageClassName: "${VOLSYNC_CACHE_SNAPSHOTCLASS:-openebs-hostpath}"
-    cacheAccessModes: ["${VOLSYNC_CACHE_ACCESSMODES:-ReadWriteOnce}"]
-    storageClassName: "${VOLSYNC_STORAGECLASS:-ceph-block}"
-    accessModes: ["${VOLSYNC_ACCESSMODES:-ReadWriteOnce}"]
+    schedule: 0 * * * *
+  kopia:
+    accessModes:
+      - ${VOLSYNC_SNAP_ACCESSMODES:=ReadWriteOnce} # Use ReadOnlyMany for CephFS
+    compression: zstd-fastest
+    copyMethod: Snapshot
     moverSecurityContext:
-      runAsUser: "${APP_UID}"
-      runAsGroup: "${APP_GID}"
-      fsGroup: "${APP_GID}"
+      runAsUser: ${VOLSYNC_PUID:=1026}
+      runAsGroup: ${VOLSYNC_PGID:=1500}
+      fsGroup: ${VOLSYNC_PGID:=1500}
+    parallelism: 2
+    repository: ${APP}-volsync-secret
     retain:
       hourly: 24
       daily: 7
+    storageClassName: ${VOLSYNC_STORAGECLASS:=ceph-block}
+    volumeSnapshotClassName: ${VOLSYNC_SNAPSHOTCLASS:=csi-ceph-blockpool}
