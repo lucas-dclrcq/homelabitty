@@ -16,8 +16,6 @@ spec:
           reloader.stakater.com/auto: "true"
 
         pod:
-          labels:
-            ingress.home.arpa/envoy-external: allow
           securityContext:
             runAsNonRoot: true
             runAsUser: ${APP_UID}
@@ -77,7 +75,7 @@ spec:
         hostnames:
           - "{{ .Release.Name }}.${LIMITED_DOMAIN}"
         parentRefs:
-          - name: external
+          - name: internal
             namespace: network
         rules:
           - backendRefs:
