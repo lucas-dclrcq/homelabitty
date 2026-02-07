@@ -1,0 +1,21 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: bambuddy
+spec:
+  endpoints:
+    - interval: 1m
+      path: /api/v1/metrics
+      port: http
+      scheme: http
+      scrapeTimeout: 10s
+  jobLabel: bambuddy
+  namespaceSelector:
+    matchNames:
+      - default
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: bambuddy
+      app.kubernetes.io/name: bambuddy
+      app.kubernetes.io/service: bambuddy
