@@ -33,3 +33,4 @@ resources:
   - ./the-recipe-db/ks.yaml
   #  - ./spoolman/ks.yaml
   - ./bambuddy/ks.yaml
+  - ./homebox/ks.yaml
