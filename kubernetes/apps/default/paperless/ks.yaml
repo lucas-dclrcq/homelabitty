@@ -13,6 +13,11 @@ spec:
   components:
     - ../../../../components/dragonfly
     - ../../../../components/volsync
+  dependsOn:
+    - name: external-secrets-stores
+      namespace: external-secrets
+    - name: dragonfly
+      namespace: flux-system
   path: ./kubernetes/apps/default/paperless/app
   prune: true
   sourceRef:
@@ -39,6 +44,9 @@ spec:
       app.kubernetes.io/name: *app
   components:
     - ../../../../components/volsync
+  dependsOn:
+    - name: external-secrets-stores
+      namespace: external-secrets
   path: ./kubernetes/apps/default/paperless/ai
   prune: true
   sourceRef:

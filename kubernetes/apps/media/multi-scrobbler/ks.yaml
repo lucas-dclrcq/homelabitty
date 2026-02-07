@@ -18,6 +18,10 @@ spec:
       kind: Dragonfly
       failed: status.phase != 'ready'
       current: status.phase == 'ready'
+  dependsOn:
+    - name: external-secrets-stores
+      namespace: external-secrets
+    - name: dragonfly
   path: ./kubernetes/apps/media/multi-scrobbler/app
   prune: true
   sourceRef:

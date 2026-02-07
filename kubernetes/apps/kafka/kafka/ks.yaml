@@ -30,6 +30,10 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  dependsOn:
+    - name: kafka-operator
+    - name: external-secrets-stores
+      namespace: external-secrets
   path: ./kubernetes/apps/kafka/kafka/cluster
   prune: true
   sourceRef:

@@ -34,6 +34,8 @@ spec:
   path: ./kubernetes/apps/vault/vault/backup
   dependsOn:
     - name: vault
+    - name: external-secrets-stores
+      namespace: external-secrets
   prune: true
   sourceRef:
     kind: GitRepository

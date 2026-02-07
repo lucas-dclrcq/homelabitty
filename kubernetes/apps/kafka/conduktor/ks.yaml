@@ -10,6 +10,12 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  dependsOn:
+    - name: kafka-cluster
+    - name: external-secrets-stores
+      namespace: external-secrets
+    - name: envoy-gateway
+      namespace: flux-system
   path: ./kubernetes/apps/kafka/conduktor/app
   prune: true
   sourceRef:

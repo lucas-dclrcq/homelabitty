@@ -17,6 +17,13 @@ spec:
       kind: Dragonfly
       failed: status.phase != 'ready'
       current: status.phase == 'ready'
+  dependsOn:
+    - name: external-secrets-stores
+      namespace: external-secrets
+    - name: dragonfly
+      namespace: flux-system
+    - name: envoy-gateway
+      namespace: flux-system
   path: ./kubernetes/apps/ai/searxng/app
   prune: true
   sourceRef:

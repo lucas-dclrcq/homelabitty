@@ -13,6 +13,11 @@ spec:
   components:
     - ../../../../components/dragonfly
     - ../../../../components/volsync
+  dependsOn:
+    - name: external-secrets-stores
+      namespace: external-secrets
+    - name: dragonfly
+      namespace: flux-system
   path: ./kubernetes/apps/ai/open-webui/app
   prune: true
   sourceRef:

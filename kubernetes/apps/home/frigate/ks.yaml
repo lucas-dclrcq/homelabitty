@@ -12,6 +12,9 @@ spec:
       app.kubernetes.io/name: *appname
   components:
     - ../../../../components/volsync
+  dependsOn:
+    - name: external-secrets-stores
+      namespace: external-secrets
   interval: 30m
   timeout: 5m
   path: "./kubernetes/apps/home/frigate/app"

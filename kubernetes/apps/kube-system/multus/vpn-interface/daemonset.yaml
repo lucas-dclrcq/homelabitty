@@ -30,7 +30,7 @@ spec:
           command:
             - sh
             - -c
-            - |
+            - |-
               NIC=$(cat /sys/class/net/bond0/bonding/slaves 2>/dev/null | awk '{print $1}')
               if [ -z "$NIC" ]; then
                 echo "ERROR: no bond slave found"
@@ -64,7 +64,7 @@ spec:
           command:
             - sh
             - -c
-            - |
+            - |-
               while true; do
                 for IFACE in vpn0:70 iot0:30; do
                   NAME=${IFACE%%:*}

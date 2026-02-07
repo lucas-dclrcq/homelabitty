@@ -33,6 +33,11 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  dependsOn:
+    - name: grafana
+    - name: external-secrets-stores
+      namespace: external-secrets
+    - name: envoy-gateway
   path: ./kubernetes/apps/observability/grafana/instance
   prune: true
   sourceRef:

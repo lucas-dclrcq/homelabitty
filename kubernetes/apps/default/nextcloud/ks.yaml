@@ -13,6 +13,13 @@ spec:
   components:
     - ../../../../components/volsync
     - ../../../../components/dragonfly
+  dependsOn:
+    - name: external-secrets-stores
+      namespace: external-secrets
+    - name: dragonfly
+      namespace: flux-system
+    - name: envoy-gateway
+      namespace: flux-system
   path: ./kubernetes/apps/default/nextcloud/app
   prune: true
   sourceRef:

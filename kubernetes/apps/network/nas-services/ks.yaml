@@ -10,6 +10,8 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  dependsOn:
+    - name: envoy-gateway
   path: ./kubernetes/apps/network/nas-services/proxies
   prune: true
   sourceRef:

@@ -11,6 +11,8 @@ spec:
       app.kubernetes.io/name: *app
   dependsOn:
     - name: crunchy-postgres-operator-cluster
+    - name: external-secrets-stores
+      namespace: external-secrets
   path: ./kubernetes/apps/downloads/prowlarr/app
   prune: true
   sourceRef:

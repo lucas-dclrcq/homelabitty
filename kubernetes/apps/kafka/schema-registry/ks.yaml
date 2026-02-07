@@ -10,6 +10,8 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  dependsOn:
+    - name: kafka-cluster
   path: ./kubernetes/apps/kafka/schema-registry/app
   prune: true
   sourceRef:
