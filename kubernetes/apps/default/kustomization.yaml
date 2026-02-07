@@ -16,7 +16,6 @@ resources:
   - ./immich/ks.yaml
   - ./homelab-manager/ks.yaml
   - ./nextcloud/ks.yaml
-  - ./bytestash/ks.yaml
   - ./sftpgo/ks.yaml
   - ./thelounge/ks.yaml
   - ./outline/ks.yaml
