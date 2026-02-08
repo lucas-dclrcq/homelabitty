@@ -29,7 +29,7 @@ spec:
           app:
             image:
               repository: ghcr.io/slskd/slskd
-              tag: 0.24.3@sha256:bcf9820dab68e21d2bba8ebb1ffd583d71fcba542a50a1e998119f69b7b498fe
+              tag: 0.24.3.65534-1c4129da
 
             env:
               COMPlus_EnableDiagnostics: "0"
