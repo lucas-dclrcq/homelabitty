@@ -312,6 +312,11 @@ spec:
         - "keycloakx"
       password:
         type: AlphaNumeric
+    - name: "sqqvg"
+      databases:
+        - "sqqvg"
+      password:
+        type: AlphaNumeric
   backups:
     pgbackrest:
       configuration:

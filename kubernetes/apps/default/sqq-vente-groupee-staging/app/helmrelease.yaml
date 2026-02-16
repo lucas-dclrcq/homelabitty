@@ -1,0 +1,50 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app sqq-vente-groupee-staging
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  values:
+    controllers:
+      main:
+        replicas: 1
+        containers:
+          main:
+            image:
+              repository: ghcr.io/superquinquin-sur-deule/sqq-achat-groupe
+              tag: latest@sha256:c0132f675ee8cd34a9fdaeea9799279f9abdcb3c78f9c1fb6380b1627d5a9f18
+
+            envFrom:
+              - secretRef:
+                  name: sqq-vente-groupee-staging-secret
+
+            resources:
+              requests:
+                cpu: 12m
+                memory: 64M
+              limits:
+                memory: 1Gi
+
+    service:
+      main:
+        controller: main
+        ports:
+          http:
+            port: &port 8080
+
+    route:
+      app:
+        hostnames:
+          - "sqq-vente-groupee-staging.${SECRET_DOMAIN}"
+        parentRefs:
+          - name: external
+            namespace: network
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
