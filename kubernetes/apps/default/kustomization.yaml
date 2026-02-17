@@ -33,3 +33,4 @@ resources:
   #  - ./spoolman/ks.yaml
   - ./bambuddy/ks.yaml
   - ./homebox/ks.yaml
+  - ./sqq-sondages/ks.yaml

@@ -317,6 +317,11 @@ spec:
         - "sqqvg"
       password:
         type: AlphaNumeric
+    - name: "sqqsondages"
+      databases:
+        - "sqqsondages"
+      password:
+        type: AlphaNumeric
   backups:
     pgbackrest:
       configuration:
