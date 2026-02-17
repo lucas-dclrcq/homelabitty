@@ -17,7 +17,7 @@ spec:
           main:
             image:
               repository: ghcr.io/superquinquin-sur-deule/sqq-sondages
-              tag: latest@sha256:8f1ecb2f52b29cff8b8a83e60ddbdaefcdba82b591286f9ac721c6989c673a6c
+              tag: latest@sha256:b0359916850451a439304e42fb117cbf90b7be6b8b9bf83493d8c95ae3b1e873
 
             envFrom:
               - secretRef:
@@ -40,7 +40,7 @@ spec:
     route:
       app:
         hostnames:
-          - "sondages.superquinquin-sur-deule.org"
+          - "sondages.${SQQ_DOMAIN}"
         parentRefs:
           - name: external
             namespace: network
