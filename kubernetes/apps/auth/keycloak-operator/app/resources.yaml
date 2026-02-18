@@ -1,0 +1,10 @@
+---
+apiVersion: keycloak.hostzero.com/v1beta1
+kind: KeycloakInstance
+metadata:
+  name: main
+spec:
+  baseUrl: https://keycloak.example.com
+  credentials:
+    secretRef:
+      name: keycloak-credentials
