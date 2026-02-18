@@ -27,6 +27,7 @@ spec:
             env:
               GRIST_ORG_IN_PATH: true
               GRIST_FORCE_LOGIN: true
+              GRIST_OIDC_SP_IGNORE_EMAIL_VERIFIED: true
               APP_HOME_URL: https://sheets.hoohoot.org
 
             resources:
