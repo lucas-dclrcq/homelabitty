@@ -6,3 +6,4 @@ resources:
   - ./helmrelease.yaml
   - ./servicemonitor.yaml
   - ./grafanadashboard.yaml
+  - ./ciliumnetworkpolicy.yaml
