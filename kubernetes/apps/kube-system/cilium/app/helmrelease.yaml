@@ -56,9 +56,9 @@ spec:
       metrics:
         enabled:
           - dns:query
-          - drop
+          - drop:sourceContext=namespace|workload-name|pod;destinationContext=namespace|workload-name|pod;labelsContext=source_namespace,destination_namespace
           - tcp
-          - flow
+          - flow:sourceContext=namespace|workload-name;destinationContext=namespace|workload-name;labelsContext=source_namespace,destination_namespace
           - port-distribution
           - icmp
           - http
