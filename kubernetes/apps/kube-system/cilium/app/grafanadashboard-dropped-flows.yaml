@@ -1,0 +1,649 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: cilium-dropped-flows
+spec:
+  allowCrossNamespaceImport: true
+  instanceSelector:
+    matchLabels:
+      grafana.internal/instance: grafana
+  json: >-
+    {
+      "annotations": { "list": [] },
+      "editable": false,
+      "fiscalYearStartMonth": 0,
+      "graphTooltip": 1,
+      "links": [],
+      "panels": [
+        {
+          "collapsed": false,
+          "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+          "id": 1,
+          "title": "Policy Denied Overview",
+          "type": "row"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "$datasource" },
+          "fieldConfig": {
+            "defaults": {
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "green", "value": null },
+                  { "color": "yellow", "value": 1 },
+                  { "color": "red", "value": 10 }
+                ]
+              },
+              "unit": "short"
+            }
+          },
+          "gridPos": { "h": 4, "w": 6, "x": 0, "y": 1 },
+          "id": 2,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+            "textMode": "auto"
+          },
+          "targets": [
+            {
+              "datasource": { "type": "prometheus", "uid": "$datasource" },
+              "expr": "sum(rate(hubble_drop_total{reason=\"POLICY_DENIED\"}[$__rate_interval]))",
+              "legendFormat": "Policy Denied/s",
+              "refId": "A"
+            }
+          ],
+          "title": "Policy Denied Rate",
+          "type": "stat"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "$datasource" },
+          "fieldConfig": {
+            "defaults": {
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "green", "value": null },
+                  { "color": "red", "value": 1 }
+                ]
+              },
+              "unit": "short"
+            }
+          },
+          "gridPos": { "h": 4, "w": 6, "x": 6, "y": 1 },
+          "id": 3,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+            "textMode": "auto"
+          },
+          "targets": [
+            {
+              "datasource": { "type": "prometheus", "uid": "$datasource" },
+              "expr": "sum(increase(hubble_drop_total{reason=\"POLICY_DENIED\"}[$__range]))",
+              "legendFormat": "Total",
+              "refId": "A"
+            }
+          ],
+          "title": "Policy Denied (Range)",
+          "type": "stat"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "$datasource" },
+          "fieldConfig": {
+            "defaults": {
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [{ "color": "text", "value": null }]
+              },
+              "unit": "short"
+            }
+          },
+          "gridPos": { "h": 4, "w": 6, "x": 12, "y": 1 },
+          "id": 4,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+            "textMode": "auto"
+          },
+          "targets": [
+            {
+              "datasource": { "type": "prometheus", "uid": "$datasource" },
+              "expr": "count(count by (source_namespace, source_workload) (hubble_drop_total{reason=\"POLICY_DENIED\", source_namespace=~\"$src_namespace\"}))",
+              "legendFormat": "Workloads",
+              "refId": "A"
+            }
+          ],
+          "title": "Affected Source Workloads",
+          "type": "stat"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "$datasource" },
+          "fieldConfig": {
+            "defaults": {
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [{ "color": "text", "value": null }]
+              },
+              "unit": "short"
+            }
+          },
+          "gridPos": { "h": 4, "w": 6, "x": 18, "y": 1 },
+          "id": 5,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+            "textMode": "auto"
+          },
+          "targets": [
+            {
+              "datasource": { "type": "prometheus", "uid": "$datasource" },
+              "expr": "count(count by (destination_port) (hubble_drop_total{reason=\"POLICY_DENIED\", destination_port!=\"\"}))",
+              "legendFormat": "Ports",
+              "refId": "A"
+            }
+          ],
+          "title": "Blocked Destination Ports",
+          "type": "stat"
+        },
+        {
+          "collapsed": false,
+          "gridPos": { "h": 1, "w": 24, "x": 0, "y": 5 },
+          "id": 6,
+          "title": "Policy Denied - Missing Ingress Rules (Destination needs to allow)",
+          "type": "row"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "$datasource" },
+          "description": "Traffic blocked because the DESTINATION workload's policy doesn't allow ingress from the source. Add ingress rules to the destination's CiliumNetworkPolicy.",
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "thresholds" },
+              "custom": { "align": "auto", "cellOptions": { "type": "auto" }, "inspect": false },
+              "mappings": [],
+              "thresholds": { "mode": "absolute", "steps": [{ "color": "red", "value": null }] }
+            },
+            "overrides": [
+              {
+                "matcher": { "id": "byName", "options": "Count" },
+                "properties": [
+                  { "id": "custom.cellOptions", "value": { "mode": "gradient", "type": "gauge" } },
+                  { "id": "color", "value": { "mode": "continuous-RdYlGr" } },
+                  { "id": "custom.width", "value": 150 }
+                ]
+              },
+              {
+                "matcher": { "id": "byName", "options": "Dest Port" },
+                "properties": [{ "id": "custom.width", "value": 80 }]
+              },
+              {
+                "matcher": { "id": "byName", "options": "Protocol" },
+                "properties": [{ "id": "custom.width", "value": 80 }]
+              }
+            ]
+          },
+          "gridPos": { "h": 10, "w": 24, "x": 0, "y": 6 },
+          "id": 7,
+          "options": {
+            "cellHeight": "sm",
+            "footer": { "countRows": false, "fields": "", "reducer": ["sum"], "show": false },
+            "showHeader": true,
+            "sortBy": [{ "desc": true, "displayName": "Count" }]
+          },
+          "targets": [
+            {
+              "datasource": { "type": "prometheus", "uid": "$datasource" },
+              "expr": "topk(50, sum by (source_namespace, source_workload, destination_namespace, destination_workload, destination_port, protocol) (increase(hubble_drop_total{reason=\"POLICY_DENIED\", traffic_direction=\"INGRESS\", source_namespace=~\"$src_namespace\", destination_namespace=~\"$dst_namespace\"}[$__range])))",
+              "format": "table",
+              "instant": true,
+              "refId": "A"
+            }
+          ],
+          "title": "Ingress Denied - Add ingress rule to destination workload",
+          "transformations": [
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": { "Time": true },
+                "indexByName": {
+                  "destination_namespace": 2,
+                  "destination_workload": 3,
+                  "destination_port": 4,
+                  "protocol": 5,
+                  "source_namespace": 0,
+                  "source_workload": 1,
+                  "Value": 6
+                },
+                "renameByName": {
+                  "destination_namespace": "Dest NS",
+                  "destination_workload": "Dest Workload",
+                  "destination_port": "Dest Port",
+                  "protocol": "Protocol",
+                  "source_namespace": "Source NS",
+                  "source_workload": "Source Workload",
+                  "Value": "Count"
+                }
+              }
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "collapsed": false,
+          "gridPos": { "h": 1, "w": 24, "x": 0, "y": 16 },
+          "id": 8,
+          "title": "Policy Denied - Missing Egress Rules (Source needs to allow)",
+          "type": "row"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "$datasource" },
+          "description": "Traffic blocked because the SOURCE workload's policy doesn't allow egress to the destination. Add egress rules to the source's CiliumNetworkPolicy.",
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "thresholds" },
+              "custom": { "align": "auto", "cellOptions": { "type": "auto" }, "inspect": false },
+              "mappings": [],
+              "thresholds": { "mode": "absolute", "steps": [{ "color": "orange", "value": null }] }
+            },
+            "overrides": [
+              {
+                "matcher": { "id": "byName", "options": "Count" },
+                "properties": [
+                  { "id": "custom.cellOptions", "value": { "mode": "gradient", "type": "gauge" } },
+                  { "id": "color", "value": { "mode": "continuous-RdYlGr" } },
+                  { "id": "custom.width", "value": 150 }
+                ]
+              },
+              {
+                "matcher": { "id": "byName", "options": "Dest Port" },
+                "properties": [{ "id": "custom.width", "value": 80 }]
+              },
+              {
+                "matcher": { "id": "byName", "options": "Protocol" },
+                "properties": [{ "id": "custom.width", "value": 80 }]
+              }
+            ]
+          },
+          "gridPos": { "h": 10, "w": 24, "x": 0, "y": 17 },
+          "id": 9,
+          "options": {
+            "cellHeight": "sm",
+            "footer": { "countRows": false, "fields": "", "reducer": ["sum"], "show": false },
+            "showHeader": true,
+            "sortBy": [{ "desc": true, "displayName": "Count" }]
+          },
+          "targets": [
+            {
+              "datasource": { "type": "prometheus", "uid": "$datasource" },
+              "expr": "topk(50, sum by (source_namespace, source_workload, destination_namespace, destination_workload, destination_port, protocol) (increase(hubble_drop_total{reason=\"POLICY_DENIED\", traffic_direction=\"EGRESS\", source_namespace=~\"$src_namespace\", destination_namespace=~\"$dst_namespace\"}[$__range])))",
+              "format": "table",
+              "instant": true,
+              "refId": "A"
+            }
+          ],
+          "title": "Egress Denied - Add egress rule to source workload",
+          "transformations": [
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": { "Time": true },
+                "indexByName": {
+                  "destination_namespace": 2,
+                  "destination_workload": 3,
+                  "destination_port": 4,
+                  "protocol": 5,
+                  "source_namespace": 0,
+                  "source_workload": 1,
+                  "Value": 6
+                },
+                "renameByName": {
+                  "destination_namespace": "Dest NS",
+                  "destination_workload": "Dest Workload",
+                  "destination_port": "Dest Port",
+                  "protocol": "Protocol",
+                  "source_namespace": "Source NS",
+                  "source_workload": "Source Workload",
+                  "Value": "Count"
+                }
+              }
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "collapsed": false,
+          "gridPos": { "h": 1, "w": 24, "x": 0, "y": 27 },
+          "id": 10,
+          "title": "Policy Denied Over Time",
+          "type": "row"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "$datasource" },
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "palette-classic" },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 20,
+                "gradientMode": "none",
+                "hideFrom": { "legend": false, "tooltip": false, "viz": false },
+                "insertNulls": false,
+                "lineInterpolation": "smooth",
+                "lineWidth": 2,
+                "pointSize": 5,
+                "scaleDistribution": { "type": "linear" },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": { "group": "A", "mode": "normal" },
+                "thresholdsStyle": { "mode": "off" }
+              },
+              "unit": "short",
+              "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }
+            }
+          },
+          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 28 },
+          "id": 11,
+          "options": {
+            "legend": { "calcs": ["sum"], "displayMode": "table", "placement": "right", "showLegend": true, "sortBy": "Total", "sortDesc": true },
+            "tooltip": { "mode": "multi", "sort": "desc" }
+          },
+          "targets": [
+            {
+              "datasource": { "type": "prometheus", "uid": "$datasource" },
+              "expr": "sum by (source_namespace) (rate(hubble_drop_total{reason=\"POLICY_DENIED\", source_namespace=~\"$src_namespace\", source_namespace!=\"\"}[$__rate_interval]))",
+              "legendFormat": "{{ source_namespace }}",
+              "refId": "A"
+            }
+          ],
+          "title": "Policy Denied by Source Namespace",
+          "type": "timeseries"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "$datasource" },
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "palette-classic" },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 20,
+                "gradientMode": "none",
+                "hideFrom": { "legend": false, "tooltip": false, "viz": false },
+                "insertNulls": false,
+                "lineInterpolation": "smooth",
+                "lineWidth": 2,
+                "pointSize": 5,
+                "scaleDistribution": { "type": "linear" },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": { "group": "A", "mode": "normal" },
+                "thresholdsStyle": { "mode": "off" }
+              },
+              "unit": "short",
+              "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }
+            }
+          },
+          "gridPos": { "h": 8, "w": 12, "x": 12, "y": 28 },
+          "id": 12,
+          "options": {
+            "legend": { "calcs": ["sum"], "displayMode": "table", "placement": "right", "showLegend": true, "sortBy": "Total", "sortDesc": true },
+            "tooltip": { "mode": "multi", "sort": "desc" }
+          },
+          "targets": [
+            {
+              "datasource": { "type": "prometheus", "uid": "$datasource" },
+              "expr": "sum by (destination_namespace) (rate(hubble_drop_total{reason=\"POLICY_DENIED\", destination_namespace=~\"$dst_namespace\", destination_namespace!=\"\"}[$__rate_interval]))",
+              "legendFormat": "{{ destination_namespace }}",
+              "refId": "A"
+            }
+          ],
+          "title": "Policy Denied by Destination Namespace",
+          "type": "timeseries"
+        },
+        {
+          "collapsed": false,
+          "gridPos": { "h": 1, "w": 24, "x": 0, "y": 36 },
+          "id": 13,
+          "title": "Blocked Ports Analysis",
+          "type": "row"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "$datasource" },
+          "description": "Most frequently blocked destination ports - these are the ports you likely need to allow in your policies",
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "palette-classic" },
+              "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
+              "mappings": []
+            }
+          },
+          "gridPos": { "h": 8, "w": 8, "x": 0, "y": 37 },
+          "id": 14,
+          "options": {
+            "legend": { "displayMode": "table", "placement": "right", "showLegend": true, "values": ["value", "percent"] },
+            "pieType": "pie",
+            "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+            "tooltip": { "mode": "single", "sort": "none" }
+          },
+          "targets": [
+            {
+              "datasource": { "type": "prometheus", "uid": "$datasource" },
+              "expr": "topk(10, sum by (destination_port) (increase(hubble_drop_total{reason=\"POLICY_DENIED\", destination_port!=\"\"}[$__range])))",
+              "legendFormat": "{{ destination_port }}",
+              "refId": "A"
+            }
+          ],
+          "title": "Top Blocked Destination Ports",
+          "type": "piechart"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "$datasource" },
+          "description": "Protocol distribution of blocked traffic",
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "palette-classic" },
+              "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
+              "mappings": []
+            }
+          },
+          "gridPos": { "h": 8, "w": 8, "x": 8, "y": 37 },
+          "id": 15,
+          "options": {
+            "legend": { "displayMode": "table", "placement": "right", "showLegend": true, "values": ["value", "percent"] },
+            "pieType": "pie",
+            "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+            "tooltip": { "mode": "single", "sort": "none" }
+          },
+          "targets": [
+            {
+              "datasource": { "type": "prometheus", "uid": "$datasource" },
+              "expr": "sum by (protocol) (increase(hubble_drop_total{reason=\"POLICY_DENIED\"}[$__range]))",
+              "legendFormat": "{{ protocol }}",
+              "refId": "A"
+            }
+          ],
+          "title": "Blocked by Protocol",
+          "type": "piechart"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "$datasource" },
+          "description": "Ingress vs Egress policy denials",
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "palette-classic" },
+              "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
+              "mappings": []
+            }
+          },
+          "gridPos": { "h": 8, "w": 8, "x": 16, "y": 37 },
+          "id": 16,
+          "options": {
+            "legend": { "displayMode": "table", "placement": "right", "showLegend": true, "values": ["value", "percent"] },
+            "pieType": "pie",
+            "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+            "tooltip": { "mode": "single", "sort": "none" }
+          },
+          "targets": [
+            {
+              "datasource": { "type": "prometheus", "uid": "$datasource" },
+              "expr": "sum by (traffic_direction) (increase(hubble_drop_total{reason=\"POLICY_DENIED\"}[$__range]))",
+              "legendFormat": "{{ traffic_direction }}",
+              "refId": "A"
+            }
+          ],
+          "title": "Blocked by Direction",
+          "type": "piechart"
+        },
+        {
+          "collapsed": true,
+          "gridPos": { "h": 1, "w": 24, "x": 0, "y": 45 },
+          "id": 17,
+          "title": "All Drop Reasons (Not Just Policy)",
+          "type": "row",
+          "panels": [
+            {
+              "datasource": { "type": "prometheus", "uid": "$datasource" },
+              "fieldConfig": {
+                "defaults": {
+                  "color": { "mode": "palette-classic" },
+                  "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
+                  "mappings": []
+                }
+              },
+              "gridPos": { "h": 8, "w": 12, "x": 0, "y": 46 },
+              "id": 18,
+              "options": {
+                "legend": { "displayMode": "table", "placement": "right", "showLegend": true, "values": ["value", "percent"] },
+                "pieType": "pie",
+                "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+                "tooltip": { "mode": "single", "sort": "none" }
+              },
+              "targets": [
+                {
+                  "datasource": { "type": "prometheus", "uid": "$datasource" },
+                  "expr": "sum by (reason) (increase(hubble_drop_total[$__range]))",
+                  "legendFormat": "{{ reason }}",
+                  "refId": "A"
+                }
+              ],
+              "title": "All Drops by Reason",
+              "type": "piechart"
+            },
+            {
+              "datasource": { "type": "prometheus", "uid": "$datasource" },
+              "fieldConfig": {
+                "defaults": {
+                  "color": { "mode": "palette-classic" },
+                  "custom": {
+                    "axisBorderShow": false,
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
+                    "axisPlacement": "auto",
+                    "drawStyle": "line",
+                    "fillOpacity": 20,
+                    "lineInterpolation": "smooth",
+                    "lineWidth": 2,
+                    "showPoints": "never",
+                    "stacking": { "group": "A", "mode": "normal" }
+                  },
+                  "unit": "short"
+                }
+              },
+              "gridPos": { "h": 8, "w": 12, "x": 12, "y": 46 },
+              "id": 19,
+              "options": {
+                "legend": { "calcs": ["sum"], "displayMode": "table", "placement": "right", "showLegend": true, "sortBy": "Total", "sortDesc": true },
+                "tooltip": { "mode": "multi", "sort": "desc" }
+              },
+              "targets": [
+                {
+                  "datasource": { "type": "prometheus", "uid": "$datasource" },
+                  "expr": "sum by (reason) (rate(hubble_drop_total[$__rate_interval]))",
+                  "legendFormat": "{{ reason }}",
+                  "refId": "A"
+                }
+              ],
+              "title": "All Drop Reasons Over Time",
+              "type": "timeseries"
+            }
+          ]
+        }
+      ],
+      "schemaVersion": 39,
+      "tags": ["cilium", "network", "security", "policy"],
+      "templating": {
+        "list": [
+          {
+            "current": { "selected": false, "text": "Prometheus", "value": "prometheus" },
+            "hide": 0,
+            "includeAll": false,
+            "multi": false,
+            "name": "datasource",
+            "options": [],
+            "query": "prometheus",
+            "refresh": 1,
+            "type": "datasource"
+          },
+          {
+            "allValue": ".*",
+            "current": { "selected": true, "text": "All", "value": "$__all" },
+            "datasource": { "type": "prometheus", "uid": "$datasource" },
+            "definition": "label_values(hubble_drop_total{reason=\"POLICY_DENIED\"}, source_namespace)",
+            "hide": 0,
+            "includeAll": true,
+            "multi": true,
+            "name": "src_namespace",
+            "options": [],
+            "query": "label_values(hubble_drop_total{reason=\"POLICY_DENIED\"}, source_namespace)",
+            "refresh": 2,
+            "sort": 1,
+            "type": "query"
+          },
+          {
+            "allValue": ".*",
+            "current": { "selected": true, "text": "All", "value": "$__all" },
+            "datasource": { "type": "prometheus", "uid": "$datasource" },
+            "definition": "label_values(hubble_drop_total{reason=\"POLICY_DENIED\"}, destination_namespace)",
+            "hide": 0,
+            "includeAll": true,
+            "multi": true,
+            "name": "dst_namespace",
+            "options": [],
+            "query": "label_values(hubble_drop_total{reason=\"POLICY_DENIED\"}, destination_namespace)",
+            "refresh": 2,
+            "sort": 1,
+            "type": "query"
+          }
+        ]
+      },
+      "time": { "from": "now-1h", "to": "now" },
+      "timepicker": {},
+      "timezone": "",
+      "title": "Cilium Policy Denied Investigation",
+      "uid": "cilium-policy-denied",
+      "version": 1
+    }
