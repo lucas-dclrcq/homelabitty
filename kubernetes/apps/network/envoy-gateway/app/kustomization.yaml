@@ -6,5 +6,4 @@ resources:
   - ./ocirepository.yaml
   - ./helmrelease.yaml
   - ./observability.yaml
-  - ./networkpolicy.yaml
   - ./grafanadashboard.yaml
