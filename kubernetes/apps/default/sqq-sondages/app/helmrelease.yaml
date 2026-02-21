@@ -17,7 +17,7 @@ spec:
           main:
             image:
               repository: ghcr.io/superquinquin-sur-deule/sqq-sondages
-              tag: latest@sha256:f0a749779b63c8b7dd5b9d99284b2bb15e38560b713484ec37482626009b2a5d
+              tag: latest@sha256:336de47bf9ce4ba89d4ce86757acc16c26f1e24b16c94bc0062f915146910776
 
             envFrom:
               - secretRef:
