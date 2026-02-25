@@ -8,5 +8,4 @@ components:
 resources:
   - ./open-webui/ks.yaml
   - ./searxng/ks.yaml
-  - ./librechat/ks.yaml
-  - ./ollama/ks.yaml
+
