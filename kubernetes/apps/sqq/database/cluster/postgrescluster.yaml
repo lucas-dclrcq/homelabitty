@@ -11,6 +11,13 @@ metadata:
 spec:
   postgresVersion: 17
 
+  service:
+    type: LoadBalancer
+    metadata:
+      annotations:
+        external-dns.alpha.kubernetes.io/hostname: "sqq.postgres.${LIMITED_DOMAIN}"
+        io.cilium/lb-ipam-ips: "${LB_IP_PG_SQQ}"
+
   patroni:
     dynamicConfiguration:
       synchronous_mode: true
