@@ -24,13 +24,9 @@ resources:
   - ./habittrove/ks.yaml
   - ./paperless/ks.yaml
   - ./n8n/ks.yaml
-  - ./sqq-inscription/ks.yaml
-  - ./sqq-inscription-staging/ks.yaml
-  - ./sqq-vente-groupee-staging/ks.yaml
   - ./rustical/ks.yaml
   - ./bichon/ks.yaml
   - ./the-recipe-db/ks.yaml
   #  - ./spoolman/ks.yaml
   - ./bambuddy/ks.yaml
   - ./homebox/ks.yaml
-  - ./sqq-sondages/ks.yaml

@@ -3,8 +3,8 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app sqq-inscription-staging
-  namespace: &namespace default
+  name: &app sqq-vente-groupee-staging
+  namespace: &namespace sqq
 spec:
   targetNamespace: *namespace
   commonMetadata:
@@ -13,7 +13,7 @@ spec:
   dependsOn:
     - name: external-secrets-stores
       namespace: external-secrets
-  path: ./kubernetes/apps/default/sqq-inscription-staging/app
+  path: ./kubernetes/apps/sqq/sqq-vente-groupee-staging/app
   prune: true
   sourceRef:
     kind: GitRepository
