@@ -1,0 +1,19 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: &name external-secrets-pg-sqq
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: external-secrets-pg
+subjects:
+  - kind: ServiceAccount
+    name: *name
+    namespace: sqq
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: external-secrets-pg-sqq
+  namespace: sqq
