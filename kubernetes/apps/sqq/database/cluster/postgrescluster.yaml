@@ -9,7 +9,7 @@ metadata:
   annotations:
     crunchy-users.henrywhitaker3.github.com/superuser: "postgres"
 spec:
-  postgresVersion: 18
+  postgresVersion: 17
 
   patroni:
     dynamicConfiguration:
@@ -68,6 +68,7 @@ spec:
         repo1-retention-full: "30" # days
         repo1-retention-full-type: "time"
         repo1-s3-uri-style: path
+        repo1-storage-verify-tls: "n"
       manual:
         repoName: repo1
         options:
