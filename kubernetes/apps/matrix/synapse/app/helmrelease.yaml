@@ -140,6 +140,7 @@ spec:
     gateway:
       enabled: true
       annotations:
+        external-dns.alpha.kubernetes.io/target: "${HOME_IP}"
         gatus.home-operations.com/endpoint: |-
           url: https://${SECRET_DOMAIN}/.well-known/matrix/client
           group: Matrix
