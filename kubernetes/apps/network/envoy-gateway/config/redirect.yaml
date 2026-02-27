@@ -17,6 +17,9 @@ spec:
     - name: external
       namespace: network
       sectionName: http-sqq
+    - name: external
+      namespace: network
+      sectionName: http-root
   rules:
     - filters:
         - requestRedirect:
