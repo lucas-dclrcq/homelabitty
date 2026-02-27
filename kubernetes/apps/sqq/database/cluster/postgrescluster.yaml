@@ -59,7 +59,12 @@ spec:
       options: "SUPERUSER"
       password:
         type: AlphaNumeric
-
+    - name: "sqqvgprod"
+      databases:
+        - "sqqvgprod"
+      options: "SUPERUSER"
+      password:
+        type: AlphaNumeric
   backups:
     pgbackrest:
       configuration:
