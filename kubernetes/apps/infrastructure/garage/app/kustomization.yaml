@@ -6,6 +6,7 @@ resources:
   - ./ocirepository.yaml
   - ./externalsecret.yaml
   - ./helmrelease.yaml
+  - ./backendtlspolicy.yaml
 configMapGenerator:
   - name: garage-configmap
     files:

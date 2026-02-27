@@ -1,0 +1,13 @@
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: BackendTLSPolicy
+metadata:
+  name: garage
+spec:
+  targetRefs:
+    - group: ""
+      kind: Service
+      name: garage
+  validation:
+    wellKnownCACertificates: "System"
+    hostname: "garage.${SECRET_DOMAIN}"

@@ -100,3 +100,9 @@ spec:
         path: /mnt/tank/Apps/Garage/meta
         globalMounts:
           - path: /meta
+      tls:
+        type: secret
+        name: "${SECRET_DOMAIN/./-}-production-tls"
+        globalMounts:
+          - path: /etc/garage/tls
+            readOnly: true
