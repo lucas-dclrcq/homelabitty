@@ -9,5 +9,6 @@ resources:
   - ./database/ks.yaml
   - ./sqq-inscription/ks.yaml
   - ./sqq-inscription-staging/ks.yaml
+  - ./sqq-vente-groupee/ks.yaml
   - ./sqq-vente-groupee-staging/ks.yaml
   - ./sqq-sondages/ks.yaml
