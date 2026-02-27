@@ -1,0 +1,18 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: federation-tester
+spec:
+  endpoints:
+    - interval: 1m
+      path: /metrics
+      port: http
+      scheme: http
+      scrapeTimeout: 10s
+  namespaceSelector:
+    matchNames:
+      - matrix
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: federation-tester
