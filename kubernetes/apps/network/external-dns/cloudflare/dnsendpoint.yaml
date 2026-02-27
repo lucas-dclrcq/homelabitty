@@ -1,0 +1,11 @@
+---
+apiVersion: externaldns.k8s.io/v1alpha1
+kind: DNSEndpoint
+metadata:
+  name: root-domain
+spec:
+  endpoints:
+    - dnsName: ${SECRET_DOMAIN}
+      recordType: A
+      targets:
+        - ${HOME_IP}
