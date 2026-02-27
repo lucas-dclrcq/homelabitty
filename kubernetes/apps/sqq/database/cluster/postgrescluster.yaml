@@ -72,7 +72,7 @@ spec:
         compress-level: "9"
         repo1-block: "y"
         repo1-bundle: "y"
-        repo1-path: /crunchy-pgo-sqq
+        repo1-path: /pgbackrest/repo1/crunchy-pgo-sqq
         repo1-retention-full: "30" # days
         repo1-retention-full-type: "time"
       manual:
