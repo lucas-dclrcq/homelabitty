@@ -67,20 +67,14 @@ spec:
         type: AlphaNumeric
   backups:
     pgbackrest:
-      configuration:
-        - secret:
-            name: crunchy-pgo-sqq-secret
       global:
         compress-type: "bz2"
         compress-level: "9"
-        # Garage
         repo1-block: "y"
         repo1-bundle: "y"
         repo1-path: /crunchy-pgo-sqq
         repo1-retention-full: "30" # days
         repo1-retention-full-type: "time"
-        repo1-s3-uri-style: path
-        repo1-storage-verify-tls: "n"
       manual:
         repoName: repo1
         options:
@@ -89,11 +83,18 @@ spec:
         labels:
           app.kubernetes.io/name: crunchy-postgres-sqq-backup
       repos:
-        - name: repo1 # Garage
-          s3:
-            bucket: "postgres-sqq-backup"
-            endpoint: "garage.infrastructure.svc.cluster.local:3900"
-            region: "eu-west-1"
+        - name: repo1
+          volume:
+            volumeClaimSpec:
+              storageClassName: ""
+              accessModes:
+                - ReadWriteOnce
+              resources:
+                requests:
+                  storage: 10Gi
+              selector:
+                matchLabels:
+                  app.kubernetes.io/component: sqq-pgbackrest-repo
           schedules:
             full: "0 1 * * 0" # Sunday at 01:00
             differential: "0 1 * * 1-6" # Mon-Sat at 01:00
