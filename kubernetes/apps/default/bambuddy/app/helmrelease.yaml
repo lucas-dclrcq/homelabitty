@@ -24,8 +24,7 @@ spec:
               PORT: &port 8000
             securityContext:
               allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: {drop: ["ALL"]}
+              readOnlyRootFilesystem: false
             resources:
               requests:
                 cpu: 10m
@@ -65,3 +64,7 @@ spec:
                 subPath: logs
               - path: /tmp
                 subPath: tmp
+              - path: /.cache
+                subPath: cache
+              - path: /.local
+                subPath: local
