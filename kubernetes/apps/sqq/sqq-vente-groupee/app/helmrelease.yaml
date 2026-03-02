@@ -12,12 +12,13 @@ spec:
   values:
     controllers:
       main:
+        strategy: RollingUpdate
         replicas: 2
         containers:
           main:
             image:
               repository: ghcr.io/superquinquin-sur-deule/sqq-achat-groupe
-              tag: 1.0.0
+              tag: 1.3.0
 
             envFrom:
               - secretRef:
