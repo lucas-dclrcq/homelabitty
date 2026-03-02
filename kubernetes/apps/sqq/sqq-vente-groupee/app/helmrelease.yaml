@@ -18,7 +18,7 @@ spec:
           main:
             image:
               repository: ghcr.io/superquinquin-sur-deule/sqq-achat-groupe
-              tag: 1.5.0
+              tag: 1.6.0
 
             envFrom:
               - secretRef:
@@ -26,10 +26,10 @@ spec:
 
             resources:
               requests:
-                cpu: 12m
-                memory: 64M
+                cpu: 100m
+                memory: 512Mi
               limits:
-                memory: 1Gi
+                memory: 2Gi
 
     service:
       main:
