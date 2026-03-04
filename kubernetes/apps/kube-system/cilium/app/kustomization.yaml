@@ -6,4 +6,5 @@ resources:
   - ./helmrelease.yaml
   - ./httproute.yaml
   - ./networking.yaml
+  - ./grafanadashboard.yaml
   - ./grafanadashboard-dropped-flows.yaml

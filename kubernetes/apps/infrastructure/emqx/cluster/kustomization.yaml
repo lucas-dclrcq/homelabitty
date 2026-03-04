@@ -6,3 +6,4 @@ resources:
   - ./cluster.yaml
   - ./httproute.yaml
   - ./podmonitor.yaml
+  - ./grafanadashboard.yaml

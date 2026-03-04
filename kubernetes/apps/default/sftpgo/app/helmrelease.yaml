@@ -95,6 +95,12 @@ spec:
             targetPort: 2022
             protocol: TCP
 
+    serviceMonitor:
+      app:
+        serviceName: sftpgo-main
+        endpoints:
+          - port: metrics
+
     route:
       app:
         annotations:
