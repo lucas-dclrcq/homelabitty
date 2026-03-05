@@ -9,4 +9,4 @@ spec:
   instanceSelector:
     matchLabels:
       grafana.internal/instance: grafana
-  url: https://grafana.com/api/dashboards/14370/revisions/1/download
+  url: https://grafana.com/api/dashboards/14370/revisions/6/download
