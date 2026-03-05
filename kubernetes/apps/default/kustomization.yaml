@@ -27,6 +27,5 @@ resources:
   - ./rustical/ks.yaml
   - ./bichon/ks.yaml
   - ./the-recipe-db/ks.yaml
-  #  - ./spoolman/ks.yaml
   - ./bambuddy/ks.yaml
   - ./homebox/ks.yaml
