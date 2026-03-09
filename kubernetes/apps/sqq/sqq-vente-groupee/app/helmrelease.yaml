@@ -18,26 +18,22 @@ spec:
           main:
             image:
               repository: ghcr.io/superquinquin-sur-deule/sqq-achat-groupe
-              tag: 1.12.0
-
+              tag: 1.12.1
             envFrom:
               - secretRef:
                   name: sqq-vente-groupee-secret
-
             resources:
               requests:
                 cpu: 100m
                 memory: 512Mi
               limits:
                 memory: 2Gi
-
     service:
       main:
         controller: main
         ports:
           http:
             port: &port 8080
-
     route:
       app:
         hostnames:
