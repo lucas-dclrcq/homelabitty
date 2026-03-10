@@ -17,7 +17,7 @@ spec:
           main:
             image:
               repository: ghcr.io/superquinquin-sur-deule/sqq-achat-groupe
-              tag: latest@sha256:f82b5be53e5d4fdaabaf1d93d3bdcf69b3a3cb6e4e5e245f3d72732f8c0fb335
+              tag: latest@sha256:dd943d7b47a4c5aa6f10196b85afd22f0fef71375b2ba3cb2132110b9e6927d5
             envFrom:
               - secretRef:
                   name: sqq-vente-groupee-staging-secret
