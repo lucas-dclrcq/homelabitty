@@ -17,4 +17,5 @@ resources:
   - ./sonarr/ks.yaml
   - ./radarr/ks.yaml
   - ./bazarr/ks.yaml
+  - ./cross-seed/ks.yaml
   - ./pinchflat/ks.yaml
