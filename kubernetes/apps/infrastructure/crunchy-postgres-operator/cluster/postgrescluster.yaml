@@ -322,6 +322,11 @@ spec:
         - "sqqsondages"
       password:
         type: AlphaNumeric
+    - name: "homelabmanager"
+      databases:
+        - "homelabmanager"
+      password:
+        type: AlphaNumeric
   backups:
     pgbackrest:
       configuration:
