@@ -1,0 +1,113 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app sftpgo-sqq
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  values:
+    controllers:
+      main:
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+        containers:
+          main:
+            image:
+              repository: ghcr.io/drakkan/sftpgo
+              tag: v2.7.0@sha256:24f68c1e6617f3999debde0478f435d375d496c46644b82d3ca154842d4f6c40
+
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: {drop: ["ALL"]}
+
+            envFrom:
+              - secretRef:
+                  name: sftpgo-sqq-secret
+
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /healthz
+                    port: 8081
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /healthz
+                    port: 8081
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+
+            resources:
+              requests:
+                cpu: 10m
+                memory: 128Mi
+              limits:
+                memory: 512Mi
+
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: "${APP_UID}"
+        runAsGroup: "${APP_GID}"
+        fsGroup: "${APP_GID}"
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile: {type: RuntimeDefault}
+
+    service:
+      main:
+        controller: main
+        ports:
+          http:
+            port: 8080
+          metrics:
+            port: 8081
+      transfer:
+        controller: main
+        ports:
+          sftp:
+            port: 2022
+            protocol: TCP
+
+    serviceMonitor:
+      app:
+        serviceName: sftpgo-sqq-main
+        endpoints:
+          - port: metrics
+
+    route:
+      app:
+        hostnames:
+          - "sftp.superquinquin-sur-deule.org"
+        parentRefs:
+          - name: external
+            namespace: network
+        rules:
+          - backendRefs:
+              - name: sftpgo-sqq-main
+                port: 8080
+
+    persistence:
+      config:
+        existingClaim: *app
+        globalMounts:
+          - subPath: data
+            path: /srv/sftpgo/data
+          - subPath: config
+            path: /var/lib/sftpgo
