@@ -6,7 +6,7 @@ resources:
   - ./namespace.yaml
   - ./notifications.yaml
   - ./navidrome/ks.yaml
-  - ./jellyseerr/ks.yaml
+  - ./seerr/ks.yaml
   - ./jellyfin/ks.yaml
   - ./jellystat/ks.yaml
   - ./audiobookshelf/ks.yaml
