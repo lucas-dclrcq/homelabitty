@@ -67,10 +67,3 @@ spec:
         certificateRefs:
           - kind: Secret
             name: sqq-production-tls
-    - name: sftp-sqq
-      protocol: TCP
-      hostname: "*.superquinquin-sur-deule.org"
-      port: 2222
-      allowedRoutes:
-        namespaces:
-          from: All

@@ -12,4 +12,3 @@ resources:
   - ./sqq-vente-groupee/ks.yaml
   - ./sqq-vente-groupee-staging/ks.yaml
   - ./sqq-sondages/ks.yaml
-  - ./sftpgo/ks.yaml
