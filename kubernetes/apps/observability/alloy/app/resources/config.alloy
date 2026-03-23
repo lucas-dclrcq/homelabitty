@@ -159,14 +159,10 @@ otelcol.processor.filter "traces" {
   error_mode = "ignore"
 
   traces {
-    span {
-      // Keep spans from homelab-manager (Quarkus OTEL SDK)
-      // and Envoy proxy spans for homelab-manager routes
-      attributes["http.host"] != "homelab-manager.${LIMITED_DOMAIN}"
-        and attributes["server.address"] != "homelab-manager.${LIMITED_DOMAIN}"
-        and attributes["url.domain"] != "homelab-manager.${LIMITED_DOMAIN}"
-        and resource.attributes["service.name"] != "homelab-manager"
-    }
+    // Drop spans NOT related to homelab-manager
+    span = [
+      "attributes[\"http.host\"] != \"homelab-manager.${LIMITED_DOMAIN}\" and attributes[\"server.address\"] != \"homelab-manager.${LIMITED_DOMAIN}\" and attributes[\"url.domain\"] != \"homelab-manager.${LIMITED_DOMAIN}\" and resource.attributes[\"service.name\"] != \"homelab-manager\"",
+    ]
   }
 
   output {
