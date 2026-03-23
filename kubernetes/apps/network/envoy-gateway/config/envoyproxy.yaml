@@ -29,3 +29,22 @@ spec:
       prometheus:
         compression:
           type: Gzip
+    tracing:
+      samplingRate: 100
+      provider:
+        type: OpenTelemetry
+        backendRefs:
+          - name: alloy
+            namespace: observability
+            port: 4317
+      customTags:
+        "k8s.pod.name":
+          type: Environment
+          environment:
+            name: ENVOY_POD_NAME
+            defaultValue: "-"
+        "k8s.namespace.name":
+          type: Environment
+          environment:
+            name: ENVOY_POD_NAMESPACE
+            defaultValue: "-"
