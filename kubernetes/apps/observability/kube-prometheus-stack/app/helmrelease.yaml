@@ -68,6 +68,7 @@ spec:
               namespace: network
 
       prometheusSpec:
+        enableRemoteWriteReceiver: true
         image:
           registry: docker.io
           repository: prompp/prompp

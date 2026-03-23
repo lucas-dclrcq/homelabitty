@@ -27,12 +27,16 @@ spec:
     replicas: 2
     tempo:
       metricsGenerator:
-        enabled: false
+        enabled: true
+        remoteWriteUrl: http://prometheus-operated.observability.svc.cluster.local:9090/api/v1/write
+        processor:
+          service_graphs: {}
+          span_metrics: {}
       storage:
         trace:
           backend: s3
           s3:
-            insecure: true                                 # optional. enable if endpoint is http
+            insecure: true # optional. enable if endpoint is http
       retention: 24h
       reportingEnabled: false
       receivers:

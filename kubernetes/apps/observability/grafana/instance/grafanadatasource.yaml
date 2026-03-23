@@ -75,12 +75,12 @@ spec:
         filterBySpanID: true
         customQuery: true
       tracesToMetrics:
-        datasourceUid: 'Prometheus'
+        datasourceUid: 'PROMETHEUS'
         tags:
           - {key: 'service.name', value: 'service'}
           - {key: 'job'}
       serviceMap:
-        datasourceUid: 'Prometheus'
+        datasourceUid: 'PROMETHEUS'
       nodeGraph:
         enabled: true
       search:
