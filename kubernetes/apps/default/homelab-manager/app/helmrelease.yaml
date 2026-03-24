@@ -54,26 +54,6 @@ spec:
                 memory: 256Mi
               limits:
                 memory: 1Gi
-      send-whats-next-report:
-        type: cronjob
-        cronjob:
-          schedule: "0 7 * * 1" # Every monday at 7am
-          successfulJobsHistory: 1
-          failedJobsHistory: 3
-        containers:
-          main:
-            image:
-              repository: alpine/curl
-              tag: 8.17.0
-            args:
-              - -X POST
-              - http://homelab-manager.default.svc.cluster.local/api/notifications/send-whats-next-report
-            resources:
-              requests:
-                cpu: 10m
-                memory: 64M
-              limits:
-                memory: 128M
     service:
       main:
         controller: homelab-manager
