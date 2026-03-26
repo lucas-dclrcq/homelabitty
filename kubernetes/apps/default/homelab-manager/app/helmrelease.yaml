@@ -12,7 +12,8 @@ spec:
   values:
     controllers:
       homelab-manager:
-        type: statefulset
+        replicas: 2
+        strategy: RollingUpdate
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
@@ -72,12 +73,6 @@ spec:
               - name: *app
                 port: *port
     persistence:
-      data:
-        existingClaim: *app
-        advancedMounts:
-          homelab-manager:
-            main:
-              - path: /matrix
       tmp:
         type: emptyDir
         advancedMounts:
