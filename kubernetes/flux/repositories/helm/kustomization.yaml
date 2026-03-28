@@ -46,3 +46,4 @@ resources:
   - ./influxdata.yaml
   - ./kedacore.yaml
   - ./flagsmith.yaml
+  - ./sloth.yaml
