@@ -1,0 +1,78 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app mattermost
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  values:
+    controllers:
+      main:
+        containers:
+          main:
+            image:
+              repository: docker.io/mattermost/mattermost-team-edition
+              tag: 10.5.1
+
+            envFrom:
+              - secretRef:
+                  name: mattermost-secret
+
+            env:
+              MM_SERVICESETTINGS_SITEURL: "https://mattermost.${SQQ_DOMAIN}"
+              MM_SERVICESETTINGS_LISTENADDRESS: ":8065"
+              MM_FILESETTINGS_DIRECTORY: /mattermost/data/
+              MM_PLUGINSETTINGS_DIRECTORY: /mattermost/plugins
+              MM_PLUGINSETTINGS_CLIENTDIRECTORY: /mattermost/client/plugins
+
+            resources:
+              requests:
+                cpu: 100m
+                memory: 256Mi
+              limits:
+                memory: 1Gi
+
+    service:
+      main:
+        controller: main
+        ports:
+          http:
+            port: &port 8065
+
+    route:
+      app:
+        hostnames:
+          - "mattermost.${SQQ_DOMAIN}"
+        parentRefs:
+          - name: external
+            namespace: network
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
+
+    persistence:
+      data:
+        existingClaim: *app
+        globalMounts:
+          - path: /mattermost/data
+      config:
+        type: emptyDir
+        globalMounts:
+          - path: /mattermost/config
+      plugins:
+        type: emptyDir
+        globalMounts:
+          - path: /mattermost/plugins
+      client-plugins:
+        type: emptyDir
+        globalMounts:
+          - path: /mattermost/client/plugins
+      logs:
+        type: emptyDir
+        globalMounts:
+          - path: /mattermost/logs
