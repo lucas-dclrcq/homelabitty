@@ -13,3 +13,4 @@ resources:
   - ./sqq-vente-groupee-staging/ks.yaml
   - ./sqq-sondages/ks.yaml
   - ./mattermost/ks.yaml
+  - ./sqq-keycloak/ks.yaml

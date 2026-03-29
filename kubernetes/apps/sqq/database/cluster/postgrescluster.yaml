@@ -70,6 +70,12 @@ spec:
         - "mattermost"
       password:
         type: AlphaNumeric
+    - name: "keycloak"
+      databases:
+        - "keycloak"
+      options: "SUPERUSER"
+      password:
+        type: AlphaNumeric
   backups:
     pgbackrest:
       global:
