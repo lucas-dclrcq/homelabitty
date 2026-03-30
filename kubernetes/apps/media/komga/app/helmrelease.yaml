@@ -31,7 +31,7 @@ spec:
           app:
             image:
               repository: gotson/komga
-              tag: 1.24.2
+              tag: 1.24.3
 
             env:
               TZ: ${TIMEZONE}
