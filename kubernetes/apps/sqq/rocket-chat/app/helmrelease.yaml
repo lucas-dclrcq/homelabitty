@@ -1,0 +1,80 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app rocket-chat
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  values:
+    controllers:
+      main:
+        initContainers:
+          init-rs:
+            image:
+              repository: docker.io/library/mongo
+              tag: "7.0"
+            command:
+              - bash
+              - -c
+              - |
+                until mongosh --host rocket-chat-mongodb:27017 --eval "db.runCommand({ ping: 1 })" &>/dev/null; do
+                  echo "Waiting for MongoDB..."
+                  sleep 2
+                done
+                mongosh --host rocket-chat-mongodb:27017 --eval "
+                  try { rs.status() } catch(e) {
+                    rs.initiate({ _id: 'rs0', members: [{ _id: 0, host: 'rocket-chat-mongodb:27017' }] })
+                  }
+                "
+        containers:
+          main:
+            image:
+              repository: docker.io/rocketchat/rocket.chat
+              tag: 7.5.1
+
+            envFrom:
+              - secretRef:
+                  name: rocket-chat-secret
+
+            env:
+              ROOT_URL: "https://lechat.${SQQ_DOMAIN}"
+              PORT: "3000"
+              MONGO_URL: "mongodb://rocket-chat-mongodb:27017/rocketchat?replicaSet=rs0"
+              MONGO_OPLOG_URL: "mongodb://rocket-chat-mongodb:27017/local?replicaSet=rs0"
+              OVERWRITE_SETTING_Show_Setup_Wizard: "completed"
+
+            resources:
+              requests:
+                cpu: 100m
+                memory: 512Mi
+              limits:
+                memory: 1Gi
+
+    service:
+      main:
+        controller: main
+        ports:
+          http:
+            port: &port 3000
+
+    route:
+      app:
+        hostnames:
+          - "lechat.${SQQ_DOMAIN}"
+        parentRefs:
+          - name: external
+            namespace: network
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
+
+    persistence:
+      data:
+        existingClaim: *app
+        globalMounts:
+          - path: /app/uploads

@@ -12,5 +12,5 @@ resources:
   - ./sqq-vente-groupee/ks.yaml
   - ./sqq-vente-groupee-staging/ks.yaml
   - ./sqq-sondages/ks.yaml
-  - ./mattermost/ks.yaml
+  - ./rocket-chat/ks.yaml
   - ./sqq-keycloak/ks.yaml

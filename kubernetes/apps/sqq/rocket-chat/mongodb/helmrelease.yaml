@@ -1,0 +1,43 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app rocket-chat-mongodb
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  values:
+    controllers:
+      main:
+        containers:
+          main:
+            image:
+              repository: docker.io/library/mongo
+              tag: "7.0"
+            args:
+              - --replSet
+              - rs0
+              - --oplogSize
+              - "128"
+            resources:
+              requests:
+                cpu: 100m
+                memory: 256Mi
+              limits:
+                memory: 1Gi
+
+    service:
+      main:
+        controller: main
+        ports:
+          mongodb:
+            port: 27017
+
+    persistence:
+      data:
+        existingClaim: *app
+        globalMounts:
+          - path: /data/db

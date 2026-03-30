@@ -65,11 +65,6 @@ spec:
       options: "SUPERUSER"
       password:
         type: AlphaNumeric
-    - name: "mattermost"
-      databases:
-        - "mattermost"
-      password:
-        type: AlphaNumeric
     - name: "keycloak"
       databases:
         - "keycloak"

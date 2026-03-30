@@ -54,12 +54,28 @@ Each namespace directory has a `kustomization.yaml` that includes the `common` c
 
 **helmrelease.yaml**: most apps use the [bjw-s app-template](https://github.com/bjw-s-labs/helm-charts) chart via OCI. Chart source is an OCIRepository resource rather than a HelmRepository.
 
-**Variable substitution**: `${SECRET_DOMAIN}`, `${SECRET_*}`, etc. in manifests are replaced at reconciliation time from `cluster-settings`/`cluster-secrets`. The `APP` variable is set per-app in `ks.yaml`.
+**Variable substitution**: `${SECRET_DOMAIN}`, `${SECRET_*}`, etc. in manifests are replaced at reconciliation time from `cluster-settings`/`cluster-secrets`. The `APP` variable is set per-app in `ks.yaml`. Use Flux substitution only for non-secret configuration (domains, feature flags). App credentials must go through Vault via ExternalSecret.
+
+**Multi-component apps**: When an app requires a separate backing service (e.g., app + MongoDB), split into multiple Flux Kustomizations in the same `ks.yaml` (separated by `---`), each pointing to its own subdirectory. Use `dependsOn` for ordering. Each component gets its own VolSync volume. Do NOT combine unrelated services in the same controller/pod — VolSync PVCs are RWO and each Kustomization with the VolSync component creates exactly one PVC named `${APP}`.
+
+```
+<app>/
+├── ks.yaml              # Multiple Flux Kustomizations
+├── app/                 # Main application
+│   ├── kustomization.yaml
+│   ├── helmrelease.yaml
+│   └── ...
+└── <backing-service>/   # e.g., mongodb/
+    ├── kustomization.yaml
+    ├── helmrelease.yaml
+    └── ...
+```
 
 ### Secrets
 
-- **SOPS + Age**: files matching `*.sops.yaml` are encrypted. Flux decrypts automatically via the `sops-age` secret.
-- **External Secrets Operator**: `ExternalSecret` resources pull from a `ClusterSecretStore`.
+- **HashiCorp Vault** (preferred for app secrets): `ExternalSecret` resources pull from the `hashicorp-vault` ClusterSecretStore. Vault path convention: `apps/<namespace>/<app-name>` (e.g., `sqq/rocket-chat`). Use `envFrom` with a `secretRef` in the HelmRelease to inject credentials.
+- **SOPS + Age**: files matching `*.sops.yaml` are encrypted. Flux decrypts automatically via the `sops-age` secret. Used for cluster-level secrets, not app credentials.
+- **CrunchyData PGO secrets**: Apps using PostgreSQL pull DB credentials via namespace-specific `ClusterSecretStore` (e.g., `crunchy-pgo-sqq-secrets`).
 - **Config**: `.sops.yaml` defines encryption rules; `age.key` holds the Age key.
 
 ### Networking
