@@ -29,7 +29,7 @@ spec:
           app:
             image:
               repository: ghcr.io/etkecc/baibot
-              tag: v1.15.0@sha256:9c4ae17c1c380283fee61b901b6e1bcbe93fc1359a36b2570e3e197f024b9d64
+              tag: v1.17.0@sha256:3439e599297913ce96e5d61afe1cec38003d6e613f37ee60fb98626ee2c5b797
 
             env:
               BAIBOT_PERSISTENCE_DATA_DIR_PATH: /data
