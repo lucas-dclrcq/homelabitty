@@ -1,0 +1,65 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app rocket-chat-ferretdb
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  values:
+    controllers:
+      postgres:
+        containers:
+          main:
+            image:
+              repository: docker.io/library/postgres
+              tag: "17"
+            env:
+              POSTGRES_USER: ferretdb
+              POSTGRES_PASSWORD: ferretdb
+              POSTGRES_DB: ferretdb
+            resources:
+              requests:
+                cpu: 50m
+                memory: 128Mi
+              limits:
+                memory: 512Mi
+      ferretdb:
+        containers:
+          main:
+            image:
+              repository: ghcr.io/ferretdb/ferretdb
+              tag: "2.1.0"
+            env:
+              FERRETDB_POSTGRESQL_URL: "postgres://ferretdb:ferretdb@rocket-chat-ferretdb-postgres:5432/ferretdb"
+              FERRETDB_REPL_SET_NAME: rs0
+            resources:
+              requests:
+                cpu: 50m
+                memory: 128Mi
+              limits:
+                memory: 512Mi
+
+    service:
+      postgres:
+        controller: postgres
+        ports:
+          postgres:
+            port: 5432
+      ferretdb:
+        controller: ferretdb
+        ports:
+          mongodb:
+            port: 27017
+
+    persistence:
+      data:
+        existingClaim: *app
+        advancedMounts:
+          postgres:
+            main:
+              - path: /var/lib/postgresql/data
+                subPath: postgres

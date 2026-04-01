@@ -29,6 +29,32 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
+  name: &app rocket-chat-ferretdb
+  namespace: &namespace sqq
+spec:
+  targetNamespace: *namespace
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
+  components:
+    - ../../../../components/volsync
+  path: ./kubernetes/apps/sqq/rocket-chat/ferretdb
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+    namespace: flux-system
+  wait: false
+  interval: 1h
+  postBuild:
+    substitute:
+      APP: *app
+      VOLSYNC_CAPACITY: 5Gi
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
   name: &app rocket-chat
   namespace: &namespace sqq
 spec:
@@ -42,6 +68,7 @@ spec:
     - name: external-secrets-stores
       namespace: external-secrets
     - name: rocket-chat-mongodb
+    - name: rocket-chat-ferretdb
   path: ./kubernetes/apps/sqq/rocket-chat/app
   prune: true
   sourceRef:
