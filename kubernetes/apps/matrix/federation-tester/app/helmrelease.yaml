@@ -28,7 +28,7 @@ spec:
           app:
             image:
               repository: ghcr.io/mtrnord/rust-federation-tester
-              tag: 0.3.4
+              tag: 0.4.0
 
     service:
       app:
