@@ -1,0 +1,76 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app accueil
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  values:
+    controllers:
+      main:
+        replicas: 1
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          main:
+            image:
+              repository: ghcr.io/superquinquin-sur-deule/accueil
+              tag: 0.6.0
+
+            command:
+              - sanic
+              - asgi:app
+              - --host=0.0.0.0
+              - --port=8010
+              - --single-process
+              - --no-motd
+
+            env:
+              CONFIG_FILEPATH: &configPath /app/configs/configs.yaml
+
+            envFrom:
+              - secretRef:
+                  name: accueil-secret
+
+            resources:
+              requests:
+                cpu: 10m
+                memory: 128Mi
+              limits:
+                memory: 512Mi
+
+    persistence:
+      volume:
+        type: emptyDir
+        globalMounts:
+          - path: /opt/pysetup/volume
+      config-file:
+        type: configMap
+        name: accueil-configmap
+        globalMounts:
+          - path: *configPath
+            subPath: configs.yaml
+            readOnly: true
+
+    service:
+      main:
+        controller: main
+        ports:
+          http:
+            port: &port 8010
+
+    route:
+      app:
+        hostnames:
+          - "accueil.${SQQ_DOMAIN}"
+        parentRefs:
+          - name: external
+            namespace: network
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port

@@ -1,0 +1,111 @@
+---
+app:
+  env: ${ENV}
+  sanic:
+    static: "./accueil/static"
+    app:
+      templating_enable_async: true
+      templating_path_to_templates: "./accueil/templates/"
+
+  options:
+    accept_early_entrance:
+      minutes: 15
+    accept_late_entrance:
+      minutes: 0
+    auto_absence_notation: True
+    auto_close_shifts: True
+    auto_close_ftop_shift: False
+    auto_absence_mails: True
+
+  odoo:
+    erp:
+      host: ${ERP_URL}
+      database: ${ERP_DB}
+      verbose: False
+
+  mail:
+    login: ${EMAIL_LOGIN}
+    password: ${EMAIL_PASSWORD}
+    smtp_port: 587
+    smtp_server: ${SMTP_SERVER}
+    senders:
+      bdm: ${EMAIL_BDM}
+    conditions: {}
+    receivers: {}
+    templates_paths: {}
+    variables:
+      variables:
+        EXCHANGE_VIDEO: ""
+        PREVIOUS_AG_DATE: ""
+        PREVIOUS_AG_CR: ""
+        CURRENT_COOP_MANUAL: ""
+        DEFICITED_SHIFTS_CALENDAR: ""
+      on_gender:
+        male:
+          arg0: considéré
+          arg1: absent
+          arg2: blessé
+        female:
+          arg0: considérée
+          arg1: absente
+          arg2: blessée
+        neutral:
+          arg0: considéré.e
+          arg1: absent.e
+          arg2: blessé.e
+
+  logging:
+    version: 1
+    disable_existing_loggers: False
+    formatters:
+      simple:
+        class: logging.Formatter
+        format: "[%(asctime)s][%(name)s][%(process)d][%(levelname)s] | %(message)s"
+        datefmt: "%d-%m-%Y %H:%M:%S"
+    handlers:
+      stream:
+        class: logging.StreamHandler
+        level: INFO
+        formatter: simple
+        stream: ext://sys.stdout
+
+      error_stream:
+        class: logging.StreamHandler
+        level: INFO
+        formatter: simple
+        stream: ext://sys.stderr
+
+      error_file:
+        class: logging.FileHandler
+        level: ERROR
+        formatter: simple
+        filename: ./volume/errors.log
+
+      access_file:
+        class: logging.FileHandler
+        level: INFO
+        formatter: simple
+        filename: ./volume/log.log
+
+    loggers:
+      endpointAccess:
+        level: INFO
+        handlers:
+          - stream
+          - error_file
+          - access_file
+        propagate: False
+      scheduler:
+        level: INFO
+        handlers:
+          - stream
+          - error_file
+          - access_file
+        propagate: False
+      odoo:
+        level: INFO
+        handlers:
+          - stream
+          - error_file
+          - access_file
+        propagate: False
