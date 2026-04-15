@@ -20,18 +20,20 @@ spec:
             image:
               repository: ghcr.io/oknozor/kazib
               tag: latest@sha256:8a3c07f44ca4e237f26764fdda4cd391c3a7a86ec8dee02e982a81c6702e20bf
-
             env:
               PORT: &port 8080
               IP: 0.0.0.0
-
             resources:
               requests:
                 cpu: 10m
                 memory: 128Mi
               limits:
                 memory: 512Mi
-
+      kazib:
+        containers:
+          main:
+            image:
+              tag: latest@
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
@@ -39,14 +41,12 @@ spec:
         runAsGroup: ${APP_GID}
         fsGroup: ${APP_GID}
         fsGroupChangePolicy: OnRootMismatch
-
     service:
       app:
         controller: app
         ports:
           http:
             port: *port
-
     route:
       app:
         hostnames:
@@ -54,12 +54,10 @@ spec:
         parentRefs:
           - name: external
             namespace: network
-
         rules:
           - backendRefs:
               - name: *app
                 port: *port
-
     persistence:
       db:
         existingClaim: *app
