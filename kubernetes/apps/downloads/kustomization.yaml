@@ -19,3 +19,4 @@ resources:
   - ./bazarr/ks.yaml
   - ./cross-seed/ks.yaml
   - ./pinchflat/ks.yaml
+  - ./kazib/ks.yaml
