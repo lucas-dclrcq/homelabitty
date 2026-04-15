@@ -56,7 +56,9 @@ spec:
     persistence:
       db:
         existingClaim: *app
-      data:
+        globalMounts:
+          - path: /app/data
+      books:
         type: nfs
         server: "truenas.${INTERNAL_DOMAIN}"
         path: /mnt/tank/Media/Books
