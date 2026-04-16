@@ -1,15 +1,15 @@
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/envoyproxy/gateway/refs/heads/main/charts/gateway-helm/crds/generated/gateway.envoyproxy.io_clienttrafficpolicies.yaml
+# yaml-language-server: $schema=https://raw.githubusercontent.com/envoyproxy/gateway/refs/heads/main/charts/gateway-helm/crds/generated/gateway.envoyproxy.io_backendtrafficpolicies.yaml
 apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: BackendTrafficPolicy
 metadata:
   name: envoy
 spec:
-#  compression:
-#    - type: Brotli
-#    - type: Gzip
-#  connection:
-#    bufferLimit: 64Mi
+  #  compression:
+  #    - type: Brotli
+  #    - type: Gzip
+  #  connection:
+  #    bufferLimit: 64Mi
   targetSelectors:
     - group: gateway.networking.k8s.io
       kind: Gateway
@@ -17,3 +17,15 @@ spec:
   timeout:
     http:
       requestTimeout: 0s
+  responseOverride:
+    - match:
+        statusCodes:
+          - type: Value
+            value: 502
+          - type: Value
+            value: 503
+      response:
+        contentType: text/html
+        body:
+          type: Inline
+          inline: '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Ooops!</title><style>*{margin:0;padding:0;box-sizing:border-box}body{min-height:100vh;display:flex;align-items:center;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:#0f172a;color:#e2e8f0;padding:1.5rem}.card{text-align:center;max-width:480px;padding:3rem 2rem;background:#1e293b;border-radius:1rem;box-shadow:0 25px 50px -12px rgba(0,0,0,.5)}.icon{font-size:5rem;margin-bottom:1.5rem;line-height:1;animation:float 2s ease-in-out infinite alternate}@keyframes float{from{transform:translateY(0)}to{transform:translateY(-10px)}}h1{font-size:1.75rem;font-weight:700;margin-bottom:.75rem;color:#f8fafc}.subtitle{font-size:1.05rem;color:#94a3b8;line-height:1.6;margin-bottom:2rem}.hint{font-size:.85rem;color:#64748b;border-top:1px solid #334155;padding-top:1.25rem}.retry-btn{display:inline-block;margin-bottom:1.5rem;padding:.6rem 1.75rem;background:#6366f1;color:#fff;border:none;border-radius:.5rem;font-size:.95rem;font-weight:500;cursor:pointer;text-decoration:none;transition:background .2s}.retry-btn:hover{background:#4f46e5}</style></head><body><div class="card"><div class="icon">&#x1f527;</div><h1>Ooops, something is not working as it should</h1><p class="subtitle">The hamsters powering this service took a break.<br>They will be back soon!</p><a class="retry-btn" href="javascript:location.reload()">Try again</a><p class="hint">If this keeps happening, the hamsters might need a pep talk.</p></div></body></html>'
