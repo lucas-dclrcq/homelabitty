@@ -19,7 +19,7 @@ spec:
           app:
             image:
               repository: ghcr.io/oknozor/kazib
-              tag: latest@sha256:706f82f3b35231cf612f17af304eb102cd93894cb789a687f68662a3111cacbc
+              tag: latest@sha256:d6f149c786e25d174a3f680f003428848a8df04be58e11b3dfeccd0febc696d7
             env:
               PORT: &port 8080
               IP: 0.0.0.0
