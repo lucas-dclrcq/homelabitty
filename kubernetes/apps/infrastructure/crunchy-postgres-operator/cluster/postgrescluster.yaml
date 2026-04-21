@@ -322,6 +322,16 @@ spec:
         - "sqqsondages"
       password:
         type: AlphaNumeric
+    - name: "sqqchoixcreneaux"
+      databases:
+        - "sqqchoixcreneaux"
+      password:
+        type: AlphaNumeric
+    - name: "sqqchoixcreneauxstaging"
+      databases:
+        - "sqqchoixcreneauxstaging"
+      password:
+        type: AlphaNumeric
     - name: "homelabmanager"
       databases:
         - "homelabmanager"
