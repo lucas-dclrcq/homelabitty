@@ -22,6 +22,10 @@ spec:
             env:
               QUARKUS_OIDC_AUTH_SERVER_URL: "https://auth.${SQQ_DOMAIN}/realms/sqq"
               QUARKUS_OIDC_CLIENT_ID: choix-creneaux
+              QUARKUS_OIDC_AUTHENTICATION_FORCE_REDIRECT_HTTPS_SCHEME: "true"
+              QUARKUS_HTTP_PROXY_PROXY_ADDRESS_FORWARDING: "true"
+              QUARKUS_HTTP_PROXY_ENABLE_FORWARDED_HOST: "true"
+              QUARKUS_HTTP_PROXY_ENABLE_FORWARDED_PREFIX: "true"
               APP_URL: "https://choix-creneaux.${SQQ_DOMAIN}"
 
             envFrom:

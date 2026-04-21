@@ -13,7 +13,7 @@ resources:
   - ./sqq-vente-groupee/ks.yaml
   - ./sqq-vente-groupee-staging/ks.yaml
   - ./sqq-sondages/ks.yaml
-#  - ./sqq-choix-creneaux/ks.yaml
+  #  - ./sqq-choix-creneaux/ks.yaml
   - ./sqq-choix-creneaux-staging/ks.yaml
   - ./rocket-chat/ks.yaml
   - ./sqq-keycloak/ks.yaml
