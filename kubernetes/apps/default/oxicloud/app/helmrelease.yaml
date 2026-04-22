@@ -17,6 +17,8 @@ spec:
             image:
               repository: docker.io/diocrafts/oxicloud
               tag: "0.5.5"
+            command:
+              - "/usr/local/bin/oxicloud"
             env:
               OXICLOUD_SERVER_HOST: "0.0.0.0"
               OXICLOUD_SERVER_PORT: "8086"
@@ -36,10 +38,9 @@ spec:
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
-        runAsUser: ${APP_UID}
-        runAsGroup: ${APP_GID}
-        fsGroup: ${APP_GID}
-        fsGroupChangePolicy: OnRootMismatch
+        runAsUser: 1001
+        runAsGroup: 1001
+        fsGroup: 1001
 
     service:
       app:
