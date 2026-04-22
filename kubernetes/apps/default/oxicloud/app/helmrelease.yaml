@@ -21,7 +21,7 @@ spec:
               OXICLOUD_SERVER_HOST: "0.0.0.0"
               OXICLOUD_SERVER_PORT: "8086"
               OXICLOUD_STORAGE_PATH: /app/storage
-              OXICLOUD_BASE_URL: "https://oxicloud.${SECRET_DOMAIN}"
+              OXICLOUD_BASE_URL: "https://drive.${SECRET_DOMAIN}"
               MIMALLOC_PURGE_DELAY: "0"
             envFrom:
               - secretRef:
@@ -32,6 +32,14 @@ spec:
                 memory: 128Mi
               limits:
                 memory: 1Gi
+
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: ${APP_UID}
+        runAsGroup: ${APP_GID}
+        fsGroup: ${APP_GID}
+        fsGroupChangePolicy: OnRootMismatch
 
     service:
       app:
