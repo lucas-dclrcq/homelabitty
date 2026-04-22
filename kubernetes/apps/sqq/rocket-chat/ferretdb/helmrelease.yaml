@@ -16,7 +16,7 @@ spec:
           main:
             image:
               repository: docker.io/library/postgres
-              tag: "17"
+              tag: "18"
             env:
               POSTGRES_USER: ferretdb
               POSTGRES_PASSWORD: ferretdb
