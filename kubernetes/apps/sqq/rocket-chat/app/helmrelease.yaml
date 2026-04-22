@@ -30,7 +30,7 @@ spec:
           main:
             image:
               repository: docker.io/rocketchat/rocket.chat
-              tag: 7.13.5
+              tag: 7.13.6
 
             envFrom:
               - secretRef:
