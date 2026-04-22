@@ -15,4 +15,3 @@ resources:
   - ./karma/ks.yaml
   - ./tempo/ks.yaml
   - ./umami/ks.yaml
-  - ./sloth/ks.yaml

@@ -28,4 +28,3 @@ resources:
   - ./bichon/ks.yaml
   - ./the-recipe-db/ks.yaml
   - ./bambuddy/ks.yaml
-  - ./homebox/ks.yaml
