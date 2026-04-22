@@ -32,7 +32,7 @@ spec:
           main:
             image:
               repository: ghcr.io/ferretdb/ferretdb
-              tag: "2.1.0"
+              tag: "2.7.0"
             env:
               FERRETDB_POSTGRESQL_URL: "postgres://ferretdb:ferretdb@rocket-chat-ferretdb-postgres:5432/ferretdb"
               FERRETDB_REPL_SET_NAME: rs0
