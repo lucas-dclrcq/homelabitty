@@ -337,11 +337,6 @@ spec:
         - "homelabmanager"
       password:
         type: AlphaNumeric
-    - name: "oxicloud"
-      databases:
-        - "oxicloud"
-      password:
-        type: AlphaNumeric
   backups:
     pgbackrest:
       configuration:

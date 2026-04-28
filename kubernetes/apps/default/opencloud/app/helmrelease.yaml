@@ -1,0 +1,246 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app opencloud
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  values:
+    controllers:
+      opencloud:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        strategy: Recreate
+        containers:
+          app:
+            image:
+              repository: opencloudeu/opencloud-rolling
+              tag: "6.1.0"
+            command:
+              - /bin/sh
+            args:
+              - -c
+              - "opencloud init || true; opencloud server"
+            env:
+              OC_URL: "https://drive.${SECRET_DOMAIN}"
+              OC_LOG_LEVEL: "info"
+              OC_LOG_COLOR: "false"
+              OC_LOG_PRETTY: "false"
+              OC_INSECURE: "false"
+              PROXY_TLS: "false"
+              PROXY_HTTP_ADDR: "0.0.0.0:9200"
+              PROXY_ENABLE_BASIC_AUTH: "false"
+              IDM_CREATE_DEMO_USERS: "false"
+              FRONTEND_ARCHIVER_MAX_SIZE: "10000000000"
+              FRONTEND_CHECK_FOR_UPDATES: "false"
+              # Expose NATS and gateway gRPC so the collaboration pod can reach them cross-pod
+              NATS_NATS_HOST: "0.0.0.0"
+              GATEWAY_GRPC_ADDR: "0.0.0.0:9142"
+              # OIDC via Authentik; built-in IDM stays as user directory with auto-provisioning
+              PROXY_AUTOPROVISION_ACCOUNTS: "true"
+              PROXY_USER_OIDC_CLAIM: "preferred_username"
+              PROXY_USER_CS3_CLAIM: "username"
+              PROXY_OIDC_REWRITE_WELLKNOWN: "true"
+              PROXY_OIDC_ACCESS_TOKEN_VERIFY_METHOD: "none"
+              PROXY_OIDC_SKIP_VERIFICATION: "false"
+              PROXY_ROLE_ASSIGNMENT_DRIVER: "default"
+              GRAPH_ASSIGN_DEFAULT_USER_ROLE: "true"
+              WEB_OIDC_SCOPE: "openid profile email groups"
+              FRONTEND_APP_HANDLER_SECURE_VIEW_APP_ADDR: "eu.opencloud.api.collaboration"
+              COLLABORA_DOMAIN: "collabora.${SECRET_DOMAIN}"
+            envFrom:
+              - secretRef:
+                  name: opencloud-secret
+            probes:
+              liveness: &ocProbes
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: 9200
+                  initialDelaySeconds: 30
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 5
+              readiness: *ocProbes
+            resources:
+              requests:
+                cpu: 100m
+                memory: 512Mi
+              limits:
+                memory: 4Gi
+      collaboration:
+        containers:
+          app:
+            image:
+              repository: opencloudeu/opencloud-rolling
+              tag: "6.1.0"
+            command:
+              - /bin/sh
+            args:
+              - -c
+              - "opencloud collaboration server"
+            env:
+              COLLABORATION_GRPC_ADDR: "0.0.0.0:9301"
+              COLLABORATION_HTTP_ADDR: "0.0.0.0:9300"
+              MICRO_REGISTRY: "nats-js-kv"
+              MICRO_REGISTRY_ADDRESS: "opencloud.default.svc.cluster.local:9233"
+              COLLABORATION_WOPI_SRC: "https://wopi.${SECRET_DOMAIN}"
+              COLLABORATION_APP_NAME: "CollaboraOnline"
+              COLLABORATION_APP_PRODUCT: "Collabora"
+              COLLABORATION_APP_ADDR: "https://collabora.${SECRET_DOMAIN}"
+              COLLABORATION_APP_ICON: "https://collabora.${SECRET_DOMAIN}/favicon.ico"
+              COLLABORATION_APP_INSECURE: "false"
+              COLLABORATION_CS3API_DATAGATEWAY_INSECURE: "false"
+              COLLABORATION_LOG_LEVEL: "info"
+              OC_URL: "https://drive.${SECRET_DOMAIN}"
+            probes:
+              liveness: &colProbes
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: 9300
+                  initialDelaySeconds: 60
+                  periodSeconds: 30
+              readiness: *colProbes
+            resources:
+              requests:
+                cpu: 50m
+                memory: 128Mi
+              limits:
+                memory: 512Mi
+
+      collabora:
+        containers:
+          app:
+            image:
+              repository: collabora/code
+              tag: "25.04.9.4.1"
+            command:
+              - /bin/bash
+              - -c
+            args:
+              - "coolconfig generate-proof-key && /start-collabora-online.sh"
+            env:
+              aliasgroup1: "https://wopi.${SECRET_DOMAIN}"
+              DONT_GEN_SSL_CERT: "YES"
+              extra_params: >-
+                --o:ssl.enable=false
+                --o:ssl.ssl_verification=true
+                --o:ssl.termination=true
+                --o:welcome.enable=false
+                --o:net.frame_ancestors=drive.${SECRET_DOMAIN}
+                --o:net.lok_allow.host[14]=drive.${SECRET_DOMAIN}
+                --o:home_mode.enable=false
+              username:
+                valueFrom:
+                  secretKeyRef:
+                    name: opencloud-secret
+                    key: COLLABORA_ADMIN_USER
+              password:
+                valueFrom:
+                  secretKeyRef:
+                    name: opencloud-secret
+                    key: COLLABORA_ADMIN_PASSWORD
+            securityContext:
+              capabilities:
+                add:
+                  - SYS_ADMIN
+            probes:
+              liveness: &cbProbes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /hosting/discovery
+                    port: 9980
+                  initialDelaySeconds: 30
+                  periodSeconds: 15
+                  timeoutSeconds: 10
+                  failureThreshold: 5
+              readiness: *cbProbes
+            resources:
+              requests:
+                cpu: 100m
+                memory: 256Mi
+              limits:
+                memory: 2Gi
+
+    service:
+      opencloud:
+        controller: opencloud
+        ports:
+          http:
+            port: 9200
+          nats:
+            port: 9233
+          gateway:
+            port: 9142
+      collaboration:
+        controller: collaboration
+        ports:
+          http:
+            port: 9300
+          grpc:
+            port: 9301
+      collabora:
+        controller: collabora
+        ports:
+          http:
+            port: 9980
+
+    persistence:
+      config:
+        existingClaim: *app
+        advancedMounts:
+          opencloud:
+            app:
+              - path: /etc/opencloud
+          collaboration:
+            app:
+              - path: /etc/opencloud
+      data:
+        type: nfs
+        server: "truenas.${INTERNAL_DOMAIN}"
+        path: /mnt/tank/Apps/opencloud/data
+        advancedMounts:
+          opencloud:
+            app:
+              - path: /var/lib/opencloud
+
+    route:
+      opencloud:
+        hostnames:
+          - "drive.${SECRET_DOMAIN}"
+        parentRefs:
+          - name: external
+            namespace: network
+        rules:
+          - backendRefs:
+              - name: opencloud
+                port: 9200
+      wopi:
+        hostnames:
+          - "wopi.${SECRET_DOMAIN}"
+        parentRefs:
+          - name: external
+            namespace: network
+        rules:
+          - backendRefs:
+              - name: collaboration
+                port: 9300
+      collabora:
+        hostnames:
+          - "collabora.${SECRET_DOMAIN}"
+        parentRefs:
+          - name: external
+            namespace: network
+        rules:
+          - backendRefs:
+              - name: collabora
+                port: 9980

@@ -17,7 +17,7 @@ spec:
           main:
             image:
               repository: ghcr.io/superquinquin-sur-deule/sqq-choix-creneaux
-              tag: latest@sha256:86acc5ce0eb518a3b81beda6e8c02863f43278c0e04a05ba59637fe5cfe6e905
+              tag: latest@sha256:03b6a8138c911258c90acea90dca3799db8f463d18738d5f68722e596783feec
 
             env:
               QUARKUS_OIDC_AUTH_SERVER_URL: "https://auth.${SQQ_DOMAIN}/realms/sqq-staging"

@@ -3,7 +3,7 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app oxicloud
+  name: &app opencloud
   namespace: &namespace default
 spec:
   targetNamespace: *namespace
@@ -13,7 +13,9 @@ spec:
   dependsOn:
     - name: external-secrets-stores
       namespace: external-secrets
-  path: ./kubernetes/apps/default/oxicloud/app
+  components:
+    - ../../../../components/volsync
+  path: ./kubernetes/apps/default/opencloud/app
   prune: true
   sourceRef:
     kind: GitRepository
@@ -24,3 +26,6 @@ spec:
   postBuild:
     substitute:
       APP: *app
+      VOLSYNC_CAPACITY: 2Gi
+      VOLSYNC_ACCESSMODES: ReadWriteMany
+      VOLSYNC_STORAGECLASS: ceph-filesystem

@@ -71,6 +71,18 @@ spec:
       options: "SUPERUSER"
       password:
         type: AlphaNumeric
+    - name: "sqqchoixcreneaux"
+      databases:
+        - "sqqchoixcreneaux"
+      options: "SUPERUSER"
+      password:
+        type: AlphaNumeric
+    - name: "sqqchoixcreneauxstaging"
+      databases:
+        - "sqqchoixcreneauxstaging"
+      options: "SUPERUSER"
+      password:
+        type: AlphaNumeric
   backups:
     pgbackrest:
       global:
