@@ -352,8 +352,14 @@ spec:
         repo1-retention-full: "30" # days
         repo1-retention-full-type: "time"
         repo1-s3-uri-style: path
+        # NFS (TrueNAS)
+        repo2-block: "y"
+        repo2-bundle: "y"
+        repo2-path: /pgbackrest/repo2/crunchy-pgo
+        repo2-retention-full: "30" # days
+        repo2-retention-full-type: "time"
       manual:
-        repoName: repo1
+        repoName: repo2
         options:
           - --type=full
       metadata:
@@ -369,6 +375,22 @@ spec:
             full: "0 1 * * 0" # Sunday at 01:00
             differential: "0 1 * * 1-6" # Mon-Sat at 01:00
             incremental: "0 2-23 * * *" # Every hour except 01:00
+        - name: repo2 # NFS (TrueNAS)
+          volume:
+            volumeClaimSpec:
+              storageClassName: ""
+              accessModes:
+                - ReadWriteOnce
+              resources:
+                requests:
+                  storage: 100Gi
+              selector:
+                matchLabels:
+                  app.kubernetes.io/component: postgres-16-pgbackrest-repo
+          schedules:
+            full: "30 1 * * 0" # Sunday at 01:30
+            differential: "30 1 * * 1-6" # Mon-Sat at 01:30
+            incremental: "30 2-23 * * *" # Every hour except 01:30
 
   monitoring:
     pgmonitor:
