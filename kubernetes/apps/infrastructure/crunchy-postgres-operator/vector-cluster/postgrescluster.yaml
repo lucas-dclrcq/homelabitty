@@ -120,6 +120,13 @@ spec:
         repo1-retention-diff: "30"
         repo1-path: "/crunchy-pgo-vector"
         repo1-s3-uri-style: path
+        # NFS (TrueNAS)
+        repo2-bundle: "y"
+        repo2-block: "y"
+        repo2-retention-full-type: time
+        repo2-retention-full: "14"
+        repo2-retention-diff: "30"
+        repo2-path: /pgbackrest/repo2/crunchy-pgo-vector
       manual:
         repoName: repo1
         options:
@@ -136,6 +143,21 @@ spec:
           schedules:
             full: "0 1 * * 0" # Sunday at 01:00
             differential: "0 1 * * 1-6" # Mon-Sat at 01:00
+        - name: repo2 # NFS (TrueNAS)
+          volume:
+            volumeClaimSpec:
+              storageClassName: ""
+              accessModes:
+                - ReadWriteOnce
+              resources:
+                requests:
+                  storage: 50Gi
+              selector:
+                matchLabels:
+                  app.kubernetes.io/component: postgres-16-vector-pgbackrest-repo
+          schedules:
+            full: "30 1 * * 0" # Sunday at 01:30
+            differential: "30 1 * * 1-6" # Mon-Sat at 01:30
 
   monitoring:
     pgmonitor:
