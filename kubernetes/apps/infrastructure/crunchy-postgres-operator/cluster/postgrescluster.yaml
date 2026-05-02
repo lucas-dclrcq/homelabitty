@@ -11,29 +11,6 @@ metadata:
 spec:
   postgresVersion: 16
 
-  dataSource:
-    pgbackrest:
-      stanza: db
-      configuration:
-        - secret:
-            name: crunchy-postgres-secret
-      global:
-        compress-type: "bz2"
-        compress-level: "9"
-        # Minio
-        repo1-block: "y"
-        repo1-bundle: "y"
-        repo1-path: /crunchy-pgo
-        repo1-retention-full: "30" # days
-        repo1-retention-full-type: "time"
-        repo1-s3-uri-style: path
-      repo:
-        name: repo1
-        s3:
-          bucket: "postgres-backup"
-          endpoint: "s3.${SECRET_DOMAIN}"
-          region: "us-east-1"
-
   service:
     type: LoadBalancer
     metadata:
@@ -342,40 +319,23 @@ spec:
       configuration:
         - secret:
             name: crunchy-postgres-secret
-      global: &backupFlag
+      global:
         compress-type: "bz2"
         compress-level: "9"
-        # Minio
         repo1-block: "y"
         repo1-bundle: "y"
-        repo1-path: /crunchy-pgo
+        repo1-path: /pgbackrest/repo1/crunchy-pgo
         repo1-retention-full: "30" # days
         repo1-retention-full-type: "time"
-        repo1-s3-uri-style: path
-        # NFS (TrueNAS)
-        repo2-block: "y"
-        repo2-bundle: "y"
-        repo2-path: /pgbackrest/repo2/crunchy-pgo
-        repo2-retention-full: "30" # days
-        repo2-retention-full-type: "time"
       manual:
-        repoName: repo2
+        repoName: repo1
         options:
           - --type=full
       metadata:
         labels:
           app.kubernetes.io/name: crunchy-postgres-backup
       repos:
-        - name: repo1 # Minio
-          s3:
-            bucket: "postgres-16-backup"
-            endpoint: "s3.${SECRET_DOMAIN}"
-            region: "us-east-1"
-          schedules:
-            full: "0 1 * * 0" # Sunday at 01:00
-            differential: "0 1 * * 1-6" # Mon-Sat at 01:00
-            incremental: "0 2-23 * * *" # Every hour except 01:00
-        - name: repo2 # NFS (TrueNAS)
+        - name: repo1 # NFS (TrueNAS)
           volume:
             volumeClaimSpec:
               storageClassName: ""

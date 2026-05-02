@@ -24,29 +24,6 @@ spec:
   postgresVersion: 16
   image: ghcr.io/zednotdead/cdpgvectorchord:16-0.4.3@sha256:a7d80906b9c292608c9d9e3a09e46f2f511bf2d07f8087d07dc931bd19001a04
 
-  dataSource:
-    pgbackrest:
-      stanza: db
-      configuration:
-        - secret:
-            name: crunchy-postgres-secret
-      global:
-        compress-type: "bz2"
-        compress-level: "9"
-        # Minio
-        repo1-block: "y"
-        repo1-bundle: "y"
-        repo1-path: /crunchy-pgo-vector
-        repo1-retention-full: "30" # days
-        repo1-retention-full-type: "time"
-        repo1-s3-uri-style: path
-      repo:
-        name: repo1
-        s3:
-          bucket: "postgres-vector-backup"
-          endpoint: "s3.${SECRET_DOMAIN}"
-          region: "us-east-1"
-
   service:
     type: LoadBalancer
     metadata:
@@ -122,32 +99,16 @@ spec:
         repo1-retention-full-type: time
         repo1-retention-full: "14"
         repo1-retention-diff: "30"
-        repo1-path: "/crunchy-pgo-vector"
-        repo1-s3-uri-style: path
-        # NFS (TrueNAS)
-        repo2-bundle: "y"
-        repo2-block: "y"
-        repo2-retention-full-type: time
-        repo2-retention-full: "14"
-        repo2-retention-diff: "30"
-        repo2-path: /pgbackrest/repo2/crunchy-pgo-vector
+        repo1-path: /pgbackrest/repo1/crunchy-pgo-vector
       manual:
-        repoName: repo2
+        repoName: repo1
         options:
           - --type=full
       metadata:
         labels:
           app.kubernetes.io/name: crunchy-postgres-vector-backup
       repos:
-        - name: repo1 # Minio
-          s3:
-            bucket: "postgres-16-vector-backup"
-            endpoint: "s3.${SECRET_DOMAIN}"
-            region: "us-east-1"
-          schedules:
-            full: "0 1 * * 0" # Sunday at 01:00
-            differential: "0 1 * * 1-6" # Mon-Sat at 01:00
-        - name: repo2 # NFS (TrueNAS)
+        - name: repo1 # NFS (TrueNAS)
           volume:
             volumeClaimSpec:
               storageClassName: ""
