@@ -128,7 +128,7 @@ spec:
         repo2-retention-diff: "30"
         repo2-path: /pgbackrest/repo2/crunchy-pgo-vector
       manual:
-        repoName: repo1
+        repoName: repo2
         options:
           - --type=full
       metadata:
