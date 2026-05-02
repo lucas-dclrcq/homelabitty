@@ -19,6 +19,7 @@ spec:
     - --cluster_mode=emulated
     - --lock_on_hashtags
     - --default_lua_flags=${DRAGONFLY_ARGS_DEFAULT_LUA_FLAGS:=}
+    - --primary_port_http_enabled=true
   resources:
     requests:
       cpu: ${DRAGONFLY_REQUESTS_CPU:=100m}
