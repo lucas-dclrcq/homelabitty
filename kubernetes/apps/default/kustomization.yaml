@@ -15,7 +15,6 @@ resources:
   - ./wallabag/ks.yaml
   - ./immich/ks.yaml
   - ./homelab-manager/ks.yaml
-  - ./nextcloud/ks.yaml
   - ./sftpgo/ks.yaml
   - ./thelounge/ks.yaml
   - ./outline/ks.yaml
