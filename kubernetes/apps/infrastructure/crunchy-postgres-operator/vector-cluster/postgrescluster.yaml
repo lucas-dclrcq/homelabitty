@@ -104,6 +104,10 @@ spec:
 
   backups:
     pgbackrest:
+      # Pin to match pgbackrest 2.54.2 bundled in the vchord postgres image
+      # (cdpgvectorchord is based on crunchy-postgres ubi9-16.8-2516, PGO 5.8.2).
+      # repo-host TLS protocol requires identical pgbackrest versions on both ends.
+      image: registry.developers.crunchydata.com/crunchydata/crunchy-pgbackrest:ubi9-2.54.2-2516
       configuration:
         - secret:
             name: crunchy-pgo-vector-secret
