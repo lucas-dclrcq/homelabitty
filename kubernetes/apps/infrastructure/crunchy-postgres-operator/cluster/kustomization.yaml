@@ -7,3 +7,4 @@ resources:
   - ./persistentvolume.yaml
   - ./postgrescluster.yaml
   - ./podmonitor.yaml
+  - ./pgupgrade.yaml
