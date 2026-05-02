@@ -22,7 +22,7 @@ metadata:
       ]
 spec:
   postgresVersion: 16
-  image: ghcr.io/zednotdead/cdpgvectorchord:16-0.3.0@sha256:99ffcbc9e887fa4a981f61ff68dcf59bf8bf611f688217ed5f8d0ba07a67eff1
+  image: ghcr.io/zednotdead/cdpgvectorchord:16-0.4.3@sha256:a7d80906b9c292608c9d9e3a09e46f2f511bf2d07f8087d07dc931bd19001a04
 
   dataSource:
     pgbackrest:
