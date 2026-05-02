@@ -8,5 +8,3 @@ resources:
   - ./emqx/ks.yaml
   - ./dragonfly/ks.yaml
   - ./smtp-relay/ks.yaml
-  - ./minio/ks.yaml
-  - ./garage/ks.yaml
