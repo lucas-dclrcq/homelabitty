@@ -1,5 +1,5 @@
 ---
-piVersion: postgresql.cnpg.io/v1
+apiVersion: postgresql.cnpg.io/v1
 kind: ClusterImageCatalog
 metadata:
   name: postgresql-global

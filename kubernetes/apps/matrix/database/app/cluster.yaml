@@ -1,0 +1,18 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: matrix
+spec:
+  instances: 3
+  enableSuperuserAccess: true
+  imageCatalogRef:
+    apiGroup: postgresql.cnpg.io
+    kind: ClusterImageCatalog
+    name: postgresql-global
+    major: 18
+  storage:
+    storageClass: openebs-hostpath
+    size: 20Gi
+  monitoring:
+    enablePodMonitor: true
