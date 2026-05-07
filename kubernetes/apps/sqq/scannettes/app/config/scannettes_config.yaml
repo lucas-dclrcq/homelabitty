@@ -1,0 +1,85 @@
+cannettes:
+  app:
+    address: "https://scannettes.superquinquin-sur-deule.org"
+
+  flask:
+    static_url: "/static"
+    secret_key: ${FLASK_SECRET_KEY}
+    application_root: "/"
+
+  socketio:
+    async_mode: "gevent_uwsgi"
+    cors_allowed_origins: "*"
+
+  odoo:
+    odoo_create_new_purchase_line: True
+    odoo_auto_purchase_validation: False
+    delta_search_purchase: [0, 0, 0, 0]
+    build_update_time: [23, 59, 50]
+
+  authenticator:
+    users_path: "scannettes_configs/secrets.yaml"
+    secret_key: ${AUTH_SECRET_KEY}
+    salt: ${AUTH_SALT}
+    max_age: 300
+
+  styles:
+    colors:
+      primary: "#fefa85"
+      secondary: "#3C312E"
+      ternary: "#FAEFEF"
+      new_items: "#FD8789"
+      new_items_if_exist: "#B5B3D0"
+      mod_items: "#FDC087"
+      normal_items: "#CFF2E8"
+
+  camera:
+    enable_video: True
+    enable_audio: False
+    ideal_width: 1920
+    ideal_height: 1080
+    ideal_mode: "environment"
+    frame_width: 300
+    frame_height: 200
+    fps: 120
+    pkg_frequency: 2
+
+  logger:
+    rotating: True
+    filename: "./log/log.log"
+    error_filename: "./log/error.log"
+    format: "[%(asctime)s][%(name)s][%(process)d][%(levelname)s] | %(message)s"
+    level: "INFO"
+    size: 5242880
+    backup_count: 5
+    logger_write_error: False
+
+  backup:
+    build_on_backup: False
+    filename: "./volume/backup.pickle"
+    frequency: [0, 3, 0, 0]
+
+  options:
+    activate_room_password: False
+
+production:
+  env: "production"
+  flask:
+    address: ${ADDRESS}
+    host: ${HOST}
+    port: ${PORT}
+    debug: False
+    testing: False
+    templates_auto_reload: False
+
+  socketio:
+    engineio_logger: False
+    logger: True
+
+  odoo:
+    erp:
+      url: ${ERP_URL}
+      db: ${ERP_DB}
+      username: ${ERP_USERNAME}
+      password: ${ERP_PASSWORD}
+      verbose: False

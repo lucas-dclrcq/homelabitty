@@ -16,3 +16,4 @@ resources:
   - ./sqq-choix-creneaux/ks.yaml
   - ./sqq-choix-creneaux-staging/ks.yaml
   - ./sqq-keycloak/ks.yaml
+  - ./scannettes/ks.yaml

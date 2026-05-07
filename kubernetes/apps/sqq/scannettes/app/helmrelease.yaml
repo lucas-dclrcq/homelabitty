@@ -1,0 +1,89 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app scannettes
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  values:
+    defaultPodOptions:
+      securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+
+    controllers:
+      main:
+        replicas: 1
+        strategy: Recreate
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          main:
+            image:
+              repository: ghcr.io/superquinquin-sur-deule/scannettes
+              tag: latest
+
+            env:
+              ENV: production
+              CONFIG_FILEPATH: /application/scannettes_configs/scannettes_config.yaml
+              ADDRESS: "https://scannettes.${SQQ_DOMAIN}"
+              HOST: "https://scannettes.${SQQ_DOMAIN}"
+              PORT: "8000"
+
+            envFrom:
+              - secretRef:
+                  name: scannettes-secret
+
+            resources:
+              requests:
+                cpu: 50m
+                memory: 256Mi
+              limits:
+                memory: 1Gi
+
+    service:
+      main:
+        controller: main
+        ports:
+          http:
+            port: &port 8000
+
+    route:
+      app:
+        hostnames:
+          - "scannettes.${SQQ_DOMAIN}"
+        parentRefs:
+          - name: external
+            namespace: network
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
+
+    persistence:
+      config-yaml:
+        type: configMap
+        name: scannettes-config
+        globalMounts:
+          - path: /application/scannettes_configs/scannettes_config.yaml
+            subPath: scannettes_config.yaml
+            readOnly: true
+      secrets-yaml:
+        type: secret
+        name: scannettes-secret
+        globalMounts:
+          - path: /application/scannettes_configs/secrets.yaml
+            subPath: secrets.yaml
+            readOnly: true
+      log:
+        type: emptyDir
+        globalMounts:
+          - path: /application/log
+      volume:
+        existingClaim: *app
+        globalMounts:
+          - path: /application/volume
