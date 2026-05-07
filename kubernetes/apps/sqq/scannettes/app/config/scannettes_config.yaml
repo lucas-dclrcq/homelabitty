@@ -14,7 +14,7 @@ cannettes:
   odoo:
     odoo_create_new_purchase_line: True
     odoo_auto_purchase_validation: False
-    delta_search_purchase: [0, 0, 0, 0]
+    delta_search_purchase: [0, 0, 0, 30]
     build_update_time: [23, 59, 50]
 
   authenticator:
