@@ -36,7 +36,7 @@ spec:
 
             envFrom:
               - secretRef:
-                  name: scannettes-secret
+                  name: scannettes-staging-secret
 
             resources:
               requests:

@@ -1,7 +1,7 @@
 ---
 cannettes:
   app:
-    address: "https://scannettes.superquinquin-sur-deule.org"
+    address: "https://scannettes-staging.superquinquin-sur-deule.org"
 
   flask:
     static_url: "/static"
