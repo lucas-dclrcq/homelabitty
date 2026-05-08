@@ -13,7 +13,6 @@ spec:
     staticConfig:
       static:
         - "truenas.${INTERNAL_DOMAIN}."
-        - "nas.${INTERNAL_DOMAIN}."
         - "ups.${INTERNAL_DOMAIN}."
         - "robovac.${INTERNAL_DOMAIN}."
         # Nodes
