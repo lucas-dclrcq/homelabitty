@@ -19,6 +19,8 @@ app:
 
   odoo:
     erp:
+      login: ${ERP_LOGIN}
+      password: ${ERP_PASSWORD}
       host: ${ERP_URL}
       database: ${ERP_DB}
       verbose: False
@@ -75,37 +77,19 @@ app:
         formatter: simple
         stream: ext://sys.stderr
 
-      error_file:
-        class: logging.FileHandler
-        level: ERROR
-        formatter: simple
-        filename: ./volume/errors.log
-
-      access_file:
-        class: logging.FileHandler
-        level: INFO
-        formatter: simple
-        filename: ./volume/log.log
-
     loggers:
       endpointAccess:
         level: INFO
         handlers:
           - stream
-          - error_file
-          - access_file
         propagate: False
       scheduler:
         level: INFO
         handlers:
           - stream
-          - error_file
-          - access_file
         propagate: False
       odoo:
         level: INFO
         handlers:
           - stream
-          - error_file
-          - access_file
         propagate: False
