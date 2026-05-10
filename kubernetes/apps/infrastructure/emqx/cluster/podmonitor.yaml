@@ -14,6 +14,9 @@ spec:
       path: /api/v5/prometheus/stats
       relabelings:
         - action: replace
+          replacement: emqx
+          targetLabel: job
+        - action: replace
           # user-defined cluster name, requires unique
           replacement: emqx5
           targetLabel: cluster
