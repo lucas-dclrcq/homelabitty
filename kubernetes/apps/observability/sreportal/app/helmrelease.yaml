@@ -1,0 +1,79 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app sreportal
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  values:
+    config:
+      configYaml: |-
+        sources:
+          service:
+            enabled: true
+            namespace: ""
+            annotationFilter: ""
+            serviceTypeFilter:
+              - LoadBalancer
+            publishInternal: false
+            publishHostIP: false
+          ingress:
+            enabled: false
+          dnsEndpoint:
+            enabled: false
+          istioGateway:
+            enabled: false
+          istioVirtualService:
+            enabled: false
+          gatewayHTTPRoute:
+            enabled: true
+            namespace: ""
+          gatewayGRPCRoute:
+            enabled: true
+            namespace: ""
+          gatewayTLSRoute:
+            enabled: true
+          gatewayTCPRoute:
+            enabled: true
+          gatewayUDPRoute:
+            enabled: true
+          priority:
+            - gateway-httproute
+            - gateway-grpcroute
+            - service
+        groupMapping:
+          defaultGroup: "Services"
+        reconciliation:
+          interval: 5m
+          retryOnError: 30s
+          disableDNSCheck: false
+        auth:
+          apiKey:
+            enabled: false
+          jwt:
+            enabled: false
+
+    controllerManager:
+      replicas: 1
+      manager:
+        args:
+          - "--metrics-bind-address=:8443"
+          - "--leader-elect"
+          - "--health-probe-bind-address=:9090"
+          - "--webhook-cert-path=/tmp/k8s-webhook-server/serving-certs"
+          - "--enable-mcp"
+        image:
+          repository: ghcr.io/golgoth31/sreportal
+          tag: 1.34.2
+        resources:
+          requests:
+            cpu: 10m
+            memory: 64Mi
+          limits:
+            memory: 256Mi
+
+    kubernetesClusterDomain: cluster.local
