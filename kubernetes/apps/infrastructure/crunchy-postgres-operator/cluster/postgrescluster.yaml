@@ -314,6 +314,11 @@ spec:
         - "homelabmanager"
       password:
         type: AlphaNumeric
+    - name: "forgejo"
+      databases:
+        - "forgejo"
+      password:
+        type: AlphaNumeric
   backups:
     pgbackrest:
       configuration:
