@@ -67,3 +67,17 @@ spec:
         certificateRefs:
           - kind: Secret
             name: sqq-production-tls
+    - name: mqtt-tls
+      protocol: TLS
+      port: 8883
+      hostname: "mqtt.${SECRET_DOMAIN}"
+      allowedRoutes:
+        kinds:
+          - kind: TCPRoute
+        namespaces:
+          from: All
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: "${SECRET_DOMAIN/./-}-production-tls"
