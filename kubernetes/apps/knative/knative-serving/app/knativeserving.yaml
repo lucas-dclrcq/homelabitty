@@ -1,0 +1,31 @@
+---
+apiVersion: operator.knative.dev/v1beta1
+kind: KnativeServing
+metadata:
+  name: knative-serving
+spec:
+  ingress:
+    gateway-api:
+      enabled: true
+  config:
+    network:
+      ingress-class: gateway-api.ingress.networking.knative.dev
+      # Wildcard cert on the external gateway is *.${SECRET_DOMAIN}, which only
+      # matches one label — collapse name + namespace into a single label so the
+      # default route hostnames stay under the wildcard.
+      domain-template: "{{.Name}}-{{.Namespace}}.{{.Domain}}"
+    domain:
+      ${SECRET_DOMAIN}: ""
+    gateway:
+      external-gateways: |
+        - class: envoy
+          gateway: network/external
+          service: network/external
+          supported-features:
+            - HTTPRouteRequestTimeout
+      local-gateways: |
+        - class: envoy
+          gateway: network/internal
+          service: network/internal
+          supported-features:
+            - HTTPRouteRequestTimeout
