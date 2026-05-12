@@ -17,5 +17,11 @@ spec:
     - backendRefs:
         - name: forgejo-http
           port: 3000
+      filters:
+        - type: RequestHeaderModifier
+          requestHeaderModifier:
+            set:
+              - name: X-Real-Ip
+                value: "%DOWNSTREAM_REMOTE_ADDRESS_WITHOUT_PORT%"
       timeouts:
         request: 300s
