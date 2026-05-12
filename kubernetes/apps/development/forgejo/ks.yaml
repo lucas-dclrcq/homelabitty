@@ -4,7 +4,7 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app forgejo
-  namespace: &namespace default
+  namespace: &namespace development
 spec:
   targetNamespace: *namespace
   commonMetadata:
@@ -18,7 +18,7 @@ spec:
       namespace: external-secrets
     - name: dragonfly
       namespace: flux-system
-  path: ./kubernetes/apps/default/forgejo/app
+  path: ./kubernetes/apps/development/forgejo/app
   prune: true
   sourceRef:
     kind: GitRepository

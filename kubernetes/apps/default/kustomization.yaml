@@ -28,4 +28,3 @@ resources:
   - ./the-recipe-db/ks.yaml
   - ./bambuddy/ks.yaml
   #  - ./opencloud/ks.yaml
-  - ./forgejo/ks.yaml
