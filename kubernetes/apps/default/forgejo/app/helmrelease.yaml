@@ -18,7 +18,7 @@ spec:
           app:
             image:
               repository: codeberg.org/forgejo/forgejo
-              tag: 11.0.4
+              tag: 11.0.14
 
             envFrom:
               - secretRef:
