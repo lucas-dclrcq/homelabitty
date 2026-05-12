@@ -27,5 +27,5 @@ resources:
   - ./bichon/ks.yaml
   - ./the-recipe-db/ks.yaml
   - ./bambuddy/ks.yaml
-#  - ./opencloud/ks.yaml
+  #  - ./opencloud/ks.yaml
   - ./forgejo/ks.yaml
