@@ -2,10 +2,9 @@
 # yaml-language-server: $schema=https://json.schemastore.org/kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: development
-components:
-  - ../../components/common
 resources:
-  - ./forgejo/ks.yaml
-  - ./forgejo-runner/ks.yaml
-  - ./harbor/ks.yaml
+  - ./helmrepository.yaml
+  - ./externalsecret.yaml
+  - ./persistentvolume.yaml
+  - ./helmrelease.yaml
+  - ./httproute.yaml

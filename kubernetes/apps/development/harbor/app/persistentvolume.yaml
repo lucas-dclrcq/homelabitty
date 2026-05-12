@@ -1,0 +1,37 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: harbor-registry
+  labels:
+    app.kubernetes.io/component: harbor-registry
+spec:
+  capacity:
+    storage: 500Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ""
+  mountOptions:
+    - nfsvers=4.1
+    - nconnect=8
+    - hard
+  nfs:
+    server: "truenas.${INTERNAL_DOMAIN}"
+    path: /mnt/tank/Apps/harbor/registry
+  claimRef:
+    namespace: development
+    name: harbor-registry
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: harbor-registry
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 500Gi
+  storageClassName: ""
+  volumeName: harbor-registry

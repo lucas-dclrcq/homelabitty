@@ -1,0 +1,87 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app harbor
+spec:
+  interval: 30m
+  chart:
+    spec:
+      # renovate: registryUrl=https://helm.goharbor.io
+      chart: harbor
+      version: 1.18.0
+      sourceRef:
+        kind: HelmRepository
+        name: goharbor
+      interval: 30m
+  values:
+    fullnameOverride: *app
+
+    expose:
+      type: clusterIP
+      tls:
+        enabled: false
+      clusterIP:
+        name: harbor
+
+    externalURL: "https://harbor.${LIMITED_DOMAIN}"
+
+    existingSecretAdminPassword: harbor-secret
+    existingSecretAdminPasswordKey: HARBOR_ADMIN_PASSWORD
+    existingSecretSecretKey: harbor-secret
+
+    persistence:
+      enabled: true
+      resourcePolicy: keep
+      persistentVolumeClaim:
+        registry:
+          existingClaim: harbor-registry
+          accessMode: ReadWriteMany
+        jobservice:
+          jobLog:
+            size: 2Gi
+            accessMode: ReadWriteOnce
+        database:
+          size: 5Gi
+          accessMode: ReadWriteOnce
+        redis:
+          size: 1Gi
+          accessMode: ReadWriteOnce
+        trivy:
+          size: 10Gi
+          accessMode: ReadWriteOnce
+      imageChartStorage:
+        type: filesystem
+        filesystem:
+          rootdirectory: /storage
+
+    database:
+      type: internal
+
+    redis:
+      type: internal
+
+    trivy:
+      enabled: true
+
+    notary:
+      enabled: false
+
+    metrics:
+      enabled: true
+
+    portal:
+      replicas: 1
+
+    core:
+      replicas: 1
+
+    jobservice:
+      replicas: 1
+
+    registry:
+      replicas: 1
+
+    updateStrategy:
+      type: Recreate
