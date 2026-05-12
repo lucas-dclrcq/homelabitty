@@ -29,9 +29,8 @@ spec:
               FORGEJO__server__ROOT_URL: "https://git.${SECRET_DOMAIN}"
               FORGEJO__server__HTTP_PORT: &http_port 3000
               FORGEJO__server__SSH_DOMAIN: "git.${SECRET_DOMAIN}"
-              FORGEJO__server__SSH_PORT: 22
-              FORGEJO__server__SSH_LISTEN_PORT: &ssh_port 22
-              FORGEJO__server__START_SSH_SERVER: "true"
+              FORGEJO__server__SSH_PORT: &ssh_port 22
+              FORGEJO__server__START_SSH_SERVER: "false"
               FORGEJO__server__LANDING_PAGE: login
               FORGEJO__service__DISABLE_REGISTRATION: "false"
               FORGEJO__service__REQUIRE_SIGNIN_VIEW: "true"
