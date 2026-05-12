@@ -5,6 +5,6 @@ kind: Kustomization
 resources:
   - ./cluster.yaml
   - ./httproute.yaml
-  - ./tlsroute.yaml
+  - ./tcproute.yaml
   - ./podmonitor.yaml
   - ./grafanadashboard.yaml

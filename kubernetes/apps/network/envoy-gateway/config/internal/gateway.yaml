@@ -31,14 +31,3 @@ spec:
         certificateRefs:
           - kind: Secret
             name: "${LIMITED_DOMAIN/./-}-production-tls"
-    - name: mqtt-tls
-      protocol: TLS
-      port: 8883
-      hostname: "mqtt.${LIMITED_DOMAIN}"
-      allowedRoutes:
-        kinds:
-          - kind: TLSRoute
-        namespaces:
-          from: All
-      tls:
-        mode: Passthrough
