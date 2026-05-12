@@ -33,7 +33,7 @@ spec:
               FORGEJO__server__SSH_LISTEN_PORT: &ssh_port 22
               FORGEJO__server__START_SSH_SERVER: "true"
               FORGEJO__server__LANDING_PAGE: login
-              FORGEJO__service__DISABLE_REGISTRATION: "true"
+              FORGEJO__service__DISABLE_REGISTRATION: "false"
               FORGEJO__service__REQUIRE_SIGNIN_VIEW: "true"
               FORGEJO__service__ENABLE_NOTIFY_MAIL: "true"
               FORGEJO__mailer__ENABLED: "true"
