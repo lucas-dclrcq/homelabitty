@@ -47,3 +47,4 @@ resources:
   - ./kedacore.yaml
   - ./flagsmith.yaml
   - ./sloth.yaml
+  - ./knative.yaml
