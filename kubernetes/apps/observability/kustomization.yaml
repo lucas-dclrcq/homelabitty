@@ -13,6 +13,6 @@ resources:
   - ./keda/ks.yaml
   - ./silence-operator/ks.yaml
   - ./karma/ks.yaml
-  #  - ./sreportal/ks.yaml
+  - ./sreportal/ks.yaml
   - ./tempo/ks.yaml
   - ./umami/ks.yaml
