@@ -119,7 +119,7 @@ spec:
             namespace: network
         rules:
           - backendRefs:
-              - name: *app
+              - name: forgejo-app
                 port: *http_port
 
     persistence:
