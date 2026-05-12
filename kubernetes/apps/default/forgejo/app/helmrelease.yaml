@@ -1,129 +1,117 @@
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: &app forgejo
 spec:
-  interval: 1h
+  interval: 30m
   chartRef:
     kind: OCIRepository
     name: *app
   values:
-    controllers:
-      forgejo:
-        annotations:
-          reloader.stakater.com/auto: "true"
-        containers:
-          app:
-            image:
-              repository: codeberg.org/forgejo/forgejo
-              tag: 11.0.4
+    image:
+      rootless: true
+      registry: code.forgejo.org
+      repository: forgejo/forgejo
+      tag: 11.0.4
 
-            envFrom:
-              - secretRef:
-                  name: forgejo-secret
-
-            env:
-              FORGEJO__server__DOMAIN: "git.${SECRET_DOMAIN}"
-              FORGEJO__server__ROOT_URL: "https://git.${SECRET_DOMAIN}"
-              FORGEJO__server__HTTP_PORT: &http_port 3000
-              FORGEJO__server__SSH_DOMAIN: "git.${SECRET_DOMAIN}"
-              FORGEJO__server__SSH_PORT: &ssh_port 22
-              FORGEJO__server__START_SSH_SERVER: "false"
-              FORGEJO__server__LANDING_PAGE: login
-              FORGEJO__service__DISABLE_REGISTRATION: "false"
-              FORGEJO__service__REQUIRE_SIGNIN_VIEW: "true"
-              FORGEJO__service__ENABLE_NOTIFY_MAIL: "true"
-              FORGEJO__mailer__ENABLED: "true"
-              FORGEJO__mailer__PROTOCOL: smtp
-              FORGEJO__mailer__SMTP_ADDR: smtp-relay.infrastructure.svc.cluster.local
-              FORGEJO__mailer__SMTP_PORT: "2525"
-              FORGEJO__mailer__FROM: "git@${SECRET_DOMAIN}"
-              FORGEJO__metrics__ENABLED: "true"
-              FORGEJO__log__LEVEL: warn
-              FORGEJO__security__INSTALL_LOCK: "true"
-              USER_UID: "${APP_UID}"
-              USER_GID: "${APP_GID}"
-              TZ: "${TIMEZONE}"
-
-            probes:
-              liveness:
-                enabled: true
-                custom: true
-                spec:
-                  httpGet:
-                    path: /api/healthz
-                    port: *http_port
-                  initialDelaySeconds: 30
-                  periodSeconds: 10
-                  timeoutSeconds: 3
-                  failureThreshold: 5
-              readiness:
-                enabled: true
-                custom: true
-                spec:
-                  httpGet:
-                    path: /api/healthz
-                    port: *http_port
-                  initialDelaySeconds: 10
-                  periodSeconds: 10
-                  timeoutSeconds: 3
-                  failureThreshold: 5
-
-            resources:
-              requests:
-                cpu: 25m
-                memory: 256Mi
-              limits:
-                memory: 2Gi
+    persistence:
+      create: false
+      claimName: *app
 
     service:
-      app:
-        controller: *app
-        ports:
-          http:
-            port: *http_port
       ssh:
-        controller: *app
         type: LoadBalancer
+        port: &sshPort 22
         loadBalancerIP: "${LB_IP_FORGEJO_SSH}"
         externalTrafficPolicy: Local
         annotations:
           external-dns.alpha.kubernetes.io/hostname: "git.${LIMITED_DOMAIN}"
-        ports:
-          ssh:
-            port: *ssh_port
-            targetPort: *ssh_port
-            protocol: TCP
 
-    serviceMonitor:
-      app:
-        serviceName: forgejo
-        endpoints:
-          - port: http
-            scheme: http
-            path: /metrics
-            interval: 1m
-            scrapeTimeout: 10s
+    httpRoute:
+      enabled: false
 
-    route:
-      app:
-        annotations:
-          gatus.home-operations.com/endpoint: |-
-            group: Misc
-        hostnames:
-          - "git.${SECRET_DOMAIN}"
-        parentRefs:
-          - name: external
-            namespace: network
-        rules:
-          - backendRefs:
-              - name: forgejo-app
-                port: *http_port
+    tcpRoute:
+      enabled: false
 
-    persistence:
-      data:
-        existingClaim: *app
-        globalMounts:
-          - path: /data
+    gitea:
+      admin:
+        username: ""
+      additionalConfigFromEnvs:
+        - name: FORGEJO__database__PASSWD
+          valueFrom:
+            secretKeyRef:
+              name: forgejo-secret
+              key: password
+      config:
+        database:
+          DB_TYPE: postgres
+          HOST: postgres-16-primary.infrastructure.svc.cluster.local:5432
+          NAME: forgejo
+          USER: forgejo
+          SSL_MODE: disable
+        cache:
+          ENABLED: true
+          ADAPTER: redis
+          HOST: redis://forgejo-dragonfly:6379?pool_size=100&idle_timeout=180s
+        queue:
+          TYPE: redis
+          CONN_STR: redis://forgejo-dragonfly:6379?pool_size=100&idle_timeout=180s
+        session:
+          PROVIDER: redis
+          PROVIDER_CONFIG: redis://forgejo-dragonfly:6379?pool_size=100&idle_timeout=180s
+          SESSION_LIFE_TIME: "1209600"
+        server:
+          DOMAIN: "git.${SECRET_DOMAIN}"
+          ROOT_URL: "https://git.${SECRET_DOMAIN}"
+          SSH_DOMAIN: "git.${SECRET_DOMAIN}"
+          SSH_PORT: *sshPort
+          APP_DATA_PATH: /data/gitea
+          LANDING_PAGE: login
+        repository:
+          DEFAULT_REPO_UNITS: repo.code,repo.releases,repo.issues,repo.pulls,repo.actions
+          DISABLED_REPO_UNITS: repo.ext_wiki,repo.ext_issues
+          ROOT: /data/git/repositories
+        repository.pull-request:
+          DEFAULT_MERGE_STYLE: squash
+        lfs:
+          PATH: /data/git/lfs
+        indexer:
+          ISSUE_INDEXER_TYPE: bleve
+          REPO_INDEXER_ENABLED: true
+        mailer:
+          ENABLED: true
+          PROTOCOL: smtp
+          SMTP_ADDR: smtp-relay.infrastructure.svc.cluster.local
+          SMTP_PORT: "2525"
+          FROM: "git@${SECRET_DOMAIN}"
+        metrics:
+          ENABLED: true
+        log:
+          LEVEL: warn
+        openid:
+          ENABLE_OPENID_SIGNIN: false
+          ENABLE_OPENID_SIGNUP: false
+        service:
+          DISABLE_REGISTRATION: true
+          ALLOW_ONLY_EXTERNAL_REGISTRATION: true
+          ENABLE_INTERNAL_SIGNIN: false
+          ENABLE_PASSWORD_SIGNIN_FORM: false
+          SHOW_REGISTRATION_BUTTON: false
+          ENABLE_NOTIFY_MAIL: true
+        service.explore:
+          REQUIRE_SIGNIN_VIEW: true
+        oauth2_client:
+          ENABLE_AUTO_REGISTRATION: true
+          USERNAME: preferred_username
+          UPDATE_AVATAR: true
+          ACCOUNT_LINKING: auto
+        security:
+          INSTALL_LOCK: true
+      oauth:
+        - name: Authentik
+          provider: openidConnect
+          existingSecret: forgejo-secret
+          autoDiscoverUrl: "https://sso.${SECRET_DOMAIN}/application/o/forgejo/.well-known/openid-configuration"
+          scopes: "openid profile email"
