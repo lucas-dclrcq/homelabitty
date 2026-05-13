@@ -18,7 +18,7 @@ spec:
           main:
             image:
               repository: ghcr.io/superquinquin-sur-deule/sqq-choix-creneaux
-              tag: latest@sha256:ee4484b0236f4852c2fc2fbc7b3082a6107ab2fa0acb4b943ad438ebef745837
+              tag: latest@sha256:45f1ebbf7aa290e1230ee1c785b1555bb588a12d76b3d7112cf21c0eb3436a56
 
             env:
               APP_PRODUCTION: "true"
