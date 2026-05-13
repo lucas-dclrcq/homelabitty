@@ -41,10 +41,14 @@ spec:
       - --gateway-name=external
       - --zone-id-filter=$(CF_ZONE_ID)
     policy: sync
-    sources: ["gateway-httproute", "gateway-tcproute", "crd"]
+    sources:
+      - "gateway-httproute"
+      - "gateway-tcproute"
+      - "crd"
     txtOwnerId: default
     txtPrefix: k8s.
-    domainFilters: ["${SECRET_DOMAIN}"]
+    domainFilters:
+      - "${SECRET_DOMAIN}"
     serviceMonitor:
       enabled: true
     podAnnotations:
