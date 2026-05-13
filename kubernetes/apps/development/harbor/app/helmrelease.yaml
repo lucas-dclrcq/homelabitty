@@ -76,6 +76,12 @@ spec:
 
     core:
       replicas: 1
+      extraEnvVars:
+        - name: CONFIG_OVERWRITE_JSON
+          valueFrom:
+            secretKeyRef:
+              name: harbor-secret
+              key: CONFIG_OVERWRITE_JSON
 
     jobservice:
       replicas: 1
