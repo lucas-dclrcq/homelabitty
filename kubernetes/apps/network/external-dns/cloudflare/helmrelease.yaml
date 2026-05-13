@@ -41,7 +41,7 @@ spec:
       - --gateway-name=external
       - --zone-id-filter=$(CF_ZONE_ID)
     policy: sync
-    sources: ["gateway-httproute", "crd"]
+    sources: ["gateway-httproute", "gateway-tcproute", "crd"]
     txtOwnerId: default
     txtPrefix: k8s.
     domainFilters: ["${SECRET_DOMAIN}"]
