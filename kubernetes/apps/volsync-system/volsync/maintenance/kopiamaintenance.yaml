@@ -8,5 +8,10 @@ spec:
   enabled: true
   trigger:
     schedule: 0 */12 * * *
+  podSecurityContext:
+    runAsUser: ${APP_UID}
+    runAsGroup: ${APP_GID}
+    fsGroup: ${APP_GID}
+    runAsNonRoot: true
   repository:
     repository: volsync-maintenance-secret
