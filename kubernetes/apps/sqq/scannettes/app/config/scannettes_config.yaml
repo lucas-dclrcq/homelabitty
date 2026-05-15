@@ -17,6 +17,8 @@ cannettes:
     delta_search_purchase: [0, 0, 0, 30]
     build_update_time: [23, 59, 50]
 
+
+
   authenticator:
     users_path: "scannettes_configs/secrets.yaml"
     secret_key: ${AUTH_SECRET_KEY}
@@ -54,14 +56,17 @@ cannettes:
     backup_count: 5
     logger_write_error: False
 
+  building:
+    prefered_method: "backup"
+    filename: "./volume/backup.pickle"
+
   backup:
     build_on_backup: False
     filename: "./volume/backup.pickle"
     frequency: [0, 3, 0, 0]
 
   options:
-    activate_room_password: False
-
+    activate_room_password: Fals
 production:
   env: "production"
   flask:
