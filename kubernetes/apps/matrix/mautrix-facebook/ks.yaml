@@ -22,7 +22,7 @@ spec:
     - name: envoy-gateway
       namespace: network
   path: ./kubernetes/apps/matrix/mautrix-facebook/app
-  prune: true
+  prune: false # temporarily disabled for namespace migration
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
