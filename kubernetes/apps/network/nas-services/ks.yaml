@@ -13,7 +13,7 @@ spec:
   dependsOn:
     - name: envoy-gateway
   path: ./kubernetes/apps/network/nas-services/proxies
-  prune: true
+  prune: false # temporarily disabled for namespace migration
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
