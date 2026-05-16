@@ -19,7 +19,7 @@ spec:
     - name: external-secrets-stores
       namespace: external-secrets
     - name: envoy-gateway
-      namespace: flux-system
+      namespace: network
     - name: dragonfly
       namespace: flux-system
   prune: true

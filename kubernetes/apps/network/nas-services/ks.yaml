@@ -13,9 +13,10 @@ spec:
   dependsOn:
     - name: envoy-gateway
   path: ./kubernetes/apps/network/nas-services/proxies
-  prune: false # temporarily disabled for namespace migration
+  prune: true
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
+    namespace: flux-system
   wait: false
   interval: 1h

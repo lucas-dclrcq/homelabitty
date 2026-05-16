@@ -20,7 +20,7 @@ spec:
     - name: external-secrets-stores
       namespace: external-secrets
     - name: envoy-gateway
-      namespace: flux-system
+      namespace: network
   path: ./kubernetes/apps/matrix/mautrix-facebook/app
   prune: true
   sourceRef:

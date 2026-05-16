@@ -22,10 +22,11 @@ spec:
     - name: external-secrets-stores
       namespace: external-secrets
   path: ./kubernetes/apps/network/external-dns/cloudflare
-  prune: false # temporarily disabled for namespace migration
+  prune: true
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
+    namespace: flux-system
   interval: 1h
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
@@ -43,9 +44,10 @@ spec:
     - name: external-secrets-stores
       namespace: external-secrets
   path: ./kubernetes/apps/network/external-dns/unifi
-  prune: false # temporarily disabled for namespace migration
+  prune: true
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
+    namespace: flux-system
   wait: false
   interval: 1h

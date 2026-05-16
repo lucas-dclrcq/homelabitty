@@ -11,10 +11,11 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   path: ./kubernetes/apps/network/envoy-gateway/app
-  prune: false # temporarily disabled for namespace migration
+  prune: true
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
+    namespace: flux-system
   wait: false
   interval: 1h
 ---
@@ -32,9 +33,10 @@ spec:
   dependsOn:
     - name: envoy-gateway
   path: ./kubernetes/apps/network/envoy-gateway/config
-  prune: false # temporarily disabled for namespace migration
+  prune: true
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
+    namespace: flux-system
   wait: false
   interval: 1h
