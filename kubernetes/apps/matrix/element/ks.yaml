@@ -13,11 +13,12 @@ spec:
   path: ./kubernetes/apps/matrix/element/app
   dependsOn:
     - name: synapse
-      namespace: flux-system
-  prune: false # temporarily disabled for namespace migration
+      namespace: matrix
+  prune: true
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
+    namespace: flux-system
   interval: 1h
   retryInterval: 2m
   timeout: 5m

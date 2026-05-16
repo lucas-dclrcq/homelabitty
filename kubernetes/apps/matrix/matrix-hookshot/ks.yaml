@@ -13,13 +13,14 @@ spec:
   components:
     - ../../../../components/volsync
   path: ./kubernetes/apps/matrix/matrix-hookshot/app
-  prune: false # temporarily disabled for namespace migration
+  prune: true
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
+    namespace: flux-system
   dependsOn:
     - name: synapse
-      namespace: flux-system
+      namespace: matrix
   interval: 1h
   postBuild:
     substitute:

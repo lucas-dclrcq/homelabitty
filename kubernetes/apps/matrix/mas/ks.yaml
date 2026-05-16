@@ -11,13 +11,14 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   path: ./kubernetes/apps/matrix/mas/app
-  prune: false # temporarily disabled for namespace migration
+  prune: true
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
+    namespace: flux-system
   dependsOn:
     - name: synapse
-      namespace: flux-system
+      namespace: matrix
     - name: rook-ceph-cluster
       namespace: flux-system
     - name: external-secrets-stores

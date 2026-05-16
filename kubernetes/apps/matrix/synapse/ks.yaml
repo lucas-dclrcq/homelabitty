@@ -22,10 +22,11 @@ spec:
       namespace: network
     - name: dragonfly
       namespace: flux-system
-  prune: false # temporarily disabled for namespace migration
+  prune: true
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
+    namespace: flux-system
   interval: 1h
   retryInterval: 2m
   timeout: 5m

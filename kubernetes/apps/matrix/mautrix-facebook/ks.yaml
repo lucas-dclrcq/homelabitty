@@ -14,7 +14,7 @@ spec:
     - ../../../../components/volsync
   dependsOn:
     - name: synapse
-      namespace: flux-system
+      namespace: matrix
     - name: rook-ceph-cluster
       namespace: flux-system
     - name: external-secrets-stores
@@ -22,10 +22,11 @@ spec:
     - name: envoy-gateway
       namespace: network
   path: ./kubernetes/apps/matrix/mautrix-facebook/app
-  prune: false # temporarily disabled for namespace migration
+  prune: true
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
+    namespace: flux-system
   interval: 1h
   retryInterval: 2m
   timeout: 5m
