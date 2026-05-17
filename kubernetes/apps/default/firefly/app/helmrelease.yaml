@@ -19,7 +19,7 @@ spec:
           app:
             image:
               repository: docker.io/fireflyiii/core
-              tag: version-6.2.27
+              tag: version-6.6.2
 
             env:
               APP_ENV: production
@@ -29,13 +29,16 @@ spec:
               TRUSTED_PROXIES: "**"
               LOG_CHANNEL: stack
               APP_LOG_LEVEL: notice
-              DEFAULT_LANGUAGE: en_US
+              DEFAULT_LANGUAGE: fr_FR
               DEFAULT_LOCALE: equal
               SITE_OWNER: "firefly@${SECRET_DOMAIN}"
               MAIL_MAILER: smtp
               MAIL_HOST: smtp-relay.infrastructure.svc.cluster.local
               MAIL_PORT: "2525"
               MAIL_FROM: "firefly@${SECRET_DOMAIN}"
+              SEND_REGISTRATION_MAIL: true
+              SEND_ERROR_MESSAGE: true
+              SEND_LOGIN_NEW_IP_WARNING: true
 
             envFrom:
               - secretRef:
