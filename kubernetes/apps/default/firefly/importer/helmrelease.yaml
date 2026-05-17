@@ -65,6 +65,12 @@ spec:
           http:
             port: *port
 
+    persistence:
+      import:
+        existingClaim: firefly-importer-import
+        globalMounts:
+          - path: /import
+
     route:
       app:
         annotations:
