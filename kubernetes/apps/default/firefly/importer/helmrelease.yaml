@@ -71,6 +71,9 @@ spec:
           concurrencyPolicy: Forbid
           successfulJobsHistory: 1
           failedJobsHistory: 1
+          backoffLimit: 0
+          activeDeadlineSeconds: 14400
+          restartPolicy: Never
         containers:
           curl:
             image:
@@ -87,11 +90,12 @@ spec:
               - -c
               - >-
                 curl --fail --silent --show-error --request POST
+                --connect-timeout 30 --max-time 14400 --keepalive-time 30
                 "http://firefly-importer.default.svc.cluster.local:8080/autoimport?directory=/import&secret=${AUTO_IMPORT_SECRET}"
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
+              capabilities: {drop: ["ALL"]}
             resources:
               requests:
                 cpu: 10m
