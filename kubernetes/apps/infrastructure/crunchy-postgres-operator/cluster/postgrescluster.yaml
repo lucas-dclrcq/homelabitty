@@ -319,6 +319,11 @@ spec:
         - "forgejo"
       password:
         type: AlphaNumeric
+    - name: "firefly"
+      databases:
+        - "firefly"
+      password:
+        type: AlphaNumeric
   backups:
     pgbackrest:
       configuration:
