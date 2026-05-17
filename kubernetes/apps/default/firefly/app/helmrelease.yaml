@@ -29,7 +29,7 @@ spec:
               TRUSTED_PROXIES: "**"
               LOG_CHANNEL: stack
               APP_LOG_LEVEL: notice
-              DEFAULT_LANGUAGE: en_US
+              DEFAULT_LANGUAGE: fr_FR
               DEFAULT_LOCALE: equal
               SITE_OWNER: "firefly@${SECRET_DOMAIN}"
               MAIL_MAILER: smtp
