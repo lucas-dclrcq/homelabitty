@@ -91,7 +91,7 @@ spec:
               - >-
                 curl --fail --silent --show-error --request POST
                 --connect-timeout 30 --max-time 14400 --keepalive-time 30
-                "http://firefly-importer.default.svc.cluster.local:8080/autoimport?directory=/import&secret=${AUTO_IMPORT_SECRET}"
+                "http://firefly-importer.default.svc.cluster.local:8080/autoimport?directory=/import&secret=$${AUTO_IMPORT_SECRET}"
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
