@@ -19,3 +19,4 @@ resources:
   - ./sqq-keycloak/ks.yaml
   - ./scannettes/ks.yaml
   - ./scannettes-staging/ks.yaml
+  - ./sesame/ks.yaml
