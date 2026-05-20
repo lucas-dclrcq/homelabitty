@@ -226,42 +226,39 @@ spec:
             "defaults": {
               "color": { "mode": "palette-classic" },
               "custom": {
-                "drawStyle": "line",
-                "fillOpacity": 10,
-                "lineInterpolation": "smooth",
-                "lineWidth": 2,
-                "pointSize": 5,
-                "showPoints": "never",
-                "spanNulls": false,
-                "stacking": { "group": "A", "mode": "none" }
+                "axisPlacement": "auto",
+                "fillOpacity": 80,
+                "gradientMode": "none",
+                "lineWidth": 1
               },
-              "unit": "reqps",
+              "unit": "short",
               "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] }
             },
             "overrides": []
           },
           "gridPos": { "h": 8, "w": 12, "x": 0, "y": 6 },
           "id": 11,
+          "interval": "1h",
           "options": {
-            "legend": { "calcs": ["mean", "lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true },
-            "tooltip": { "mode": "multi", "sort": "desc" }
+            "legend": { "calcs": ["sum", "lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true },
+            "tooltip": { "mode": "multi", "sort": "desc" },
+            "xTickLabelRotation": 0,
+            "stacking": "none",
+            "orientation": "auto",
+            "showValue": "auto",
+            "groupWidth": 0.7,
+            "barWidth": 0.97
           },
           "targets": [
             {
               "datasource": { "type": "prometheus", "uid": "$datasource" },
-              "expr": "rate(sesame_members_search_total{job=\"sesame\"}[$__rate_interval])",
+              "expr": "increase(sesame_members_search_total{job=\"sesame\"}[1h])",
               "legendFormat": "all searches",
               "refId": "A"
-            },
-            {
-              "datasource": { "type": "prometheus", "uid": "$datasource" },
-              "expr": "rate(sesame_members_search_empty_query_total{job=\"sesame\"}[$__rate_interval])",
-              "legendFormat": "empty queries",
-              "refId": "B"
             }
           ],
-          "title": "Member Searches Rate",
-          "type": "timeseries"
+          "title": "Member Searches per Hour",
+          "type": "barchart"
         },
         {
           "datasource": { "type": "prometheus", "uid": "$datasource" },
@@ -269,47 +266,39 @@ spec:
             "defaults": {
               "color": { "mode": "palette-classic" },
               "custom": {
-                "drawStyle": "line",
-                "fillOpacity": 10,
-                "lineInterpolation": "smooth",
-                "lineWidth": 2,
-                "pointSize": 5,
-                "showPoints": "never",
-                "spanNulls": false,
-                "stacking": { "group": "A", "mode": "none" }
+                "axisPlacement": "auto",
+                "fillOpacity": 80,
+                "gradientMode": "none",
+                "lineWidth": 1
               },
-              "unit": "reqps",
+              "unit": "short",
               "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] }
             },
-            "overrides": [
-              {
-                "matcher": { "id": "byName", "options": "not found" },
-                "properties": [ { "id": "color", "value": { "mode": "fixed", "fixedColor": "red" } } ]
-              }
-            ]
+            "overrides": []
           },
           "gridPos": { "h": 8, "w": 12, "x": 12, "y": 6 },
           "id": 12,
+          "interval": "1h",
           "options": {
-            "legend": { "calcs": ["mean", "lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true },
-            "tooltip": { "mode": "multi", "sort": "desc" }
+            "legend": { "calcs": ["sum", "lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true },
+            "tooltip": { "mode": "multi", "sort": "desc" },
+            "xTickLabelRotation": 0,
+            "stacking": "none",
+            "orientation": "auto",
+            "showValue": "auto",
+            "groupWidth": 0.7,
+            "barWidth": 0.97
           },
           "targets": [
             {
               "datasource": { "type": "prometheus", "uid": "$datasource" },
-              "expr": "rate(sesame_members_detail_total{job=\"sesame\"}[$__rate_interval])",
+              "expr": "increase(sesame_members_detail_total{job=\"sesame\"}[1h])",
               "legendFormat": "all details",
               "refId": "A"
-            },
-            {
-              "datasource": { "type": "prometheus", "uid": "$datasource" },
-              "expr": "rate(sesame_members_detail_not_found_total{job=\"sesame\"}[$__rate_interval])",
-              "legendFormat": "not found",
-              "refId": "B"
             }
           ],
-          "title": "Member Detail Requests Rate",
-          "type": "timeseries"
+          "title": "Member Detail Requests per Hour",
+          "type": "barchart"
         },
         {
           "datasource": { "type": "prometheus", "uid": "$datasource" },
