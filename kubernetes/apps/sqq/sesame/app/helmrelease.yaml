@@ -19,7 +19,7 @@ spec:
           main:
             image:
               repository: ghcr.io/superquinquin-sur-deule/sesame
-              tag: latest
+              tag: latest@sha256:683459a68931937831c920e98add86aab9c306ee872edee974d1afed34299c85
 
             envFrom:
               - secretRef:
