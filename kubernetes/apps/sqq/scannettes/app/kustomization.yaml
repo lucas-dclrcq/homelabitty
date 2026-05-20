@@ -6,7 +6,7 @@ resources:
   - ./ocirepository.yaml
   - ./helmrelease.yaml
   - ./externalsecret.yaml
-  - ./securitypolicy.yaml
+#  - ./securitypolicy.yaml
 configMapGenerator:
   - name: scannettes-config
     files:
