@@ -1,0 +1,20 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/envoyproxy/gateway/refs/heads/main/charts/gateway-helm/crds/generated/gateway.envoyproxy.io_securitypolicies.yaml
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: scannettes-ip-allow
+spec:
+  authorization:
+    defaultAction: Deny
+    rules:
+      - name: trusted-clients
+        action: Allow
+        principal:
+          clientCIDRs:
+            - 192.168.20.0/24
+            - 82.96.151.133/32
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      name: scannettes

@@ -8,3 +8,4 @@ resources:
   - ./externalsecret.yaml
   - ./servicemonitor.yaml
   - ./grafanadashboard.yaml
+  - ./securitypolicy.yaml
