@@ -7,8 +7,8 @@ components:
   - ../../components/common
 resources:
   - ./database/ks.yaml
-  - ./accueil/ks.yaml
-  - ./accueil-staging/ks.yaml
+#  - ./accueil/ks.yaml
+#  - ./accueil-staging/ks.yaml
   - ./sqq-inscription/ks.yaml
   - ./sqq-inscription-staging/ks.yaml
   - ./sqq-vente-groupee/ks.yaml
