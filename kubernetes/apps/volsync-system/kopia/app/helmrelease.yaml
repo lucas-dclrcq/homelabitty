@@ -18,26 +18,18 @@ spec:
           app:
             image:
               repository: ghcr.io/home-operations/kopia
-              tag: 0.22.3@sha256:17ab64542280197a5368247deaefadc3e3bbe15714ab666c2455a06824e86efd
+              tag: 0.23.0@sha256:76865b421548b1d7bb26a8268f0f0bc828be4eec3f8d8b9c8ece991c99878f94
             env:
               KOPIA_WEB_ENABLED: true
-              KOPIA_WEB_PORT: &port 8080
+              KOPIA_WEB_PORT: &port 80
               TZ: ${TIMEZONE}
             envFrom:
               - secretRef:
                   name: kopia-secret
             args:
+              - --refresh-interval=5m
               - --without-password
             probes:
-              startup:
-                enabled: true
-                custom: true
-                spec:
-                  httpGet:
-                    path: /
-                    port: *port
-                  periodSeconds: 5
-                  failureThreshold: 30
               liveness: &probes
                 enabled: true
                 custom: true
@@ -45,6 +37,7 @@ spec:
                   httpGet:
                     path: /
                     port: *port
+                  initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1
                   failureThreshold: 3
@@ -61,11 +54,9 @@ spec:
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
-        runAsUser: 65534
+        runAsUser: ${APP_UID}
         runAsGroup: ${APP_GID}
         fsGroup: ${APP_GID}
-        supplementalGroups:
-          - ${APP_GID}
         fsGroupChangePolicy: OnRootMismatch
     service:
       app:
@@ -105,7 +96,7 @@ spec:
       repository:
         type: nfs
         server: "truenas.${INTERNAL_DOMAIN}"
-        path: /mnt/tank/Backup/kopia
+        path: /mnt/tank/Backup/kopia_backup
         globalMounts:
           - path: /repository
       tmpfs:

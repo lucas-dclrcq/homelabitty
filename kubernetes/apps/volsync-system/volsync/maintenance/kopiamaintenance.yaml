@@ -7,11 +7,12 @@ metadata:
 spec:
   enabled: true
   trigger:
-    schedule: 0 */12 * * *
-  podSecurityContext:
-    runAsUser: ${APP_UID}
-    runAsGroup: ${APP_GID}
-    fsGroup: ${APP_GID}
-    runAsNonRoot: true
+    schedule: 30 3,15 * * *
+  moverVolumes:
+    - mountPath: repository
+      volumeSource:
+        nfs:
+          path: /mnt/tank/Backup/kopia_backup
+          server: "truenas.${INTERNAL_DOMAIN}"
   repository:
     repository: volsync-maintenance-secret
