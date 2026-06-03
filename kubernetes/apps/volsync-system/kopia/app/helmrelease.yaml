@@ -42,6 +42,21 @@ spec:
                   timeoutSeconds: 1
                   failureThreshold: 3
               readiness: *probes
+              # Kopia loads the whole repository index from the NFS backend on
+              # startup; with thousands of blobs over NFS this can take several
+              # minutes, during which the web server is not yet listening. Give
+              # it a wide startup window so liveness/readiness don't kill it.
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: *port
+                  initialDelaySeconds: 5
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 60
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
