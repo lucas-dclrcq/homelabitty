@@ -44,8 +44,10 @@ spec:
               readiness: *probes
               # Kopia loads the whole repository index from the NFS backend on
               # startup; with thousands of blobs over NFS this can take several
-              # minutes, during which the web server is not yet listening. Give
-              # it a wide startup window so liveness/readiness don't kill it.
+              # minutes (measured ~8-9 min on a cold cache), during which the web
+              # server is not yet listening. Give it a wide startup window so
+              # liveness/readiness don't kill it. Once periodic maintenance has
+              # compacted the index this drops to seconds.
               startup:
                 enabled: true
                 custom: true
@@ -56,7 +58,7 @@ spec:
                   initialDelaySeconds: 5
                   periodSeconds: 10
                   timeoutSeconds: 5
-                  failureThreshold: 60
+                  failureThreshold: 120
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
@@ -118,13 +120,21 @@ spec:
         path: /mnt/tank/Backup/kopia_backup
         globalMounts:
           - path: /repository
+      # Persist the kopia cache so the expensive index warm-up from NFS happens
+      # only once. After the first start, restarts read the local index cache
+      # and only fetch new blobs, so they come up quickly.
+      cache:
+        type: persistentVolumeClaim
+        accessMode: ReadWriteOnce
+        size: 20Gi
+        storageClass: ceph-block
+        globalMounts:
+          - path: /config/cache
       tmpfs:
         type: emptyDir
         advancedMounts:
           kopia:
             app:
-              - path: /config/cache
-                subPath: cache
               - path: /config/logs
                 subPath: logs
               - path: /tmp
