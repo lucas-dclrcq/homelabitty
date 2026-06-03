@@ -15,7 +15,6 @@ resources:
   - ./immich/ks.yaml
   - ./homelab-manager/ks.yaml
   - ./sftpgo/ks.yaml
-  - ./thelounge/ks.yaml
   - ./outline/ks.yaml
   - ./vikunja/ks.yaml
   - ./paperless/ks.yaml
