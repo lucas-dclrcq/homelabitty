@@ -54,7 +54,11 @@ spec:
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
-        runAsUser: ${APP_UID}
+        # The VolSync kopia backup movers run privileged (root) and TrueNAS NFS
+        # root-squashes them to nobody (65534), so the whole repository ends up
+        # owned by 65534:${APP_GID} with 0700 dirs. The web UI and maintenance
+        # job must run as the same uid to read/write the repo.
+        runAsUser: 65534
         runAsGroup: ${APP_GID}
         fsGroup: ${APP_GID}
         fsGroupChangePolicy: OnRootMismatch
