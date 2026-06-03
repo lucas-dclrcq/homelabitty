@@ -324,6 +324,11 @@ spec:
         - "firefly"
       password:
         type: AlphaNumeric
+    - name: "seerr"
+      databases:
+        - "seerr"
+      password:
+        type: AlphaNumeric
   backups:
     pgbackrest:
       configuration:

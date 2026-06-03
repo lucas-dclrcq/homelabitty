@@ -1,0 +1,64 @@
+---
+# One-shot SQLite -> PostgreSQL migration for Jellyseerr.
+#
+# NOT reconciled by Flux (lives outside ./app, which is the ks.yaml path).
+# Apply manually, only AFTER:
+#   1. The postgres `seerr` user/db exists (postgrescluster.yaml) and
+#      the seerr-db-secret ExternalSecret has materialized in `media`.
+#   2. Seerr has booted once against postgres to CREATE THE SCHEMA, then
+#      been scaled to 0 (see the runbook).
+#
+# Run:
+#   kubectl apply -f kubernetes/apps/media/seerr/migrate-pgloader.job.yaml
+#   kubectl -n media logs -f job/seerr-pgloader-migrate
+#   kubectl -n media delete job seerr-pgloader-migrate   # cleanup
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: seerr-pgloader-migrate
+  namespace: media
+spec:
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 86400
+  template:
+    spec:
+      restartPolicy: Never
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        seccompProfile: {type: RuntimeDefault}
+      containers:
+        - name: pgloader
+          # pr-1531: pinned build the Seerr docs recommend to avoid the
+          # column-quoting bug in recent upstream pgloader releases.
+          image: ghcr.io/ralgar/pgloader:pr-1531
+          workingDir: /tmp
+          env:
+            - name: HOME
+              value: /tmp
+          envFrom:
+            - secretRef:
+                name: seerr-db-secret
+          command:
+            - sh
+            - -c
+            - |
+              set -eu
+              pgloader \
+                --with "quote identifiers" \
+                --with "data only" \
+                /config/db/db.sqlite3 \
+                "postgresql://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}"
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: jellyseerr
+        - name: tmp
+          emptyDir: {}
