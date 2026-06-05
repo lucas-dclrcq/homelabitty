@@ -9,7 +9,7 @@ spec:
     spec:
       # renovate: registryUrl=https://ananace.gitlab.io/charts
       chart: matrix-synapse
-      version: 3.12.28
+      version: 3.12.29
       sourceRef:
         kind: HelmRepository
         name: ananace
