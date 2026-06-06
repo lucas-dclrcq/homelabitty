@@ -9,3 +9,4 @@ resources:
   - ./forgejo/ks.yaml
   - ./forgejo-runner/ks.yaml
   - ./harbor/ks.yaml
+  - ./pacman/ks.yaml
