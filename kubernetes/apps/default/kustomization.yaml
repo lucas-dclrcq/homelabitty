@@ -24,4 +24,4 @@ resources:
   - ./the-recipe-db/ks.yaml
   - ./bambuddy/ks.yaml
   - ./firefly/ks.yaml
-  #  - ./opencloud/ks.yaml
+  - ./opencloud/ks.yaml
