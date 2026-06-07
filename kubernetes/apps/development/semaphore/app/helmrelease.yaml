@@ -1,0 +1,72 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app semaphore
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  values:
+    controllers:
+      semaphore:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: docker.io/semaphoreui/semaphore
+              tag: v2.18.10
+
+            envFrom:
+              - secretRef:
+                  name: semaphore-secret
+
+            env:
+              SEMAPHORE_PORT: &port 3000
+              SEMAPHORE_WEB_ROOT: "https://semaphore.${LIMITED_DOMAIN}"
+              SEMAPHORE_PLAYBOOK_PATH: /tmp/semaphore
+              TZ: "${TIMEZONE}"
+
+            resources:
+              requests:
+                cpu: 10m
+                memory: 128Mi
+              limits:
+                memory: 1Gi
+
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: false
+              capabilities:
+                drop: ["ALL"]
+
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: *port
+
+    route:
+      app:
+        annotations:
+          gatus.home-operations.com/endpoint: |-
+            group: Misc
+        hostnames:
+          - "semaphore.${LIMITED_DOMAIN}"
+        parentRefs:
+          - name: internal
+            namespace: network
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
+
+    persistence:
+      tmp:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp/semaphore
