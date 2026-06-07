@@ -47,7 +47,7 @@ spec:
           rsync:
             image:
               repository: docker.io/eeacms/rsync
-              tag: "2.6"
+              tag: "3.0"
             command:
               - /bin/sh
               - -c
