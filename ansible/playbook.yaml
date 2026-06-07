@@ -10,3 +10,9 @@
   become: true
   roles:
     - music
+
+- name: Configure NTP server
+  hosts: ntp
+  become: true
+  roles:
+    - ntp

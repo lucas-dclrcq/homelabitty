@@ -1,0 +1,211 @@
+---
+- name: Gather service facts
+  ansible.builtin.service_facts:
+
+- name: Disable serial console on UART (free the port for GPS/PPS)
+  ansible.builtin.systemd_service:
+    name: serial-getty@ttyAMA0.service
+    state: stopped
+    enabled: false
+  when: "'serial-getty@ttyAMA0.service' in ansible_facts.services"
+  notify: Reboot node
+
+- name: Disable Bluetooth UART service (hciuart)
+  ansible.builtin.systemd_service:
+    name: hciuart.service
+    state: stopped
+    enabled: false
+  when: "'hciuart.service' in ansible_facts.services"
+  notify: Reboot node
+
+- name: Configure Raspberry Pi for GPS/PPS timekeeping
+  ansible.builtin.blockinfile:
+    path: /boot/firmware/config.txt
+    marker: '# {mark} ANSIBLE MANAGED BLOCK - ntp/gps'
+    block: |
+      [pi5]
+      # To enable hardware serial UART interface over GPIO 14 and 15 (specific for 5B model)
+      dtparam=uart0_console=on
+
+      # Enable uart 0 on GPIOs 14-15. Pi 5 only.
+      dtoverlay=uart0-pi5
+
+      # Disables the undocumented RPi 5B RTC DA9091
+      dtparam=rtc=off
+
+      # Default presets of RPi 5B PWN fan control setpoints
+      dtparam=fan_temp0=50000
+      dtparam=fan_temp0_hyst=5000
+      dtparam=fan_temp0_speed=75
+
+      dtparam=fan_temp1=60000
+      dtparam=fan_temp1_hyst=5000
+      dtparam=fan_temp1_speed=125
+
+      dtparam=fan_temp2=67500
+      dtparam=fan_temp2_hyst=5000
+      dtparam=fan_temp2_speed=175
+
+      dtparam=fan_temp3=75000
+      dtparam=fan_temp3_hyst=5000
+      dtparam=fan_temp3_speed=250
+
+      [all]
+      # Uses the /dev/ttyAMA0 UART GNSS instead of Bluetooth
+      dtoverlay=miniuart-bt
+
+      # Disables Bluetooth for better accuracy and lower interferance - optional
+      dtoverlay=disable-bt
+
+      # Disables Wifi for better accuracy and lower interferance - optional
+      dtoverlay=disable-wifi
+
+      # For GPS Expansion Board from Uputronics
+      dtparam=i2c_arm=on
+      dtoverlay=i2c-rtc,rv3028,wakeup-source,backup-switchover-mode=3
+      dtoverlay=pps-gpio,gpiopin=18
+      init_uart_baud=115200
+
+      # Disables kernel power saving
+      nohz=off
+
+      # Force CPU high speed clock
+      force_turbo=1
+  notify: Reboot node
+
+- name: Load the i2c-dev module at boot
+  ansible.builtin.copy:
+    dest: /etc/modules-load.d/i2c-dev.conf
+    content: |
+      i2c-dev
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Reboot node
+
+- name: Remove serial console from kernel cmdline
+  ansible.builtin.replace:
+    path: /boot/firmware/cmdline.txt
+    regexp: '\s*console=serial0,115200'
+    replace: ''
+  notify: Reboot node
+
+- name: Remove kgdboc serial debugger from kernel cmdline
+  ansible.builtin.replace:
+    path: /boot/firmware/cmdline.txt
+    regexp: '\s*kgdboc=ttyAMA0,115200'
+    replace: ''
+  notify: Reboot node
+
+- name: Remove DHCP timesyncd exit hook
+  ansible.builtin.file:
+    path: /etc/dhcp/dhclient-exit-hooks.d/timesyncd
+    state: absent
+  notify: Reboot node
+
+- name: Check for isc-dhcp-client config
+  ansible.builtin.stat:
+    path: /etc/dhcp/dhclient.conf
+  register: dhclient_conf
+
+- name: Stop requesting NTP servers (IPv4) via DHCP
+  ansible.builtin.replace:
+    path: /etc/dhcp/dhclient.conf
+    regexp: ',?\s*\bntp-servers\b'
+    replace: ''
+  when: dhclient_conf.stat.exists
+  notify: Reboot node
+
+- name: Stop requesting SNTP servers (IPv6) via DHCP
+  ansible.builtin.replace:
+    path: /etc/dhcp/dhclient.conf
+    regexp: ',?\s*dhcp6\.sntp-servers'
+    replace: ''
+  when: dhclient_conf.stat.exists
+  notify: Reboot node
+
+- name: Disable systemd-timesyncd (avoid conflict with chrony)
+  ansible.builtin.systemd_service:
+    name: systemd-timesyncd.service
+    state: stopped
+    enabled: false
+  when: "'systemd-timesyncd.service' in ansible_facts.services"
+  notify: Reboot node
+
+- name: Install supporting packages
+  ansible.builtin.package:
+    name:
+      - setserial          # required by the udev low-latency rule
+      - i2c-tools          # i2cdetect/i2cget for the GPS/RTC board
+      - util-linux-extra   # provides hwclock on Debian 13+ (trixie)
+    state: present
+  notify: Reboot node
+
+- name: Set GPS serial port to low latency via udev
+  ansible.builtin.copy:
+    dest: /etc/udev/rules.d/gps.rules
+    content: |
+      KERNEL=="ttyAMA0", RUN+="/bin/setserial /dev/ttyAMA0 low_latency"
+    owner: root
+    group: root
+    mode: '0644'
+  notify:
+    - Reload udev rules
+    - Reboot node
+
+- name: Install CPU governor service
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/cpu-governor.service
+    content: |
+      [Unit]
+      Description=Force CPU governor to performance for timekeeping accuracy
+      After=multi-user.target
+
+      [Service]
+      Type=oneshot
+      ExecStart=/bin/sh -c 'for g in /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor; do echo performance > "$g"; done'
+      RemainAfterExit=true
+
+      [Install]
+      WantedBy=multi-user.target
+    owner: root
+    group: root
+    mode: '0644'
+  notify:
+    - Apply CPU governor
+    - Reboot node
+
+- name: Enable CPU governor service
+  ansible.builtin.systemd_service:
+    name: cpu-governor.service
+    enabled: true
+    daemon_reload: true
+  notify: Reboot node
+
+- name: Remove fake-hwclock package (also stops/disables it and cleans rc.d)
+  ansible.builtin.apt:
+    name: fake-hwclock
+    state: absent
+    purge: true
+  notify: Reboot node
+
+- name: Check for udev hwclock-set script
+  ansible.builtin.stat:
+    path: /lib/udev/hwclock-set
+  register: hwclock_set_file
+
+- name: Check whether hwclock-set RTC sync is already disabled
+  ansible.builtin.command: grep -q '^#.*hwclock --rtc=$dev --hctosys' /lib/udev/hwclock-set
+  register: hwclock_set_commented
+  changed_when: false
+  failed_when: false
+  when: hwclock_set_file.stat.exists
+
+- name: Disable RTC->system sync in udev hwclock-set
+  ansible.builtin.command:
+    cmd: >-
+      sed -i '/if \[ -e \/run\/systemd\/system \] ; then/,/\/sbin\/hwclock --rtc=$dev --hctosys/ s/^/#/' /lib/udev/hwclock-set
+  when:
+    - hwclock_set_file.stat.exists
+    - hwclock_set_commented.rc | default(0) != 0
+  notify: Reboot node

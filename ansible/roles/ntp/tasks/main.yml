@@ -1,0 +1,9 @@
+---
+- name: Prepare host for GPS/PPS timekeeping
+  ansible.builtin.import_tasks: prepare.yml
+
+- name: Reboot once if any preparation task changed
+  ansible.builtin.meta: flush_handlers
+
+- name: Setup Chrony
+  ansible.builtin.import_tasks: setup.yml

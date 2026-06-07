@@ -1,0 +1,24 @@
+---
+- name: Reboot node
+  ansible.builtin.reboot:
+
+- name: Reload udev rules
+  ansible.builtin.command:
+    cmd: udevadm control --reload-rules && udevadm trigger
+
+- name: Apply CPU governor
+  ansible.builtin.systemd_service:
+    name: cpu-governor.service
+    state: restarted
+    daemon_reload: true
+
+- name: Restart gpsd
+  ansible.builtin.systemd_service:
+    name: gpsd.service
+    state: restarted
+
+- name: Restart chronyd
+  ansible.builtin.systemd_service:
+    name: chronyd.service
+    state: restarted
+
