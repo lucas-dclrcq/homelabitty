@@ -18,7 +18,7 @@ spec:
           app:
             image:
               repository: quay.io/prometheus/pushgateway
-              tag: v1.11.1
+              tag: v1.11.3
             probes:
               liveness:
                 enabled: true
