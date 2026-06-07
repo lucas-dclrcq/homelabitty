@@ -1,0 +1,25 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: prometheus-pushgateway
+spec:
+  endpoints:
+    - interval: 1m
+      path: /metrics
+      port: metrics
+      scheme: http
+      scrapeTimeout: 10s
+      honorLabels: true
+      metricRelabelings:
+        - action: labeldrop
+          regex: (pod|container|endpoint|service|namespace)
+  jobLabel: prometheus-pushgateway
+  namespaceSelector:
+    matchNames:
+      - observability
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: prometheus-pushgateway
+      app.kubernetes.io/instance: prometheus-pushgateway
+      app.kubernetes.io/service: prometheus-pushgateway

@@ -40,8 +40,8 @@ spec:
         cronjob:
           schedule: "*/30 * * * *"
           concurrencyPolicy: Forbid
-          successfulJobsHistory: 1
-          failedJobsHistory: 1
+          successfulJobsHistory: 5
+          failedJobsHistory: 5
           backoffLimit: 0
         containers:
           rsync:
@@ -51,12 +51,46 @@ spec:
             command:
               - /bin/sh
               - -c
-              - >-
-                rsync -rtlvH --safe-links --delete-after --delete-excluded
-                --delay-updates --no-motd --human-readable --stats --itemize-changes
-                --timeout=600 --contimeout=60
-                --exclude='iso/' --exclude='*-debug/' --exclude='sources/'
-                rsync://ftp.halifax.rwth-aachen.de/archlinux/ /srv/repo/
+            args:
+              - |
+                set -u
+                PUSHGW="http://prometheus-pushgateway.observability.svc.cluster.local:9091/metrics/job/pacman-sync"
+                LOG=/tmp/rsync.log
+                START=$(date +%s)
+
+                rsync -rtlvH --safe-links --delete-after --delete-excluded \
+                  --delay-updates --no-motd --stats --itemize-changes \
+                  --timeout=600 --contimeout=60 \
+                  --exclude='iso/' --exclude='*-debug/' --exclude='sources/' \
+                  rsync://ftp.halifax.rwth-aachen.de/archlinux/ /srv/repo/ >"$LOG" 2>&1
+                RC=$?
+                cat "$LOG"
+
+                END=$(date +%s)
+                [ "$RC" -eq 0 ] && SUCCESS=1 || SUCCESS=0
+
+                parse_num() { grep -E "^$1:" "$LOG" | head -1 | sed -E 's/[^0-9]*([0-9,]+).*/\1/' | tr -d ','; }
+                FILES=$(parse_num 'Number of regular files transferred'); FILES=${FILES:-0}
+                DELETED=$(parse_num 'Number of deleted files'); DELETED=${DELETED:-0}
+                BYTES=$(parse_num 'Total transferred file size'); BYTES=${BYTES:-0}
+                RECEIVED=$(parse_num 'Total bytes received'); RECEIVED=${RECEIVED:-0}
+
+                cat <<EOF | curl -sf --max-time 30 --data-binary @- "$PUSHGW" || echo "pushgateway push failed"
+                # TYPE pacman_sync_success gauge
+                pacman_sync_success $SUCCESS
+                # TYPE pacman_sync_duration_seconds gauge
+                pacman_sync_duration_seconds $((END - START))
+                # TYPE pacman_sync_files_transferred gauge
+                pacman_sync_files_transferred $FILES
+                # TYPE pacman_sync_files_deleted gauge
+                pacman_sync_files_deleted $DELETED
+                # TYPE pacman_sync_bytes_transferred gauge
+                pacman_sync_bytes_transferred $BYTES
+                # TYPE pacman_sync_bytes_received gauge
+                pacman_sync_bytes_received $RECEIVED
+                EOF
+
+                exit $RC
             securityContext:
               runAsUser: 0
             resources:

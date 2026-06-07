@@ -5,6 +5,7 @@ resources:
   - ./namespace.yaml
   - ./exporters
   - ./kube-prometheus-stack/ks.yaml
+  - ./prometheus-pushgateway/ks.yaml
   - ./grafana/ks.yaml
   - ./loki/ks.yaml
   - ./alloy/ks.yaml
