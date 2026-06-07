@@ -1,0 +1,62 @@
+---
+- name: Install gpsd_exporter Python dependencies
+  ansible.builtin.apt:
+    name:
+      - python3-gps                  # gpsd Python bindings (import gps)
+      - python3-prometheus-client    # prometheus_client
+    state: present
+    update_cache: true
+
+- name: Download gpsd_exporter script
+  ansible.builtin.get_url:
+    url: "https://raw.githubusercontent.com/{{ gpsd_exporter_repo }}/{{ gpsd_exporter_version }}/gpsd_exporter.py"
+    dest: "{{ gpsd_exporter_bin }}"
+    owner: root
+    group: root
+    mode: '0755'
+  notify: Restart gpsd_exporter
+
+- name: Configure gpsd_exporter options
+  ansible.builtin.copy:
+    dest: /etc/default/gpsd_exporter.defaults
+    content: |
+      # Managed by Ansible (gpsd_exporter role)
+      GPSD_MON_OPTIONS="{{ gpsd_exporter_options }} -E {{ gpsd_exporter_port }}"
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart gpsd_exporter
+
+- name: Install gpsd_exporter systemd unit
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/gpsd_exporter.service
+    content: |
+      [Unit]
+      Description=gpsd Prometheus exporter
+      After=network-online.target gpsd.service
+      Wants=network-online.target
+      Requires=gpsd.service
+
+      [Service]
+      Environment="PYTHONUNBUFFERED=1"
+      EnvironmentFile=-/etc/default/gpsd_exporter.defaults
+      ExecStart={{ gpsd_exporter_bin }} $GPSD_MON_OPTIONS
+      Restart=always
+      RestartSec=5
+      Type=simple
+
+      [Install]
+      WantedBy=multi-user.target
+    owner: root
+    group: root
+    mode: '0644'
+  notify:
+    - Reload systemd
+    - Restart gpsd_exporter
+
+- name: Enable and start gpsd_exporter
+  ansible.builtin.systemd_service:
+    name: gpsd_exporter.service
+    enabled: true
+    state: started
+    daemon_reload: true

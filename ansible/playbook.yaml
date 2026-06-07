@@ -4,6 +4,18 @@
   become: true
   roles:
     - common
+    - role: prometheus.prometheus.node_exporter
+      vars:
+        node_exporter_version: 1.8.2
+        # thermal_zone is off by default; needed for Raspberry Pi CPU temp.
+        node_exporter_enabled_collectors:
+          - systemd
+          - thermal_zone
+          - textfile:
+              directory: "{{ node_exporter_textfile_dir }}"
+    - role: prometheus.prometheus.smartctl_exporter
+      vars:
+        smartctl_exporter_version: 0.14.0
 
 - name: Configure Music player
   hosts: music
@@ -16,3 +28,12 @@
   become: true
   roles:
     - ntp
+    - role: prometheus.prometheus.chrony_exporter
+      vars:
+        chrony_exporter_version: 0.13.3
+        chrony_exporter_enabled_collectors:
+          - tracking
+          - sources
+          - sourcestats
+          - serverstats
+    - gpsd_exporter

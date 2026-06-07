@@ -1,0 +1,9 @@
+---
+- name: Reload systemd
+  ansible.builtin.systemd_service:
+    daemon_reload: true
+
+- name: Restart gpsd_exporter
+  ansible.builtin.systemd_service:
+    name: gpsd_exporter.service
+    state: restarted

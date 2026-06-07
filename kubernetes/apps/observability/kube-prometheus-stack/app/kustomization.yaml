@@ -11,3 +11,4 @@ resources:
   - ./scrapeconfig.yaml
   - ./grafanadashboard.yaml
   - ./grafanadashboard-app-overview.yaml
+  - ./grafanadashboard-ntp-node.yaml

@@ -7,8 +7,8 @@ metadata:
 spec:
   staticConfigs:
     - targets:
-        - nas.${INTERNAL_DOMAIN}:9100
         - truenas.${INTERNAL_DOMAIN}:9100
+        - ntp.${INTERNAL_DOMAIN}:9100
   metricsPath: /metrics
   relabelings:
     - action: replace
@@ -24,6 +24,37 @@ spec:
   staticConfigs:
     - targets:
         - truenas.${INTERNAL_DOMAIN}:9633
+        - ntp.${INTERNAL_DOMAIN}:9633
+  metricsPath: /metrics
+  relabelings:
+    - action: replace
+      targetLabel: job
+      replacement: *name
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/monitoring.coreos.com/scrapeconfig_v1alpha1.json
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+metadata:
+  name: &name chrony-exporter
+spec:
+  staticConfigs:
+    - targets:
+        - ntp.${INTERNAL_DOMAIN}:9123
+  metricsPath: /metrics
+  relabelings:
+    - action: replace
+      targetLabel: job
+      replacement: *name
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/monitoring.coreos.com/scrapeconfig_v1alpha1.json
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+metadata:
+  name: &name gpsd-exporter
+spec:
+  staticConfigs:
+    - targets:
+        - ntp.${INTERNAL_DOMAIN}:9015
   metricsPath: /metrics
   relabelings:
     - action: replace
