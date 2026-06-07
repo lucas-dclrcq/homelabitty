@@ -78,9 +78,9 @@ spec:
           gatus.home-operations.com/endpoint: |-
             group: Misc
         hostnames:
-          - "{{ .Release.Name }}.${LIMITED_DOMAIN}"
+          - "{{ .Release.Name }}.${SECRET_DOMAIN}"
         parentRefs:
-          - name: internal
+          - name: external
             namespace: network
         rules:
           - backendRefs:
