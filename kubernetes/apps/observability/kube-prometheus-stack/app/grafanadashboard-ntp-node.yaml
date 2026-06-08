@@ -53,13 +53,13 @@ spec:
             },
             "label": "Node (node-exporter)",
             "query": "label_values(node_uname_info, instance)",
-            "regex": "/192.168.1.118.*/",
+            "regex": "/ntp.lulice.lan.*/",
             "refresh": 2,
             "sort": 1,
             "hide": 0,
             "current": {
-              "text": "192.168.1.118:9100",
-              "value": "192.168.1.118:9100"
+              "text": "ntp.lulice.lan:9100",
+              "value": "ntp.lulice.lan:9100"
             },
             "includeAll": false,
             "multi": false
