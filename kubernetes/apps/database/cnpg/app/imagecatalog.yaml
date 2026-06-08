@@ -6,4 +6,4 @@ metadata:
 spec:
   images:
     - major: 18
-      image: ghcr.io/cloudnative-pg/postgresql:18.3-system-trixie
+      image: ghcr.io/cloudnative-pg/postgresql:18.4-system-trixie
