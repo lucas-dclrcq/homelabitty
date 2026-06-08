@@ -66,6 +66,14 @@ spec:
                 RC=$?
                 cat "$LOG"
 
+                # rsync exit 24 = "some files vanished before they could be
+                # transferred"; expected when mirroring an actively-updating
+                # upstream repo. Treat as success.
+                if [ "$RC" -eq 24 ]; then
+                  echo "rsync exit 24 (vanished source files) treated as success"
+                  RC=0
+                fi
+
                 END=$(date +%s)
                 [ "$RC" -eq 0 ] && SUCCESS=1 || SUCCESS=0
 
