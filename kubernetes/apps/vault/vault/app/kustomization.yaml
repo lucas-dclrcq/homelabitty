@@ -8,3 +8,4 @@ resources:
   - ./grafanadashboard.yaml
   - ./servicemonitor.yaml
   - ./prometheusrule.yaml
+  - ./snapshot-cronjob.yaml

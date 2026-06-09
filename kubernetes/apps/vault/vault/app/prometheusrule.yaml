@@ -15,3 +15,19 @@ spec:
           for: 1m
           labels:
             severity: critical
+        - alert: VaultSnapshotFailed
+          annotations:
+            summary: Vault raft snapshot job failed
+            description: The vault-snapshot CronJob's last run did not succeed.
+          expr: kube_job_status_failed{job_name=~"vault-snapshot.*", namespace="vault"} > 0
+          for: 15m
+          labels:
+            severity: warning
+        - alert: VaultSnapshotStale
+          annotations:
+            summary: Vault raft snapshot is stale
+            description: No successful vault-snapshot run in over 13h (cadence is 6h).
+          expr: time() - kube_cronjob_status_last_successful_time{cronjob="vault-snapshot", namespace="vault"} > 13 * 3600
+          for: 15m
+          labels:
+            severity: warning
