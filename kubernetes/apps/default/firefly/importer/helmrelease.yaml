@@ -78,7 +78,7 @@ spec:
           curl:
             image:
               repository: docker.io/curlimages/curl
-              tag: 8.11.1
+              tag: 8.20.0
             env:
               AUTO_IMPORT_SECRET:
                 valueFrom:
