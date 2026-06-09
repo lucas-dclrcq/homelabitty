@@ -15,7 +15,7 @@ spec:
       # apps.emqx.io/on-serving pod readiness gate. Pods then stay Ready=False,
       # drop out of the emqx-listeners Service endpoints, and clients get
       # `connect EPERM` from Cilium socket-LB (no backends). Pin to 2.3.0.
-      version: 2.3.0
+      version: 2.3.1
       sourceRef:
         kind: HelmRepository
         name: emqx
