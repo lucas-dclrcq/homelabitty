@@ -36,7 +36,7 @@ spec:
             runAsGroup: 0
           containers:
             - name: snapshot
-              image: docker.io/hashicorp/vault:1.21.2
+              image: docker.io/hashicorp/vault:1.21.4
               env:
                 - name: VAULT_ADDR
                   value: http://vault-active.vault.svc.cluster.local:8200
