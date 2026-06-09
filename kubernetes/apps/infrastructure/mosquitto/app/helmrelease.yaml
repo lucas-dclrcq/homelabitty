@@ -56,6 +56,33 @@ spec:
                 cpu: 10m
               limits:
                 memory: 100Mi
+          exporter:
+            image:
+              repository: docker.io/sapcc/mosquitto-exporter
+              tag: 0.8.0@sha256:241570341cd144c27ca0952255a2726a4964b7397bfed93a98707b32eb06858c
+            env:
+              BROKER_ENDPOINT: tcp://localhost:1883
+              MQTT_USER:
+                valueFrom:
+                  secretKeyRef:
+                    name: mosquitto-secret
+                    key: MQTT_USERNAME
+              MQTT_PASS:
+                valueFrom:
+                  secretKeyRef:
+                    name: mosquitto-secret
+                    key: MQTT_PASSWORD
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - "ALL"
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 64Mi
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
@@ -73,6 +100,21 @@ spec:
         ports:
           mqtt:
             port: 1883
+      metrics:
+        controller: mosquitto
+        ports:
+          metrics:
+            port: 9234
+    serviceMonitor:
+      metrics:
+        service:
+          identifier: metrics
+        endpoints:
+          - port: metrics
+            scheme: http
+            path: /metrics
+            interval: 1m
+            scrapeTimeout: 10s
     configMaps:
       config:
         data:
