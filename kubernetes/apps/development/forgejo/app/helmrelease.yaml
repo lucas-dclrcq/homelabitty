@@ -14,7 +14,7 @@ spec:
       rootless: true
       registry: code.forgejo.org
       repository: forgejo/forgejo
-      tag: 15.0.2
+      tag: 15.0.3
 
     persistence:
       create: false
