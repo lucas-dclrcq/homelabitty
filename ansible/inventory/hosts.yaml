@@ -2,5 +2,5 @@
 all:
   hosts:
     ntp:
-      ansible_host: 192.168.1.118
+      ansible_host: ntp.lulice.lan
       ansible_user: admin

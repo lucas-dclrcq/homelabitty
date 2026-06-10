@@ -165,3 +165,42 @@
     name: chronyd.service
     enabled: true
     state: started
+
+- name: Create chrony_exporter systemd drop-in directory
+  ansible.builtin.file:
+    path: /etc/systemd/system/chrony_exporter.service.d
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Point chrony_exporter at the chronyd unix socket (systemd drop-in)
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/chrony_exporter.service.d/override.conf
+    content: |
+      # Managed by Ansible (ntp role)
+      #
+      # serverstats is a privileged chrony command: chronyd answers
+      # "501 Not authorised" over the UDP command port (even from
+      # localhost) and only accepts it through its unix socket. The
+      # exporter runs as _chrony (see playbook vars) and talks to
+      # /run/chrony/chronyd.sock. It also creates its own client
+      # socket inside /run/chrony, which ProtectSystem=strict would
+      # otherwise forbid, hence ReadWritePaths.
+      # The upstream prometheus.prometheus.chrony_exporter role cannot
+      # render --chrony.address, so ExecStart is fully overridden here.
+      [Service]
+      ReadWritePaths=/run/chrony
+      ExecStart=
+      ExecStart=/usr/local/bin/chrony_exporter \
+          --collector.tracking \
+          --collector.sources \
+          --collector.sourcestats \
+          --collector.serverstats \
+          --chrony.address=unix:///run/chrony/chronyd.sock \
+          --web.listen-address=0.0.0.0:9123 \
+          --web.telemetry-path=/metrics
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart chrony_exporter

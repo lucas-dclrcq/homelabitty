@@ -22,3 +22,9 @@
     name: chronyd.service
     state: restarted
 
+- name: Restart chrony_exporter
+  ansible.builtin.systemd_service:
+    name: chrony_exporter.service
+    state: restarted
+    daemon_reload: true
+
