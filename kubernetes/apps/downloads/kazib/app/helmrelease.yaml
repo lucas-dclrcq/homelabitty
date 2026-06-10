@@ -61,4 +61,4 @@ spec:
       books:
         type: nfs
         server: "truenas.${INTERNAL_DOMAIN}"
-        path: /mnt/tank/Media/Books
+        path: /mnt/tank/Apps/bookboss/bookdrop
