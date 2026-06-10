@@ -10,5 +10,6 @@ resources:
   - ./jellyfin/ks.yaml
   - ./jellystat/ks.yaml
   - ./audiobookshelf/ks.yaml
+  - ./bookboss/ks.yaml
   - ./komga/ks.yaml
   - ./the-elder-scrobz/ks.yaml

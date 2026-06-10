@@ -334,6 +334,11 @@ spec:
         - "semaphore"
       password:
         type: AlphaNumeric
+    - name: "bookboss"
+      databases:
+        - "bookboss"
+      password:
+        type: AlphaNumeric
   backups:
     pgbackrest:
       configuration:
