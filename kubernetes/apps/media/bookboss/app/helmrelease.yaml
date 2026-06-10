@@ -111,13 +111,8 @@ spec:
         type: nfs
         server: "truenas.${INTERNAL_DOMAIN}"
         path: /mnt/tank/Apps/bookboss
-        advancedMounts:
-          bookboss:
-            app:
-              - path: /library/books
-                subPath: Books/bookboss/books
-              - path: /library/bookdrop
-                subPath: Books/bookboss/bookdrop
+        globalMounts:
+          - path: /library
 
       tmp:
         type: emptyDir
