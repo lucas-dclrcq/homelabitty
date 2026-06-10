@@ -4,7 +4,7 @@
 talosVersion: 1.13.2
 
 # renovate: datasource=docker depName=ghcr.io/siderolabs/kubelet
-kubernetesVersion: v1.33.4
+kubernetesVersion: v1.34.8
 
 clusterName: "hoohoot"
 endpoint: https://192.168.1.42:6443
@@ -207,6 +207,7 @@ patches:
   - "@./patches/global/machine-network.yaml"
   - "@./patches/global/machine-sysctls.yaml"
   - "@./patches/global/machine-sysfs.yaml"
+  - "@./patches/global/machine-time.yaml"
 
 controlPlane:
   patches:
