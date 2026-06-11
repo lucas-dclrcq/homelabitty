@@ -6,3 +6,4 @@ resources:
   - ./externalsecret.yaml
   - ./securitypolicy.yaml
   - ./grafanadashboard.yaml
+  - ./probes.yaml

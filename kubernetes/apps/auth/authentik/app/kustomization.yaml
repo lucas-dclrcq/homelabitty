@@ -8,3 +8,4 @@ resources:
   - ./helmrelease.yaml
   - ./brand-configmap.yaml
   - ./grafanadashboard.yaml
+  - ./probes.yaml

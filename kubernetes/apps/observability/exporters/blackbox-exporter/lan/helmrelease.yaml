@@ -15,7 +15,8 @@ spec:
       readOnlyRootFilesystem: true
       allowPrivilegeEscalation: false
       capabilities:
-        add: ["NET_RAW"]
+        add:
+          - "NET_RAW"
     config:
       modules:
         http_2xx:
@@ -37,6 +38,27 @@ spec:
           timeout: 5s
           tcp:
             preferred_ip_protocol: ip4
+        # For endpoints whose root path legitimately returns 3xx/4xx (webhook receivers, bare APIs)
+        http_2xx_3xx_4xx:
+          prober: http
+          timeout: 5s
+          http:
+            valid_http_versions:
+              - HTTP/1.1
+              - HTTP/2.0
+            follow_redirects: true
+            preferred_ip_protocol: ip4
+            valid_status_codes:
+              - 200
+              - 201
+              - 204
+              - 301
+              - 302
+              - 307
+              - 308
+              - 401
+              - 403
+              - 404
     serviceMonitor:
       enabled: true
       selfMonitor:
@@ -53,3 +75,12 @@ spec:
           annotations:
             summary: |-
               The probe targeting {{ $labels.instance }} is currently having connectivity issues
+        - alert: AppEndpointDown
+          expr: |-
+            probe_success{service="app-endpoint"} == 0
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: |-
+              The application endpoint {{ $labels.instance }} is down

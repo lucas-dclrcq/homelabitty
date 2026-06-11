@@ -73,10 +73,6 @@ spec:
           colorExpr: 'colorScale(result, [180.0, 360.0], ["green", "orange", "red"])'
     httpRoute:
       enabled: true
-      annotations:
-        gatus.home-operations.com/endpoint: |-
-          url: https://{{ .Release.Name }}.${SECRET_DOMAIN}/badges/talos_version
-          group: Observability
       parentRefs:
         - name: external
           namespace: network

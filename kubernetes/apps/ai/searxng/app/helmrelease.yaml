@@ -66,9 +66,6 @@ spec:
 
     route:
       app:
-        annotations:
-          gatus.home-operations.com/endpoint: |-
-            group: AI
         hostnames:
           - "search.${SECRET_DOMAIN}"
         parentRefs:

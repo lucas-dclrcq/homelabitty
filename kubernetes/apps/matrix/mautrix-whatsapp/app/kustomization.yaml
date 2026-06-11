@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
+  - ./probes.yaml
 configMapGenerator:
   - name: mautrix-whatsapp-base-config
     files:

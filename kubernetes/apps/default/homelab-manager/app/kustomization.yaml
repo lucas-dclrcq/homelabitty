@@ -8,3 +8,4 @@ resources:
   - ./helmrelease.yaml
   - ./podmonitor.yaml
   - ./grafanadashboard.yaml
+  - ./probes.yaml

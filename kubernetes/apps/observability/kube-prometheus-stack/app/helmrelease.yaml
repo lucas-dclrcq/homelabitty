@@ -29,9 +29,6 @@ spec:
     alertmanager:
       route:
         main:
-          annotations:
-            gatus.home-operations.com/endpoint: |-
-              group: Observability
           enabled: true
           hostnames:
             - "alertmanager.${LIMITED_DOMAIN}"
@@ -57,9 +54,6 @@ spec:
     prometheus:
       route:
         main:
-          annotations:
-            gatus.home-operations.com/endpoint: |-
-              group: Observability
           enabled: true
           hostnames:
             - "prometheus.${LIMITED_DOMAIN}"

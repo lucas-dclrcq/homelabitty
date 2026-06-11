@@ -51,10 +51,6 @@ spec:
             port: 8123
     route:
       app:
-        annotations:
-          gatus.home-operations.com/endpoint: |-
-            group: Home
-            conditions: ["[STATUS] == 200"]
         hostnames:
           - "{{ .Release.Name }}.${SECRET_DOMAIN}"
           - "hass.${SECRET_DOMAIN}"

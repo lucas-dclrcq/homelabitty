@@ -5,6 +5,7 @@ kind: Kustomization
 namespace: flux-system
 resources:
   - ./helmrelease.yaml
+  - ./probes.yaml
 configMapGenerator:
   - name: synapse-admin-config
     files:

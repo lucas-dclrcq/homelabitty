@@ -13,3 +13,4 @@ resources:
   - ./grafanadashboard.yaml
   - ./grafanadashboard-app-overview.yaml
   - ./grafanadashboard-ntp-node.yaml
+  - ./probes.yaml

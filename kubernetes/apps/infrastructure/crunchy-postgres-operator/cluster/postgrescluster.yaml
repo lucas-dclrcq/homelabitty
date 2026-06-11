@@ -119,11 +119,6 @@ spec:
         - "matrixbridge"
       password:
         type: AlphaNumeric
-    - name: "gatus"
-      databases:
-        - "gatus"
-      password:
-        type: AlphaNumeric
     - name: "atuin"
       databases:
         - "atuin"

@@ -5,6 +5,7 @@ kind: Kustomization
 resources:
   - ./ocirepository.yaml
   - ./helmrelease.yaml
+  - ./probes.yaml
 configMapGenerator:
   - name: karma-configmap
     files:

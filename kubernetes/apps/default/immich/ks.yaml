@@ -28,5 +28,4 @@ spec:
   postBuild:
     substitute:
       APP: *app
-      GATUS_SUBDOMAIN: photos
       DRAGONFLY_ARGS_DEFAULT_LUA_FLAGS: allow-undeclared-keys

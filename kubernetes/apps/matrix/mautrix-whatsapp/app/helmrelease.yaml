@@ -88,10 +88,6 @@ spec:
 
     route:
       app:
-        annotations:
-          gatus.home-operations.com/endpoint: |
-            url: https://{{ .Release.Name }}.${SECRET_DOMAIN}/_matrix/mau/live
-            group: Matrix
         hostnames:
           - "{{ .Release.Name }}.${SECRET_DOMAIN}"
         parentRefs:

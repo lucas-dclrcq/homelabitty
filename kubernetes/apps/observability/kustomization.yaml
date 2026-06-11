@@ -10,7 +10,6 @@ resources:
   - ./loki/ks.yaml
   - ./alloy/ks.yaml
   - ./kromgo/ks.yaml
-  - ./gatus/ks.yaml
   - ./keda/ks.yaml
   - ./silence-operator/ks.yaml
   - ./karma/ks.yaml

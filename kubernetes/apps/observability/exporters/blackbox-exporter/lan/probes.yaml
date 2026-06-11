@@ -31,6 +31,27 @@ spec:
 apiVersion: monitoring.coreos.com/v1
 kind: Probe
 metadata:
+  name: internet
+spec:
+  interval: 1m
+  module: icmp
+  prober:
+    url: blackbox-exporter-lan.observability.svc.cluster.local.:9115
+  targets:
+    staticConfig:
+      static:
+        - "1.1.1.1"
+        - "8.8.8.8"
+        - "9.9.9.9"
+  metricRelabelings:
+    - targetLabel: service
+      replacement: blackbox-exporter-lan
+      action: replace
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/monitoring.coreos.com/probe_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
   name: nfs
 spec:
   module: tcp_connect

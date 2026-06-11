@@ -9,3 +9,4 @@ resources:
   - ./servicemonitor.yaml
   - ./prometheusrule.yaml
   - ./snapshot-cronjob.yaml
+  - ./probes.yaml

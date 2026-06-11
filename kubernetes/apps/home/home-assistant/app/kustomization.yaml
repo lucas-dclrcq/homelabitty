@@ -7,3 +7,4 @@ resources:
   - ./pvc.yaml
   - ./helmrelease.yaml
   - ./ocirepository.yaml
+  - ./probes.yaml

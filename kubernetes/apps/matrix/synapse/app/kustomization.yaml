@@ -10,6 +10,7 @@ resources:
   - ./grafanadashboard.yaml
   - ./helmrepository.yaml
   - ./dnsendpoint.yaml
+  - ./probes.yaml
 configMapGenerator:
   - name: mas-synapse-config
     files:

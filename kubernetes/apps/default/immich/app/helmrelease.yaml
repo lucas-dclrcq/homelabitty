@@ -61,9 +61,6 @@ spec:
 
     route:
       internal:
-        annotations:
-          gatus.home-operations.com/endpoint: |-
-            group: Misc
         hostnames:
           - "photos.${SECRET_DOMAIN}"
         parentRefs:

@@ -53,9 +53,6 @@ spec:
 
     route:
       app:
-        annotations:
-          gatus.home-operations.com/endpoint: |-
-            group: Misc
         hostnames:
           - "semaphore.${LIMITED_DOMAIN}"
         parentRefs:

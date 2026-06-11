@@ -68,7 +68,6 @@ spec:
         fsGroup: ${APP_GID}
         fsGroupChangePolicy: OnRootMismatch
 
-
     service:
       app:
         ports:
@@ -77,9 +76,6 @@ spec:
 
     route:
       app:
-        annotations:
-          gatus.home-operations.com/endpoint: |-
-            group: Downloads
         hostnames:
           - "{{ .Release.Name }}.${LIMITED_DOMAIN}"
         parentRefs:

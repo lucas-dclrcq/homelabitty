@@ -8,3 +8,4 @@ resources:
   - ./persistentvolume.yaml
   - ./helmrelease.yaml
   - ./httproute.yaml
+  - ./probes.yaml

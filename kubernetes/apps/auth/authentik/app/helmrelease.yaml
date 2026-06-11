@@ -48,9 +48,6 @@ spec:
 
       route:
         main:
-          annotations:
-            gatus.home-operations.com/endpoint: |-
-              group: Auth
           enabled: true
           hostnames:
             - "sso.${SECRET_DOMAIN}"
