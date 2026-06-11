@@ -92,6 +92,7 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
     service:
       app:
+        forceRename: mosquitto
         controller: mosquitto
         type: LoadBalancer
         annotations:
