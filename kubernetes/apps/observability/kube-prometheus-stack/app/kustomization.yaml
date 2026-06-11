@@ -8,6 +8,7 @@ resources:
   - ./alertmanagerconfig.yaml
   - ./helmrelease.yaml
   - ./prometheusrule.yaml
+  - ./prometheusrule-ntp.yaml
   - ./scrapeconfig.yaml
   - ./grafanadashboard.yaml
   - ./grafanadashboard-app-overview.yaml

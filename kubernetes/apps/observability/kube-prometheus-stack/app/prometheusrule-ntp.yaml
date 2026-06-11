@@ -1,0 +1,65 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/monitoring.coreos.com/prometheusrule_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: ntp-node-rules
+spec:
+  groups:
+    - name: ntp-node
+      rules:
+        - alert: NtpExporterDown
+          expr: up{job=~"chrony-exporter|gpsd-exporter"} == 0
+          for: 10m
+          labels:
+            severity: critical
+          annotations:
+            summary: "{{ $labels.job }} on {{ $labels.instance }} is unreachable"
+        - alert: ChronyCollectorFailing
+          expr: chrony_up == 0
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: "chrony_exporter cannot query chronyd (a collector fails silently — errors are debug-level only)"
+        - alert: ChronyStratumDegraded
+          expr: chrony_tracking_stratum{job="chrony-exporter"} > 1
+          for: 30m
+          labels:
+            severity: warning
+          annotations:
+            summary: "NTP server lost its GPS/PPS refclock and fell back to internet sources (stratum {{ $value }})"
+        - alert: ChronyRefclockUnreachable
+          expr: chrony_sources_reachability_ratio{source_name=~"GPS|PPS|kPPS"} < 1
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Refclock {{ $labels.source_name }} is no longer reachable by chronyd"
+        - alert: ChronyHighOffset
+          expr: chrony_tracking_rms_offset_seconds{job="chrony-exporter"} > 0.0005
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: "NTP server RMS offset is {{ $value | humanize }}s (normal is <1µs)"
+        - alert: GpsFixLost
+          expr: gpsd_mode{job="gpsd-exporter"} < 3
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: "GPS lost 3D fix (mode {{ $value }})"
+        - alert: GpsFewSatellites
+          expr: gpsd_sat_used{job="gpsd-exporter"} < 5
+          for: 30m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Only {{ $value }} satellites used — antenna degradation?"
+        - alert: NtpNoClientTraffic
+          expr: increase(chrony_serverstats_ntp_packets_received_total{job="chrony-exporter"}[1h]) == 0
+          labels:
+            severity: critical
+          annotations:
+            summary: "NTP server received zero client packets in 1h — clients (incl. Talos nodes) can't reach it"
