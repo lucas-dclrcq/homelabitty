@@ -14,9 +14,9 @@ _... managed with Flux, Renovate, and GitHub Actions_ 🤖
 <div align="center">
 
 
-[![Talos](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.hoohoot.org%2Ftalos_version&style=for-the-badge&logo=talos&logoColor=white&color=blue&label=%20)](https://talos.dev)
+[![Talos](https://kromgo.hoohoot.org/badges/talos_version)](https://talos.dev)
 &nbsp;&nbsp;
-[![Kubernetes](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.hoohoot.org%2Fkubernetes_version&style=for-the-badge&logo=kubernetes&logoColor=white&color=blue&label=%20)](https://kubernetes.io)
+[![Kubernetes](https://kromgo.hoohoot.org/badges/kubernetes_version)](https://kubernetes.io)
 &nbsp;&nbsp;
 
 </div>
@@ -24,21 +24,21 @@ _... managed with Flux, Renovate, and GitHub Actions_ 🤖
 
 ![Alert Manager Heartbeat](https://healthchecks.io/b/2/54405929-0cab-4e44-9404-07ac4f54da8a.svg)
 
-[![Node-Count](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.hoohoot.org%2Fcluster_node_count&style=flat-square&label=Nodes)](https://github.com/kashalls/kromgo)
+[![Node-Count](https://kromgo.hoohoot.org/badges/cluster_node_count)](https://github.com/home-operations/kromgo)
 &nbsp;&nbsp;
-[![Nodes-Memory](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.hoohoot.org%2Fcluster_total_ram&style=flat-square&label=RAM)](https://github.com/kashalls/kromgo)
+[![Nodes-Memory](https://kromgo.hoohoot.org/badges/cluster_total_ram)](https://github.com/home-operations/kromgo)
 &nbsp;&nbsp;
-[![Pod-Count](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.hoohoot.org%2Fcluster_pod_count&style=flat-square&label=Pods)](https://github.com/kashalls/kromgo)
+[![Pod-Count](https://kromgo.hoohoot.org/badges/cluster_pod_count)](https://github.com/home-operations/kromgo)
 &nbsp;&nbsp;
-[![CPU-Usage](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.hoohoot.org%2Fcluster_cpu_usage&style=flat-square&label=CPU)](https://github.com/kashalls/kromgo)
+[![CPU-Usage](https://kromgo.hoohoot.org/badges/cluster_cpu_usage)](https://github.com/home-operations/kromgo)
 &nbsp;&nbsp;
-[![Memory-Usage](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.hoohoot.org%2Fcluster_memory_usage&style=flat-square&label=Memory)](https://github.com/kashalls/kromgo)
+[![Memory-Usage](https://kromgo.hoohoot.org/badges/cluster_memory_usage)](https://github.com/home-operations/kromgo)
 &nbsp;&nbsp;
-[![Power-Usage](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.hoohoot.org%2Fcluster_power_usage&style=flat-square&label=Power)](https://github.com/kashalls/kromgo)
+[![Power-Usage](https://kromgo.hoohoot.org/badges/cluster_power_usage)](https://github.com/home-operations/kromgo)
 &nbsp;&nbsp;
-[![Age-Days](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.hoohoot.org%2Fcluster_age_days&style=flat-square&label=Age)](https://github.com/kashalls/kromgo)
+[![Age-Days](https://kromgo.hoohoot.org/badges/cluster_age_days)](https://github.com/home-operations/kromgo)
 &nbsp;&nbsp;
-[![Uptime-Days](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.hoohoot.org%2Fcluster_uptime_days&style=flat-square&label=Uptime)](https://github.com/kashalls/kromgo)
+[![Uptime-Days](https://kromgo.hoohoot.org/badges/cluster_uptime_days)](https://github.com/home-operations/kromgo)
 &nbsp;&nbsp;
 </div>
 

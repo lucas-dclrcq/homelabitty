@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
@@ -10,87 +10,80 @@ spec:
     kind: OCIRepository
     name: *app
   values:
-    controllers:
-      kromgo:
-        strategy: RollingUpdate
-        annotations:
-          reloader.stakater.com/auto: "true"
-        containers:
-          app:
-            image:
-              repository: ghcr.io/kashalls/kromgo
-              tag: v0.10.0@sha256:965ecc92d68dc1a4a969397855367bbc70da03227a941ea607b73bb7e0b78fd6
-            env:
-              PROMETHEUS_URL: http://prometheus-operated.observability.svc.cluster.local:9090
-              SERVER_HOST: 0.0.0.0
-              SERVER_PORT: &serverPort 80
-              HEALTH_HOST: 0.0.0.0
-              HEALTH_PORT: &healthPort 8888
+    config:
+      prometheus: http://prometheus-operated.{{ .Release.Namespace }}.svc.cluster.local:9090
+      badges:
+        - title: Talos
+          id: talos_version
+          query: label_replace(node_os_info{name="Talos"}, "version_id", "$1", "version_id", "v(.+)")
+          valueExpr: labels["version_id"]
+          icon: si:talos
 
-            probes:
-              liveness: &probes
-                enabled: true
-                custom: true
-                spec:
-                  httpGet:
-                    path: /readyz
-                    port: *healthPort
-                  initialDelaySeconds: 0
-                  periodSeconds: 10
-                  timeoutSeconds: 1
-                  failureThreshold: 3
-              readiness: *probes
+        - title: Kubernetes
+          id: kubernetes_version
+          query: label_replace(kubernetes_build_info{service="kubernetes"}, "git_version", "$1", "git_version", "v(.+)")
+          valueExpr: labels["git_version"]
+          icon: si:kubernetes
 
-            securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: {drop: ["ALL"]}
+        - title: Nodes
+          id: cluster_node_count
+          query: count(count by (node) (kube_node_status_condition{condition="Ready"}))
+          colorExpr: '"green"'
 
-            resources:
-              requests:
-                cpu: 10m
-              limits:
-                memory: 64Mi
+        - title: RAM
+          id: cluster_total_ram
+          query: round(sum(machine_memory_bytes) / 1024 / 1024 / 1024)
+          valueExpr: string(result) + "Gb"
+          colorExpr: '"green"'
 
-    defaultPodOptions:
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 65534
-        runAsGroup: 65534
-        seccompProfile: {type: RuntimeDefault}
+        - title: Pods
+          id: cluster_pod_count
+          query: sum(kube_pod_status_phase{phase="Running"})
+          valueExpr: humanizeCommas(result)
+          colorExpr: '"green"'
 
-    service:
-      app:
-        controller: kromgo
-        ports:
-          http:
-            primary: true
-            port: *serverPort
-          health:
-            port: *healthPort
+        - title: CPU
+          id: cluster_cpu_usage
+          query: round(avg(instance:node_cpu_utilisation:rate5m) * 100, 0.1)
+          valueExpr: string(result) + "%"
+          colorExpr: 'colorScale(result, [35.0, 75.0], ["green", "orange", "red"])'
 
-    route:
-      app:
-        annotations:
-          gatus.home-operations.com/endpoint: |-
-            url: https://{{ .Release.Name }}.${SECRET_DOMAIN}/talos_version
-            group: Observability
-        hostnames:
-          - "{{ .Release.Name }}.${SECRET_DOMAIN}"
-        parentRefs:
-          - name: external
-            namespace: network
+        - title: Memory
+          id: cluster_memory_usage
+          query: round(sum(node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / sum(node_memory_MemTotal_bytes) * 100, 0.1)
+          valueExpr: string(result) + "%"
+          colorExpr: 'colorScale(result, [35.0, 75.0], ["green", "orange", "red"])'
 
-        rules:
-          - backendRefs:
-              - name: *app
-                port: *serverPort
+        - title: Power
+          id: cluster_power_usage
+          query: round(upsHighPrecOutputLoad, 0.1)
+          valueExpr: string(result) + "w"
+          colorExpr: 'colorScale(result, [400.0, 750.0], ["green", "orange", "red"])'
 
-    persistence:
-      config-file:
-        type: configMap
-        name: kromgo-configmap
-        globalMounts:
-          - path: /kromgo/config.yaml
-            subPath: config.yaml
-            readOnly: true
+        - title: Age
+          id: cluster_age_days
+          query: round((time() - min(kube_node_created)) / 86400)
+          valueExpr: string(result) + "d"
+          colorExpr: 'colorScale(result, [180.0, 360.0], ["green", "orange", "red"])'
+
+        - title: Uptime
+          id: cluster_uptime_days
+          query: round(avg(node_time_seconds - node_boot_time_seconds) / 86400)
+          valueExpr: string(result) + "d"
+          colorExpr: 'colorScale(result, [180.0, 360.0], ["green", "orange", "red"])'
+    httpRoute:
+      enabled: true
+      annotations:
+        gatus.home-operations.com/endpoint: |-
+          url: https://{{ .Release.Name }}.${SECRET_DOMAIN}/badges/talos_version
+          group: Observability
+      parentRefs:
+        - name: external
+          namespace: network
+      hostnames:
+        - "{{ .Release.Name }}.${SECRET_DOMAIN}"
+    resources:
+      requests:
+        cpu: 10m
+      limits:
+        memory: 64Mi
