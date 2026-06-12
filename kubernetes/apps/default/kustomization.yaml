@@ -8,7 +8,6 @@ components:
 resources:
   - ./echo-server/ks.yaml
   - ./miniflux/ks.yaml
-  - ./changedetection/ks.yaml
   - ./atuin/ks.yaml
   - ./vaultwarden/ks.yaml
   - ./wallabag/ks.yaml
@@ -20,7 +19,7 @@ resources:
   - ./paperless/ks.yaml
   - ./n8n/ks.yaml
   - ./rustical/ks.yaml
-  - ./bichon/ks.yaml
+#  - ./bichon/ks.yaml
   - ./the-recipe-db/ks.yaml
   - ./bambuddy/ks.yaml
   - ./opencloud/ks.yaml
