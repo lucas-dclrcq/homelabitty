@@ -10,3 +10,5 @@ resources:
   - ./prometheusrule.yaml
   - ./snapshot-cronjob.yaml
   - ./probes.yaml
+  - ./unsealer-secret.sops.yaml
+  - ./unsealer.yaml

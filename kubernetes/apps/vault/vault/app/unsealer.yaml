@@ -1,0 +1,156 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/apps/deployment_v1.json
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vault-unsealer
+  namespace: vault
+  labels:
+    app.kubernetes.io/component: unsealer
+  annotations:
+    secret.reloader.stakater.com/reload: vault-unseal-keys
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: unsealer
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: unsealer
+    spec:
+      securityContext:
+        runAsUser: ${APP_UID}
+        runAsGroup: ${APP_GID}
+        fsGroup: ${APP_GID}
+      containers:
+        - name: unsealer
+          image: docker.io/hashicorp/vault:2.0.2
+          env:
+            - name: REPLICAS
+              value: "3"
+            - name: INTERVAL
+              value: "30"
+            - name: SNAP_DIR
+              value: /snapshots
+          envFrom:
+            - secretRef:
+                name: vault-unseal-keys
+          command:
+            - /bin/sh
+            - -ec
+            - |
+              addr() { echo "http://vault-$${1}.vault-internal:8200"; }
+              log() { echo "[$(date '+%Y-%m-%d %H:%M:%S')] $${*}"; }
+
+              pod_status() { VAULT_ADDR="$(addr "$${1}")" vault status -format=json 2>/dev/null; }
+
+              unseal_pod() {
+                log "Unsealing vault-$${1}..."
+                for key in $${VAULT_UNSEAL_KEYS}; do
+                  VAULT_ADDR="$(addr "$${1}")" vault operator unseal "$${key}" >/dev/null 2>&1 || true
+                done
+                if pod_status "$${1}" | grep -q '"sealed": false'; then
+                  log "vault-$${1} unsealed"
+                else
+                  log "WARNING: vault-$${1} still sealed after unseal attempt"
+                fi
+              }
+
+              # Disaster recovery: every replica is uninitialized (cluster
+              # rebuilt from scratch). Bootstrap vault-0 with throwaway keys,
+              # restore the latest raft snapshot, then unseal with the
+              # production keys from the SOPS secret. vault-1/2 are joined
+              # back by the main loop afterwards.
+              restore_cluster() {
+                latest="$(ls -1t "$${SNAP_DIR}"/vault-*.snap 2>/dev/null | head -n1)"
+                if [ -z "$${latest}" ]; then
+                  log "DR: cluster uninitialized but no snapshot in $${SNAP_DIR}; doing nothing"
+                  return 1
+                fi
+                log "DR: all replicas uninitialized, restoring $${latest} via vault-0"
+                export VAULT_ADDR="$(addr 0)"
+                init_out="$(vault operator init -key-shares=1 -key-threshold=1)" || { log "DR: init failed"; return 1; }
+                tmp_key="$(echo "$${init_out}" | awk '/^Unseal Key 1:/ {print $NF}')"
+                tmp_token="$(echo "$${init_out}" | awk '/^Initial Root Token:/ {print $NF}')"
+                vault operator unseal "$${tmp_key}" >/dev/null
+                tries=0
+                until vault status -format=json 2>/dev/null | grep -q '"sealed": false'; do
+                  tries=$((tries + 1))
+                  [ "$${tries}" -gt 30 ] && { log "DR: vault-0 stuck sealed after temp init"; return 1; }
+                  sleep 2
+                done
+                sleep 5
+                VAULT_TOKEN="$${tmp_token}" vault operator raft snapshot restore -force "$${latest}" || { log "DR: restore failed"; return 1; }
+                log "DR: snapshot restored, unsealing with production keys"
+                unset VAULT_ADDR
+                unseal_pod 0
+              }
+
+              log "vault-unsealer started (replicas=$${REPLICAS}, interval=$${INTERVAL}s)"
+              while true; do
+                uninit=0
+                reachable=0
+                i=0
+                while [ "$${i}" -lt "$${REPLICAS}" ]; do
+                  s="$(pod_status "$${i}")"
+                  if [ -n "$${s}" ]; then
+                    reachable=$((reachable + 1))
+                    echo "$${s}" | grep -q '"initialized": false' && uninit=$((uninit + 1))
+                  fi
+                  i=$((i + 1))
+                done
+
+                if [ "$${reachable}" -eq "$${REPLICAS}" ] && [ "$${uninit}" -eq "$${REPLICAS}" ]; then
+                  restore_cluster || true
+                fi
+
+                i=0
+                while [ "$${i}" -lt "$${REPLICAS}" ]; do
+                  s="$(pod_status "$${i}")"
+                  if [ -z "$${s}" ]; then
+                    i=$((i + 1))
+                    continue
+                  fi
+                  if echo "$${s}" | grep -q '"initialized": false'; then
+                    # Lost its raft data but the cluster is alive: rejoin via
+                    # any unsealed peer, then unseal.
+                    leader=""
+                    j=0
+                    while [ "$${j}" -lt "$${REPLICAS}" ]; do
+                      if [ "$${j}" -ne "$${i}" ] && pod_status "$${j}" | grep -q '"sealed": false'; then
+                        leader="$${j}"
+                        break
+                      fi
+                      j=$((j + 1))
+                    done
+                    if [ -n "$${leader}" ]; then
+                      log "vault-$${i} uninitialized, joining raft via vault-$${leader}"
+                      VAULT_ADDR="$(addr "$${i}")" vault operator raft join "$(addr "$${leader}")" >/dev/null 2>&1 || true
+                      unseal_pod "$${i}"
+                    fi
+                  elif echo "$${s}" | grep -q '"sealed": true'; then
+                    unseal_pod "$${i}"
+                  fi
+                  i=$((i + 1))
+                done
+                sleep "$${INTERVAL}"
+              done
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              memory: 64Mi
+          volumeMounts:
+            - name: snapshots
+              mountPath: /snapshots
+              readOnly: true
+      volumes:
+        - name: snapshots
+          nfs:
+            server: truenas.${INTERNAL_DOMAIN}
+            path: /mnt/tank/Backup/vault
+            readOnly: true
