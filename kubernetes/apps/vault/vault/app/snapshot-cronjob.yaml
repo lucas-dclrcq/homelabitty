@@ -32,8 +32,9 @@ spec:
           serviceAccountName: vault-snapshot
           restartPolicy: OnFailure
           securityContext:
-            runAsUser: 0
-            runAsGroup: 0
+            runAsUser: ${APP_UID}
+            runAsGroup: ${APP_GID}
+            fsGroup: ${APP_GID}
           containers:
             - name: snapshot
               image: docker.io/hashicorp/vault:2.0.2
