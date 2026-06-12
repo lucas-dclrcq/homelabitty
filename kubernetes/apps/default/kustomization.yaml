@@ -17,9 +17,8 @@ resources:
   - ./outline/ks.yaml
   - ./vikunja/ks.yaml
   - ./paperless/ks.yaml
-  - ./n8n/ks.yaml
   - ./rustical/ks.yaml
-#  - ./bichon/ks.yaml
+  #  - ./bichon/ks.yaml
   - ./the-recipe-db/ks.yaml
   - ./bambuddy/ks.yaml
   - ./opencloud/ks.yaml
