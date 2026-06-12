@@ -21,6 +21,10 @@ spec:
 
         pod:
           enableServiceLinks: false
+          labels:
+            ingress.home.arpa/gateway-external: allow
+            egress.home.arpa/kubedns: allow
+            egress.home.arpa/postgres: allow
 
         containers:
           app:
