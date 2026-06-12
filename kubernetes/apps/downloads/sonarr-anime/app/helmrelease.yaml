@@ -1,0 +1,127 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app sonarr-anime
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  install:
+    remediation:
+      retries: -1
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  dependsOn:
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+  values:
+    controllers:
+      sonarr-anime:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/home-operations/sonarr
+              tag: 4.0.17.2969@sha256:6806001ccc2ec95d941c9c0de012dbcb59c6a33932cfc17f71e300bdd48cabfe
+            env:
+              SONARR__APP__INSTANCENAME: Sonarr Anime
+              SONARR__AUTH__METHOD: External
+              SONARR__AUTH__REQUIRED: DisabledForLocalAddresses
+              SONARR__LOG__DBENABLED: "False"
+              SONARR__LOG__LEVEL: info
+              SONARR__SERVER__PORT: &port 80
+              SONARR__UPDATE__BRANCH: develop
+              TZ: "${TIMEZONE}"
+              SONARR__POSTGRES__HOST: "postgres-16-pgbouncer.infrastructure.svc.cluster.local"
+              SONARR__POSTGRES__PORT: "5432"
+              SONARR__POSTGRES__MAINDB: "sonarranime_main"
+
+            envFrom:
+              - secretRef:
+                  name: sonarr-anime-secret
+
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /ping
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: {drop: ["ALL"]}
+
+            resources:
+              requests:
+                cpu: 100m
+              limits:
+                memory: 4Gi
+
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1026
+        runAsGroup: 100
+        fsGroup: 100
+        fsGroupChangePolicy: OnRootMismatch
+        supplementalGroups:
+          - 10000
+        seccompProfile: {type: RuntimeDefault}
+
+    service:
+      app:
+        controller: sonarr-anime
+        ports:
+          http:
+            port: *port
+
+    route:
+      app:
+        hostnames:
+          - "{{ .Release.Name }}.${LIMITED_DOMAIN}"
+        parentRefs:
+          - name: internal
+            namespace: network
+
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
+
+    persistence:
+      config:
+        existingClaim: sonarr-anime
+      tmp:
+        type: emptyDir
+      scripts:
+        type: configMap
+        name: sonarr-anime-configmap
+        defaultMode: 0775
+        globalMounts:
+          - path: /scripts/pushover-notify.sh
+            subPath: pushover-notify.sh
+            readOnly: true
+          - path: /scripts/refresh-series.sh
+            subPath: refresh-series.sh
+            readOnly: true
+      media:
+        type: nfs
+        server: "truenas.${INTERNAL_DOMAIN}"
+        path: /mnt/tank/Media
+        globalMounts:
+          - path: /media

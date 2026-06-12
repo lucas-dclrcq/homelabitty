@@ -79,6 +79,11 @@ spec:
         - "sonarr_main"
       password:
         type: AlphaNumeric
+    - name: "sonarranime"
+      databases:
+        - "sonarranime_main"
+      password:
+        type: AlphaNumeric
     - name: "keycloak"
       databases:
         - "keycloak"
