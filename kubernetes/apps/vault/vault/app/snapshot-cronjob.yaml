@@ -51,28 +51,28 @@ spec:
                 - -ec
                 - |
                   TS="$(date +%Y%m%d-%H%M%S)"
-                  TARGET="${SNAP_DIR}/vault-${TS}.snap"
+                  TARGET="$${SNAP_DIR}/vault-$${TS}.snap"
 
-                  echo "Authenticating to Vault (k8s auth, role=${VAULT_K8S_ROLE})..."
+                  echo "Authenticating to Vault (k8s auth, role=$${VAULT_K8S_ROLE})..."
                   VAULT_TOKEN="$(vault write -field=token auth/kubernetes/login \
-                    role="${VAULT_K8S_ROLE}" \
+                    role="$${VAULT_K8S_ROLE}" \
                     jwt="$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)")"
                   export VAULT_TOKEN
 
-                  echo "Saving raft snapshot to ${TARGET}..."
-                  vault operator raft snapshot save "${TARGET}"
+                  echo "Saving raft snapshot to $${TARGET}..."
+                  vault operator raft snapshot save "$${TARGET}"
 
-                  if [ ! -s "${TARGET}" ]; then
+                  if [ ! -s "$${TARGET}" ]; then
                     echo "ERROR: snapshot file is empty" >&2
-                    rm -f "${TARGET}"
+                    rm -f "$${TARGET}"
                     exit 1
                   fi
-                  echo "Snapshot OK ($(ls -lh "${TARGET}" | awk '{print $5}'))"
+                  echo "Snapshot OK ($(ls -lh "$${TARGET}" | awk '{print $5}'))"
 
-                  echo "Pruning, keeping last ${KEEP}..."
-                  ls -1t "${SNAP_DIR}"/vault-*.snap | tail -n "+$((KEEP + 1))" | while read -r f; do
-                    echo "  removing ${f}"
-                    rm -f "${f}"
+                  echo "Pruning, keeping last $${KEEP}..."
+                  ls -1t "$${SNAP_DIR}"/vault-*.snap | tail -n "+$((KEEP + 1))" | while read -r f; do
+                    echo "  removing $${f}"
+                    rm -f "$${f}"
                   done
                   echo "Done."
               resources:
