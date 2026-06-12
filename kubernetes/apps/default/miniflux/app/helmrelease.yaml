@@ -16,6 +16,11 @@ spec:
         strategy: RollingUpdate
         annotations:
           reloader.stakater.com/auto: "true"
+        pod:
+          labels:
+            ingress.home.arpa/gateway-external: allow
+            egress.home.arpa/kubedns: allow
+            egress.home.arpa/postgres: allow
 
         containers:
           main:
