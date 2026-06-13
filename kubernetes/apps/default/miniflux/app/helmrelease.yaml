@@ -19,9 +19,10 @@ spec:
         pod:
           labels:
             ingress.home.arpa/gateway-external: allow
+            ingress.home.arpa/prometheus: allow
             egress.home.arpa/kubedns: allow
             egress.home.arpa/postgres: allow
-
+            egress.home.arpa/world: allow
         containers:
           main:
             image:

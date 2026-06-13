@@ -4,5 +4,7 @@ kind: Kustomization
 resources:
   - ./allow-ingress-gateway-external.yaml
   - ./allow-ingress-gateway-internal.yaml
+  - ./allow-ingress-prometheus.yaml
   - ./allow-egress-kubedns.yaml
   - ./allow-egress-postgres.yaml
+  - ./allow-egress-world.yaml
