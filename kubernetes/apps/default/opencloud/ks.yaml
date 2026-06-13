@@ -28,4 +28,6 @@ spec:
       APP: *app
       VOLSYNC_CAPACITY: 2Gi
       VOLSYNC_ACCESSMODES: ReadWriteMany
+      VOLSYNC_SNAP_ACCESSMODES: ReadOnlyMany
       VOLSYNC_STORAGECLASS: ceph-filesystem
+      VOLSYNC_SNAPSHOTCLASS: csi-ceph-filesystem
