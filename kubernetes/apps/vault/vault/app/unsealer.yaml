@@ -27,7 +27,7 @@ spec:
         fsGroup: ${APP_GID}
       containers:
         - name: unsealer
-          image: docker.io/hashicorp/vault:2.0.2
+          image: docker.io/hashicorp/vault:2.0.3
           env:
             - name: REPLICAS
               value: "3"
