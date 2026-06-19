@@ -1,0 +1,68 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/postgres-operator.crunchydata.com/postgrescluster_v1beta1.json
+apiVersion: postgres-operator.crunchydata.com/v1beta1
+kind: PostgresCluster
+metadata:
+  name: &name tracearr-timescaledb
+  labels:
+    crunchy-users.henrywhitaker3.github.com/watch: "true"
+  annotations:
+    crunchy-users.henrywhitaker3.github.com/superuser: "postgres"
+    crunchy-users.henrywhitaker3.github.com/extensions: |
+      [
+        {
+          "database": "tracearr",
+          "extension": "timescaledb"
+        }
+      ]
+spec:
+  # TSL (community) TimescaleDB build — tracearr needs continuous aggregates,
+  # which are NOT available in Crunchy's Apache-licensed timescaledb bundle.
+  postgresVersion: 16
+  image: timescale/timescaledb-ha:pg16.14-ts2.27.2-all
+
+  instances:
+    - name: timescaledb
+      metadata:
+        labels:
+          app.kubernetes.io/name: crunchy-postgres-timescaledb
+      replicas: 1
+      dataVolumeClaimSpec:
+        storageClassName: openebs-hostpath
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 20Gi
+
+  patroni:
+    dynamicConfiguration:
+      postgresql:
+        parameters:
+          shared_preload_libraries: "timescaledb"
+          max_connections: 100
+        pg_hba:
+          - hostnossl all all 10.69.0.0/16 md5
+
+  users:
+    - name: "postgres"
+      databases:
+        - "postgres"
+      options: "SUPERUSER"
+      password:
+        type: AlphaNumeric
+    - name: "tracearr"
+      databases:
+        - "tracearr"
+      password:
+        type: AlphaNumeric
+
+  monitoring:
+    pgmonitor:
+      exporter:
+        resources:
+          requests:
+            cpu: 10m
+            memory: 64M
+          limits:
+            memory: 512M

@@ -8,13 +8,6 @@ metadata:
     crunchy-users.henrywhitaker3.github.com/watch: "true"
   annotations:
     crunchy-users.henrywhitaker3.github.com/superuser: "postgres"
-    crunchy-users.henrywhitaker3.github.com/extensions: |
-      [
-        {
-          "database": "tracearr",
-          "extension": "timescaledb"
-        }
-      ]
 spec:
   postgresVersion: 16
 
@@ -31,7 +24,6 @@ spec:
       postgresql:
         parameters:
           max_connections: 300
-          shared_preload_libraries: timescaledb
         max_wal_size: 5GB
         synchronous_commit: "on"
         pg_hba:
@@ -345,11 +337,6 @@ spec:
     - name: "bookboss"
       databases:
         - "bookboss"
-      password:
-        type: AlphaNumeric
-    - name: "tracearr"
-      databases:
-        - "tracearr"
       password:
         type: AlphaNumeric
   backups:
