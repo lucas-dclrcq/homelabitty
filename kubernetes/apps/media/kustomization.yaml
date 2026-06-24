@@ -13,4 +13,3 @@ resources:
   - ./bookboss/ks.yaml
   - ./komga/ks.yaml
   - ./the-elder-scrobz/ks.yaml
-  - ./tracearr/ks.yaml
