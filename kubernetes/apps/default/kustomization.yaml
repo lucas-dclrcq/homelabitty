@@ -21,4 +21,3 @@ resources:
   - ./the-recipe-db/ks.yaml
   - ./bambuddy/ks.yaml
   - ./opencloud/ks.yaml
-  - ./kguardian/ks.yaml
