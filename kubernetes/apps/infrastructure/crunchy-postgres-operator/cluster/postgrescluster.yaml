@@ -339,6 +339,12 @@ spec:
         - "bookboss"
       password:
         type: AlphaNumeric
+    - name: "sprouttrack"
+      databases:
+        - "sprouttrack"
+        - "sprouttrack_logs"
+      password:
+        type: AlphaNumeric
   backups:
     pgbackrest:
       configuration:

@@ -1,0 +1,117 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app sprout-track
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  interval: 1h
+  values:
+    controllers:
+      sprout-track:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        strategy: Recreate
+        initContainers:
+          # The app's docker-startup.sh sources /app/env/.env and it overrides
+          # container env vars; ensure-env-defaults.js otherwise seeds SQLite
+          # defaults on first boot. Pre-seed the file with our Postgres config so
+          # it is preserved (existing keys are never overwritten by the app).
+          init-dotenv:
+            image:
+              repository: docker.io/sprouttrack/sprout-track
+              tag: 1.3.4
+            envFrom:
+              - secretRef:
+                  name: sprout-track-secret
+            command:
+              - /bin/sh
+              - -c
+              - |
+                set -eu
+                cat > /app/env/.env <<EOF
+                DATABASE_PROVIDER=postgresql
+                DATABASE_URL="$DATABASE_URL"
+                LOG_DATABASE_URL="$LOG_DATABASE_URL"
+                ENABLE_LOG=false
+                NODE_ENV=production
+                PORT=3000
+                TZ=${TIMEZONE}
+                COOKIE_SECURE=true
+                ENABLE_NOTIFICATIONS=false
+                ENC_HASH="$ENC_HASH"
+                NOTIFICATION_CRON_SECRET="$NOTIFICATION_CRON_SECRET"
+                EOF
+        containers:
+          app:
+            image:
+              repository: docker.io/sprouttrack/sprout-track
+              tag: 1.3.4
+            env:
+              TZ: ${TIMEZONE}
+              NODE_ENV: production
+              PORT: &port 3000
+              DATABASE_PROVIDER: postgresql
+              COOKIE_SECURE: "true"
+              ENABLE_NOTIFICATIONS: "false"
+            envFrom:
+              - secretRef:
+                  name: sprout-track-secret
+            probes:
+              liveness: &probe
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 30
+                  timeoutSeconds: 10
+                  failureThreshold: 3
+              readiness: *probe
+              startup:
+                enabled: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: *port
+                  initialDelaySeconds: 15
+                  periodSeconds: 10
+                  failureThreshold: 30
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 1Gi
+    defaultPodOptions:
+      securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+    service:
+      app:
+        ports:
+          http:
+            port: *port
+    route:
+      app:
+        hostnames:
+          - "sprout.${SECRET_DOMAIN}"
+        parentRefs:
+          - name: external
+            namespace: network
+    persistence:
+      data:
+        existingClaim: "{{ .Release.Name }}"
+        globalMounts:
+          - path: /app/Files
+            subPath: Files
+          - path: /app/env
+            subPath: env
+      tmp:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
