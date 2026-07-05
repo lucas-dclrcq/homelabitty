@@ -16,10 +16,6 @@ spec:
           reloader.stakater.com/auto: "true"
         strategy: Recreate
         initContainers:
-          # The app's docker-startup.sh sources /app/env/.env and it overrides
-          # container env vars; ensure-env-defaults.js otherwise seeds SQLite
-          # defaults on first boot. Pre-seed the file with our Postgres config so
-          # it is preserved (existing keys are never overwritten by the app).
           init-dotenv:
             image:
               repository: docker.io/sprouttrack/sprout-track
@@ -41,7 +37,7 @@ spec:
                 PORT=3000
                 TZ=${TIMEZONE}
                 COOKIE_SECURE=true
-                ENABLE_NOTIFICATIONS=false
+                ENABLE_NOTIFICATIONS=true
                 ENC_HASH="$ENC_HASH"
                 NOTIFICATION_CRON_SECRET="$NOTIFICATION_CRON_SECRET"
                 EOF

@@ -345,6 +345,11 @@ spec:
         - "sprouttrack_logs"
       password:
         type: AlphaNumeric
+    - name: "sure"
+      databases:
+        - "sure"
+      password:
+        type: AlphaNumeric
   backups:
     pgbackrest:
       configuration:

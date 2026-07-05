@@ -1,0 +1,134 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app sure
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  values:
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 100
+        fsGroup: 100
+        fsGroupChangePolicy: OnRootMismatch
+    controllers:
+      sure:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        initContainers:
+          migrate:
+            image: &image
+              repository: ghcr.io/we-promise/sure
+              tag: 0.7.0-hotfix.3
+            command:
+              - /bin/sh
+              - -c
+              - DISABLE_DATABASE_ENVIRONMENT_CHECK=1 bundle exec rake db:prepare
+            env: &env
+              RAILS_ENV: production
+              SELF_HOSTED: "true"
+              RAILS_LOG_TO_STDOUT: "true"
+              RAILS_ASSUME_SSL: "true"
+              RAILS_FORCE_SSL: "false"
+              RAILS_MAX_THREADS: "3"
+              MALLOC_ARENA_MAX: "2"
+              SKYLIGHT_ENABLED: "false"
+              APP_DOMAIN: "sure.${LIMITED_DOMAIN}"
+              OIDC_ISSUER: "https://sso.${SECRET_DOMAIN}/application/o/sure/"
+              OIDC_REDIRECT_URI: "https://sure.${LIMITED_DOMAIN}/auth/openid_connect/callback"
+            envFrom: &envFrom
+              - secretRef:
+                  name: sure-secret
+            securityContext: &securityContext
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: false
+              capabilities: {drop: ["ALL"]}
+        containers:
+          app:
+            image: *image
+            env:
+              <<: *env
+              PORT: "3000"
+            envFrom: *envFrom
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /up
+                    port: 3000
+                  initialDelaySeconds: 15
+                  periodSeconds: 15
+                  timeoutSeconds: 5
+                  failureThreshold: 3
+              readiness: *probes
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /up
+                    port: 3000
+                  initialDelaySeconds: 10
+                  periodSeconds: 5
+                  timeoutSeconds: 5
+                  failureThreshold: 40
+            securityContext: *securityContext
+            resources:
+              requests:
+                cpu: 100m
+                memory: 384Mi
+              limits:
+                memory: 1Gi
+          worker:
+            image: *image
+            command:
+              - bundle
+              - exec
+              - sidekiq
+            env: *env
+            envFrom: *envFrom
+            probes:
+              liveness: {enabled: false}
+              readiness: {enabled: false}
+              startup: {enabled: false}
+            securityContext: *securityContext
+            resources:
+              requests:
+                cpu: 50m
+                memory: 256Mi
+              limits:
+                memory: 768Mi
+    service:
+      app:
+        controller: sure
+        ports:
+          http:
+            port: &port 3000
+    route:
+      app:
+        hostnames:
+          - "sure.${LIMITED_DOMAIN}"
+        parentRefs:
+          - name: internal
+            namespace: network
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: *port
+    persistence:
+      storage:
+        existingClaim: sure
+        advancedMounts:
+          sure:
+            app:
+              - path: /rails/storage
+            worker:
+              - path: /rails/storage
