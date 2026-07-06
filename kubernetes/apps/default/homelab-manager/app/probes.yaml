@@ -12,7 +12,7 @@ spec:
   targets:
     staticConfig:
       static:
-        - "https://homelab-manager.${LIMITED_DOMAIN}"
+        - "https://${SECRET_DOMAIN}"
   metricRelabelings:
     - targetLabel: service
       replacement: app-endpoint
