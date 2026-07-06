@@ -7,7 +7,6 @@ resources:
   - ./notifications.yaml
   - ./sabnzbd/ks.yaml
   - ./qbittorrent/ks.yaml
-  - ./readarr/ks.yaml
   - ./lidarr/ks.yaml
   - ./recyclarr/ks.yaml
   - ./slskd/ks.yaml
