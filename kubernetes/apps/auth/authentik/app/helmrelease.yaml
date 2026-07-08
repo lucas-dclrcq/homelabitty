@@ -10,13 +10,16 @@ spec:
     kind: OCIRepository
     name: *app
   values:
+    # Custom blueprints are mounted by the chart under /blueprints/mounted/cm-<name>
+    # (the path authentik's discovery scans) and applied automatically.
+    blueprints:
+      configMaps:
+        - authentik-blueprint-brand
+
     global:
       volumeMounts:
         - name: "${SECRET_DOMAIN/./-}-production-tls"
           mountPath: /certs
-          readOnly: true
-        - name: blueprints-custom
-          mountPath: /blueprints/custom
           readOnly: true
       volumes:
         - name: "${SECRET_DOMAIN/./-}-production-tls"
@@ -27,9 +30,6 @@ spec:
                 path: "${SECRET_DOMAIN/./-}-production-tls.pem"
               - key: tls.key
                 path: "${SECRET_DOMAIN/./-}-production-tls.key"
-        - name: blueprints-custom
-          configMap:
-            name: authentik-blueprint-brand
 
       podAnnotations:
         reloader.stakater.com/auto: "true"
