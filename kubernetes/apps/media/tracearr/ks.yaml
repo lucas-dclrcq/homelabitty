@@ -64,3 +64,4 @@ spec:
       DRAGONFLY_ARG_CLUSTER_MODE: "--cluster_mode="
       DRAGONFLY_ARG_LOCK_ON_HASHTAGS: "--lock_on_hashtags=false"
       DRAGONFLY_ARGS_DEFAULT_LUA_FLAGS: allow-undeclared-keys
+      DRAGONFLY_LIMITS_MEMORY: 4Gi
