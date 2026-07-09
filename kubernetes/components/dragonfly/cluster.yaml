@@ -16,8 +16,8 @@ spec:
   args:
     - --maxmemory=$(MAX_MEMORY)Mi
     - --proactor_threads=${DRAGONFLY_ARGS_THREADS:=2}
-    - --cluster_mode=emulated
-    - --lock_on_hashtags
+    - ${DRAGONFLY_ARG_CLUSTER_MODE:=--cluster_mode=emulated}
+    - ${DRAGONFLY_ARG_LOCK_ON_HASHTAGS:=--lock_on_hashtags}
     - --default_lua_flags=${DRAGONFLY_ARGS_DEFAULT_LUA_FLAGS:=}
     - --primary_port_http_enabled=true
   resources:
