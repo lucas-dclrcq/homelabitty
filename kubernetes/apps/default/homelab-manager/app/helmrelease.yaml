@@ -40,8 +40,6 @@ spec:
     operator:
       enabled: true
       replicaCount: 1
-      # OIDC client_credentials creds to authenticate against the manager API.
-      # managerApiUrl defaults to http://homelab-manager.default.svc.cluster.local:80.
       envFrom:
         - secretRef:
             name: homelab-manager-secret
