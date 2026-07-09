@@ -17,17 +17,16 @@ data:
         identifiers:
           domain: authentik-default
         attrs:
+          default: true
           branding_title: "hoohoot"
-          branding_logo: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MDAgMTIwIiB3aWR0aD0iNDAwIiBoZWlnaHQ9IjEyMCIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJIb29ob290Ij4KICA8ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSg2IDYpIHNjYWxlKDAuOSkiPgogICAgPHBhdGggZD0iTTQwIDMwIEwyOCA5IEw1MiAyNCBaIiBmaWxsPSIjMkUyOTMzIj48L3BhdGg+CiAgICA8cGF0aCBkPSJNODAgMzAgTDkyIDkgTDY4IDI0IFoiIGZpbGw9IiMyRTI5MzMiPjwvcGF0aD4KICAgIDxwYXRoIGQ9Ik02MCAxNSBDODggMTUgMTA0IDQwIDEwNCA3MSBDMTA0IDk4IDg1IDExMyA2MCAxMTMgQzM1IDExMyAxNiA5OCAxNiA3MSBDMTYgNDAgMzIgMTUgNjAgMTUgWiIgZmlsbD0iI0U4OTczQSI+PC9wYXRoPgogICAgPHBhdGggZD0iTTYwIDY2IEM3OCA2NiA5MCA3OCA5MCA5MyBDOTAgMTA1IDc4IDExMSA2MCAxMTEgQzQyIDExMSAzMCAxMDUgMzAgOTMgQzMwIDc4IDQyIDY2IDYwIDY2IFoiIGZpbGw9IiNGQkVBRDEiPjwvcGF0aD4KICAgIDxjaXJjbGUgY3g9IjQ0IiBjeT0iNTgiIHI9IjIxIiBmaWxsPSIjRkZGREZBIj48L2NpcmNsZT4KICAgIDxjaXJjbGUgY3g9Ijc2IiBjeT0iNTgiIHI9IjIxIiBmaWxsPSIjRkZGREZBIj48L2NpcmNsZT4KICAgIDxjaXJjbGUgY3g9IjQ0IiBjeT0iNTgiIHI9IjIxIiBmaWxsPSJub25lIiBzdHJva2U9IiMyRTI5MzMiIHN0cm9rZS13aWR0aD0iMy41Ij48L2NpcmNsZT4KICAgIDxjaXJjbGUgY3g9Ijc2IiBjeT0iNTgiIHI9IjIxIiBmaWxsPSJub25lIiBzdHJva2U9IiMyRTI5MzMiIHN0cm9rZS13aWR0aD0iMy41Ij48L2NpcmNsZT4KICAgIDxjaXJjbGUgY3g9IjQ3IiBjeT0iNjAiIHI9IjkiIGZpbGw9IiMyRTI5MzMiPjwvY2lyY2xlPgogICAgPGNpcmNsZSBjeD0iNzMiIGN5PSI2MCIgcj0iOSIgZmlsbD0iIzJFMjkzMyI+PC9jaXJjbGU+CiAgICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjU3IiByPSIzIiBmaWxsPSIjRkZGREZBIj48L2NpcmNsZT4KICAgIDxjaXJjbGUgY3g9Ijc2IiBjeT0iNTciIHI9IjMiIGZpbGw9IiNGRkZERkEiPjwvY2lyY2xlPgogICAgPHBhdGggZD0iTTYwIDY2IEw1MyA3NSBMNjcgNzUgWiIgZmlsbD0iI0M4N0MxRiI+PC9wYXRoPgogICAgPHBhdGggZD0iTTQ4IDExMSBsLTUgNyBNNDggMTExIGwwIDggTTQ4IDExMSBsNSA3IiBzdHJva2U9IiNDODdDMUYiIHN0cm9rZS13aWR0aD0iMyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBmaWxsPSJub25lIj48L3BhdGg+CiAgICA8cGF0aCBkPSJNNzIgMTExIGwtNSA3IE03MiAxMTEgbDAgOCBNNzIgMTExIGw1IDciIHN0cm9rZT0iI0M4N0MxRiIgc3Ryb2tlLXdpZHRoPSIzIiBzdHJva2UtbGluZWNhcD0icm91bmQiIGZpbGw9Im5vbmUiPjwvcGF0aD4KICA8L2c+CiAgPHRleHQgeD0iMTMyIiB5PSI3NiIgZm9udC1mYW1pbHk9IiYjMzk7QmFsb28gMiYjMzk7LCYjMzk7VHJlYnVjaGV0IE1TJiMzOTssc2Fucy1zZXJpZiIgZm9udC1zaXplPSI1MiIgZm9udC13ZWlnaHQ9IjgwMCIgZmlsbD0iIzJFMjkzMyIgbGV0dGVyLXNwYWNpbmc9Ii0wLjUiPkhvb2hvb3Q8L3RleHQ+CiAgPGNpcmNsZSBjeD0iMzUyIiBjeT0iNDMiIHI9IjQiIGZpbGw9IiNFODk3M0EiPjwvY2lyY2xlPgo8L3N2Zz4="
-          branding_favicon: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjAgMTIwIiB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJIb29ob290IG93bCI+CiAgCiAgPHBhdGggZD0iTTQwIDMwIEwyOCA5IEw1MiAyNCBaIiBmaWxsPSIjMkUyOTMzIj48L3BhdGg+CiAgPHBhdGggZD0iTTgwIDMwIEw5MiA5IEw2OCAyNCBaIiBmaWxsPSIjMkUyOTMzIj48L3BhdGg+CiAgCiAgPHBhdGggZD0iTTYwIDE1IEM4OCAxNSAxMDQgNDAgMTA0IDcxIEMxMDQgOTggODUgMTEzIDYwIDExMyBDMzUgMTEzIDE2IDk4IDE2IDcxIEMxNiA0MCAzMiAxNSA2MCAxNSBaIiBmaWxsPSIjRTg5NzNBIj48L3BhdGg+CiAgCiAgPHBhdGggZD0iTTYwIDY2IEM3OCA2NiA5MCA3OCA5MCA5MyBDOTAgMTA1IDc4IDExMSA2MCAxMTEgQzQyIDExMSAzMCAxMDUgMzAgOTMgQzMwIDc4IDQyIDY2IDYwIDY2IFoiIGZpbGw9IiNGQkVBRDEiPjwvcGF0aD4KICAKICA8Y2lyY2xlIGN4PSI0NCIgY3k9IjU4IiByPSIyMSIgZmlsbD0iI0ZGRkRGQSI+PC9jaXJjbGU+CiAgPGNpcmNsZSBjeD0iNzYiIGN5PSI1OCIgcj0iMjEiIGZpbGw9IiNGRkZERkEiPjwvY2lyY2xlPgogIDxjaXJjbGUgY3g9IjQ0IiBjeT0iNTgiIHI9IjIxIiBmaWxsPSJub25lIiBzdHJva2U9IiMyRTI5MzMiIHN0cm9rZS13aWR0aD0iMy41Ij48L2NpcmNsZT4KICA8Y2lyY2xlIGN4PSI3NiIgY3k9IjU4IiByPSIyMSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMkUyOTMzIiBzdHJva2Utd2lkdGg9IjMuNSI+PC9jaXJjbGU+CiAgCiAgPGNpcmNsZSBjeD0iNDciIGN5PSI2MCIgcj0iOSIgZmlsbD0iIzJFMjkzMyI+PC9jaXJjbGU+CiAgPGNpcmNsZSBjeD0iNzMiIGN5PSI2MCIgcj0iOSIgZmlsbD0iIzJFMjkzMyI+PC9jaXJjbGU+CiAgPGNpcmNsZSBjeD0iNTAiIGN5PSI1NyIgcj0iMyIgZmlsbD0iI0ZGRkRGQSI+PC9jaXJjbGU+CiAgPGNpcmNsZSBjeD0iNzYiIGN5PSI1NyIgcj0iMyIgZmlsbD0iI0ZGRkRGQSI+PC9jaXJjbGU+CiAgCiAgPHBhdGggZD0iTTYwIDY2IEw1MyA3NSBMNjcgNzUgWiIgZmlsbD0iI0M4N0MxRiI+PC9wYXRoPgogIAogIDxwYXRoIGQ9Ik00OCAxMTEgbC01IDcgTTQ4IDExMSBsMCA4IE00OCAxMTEgbDUgNyIgc3Ryb2tlPSIjQzg3QzFGIiBzdHJva2Utd2lkdGg9IjMiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgZmlsbD0ibm9uZSI+PC9wYXRoPgogIDxwYXRoIGQ9Ik03MiAxMTEgbC01IDcgTTcyIDExMSBsMCA4IE03MiAxMTEgbDUgNyIgc3Ryb2tlPSIjQzg3QzFGIiBzdHJva2Utd2lkdGg9IjMiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgZmlsbD0ibm9uZSI+PC9wYXRoPgo8L3N2Zz4="
-          branding_default_flow_background: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNDQwIDkwMCIgcHJlc2VydmVBc3BlY3RSYXRpbz0ieE1pZFlNaWQgc2xpY2UiPgo8ZGVmcz4KPGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIwIiB5Mj0iMSI+CjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI0ZCRjdGMCIvPgo8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNGQkVBRDEiLz4KPC9saW5lYXJHcmFkaWVudD4KPHJhZGlhbEdyYWRpZW50IGlkPSJnbG93IiBjeD0iNTAlIiBjeT0iMzAlIiByPSI2MCUiPgo8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNFODk3M0EiIHN0b3Atb3BhY2l0eT0iMC4yMCIvPgo8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNFODk3M0EiIHN0b3Atb3BhY2l0eT0iMCIvPgo8L3JhZGlhbEdyYWRpZW50Pgo8L2RlZnM+CjxyZWN0IHdpZHRoPSIxNDQwIiBoZWlnaHQ9IjkwMCIgZmlsbD0idXJsKCNnKSIvPgo8cmVjdCB3aWR0aD0iMTQ0MCIgaGVpZ2h0PSI5MDAiIGZpbGw9InVybCgjZ2xvdykiLz4KPC9zdmc+Cg=="
           branding_custom_css: |
-            /* ===== Hoohoot — Authentik login theme ====================
-               Cosy, warm, light-first. Baloo 2 (display) + Nunito (body).
-               ========================================================= */
+            /* ===== Hoohoot — login / registration theme (flow only) =====
+               Cosy, warm, light-first. Baloo 2 (display) + Nunito (body). */
             @import url("https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;500;600;700;800&display=swap");
 
-            :root, :host {
+            /* Design tokens — scoped to the flow so the admin UI is never affected
+               (CSS custom properties would otherwise inherit into every interface). */
+            .pf-c-login {
               --ak-accent: #E8973A;
               --pf-global--primary-color--100: #E8973A;
               --pf-global--primary-color--200: #C87C1F;
@@ -36,19 +35,39 @@ data:
               --pf-global--link--Color--hover: #49468C;
               --pf-global--Color--100: #2E2933;
               --pf-global--Color--200: #5C5566;
-              --pf-global--BackgroundColor--100: #FFFDFA;
               --pf-global--BorderColor--100: #ECE4D8;
               --pf-global--FontFamily--sans-serif: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
               --pf-global--FontFamily--heading--sans-serif: "Baloo 2", "Trebuchet MS", "Segoe UI", sans-serif;
               --pf-global--FontFamily--redhatfont--sans-serif: "Nunito", system-ui, sans-serif;
-              --pf-global--BorderRadius--sm: 12px;
-              --pf-global--BorderRadius--lg: 18px;
+              font-family: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
+              color: #2E2933;
             }
 
-            /* Page background fallback (branding bg handles the gradient) */
-            .pf-c-background-image { background-color: #FBF7F0; }
+            /* Page background — warm cosy gradient. Only on pages that render a
+               flow card (login/registration); the admin body is left alone. */
+            body:has(.pf-c-login) {
+              --ak-global--background-image:
+                radial-gradient(60% 60% at 50% 30%, rgba(232,151,58,0.20), rgba(232,151,58,0) 70%),
+                linear-gradient(180deg, #FBF7F0 0%, #FBEAD1 100%) !important;
+            }
+            body:has(.pf-c-login)::before {
+              background-image:
+                radial-gradient(60% 60% at 50% 30%, rgba(232,151,58,0.20), rgba(232,151,58,0) 70%),
+                linear-gradient(180deg, #FBF7F0 0%, #FBEAD1 100%) !important;
+              background-color: #FBF7F0 !important;
+            }
 
-            /* Login card */
+            /* Logo — replace the brand <img class="pf-c-brand"> with the Hoohoot logo.
+               authentik pins a small height, so force it explicitly. */
+            .pf-c-login .pf-c-brand {
+              content: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MDAgMTIwIiB3aWR0aD0iNDAwIiBoZWlnaHQ9IjEyMCIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJIb29ob290Ij4KICA8ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSg2IDYpIHNjYWxlKDAuOSkiPgogICAgPHBhdGggZD0iTTQwIDMwIEwyOCA5IEw1MiAyNCBaIiBmaWxsPSIjMkUyOTMzIj48L3BhdGg+CiAgICA8cGF0aCBkPSJNODAgMzAgTDkyIDkgTDY4IDI0IFoiIGZpbGw9IiMyRTI5MzMiPjwvcGF0aD4KICAgIDxwYXRoIGQ9Ik02MCAxNSBDODggMTUgMTA0IDQwIDEwNCA3MSBDMTA0IDk4IDg1IDExMyA2MCAxMTMgQzM1IDExMyAxNiA5OCAxNiA3MSBDMTYgNDAgMzIgMTUgNjAgMTUgWiIgZmlsbD0iI0U4OTczQSI+PC9wYXRoPgogICAgPHBhdGggZD0iTTYwIDY2IEM3OCA2NiA5MCA3OCA5MCA5MyBDOTAgMTA1IDc4IDExMSA2MCAxMTEgQzQyIDExMSAzMCAxMDUgMzAgOTMgQzMwIDc4IDQyIDY2IDYwIDY2IFoiIGZpbGw9IiNGQkVBRDEiPjwvcGF0aD4KICAgIDxjaXJjbGUgY3g9IjQ0IiBjeT0iNTgiIHI9IjIxIiBmaWxsPSIjRkZGREZBIj48L2NpcmNsZT4KICAgIDxjaXJjbGUgY3g9Ijc2IiBjeT0iNTgiIHI9IjIxIiBmaWxsPSIjRkZGREZBIj48L2NpcmNsZT4KICAgIDxjaXJjbGUgY3g9IjQ0IiBjeT0iNTgiIHI9IjIxIiBmaWxsPSJub25lIiBzdHJva2U9IiMyRTI5MzMiIHN0cm9rZS13aWR0aD0iMy41Ij48L2NpcmNsZT4KICAgIDxjaXJjbGUgY3g9Ijc2IiBjeT0iNTgiIHI9IjIxIiBmaWxsPSJub25lIiBzdHJva2U9IiMyRTI5MzMiIHN0cm9rZS13aWR0aD0iMy41Ij48L2NpcmNsZT4KICAgIDxjaXJjbGUgY3g9IjQ3IiBjeT0iNjAiIHI9IjkiIGZpbGw9IiMyRTI5MzMiPjwvY2lyY2xlPgogICAgPGNpcmNsZSBjeD0iNzMiIGN5PSI2MCIgcj0iOSIgZmlsbD0iIzJFMjkzMyI+PC9jaXJjbGU+CiAgICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjU3IiByPSIzIiBmaWxsPSIjRkZGREZBIj48L2NpcmNsZT4KICAgIDxjaXJjbGUgY3g9Ijc2IiBjeT0iNTciIHI9IjMiIGZpbGw9IiNGRkZERkEiPjwvY2lyY2xlPgogICAgPHBhdGggZD0iTTYwIDY2IEw1MyA3NSBMNjcgNzUgWiIgZmlsbD0iI0M4N0MxRiI+PC9wYXRoPgogICAgPHBhdGggZD0iTTQ4IDExMSBsLTUgNyBNNDggMTExIGwwIDggTTQ4IDExMSBsNSA3IiBzdHJva2U9IiNDODdDMUYiIHN0cm9rZS13aWR0aD0iMyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBmaWxsPSJub25lIj48L3BhdGg+CiAgICA8cGF0aCBkPSJNNzIgMTExIGwtNSA3IE03MiAxMTEgbDAgOCBNNzIgMTExIGw1IDciIHN0cm9rZT0iI0M4N0MxRiIgc3Ryb2tlLXdpZHRoPSIzIiBzdHJva2UtbGluZWNhcD0icm91bmQiIGZpbGw9Im5vbmUiPjwvcGF0aD4KICA8L2c+CiAgPHRleHQgeD0iMTMyIiB5PSI3NiIgZm9udC1mYW1pbHk9IiYjMzk7QmFsb28gMiYjMzk7LCYjMzk7VHJlYnVjaGV0IE1TJiMzOTssc2Fucy1zZXJpZiIgZm9udC1zaXplPSI1MiIgZm9udC13ZWlnaHQ9IjgwMCIgZmlsbD0iIzJFMjkzMyIgbGV0dGVyLXNwYWNpbmc9Ii0wLjUiPkhvb2hvb3Q8L3RleHQ+CiAgPGNpcmNsZSBjeD0iMzUyIiBjeT0iNDMiIHI9IjQiIGZpbGw9IiNFODk3M0EiPjwvY2lyY2xlPgo8L3N2Zz4=");
+              height: 80px !important;
+              max-height: none !important;
+              width: auto !important;
+              margin: 0 auto var(--space-4, 16px);
+            }
+
+            /* Login / registration card */
             .pf-c-login__main {
               background-color: #FFFDFA;
               border: 1.5px solid #ECE4D8;
@@ -61,8 +80,8 @@ data:
             .pf-c-login__main-footer { background-color: transparent; }
 
             /* Titles */
-            .pf-c-login__main-header .pf-c-title,
-            .pf-c-title {
+            .pf-c-login .pf-c-title,
+            .pf-c-login__main-header .pf-c-title {
               font-family: "Baloo 2", "Trebuchet MS", sans-serif;
               font-weight: 800;
               color: #2E2933;
@@ -70,26 +89,26 @@ data:
             }
 
             /* Labels / helper text */
-            .pf-c-form__label-text { color: #5C5566; font-weight: 700; }
-            .pf-c-form__helper-text { color: #A79E92; }
+            .pf-c-login .pf-c-form__label-text { color: #5C5566; font-weight: 700; }
+            .pf-c-login .pf-c-form__helper-text { color: #A79E92; }
 
             /* Inputs */
-            .pf-c-form-control {
+            .pf-c-login .pf-c-form-control {
               background-color: #FFFFFF;
               border: 1.5px solid #ECE4D8;
               border-radius: 12px;
               color: #2E2933;
               padding: 10px 14px;
             }
-            .pf-c-form-control:hover { border-color: #E8973A; }
-            .pf-c-form-control:focus {
+            .pf-c-login .pf-c-form-control:hover { border-color: #E8973A; }
+            .pf-c-login .pf-c-form-control:focus {
               border-color: #E8973A;
               outline: none;
               box-shadow: 0 0 0 3px rgba(232,151,58,0.45);
             }
 
             /* Primary button — amber, ink text, pill */
-            .pf-c-button.pf-m-primary {
+            .pf-c-login .pf-c-button.pf-m-primary {
               background-color: #E8973A;
               color: #2E2933;
               font-family: "Baloo 2", "Trebuchet MS", sans-serif;
@@ -98,22 +117,19 @@ data:
               border-radius: 999px;
               box-shadow: 0 3px 10px rgba(46,41,51,0.07);
             }
-            .pf-c-button.pf-m-primary:hover,
-            .pf-c-button.pf-m-primary:focus {
+            .pf-c-login .pf-c-button.pf-m-primary:hover,
+            .pf-c-login .pf-c-button.pf-m-primary:focus {
               background-color: #C87C1F;
               color: #2E2933;
               box-shadow: 0 0 0 3px rgba(232,151,58,0.45);
             }
 
             /* Link buttons & anchors — dusk indigo */
-            .pf-c-button.pf-m-link,
+            .pf-c-login .pf-c-button.pf-m-link,
             .pf-c-login__main-footer-links-item a,
-            a { color: #5D5AA6; }
-            .pf-c-button.pf-m-link:hover,
-            a:hover { color: #49468C; }
+            .pf-c-login a { color: #5D5AA6; }
+            .pf-c-login .pf-c-button.pf-m-link:hover,
+            .pf-c-login a:hover { color: #49468C; }
 
             /* Checkboxes */
-            .pf-c-check__input { accent-color: #E8973A; }
-
-            /* Logo sizing */
-            .pf-c-brand { max-height: 72px; }
+            .pf-c-login .pf-c-check__input { accent-color: #E8973A; }
