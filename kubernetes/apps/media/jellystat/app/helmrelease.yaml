@@ -45,13 +45,6 @@ spec:
               - secretRef:
                   name: jellystat-db-secret
 
-            resources:
-              requests:
-                cpu: 10m
-                memory: 250Mi
-              limits:
-                memory: 1Gi
-
     service:
       main:
         controller: main
