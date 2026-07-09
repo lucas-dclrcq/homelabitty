@@ -88,6 +88,10 @@ spec:
 
     route:
       app:
+        annotations:
+          homelab-manager.hoohoot.org/enabled: "true"
+          homelab-manager.hoohoot.org/category: "Misc"
+          homelab-manager.hoohoot.org/description: "Lecteur de flux RSS"
         hostnames:
           - "{{ .Release.Name }}.${SECRET_DOMAIN}"
         parentRefs:

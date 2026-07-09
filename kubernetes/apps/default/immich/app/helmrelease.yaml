@@ -61,6 +61,10 @@ spec:
 
     route:
       internal:
+        annotations:
+          homelab-manager.hoohoot.org/enabled: "true"
+          homelab-manager.hoohoot.org/category: "Misc"
+          homelab-manager.hoohoot.org/description: "Gestionnaire de photos"
         hostnames:
           - "photos.${SECRET_DOMAIN}"
         parentRefs:

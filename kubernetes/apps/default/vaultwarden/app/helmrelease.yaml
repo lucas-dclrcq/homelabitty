@@ -53,6 +53,10 @@ spec:
 
     route:
       app:
+        annotations:
+          homelab-manager.hoohoot.org/enabled: "true"
+          homelab-manager.hoohoot.org/category: "Misc"
+          homelab-manager.hoohoot.org/description: "Gestionnaire de mots de passe"
         hostnames:
           - "passwords.${SECRET_DOMAIN}"
         parentRefs:
