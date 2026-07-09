@@ -47,6 +47,10 @@ spec:
                 memory: 4Gi
 
             probes:
+              # The /health endpoint becomes unresponsive during the (long) library
+              # scan since the app blocks its worker while scanning tens of thousands
+              # of tracks. Keep probes tolerant so the scan is not interrupted (which
+              # otherwise SIGTERMs the pod mid-scan and CrashLoopBackOffs it).
               liveness: &probes
                 enabled: true
                 custom: true
@@ -54,10 +58,10 @@ spec:
                   httpGet:
                     path: /health
                     port: *port
-                  initialDelaySeconds: 0
-                  periodSeconds: 10
-                  timeoutSeconds: 1
-                  failureThreshold: 3
+                  initialDelaySeconds: 30
+                  periodSeconds: 30
+                  timeoutSeconds: 10
+                  failureThreshold: 6
               readiness: *probes
 
     service:
