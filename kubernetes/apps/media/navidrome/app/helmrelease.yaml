@@ -110,6 +110,11 @@ spec:
               - name: *app
                 port: *port
       main:
+        annotations:
+          homelab-manager.hoohoot.org/enabled: "true"
+          homelab-manager.hoohoot.org/category: "Media"
+          homelab-manager.hoohoot.org/description: "Music Player"
+          homelab-manager.hoohoot.org/logo-url: "https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/navidrome.png"
         hostnames:
           - "music.${SECRET_DOMAIN}"
         parentRefs:

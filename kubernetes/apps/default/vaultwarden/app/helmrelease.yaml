@@ -57,6 +57,7 @@ spec:
           homelab-manager.hoohoot.org/enabled: "true"
           homelab-manager.hoohoot.org/category: "Misc"
           homelab-manager.hoohoot.org/description: "Gestionnaire de mots de passe"
+          homelab-manager.hoohoot.org/logo-url: "https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/vaultwarden.png"
         hostnames:
           - "passwords.${SECRET_DOMAIN}"
         parentRefs:

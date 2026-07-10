@@ -82,6 +82,11 @@ spec:
 
     route:
       app:
+        annotations:
+          homelab-manager.hoohoot.org/enabled: "true"
+          homelab-manager.hoohoot.org/category: "Misc"
+          homelab-manager.hoohoot.org/description: "TODO listes"
+          homelab-manager.hoohoot.org/logo-url: "https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/vikunja.png"
         hostnames:
           - "tasks.${SECRET_DOMAIN}"
         parentRefs:
