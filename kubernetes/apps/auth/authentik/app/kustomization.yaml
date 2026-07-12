@@ -6,6 +6,7 @@ resources:
   - ./referencegrant.yaml
   - ./externalsecret.yaml
   - ./helmrelease.yaml
+  - ./oidc-cors.yaml
   - ./brand-configmap.yaml
   - ./blueprint-brand.yaml
   - ./grafanadashboard.yaml

@@ -1,0 +1,43 @@
+---
+# Authentik does not send CORS headers on its OIDC discovery endpoint, so the
+# OpenCloud web client (origin https://drive.${SECRET_DOMAIN}) cannot fetch
+# .well-known/openid-configuration cross-origin. This dedicated route matches only
+# the opencloud discovery path (Exact match wins over the chart's catch-all sso
+# route) so we can attach a CORS policy without adding duplicate ACAO headers to
+# Authentik's token/userinfo endpoints (which already set their own CORS).
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: authentik-opencloud-oidc-discovery
+spec:
+  hostnames:
+    - "sso.${SECRET_DOMAIN}"
+  parentRefs:
+    - name: external
+      namespace: network
+  rules:
+    - matches:
+        - path:
+            type: Exact
+            value: /application/o/opencloud/.well-known/openid-configuration
+      backendRefs:
+        - name: authentik-server
+          port: 80
+---
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: authentik-opencloud-oidc-cors
+spec:
+  cors:
+    allowOrigins:
+      - "https://drive.${SECRET_DOMAIN}"
+    allowMethods:
+      - GET
+      - OPTIONS
+    allowHeaders:
+      - "*"
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      name: authentik-opencloud-oidc-discovery

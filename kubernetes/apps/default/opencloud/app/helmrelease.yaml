@@ -35,6 +35,8 @@ spec:
               - "opencloud init || true; opencloud server"
             env:
               OC_URL: "https://drive.${SECRET_DOMAIN}"
+              OC_DOMAIN: "drive.${SECRET_DOMAIN}"
+              IDP_DOMAIN: "sso.${SECRET_DOMAIN}"
               PROXY_CSP_CONFIG_FILE_LOCATION: "/etc/opencloud-csp/csp.yaml"
               OC_LOG_LEVEL: "info"
               OC_LOG_COLOR: "false"
@@ -56,6 +58,16 @@ spec:
               PROXY_OIDC_SKIP_VERIFICATION: "false"
               PROXY_ROLE_ASSIGNMENT_DRIVER: "oidc"
               WEB_OIDC_SCOPE: "openid profile email groups"
+              OC_OIDC_CLIENT_ID: "opencloud"
+              OC_OIDC_ISSUER: "https://sso.${SECRET_DOMAIN}/application/o/opencloud/"
+              WEBFINGER_WEB_OIDC_CLIENT_ID: opencloud
+              WEBFINGER_WEB_OIDC_CLIENT_SCOPES: "openid profile email groups"
+              WEBFINGER_DESKTOP_OIDC_CLIENT_ID: opencloud
+              WEBFINGER_DESKTOP_OIDC_CLIENT_SCOPES: "openid profile email groups offline_access"
+              WEBFINGER_IOS_OIDC_CLIENT_ID: opencloud
+              WEBFINGER_IOS_OIDC_CLIENT_SCOPES: "openid profile email groups offline_access"
+              WEBFINGER_ANDROID_OIDC_CLIENT_ID: opencloud
+              WEBFINGER_ANDROID_OIDC_CLIENT_SCOPES: "openid profile email groups offline_access"
               FRONTEND_APP_HANDLER_SECURE_VIEW_APP_ADDR: "eu.opencloud.api.collaboration"
             envFrom:
               - secretRef:
