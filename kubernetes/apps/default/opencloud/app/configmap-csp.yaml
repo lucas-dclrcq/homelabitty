@@ -4,10 +4,6 @@ kind: ConfigMap
 metadata:
   name: opencloud-csp
 data:
-  # Copy of the OpenCloud proxy default CSP with the external IdP (Authentik)
-  # added to connect-src so the web SPA can fetch the OIDC well-known / token /
-  # userinfo / jwks endpoints. PROXY_CSP_CONFIG_FILE_LOCATION replaces the whole
-  # default, so the full policy must be reproduced here.
   csp.yaml: |
     directives:
       child-src:

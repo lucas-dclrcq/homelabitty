@@ -35,7 +35,6 @@ spec:
               - "opencloud init || true; opencloud server"
             env:
               OC_URL: "https://drive.${SECRET_DOMAIN}"
-              # Custom CSP (see configmap-csp.yaml) whitelists the external IdP in connect-src
               PROXY_CSP_CONFIG_FILE_LOCATION: "/etc/opencloud-csp/csp.yaml"
               OC_LOG_LEVEL: "info"
               OC_LOG_COLOR: "false"
@@ -47,18 +46,15 @@ spec:
               IDM_CREATE_DEMO_USERS: "false"
               FRONTEND_ARCHIVER_MAX_SIZE: "10000000000"
               FRONTEND_CHECK_FOR_UPDATES: "false"
-              # Expose NATS and gateway gRPC so the collaboration pod can reach them cross-pod
               NATS_NATS_HOST: "0.0.0.0"
               GATEWAY_GRPC_ADDR: "0.0.0.0:9142"
-              # OIDC via Authentik; built-in IDM stays as user directory with auto-provisioning
               PROXY_AUTOPROVISION_ACCOUNTS: "true"
               PROXY_USER_OIDC_CLAIM: "preferred_username"
               PROXY_USER_CS3_CLAIM: "username"
               PROXY_OIDC_REWRITE_WELLKNOWN: "true"
               PROXY_OIDC_ACCESS_TOKEN_VERIFY_METHOD: "none"
               PROXY_OIDC_SKIP_VERIFICATION: "false"
-              PROXY_ROLE_ASSIGNMENT_DRIVER: "default"
-              GRAPH_ASSIGN_DEFAULT_USER_ROLE: "true"
+              PROXY_ROLE_ASSIGNMENT_DRIVER: "oidc"
               WEB_OIDC_SCOPE: "openid profile email groups"
               FRONTEND_APP_HANDLER_SECURE_VIEW_APP_ADDR: "eu.opencloud.api.collaboration"
             envFrom:
@@ -108,6 +104,15 @@ spec:
           opencloud:
             app:
               - path: /etc/opencloud-csp
+      proxy-config:
+        type: configMap
+        name: opencloud-proxy-config
+        advancedMounts:
+          opencloud:
+            app:
+              - path: /etc/opencloud/proxy.yaml
+                subPath: proxy.yaml
+                readOnly: true
       data:
         type: nfs
         server: "truenas.${INTERNAL_DOMAIN}"
