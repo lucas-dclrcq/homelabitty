@@ -35,6 +35,8 @@ spec:
               - "opencloud init || true; opencloud server"
             env:
               OC_URL: "https://drive.${SECRET_DOMAIN}"
+              # Custom CSP (see configmap-csp.yaml) whitelists the external IdP in connect-src
+              PROXY_CSP_CONFIG_FILE_LOCATION: "/etc/opencloud-csp/csp.yaml"
               OC_LOG_LEVEL: "info"
               OC_LOG_COLOR: "false"
               OC_LOG_PRETTY: "false"
@@ -99,6 +101,13 @@ spec:
           opencloud:
             app:
               - path: /etc/opencloud
+      csp:
+        type: configMap
+        name: opencloud-csp
+        advancedMounts:
+          opencloud:
+            app:
+              - path: /etc/opencloud-csp
       data:
         type: nfs
         server: "truenas.${INTERNAL_DOMAIN}"

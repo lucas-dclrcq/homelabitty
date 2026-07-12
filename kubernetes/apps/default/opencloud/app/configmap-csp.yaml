@@ -1,0 +1,48 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: opencloud-csp
+data:
+  # Copy of the OpenCloud proxy default CSP with the external IdP (Authentik)
+  # added to connect-src so the web SPA can fetch the OIDC well-known / token /
+  # userinfo / jwks endpoints. PROXY_CSP_CONFIG_FILE_LOCATION replaces the whole
+  # default, so the full policy must be reproduced here.
+  csp.yaml: |
+    directives:
+      child-src:
+        - "'self'"
+      connect-src:
+        - "'self'"
+        - "blob:"
+        - "https://raw.githubusercontent.com/opencloud-eu/awesome-apps/"
+        - "https://update.opencloud.eu/"
+        - "https://sso.${SECRET_DOMAIN}/"
+      default-src:
+        - "'none'"
+      font-src:
+        - "'self'"
+      frame-ancestors:
+        - "'self'"
+      frame-src:
+        - "'self'"
+        - "blob:"
+        - "https://embed.diagrams.net/"
+      img-src:
+        - "'self'"
+        - "data:"
+        - "blob:"
+        - "https://raw.githubusercontent.com/opencloud-eu/awesome-apps/"
+      manifest-src:
+        - "'self'"
+      media-src:
+        - "'self'"
+      object-src:
+        - "'self'"
+        - "blob:"
+      script-src:
+        - "'self'"
+        - "'unsafe-inline'"
+      style-src:
+        - "'self'"
+        - "'unsafe-inline'"
