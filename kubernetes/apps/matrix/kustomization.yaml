@@ -8,7 +8,6 @@ resources:
   - ./synapse/ks.yaml
   - ./element/ks.yaml
   - ./synapse-admin/ks.yaml
-  - ./baibot/ks.yaml
   - ./mautrix-discord/ks.yaml
   - ./mautrix-instagram/ks.yaml
   - ./mautrix-facebook/ks.yaml
