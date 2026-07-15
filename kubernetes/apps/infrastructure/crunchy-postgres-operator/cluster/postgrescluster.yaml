@@ -350,6 +350,11 @@ spec:
         - "sure"
       password:
         type: AlphaNumeric
+    - name: "sparkyfitness"
+      databases:
+        - "sparkyfitness"
+      password:
+        type: AlphaNumeric
   backups:
     pgbackrest:
       configuration:
