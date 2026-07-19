@@ -22,4 +22,3 @@ resources:
   - ./bambuddy/ks.yaml
   - ./opencloud/ks.yaml
   - ./sure/ks.yaml
-  - ./sparkyfitness/ks.yaml
