@@ -19,8 +19,8 @@ spec:
         containers:
           app:
             image:
-              repository: ghcr.io/szinn/bookboss
-              tag: v0.8.31
+              repository: ghcr.io/lucas-dclrcq/bookboss
+              tag: latest@sha256:1033cad58edf9b89399086e09776ede3795cabda4c0350573b1d3aee8ba4d5a3
 
             env:
               TZ: ${TIMEZONE}
