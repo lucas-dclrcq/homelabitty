@@ -63,6 +63,11 @@ spec:
 
     route:
       app:
+        annotations:
+          homelab-manager.hoohoot.org/enabled: "true"
+          homelab-manager.hoohoot.org/category: "Media"
+          homelab-manager.hoohoot.org/description: "Podcasts et audiobooks"
+          homelab-manager.hoohoot.org/logo-url: "https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/audiobookshelf.png"
         hostnames:
           - "{{ .Release.Name }}.${SECRET_DOMAIN}"
         parentRefs:
