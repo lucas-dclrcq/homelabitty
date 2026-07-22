@@ -20,7 +20,7 @@ spec:
           app:
             image:
               repository: ghcr.io/lucas-dclrcq/bookboss
-              tag: latest@sha256:1033cad58edf9b89399086e09776ede3795cabda4c0350573b1d3aee8ba4d5a3
+              tag: latest@sha256:d8aa7f5863ab02515b99f0fcf57b8594ae948a93abdc8ea80b8e709bc404ed40
 
             env:
               TZ: ${TIMEZONE}
