@@ -355,6 +355,11 @@ spec:
         - "sparkyfitness"
       password:
         type: AlphaNumeric
+    - name: "bookorbit"
+      databases:
+        - "bookorbit"
+      password:
+        type: AlphaNumeric
   backups:
     pgbackrest:
       configuration:
