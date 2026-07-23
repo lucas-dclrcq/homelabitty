@@ -30,6 +30,8 @@ spec:
               LIBRARY_BROWSE_ROOT: /books
               # Kubernetes manages volume ownership via fsGroup
               BOOKORBIT_FIX_PERMISSIONS: "false"
+              # in-cluster, sso.${SECRET_DOMAIN} resolves to the private gateway IP
+              OIDC_ALLOW_LOCAL_ISSUERS: "true"
               NODE_MAX_OLD_SPACE_SIZE: "1536"
 
             envFrom:
