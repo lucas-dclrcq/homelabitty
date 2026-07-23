@@ -18,7 +18,7 @@ spec:
           app:
             image:
               repository: docker.io/semaphoreui/semaphore
-              tag: v2.18.12
+              tag: v2.18.28
 
             envFrom:
               - secretRef:
