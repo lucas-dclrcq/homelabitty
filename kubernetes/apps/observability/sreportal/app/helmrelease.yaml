@@ -68,7 +68,7 @@ spec:
           - "--enable-mcp"
         image:
           repository: ghcr.io/golgoth31/sreportal
-          tag: 1.36.0
+          tag: 1.36.3
         resources:
           requests:
             cpu: 10m
