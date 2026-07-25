@@ -75,7 +75,7 @@ spec:
       app:
         annotations:
           homelab-manager.hoohoot.org/enabled: "true"
-          homelab-manager.hoohoot.org/category: "Media"
+          homelab-manager.hoohoot.org/category: "Musique"
           homelab-manager.hoohoot.org/description: "Téléchargement de musique"
           homelab-manager.hoohoot.org/logo-url: "https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/droppedneedle.png"
         hostnames:

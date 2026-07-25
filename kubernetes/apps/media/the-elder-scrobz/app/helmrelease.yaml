@@ -53,7 +53,7 @@ spec:
       app:
         annotations:
           homelab-manager.hoohoot.org/enabled: "true"
-          homelab-manager.hoohoot.org/category: "Media"
+          homelab-manager.hoohoot.org/category: "Musique"
           homelab-manager.hoohoot.org/description: "Statistiques d'écoute de musique"
         hostnames:
           - "{{ .Release.Name }}.${SECRET_DOMAIN}"
