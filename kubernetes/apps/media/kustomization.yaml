@@ -9,7 +9,7 @@ resources:
   - ./seerr/ks.yaml
   - ./jellyfin/ks.yaml
   - ./audiobookshelf/ks.yaml
-  - ./bookboss/ks.yaml
   - ./bookorbit/ks.yaml
   - ./komga/ks.yaml
   - ./the-elder-scrobz/ks.yaml
+  - ./nana/ks.yaml

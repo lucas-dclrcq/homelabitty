@@ -360,6 +360,11 @@ spec:
         - "bookorbit"
       password:
         type: AlphaNumeric
+    - name: "nana"
+      databases:
+        - "nana"
+      password:
+        type: AlphaNumeric
   backups:
     pgbackrest:
       configuration:

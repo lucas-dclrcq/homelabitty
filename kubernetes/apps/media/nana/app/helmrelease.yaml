@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &app bookboss
+  name: &app nana
 spec:
   interval: 30m
   chartRef:
@@ -12,26 +12,23 @@ spec:
     namespace: flux-system
   values:
     controllers:
-      bookboss:
+      nana:
         annotations:
           reloader.stakater.com/auto: "true"
 
         containers:
           app:
             image:
-              repository: ghcr.io/lucas-dclrcq/bookboss
-              tag: latest@sha256:d8aa7f5863ab02515b99f0fcf57b8594ae948a93abdc8ea80b8e709bc404ed40
+              repository: ghcr.io/lucas-dclrcq/nana
+              tag: 0.3.0@sha256:9f721c3e505da6a4aca65d3401b75cce5a9527011f904573f629a17f12c88da2
 
             env:
               TZ: ${TIMEZONE}
-              BOOKBOSS__FRONTEND__BASE_URL: https://bookboss.${SECRET_DOMAIN}
-              BOOKBOSS__FRONTEND__LISTEN_PORT: &port 8080
-              BOOKBOSS__LIBRARY__LIBRARY_PATH: /library/books
-              BOOKBOSS__IMPORT__BOOKDROP_PATH: /library/bookdrop
+              NANA_DOWNLOAD_DIR: /downloads
 
             envFrom:
               - secretRef:
-                  name: bookboss-secret
+                  name: nana-secret
 
             probes:
               liveness:
@@ -39,22 +36,22 @@ spec:
                 custom: true
                 spec:
                   httpGet:
-                    path: /healthz
-                    port: *port
-                  initialDelaySeconds: 0
-                  periodSeconds: 10
-                  timeoutSeconds: 1
+                    path: /
+                    port: &port 8080
+                  initialDelaySeconds: 10
+                  periodSeconds: 30
+                  timeoutSeconds: 5
                   failureThreshold: 3
               readiness:
                 enabled: true
                 custom: true
                 spec:
                   httpGet:
-                    path: /readyz
+                    path: /
                     port: *port
-                  initialDelaySeconds: 0
-                  periodSeconds: 10
-                  timeoutSeconds: 1
+                  initialDelaySeconds: 10
+                  periodSeconds: 30
+                  timeoutSeconds: 5
                   failureThreshold: 3
 
             securityContext:
@@ -67,7 +64,7 @@ spec:
                 cpu: 10m
                 memory: 128Mi
               limits:
-                memory: 1Gi
+                memory: 512Mi
 
     defaultPodOptions:
       securityContext:
@@ -89,32 +86,25 @@ spec:
       app:
         annotations:
           homelab-manager.hoohoot.org/enabled: "true"
-          homelab-manager.hoohoot.org/category: "Media"
-          homelab-manager.hoohoot.org/description: "Bibliothèque d'ebooks, synchronisation avec Kobo"
-          homelab-manager.hoohoot.org/logo-url: "https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/openbooks.png"
+          homelab-manager.hoohoot.org/category: "Livres"
+          homelab-manager.hoohoot.org/description: "Télécharger des ebooks"
         hostnames:
           - "{{ .Release.Name }}.${SECRET_DOMAIN}"
         parentRefs:
           - name: external
             namespace: network
-
         rules:
           - backendRefs:
               - name: *app
                 port: *port
 
     persistence:
-      data:
-        existingClaim: *app
-        globalMounts:
-          - path: /data
-
-      media:
+      downloads:
         type: nfs
         server: "truenas.${INTERNAL_DOMAIN}"
-        path: /mnt/tank/Apps/bookboss
+        path: /mnt/tank/Apps/nana/uploads
         globalMounts:
-          - path: /library
+          - path: /downloads
 
       tmp:
         type: emptyDir

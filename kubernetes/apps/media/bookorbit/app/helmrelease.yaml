@@ -28,11 +28,10 @@ spec:
               PORT: &port 3000
               APP_URL: https://bookorbit.${SECRET_DOMAIN}
               LIBRARY_BROWSE_ROOT: /books
-              # Kubernetes manages volume ownership via fsGroup
               BOOKORBIT_FIX_PERMISSIONS: "false"
-              # in-cluster, sso.${SECRET_DOMAIN} resolves to the private gateway IP
               OIDC_ALLOW_LOCAL_ISSUERS: "true"
               NODE_MAX_OLD_SPACE_SIZE: "1536"
+              BOOK_DOCK_PATH: "/bookdrop"
 
             envFrom:
               - secretRef:
@@ -94,7 +93,7 @@ spec:
       app:
         annotations:
           homelab-manager.hoohoot.org/enabled: "true"
-          homelab-manager.hoohoot.org/category: "Media"
+          homelab-manager.hoohoot.org/category: "Livres"
           homelab-manager.hoohoot.org/description: "Bibliothèque numérique — ebooks, BD et livres audio, synchronisation multi-appareils"
           homelab-manager.hoohoot.org/logo-url: "https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/bookorbit.png"
         hostnames:
@@ -125,3 +124,10 @@ spec:
         type: emptyDir
         globalMounts:
           - path: /tmp
+
+      bookdrop:
+        type: nfs
+        server: "truenas.${INTERNAL_DOMAIN}"
+        path: /mnt/tank/Apps/nana/uploads
+        globalMounts:
+          - path: /bookdrop
