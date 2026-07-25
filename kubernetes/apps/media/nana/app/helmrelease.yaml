@@ -20,7 +20,7 @@ spec:
           app:
             image:
               repository: ghcr.io/lucas-dclrcq/nana
-              tag: 0.3.0@sha256:9f721c3e505da6a4aca65d3401b75cce5a9527011f904573f629a17f12c88da2
+              tag: 0.4.0@sha256:10fdf7a82f4d3f33d3da6f7475d0706070b5f4c2a0375dd2286bdc83301ad60b
 
             env:
               TZ: ${TIMEZONE}
