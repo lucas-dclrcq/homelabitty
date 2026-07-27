@@ -7,6 +7,8 @@ sonarr:
     delete_old_custom_formats: true
     quality_definition:
       type: series
+      # Bias grabs toward smaller files within each quality band (save space)
+      preferred_ratio: 0.3
     # Guide-backed quality profiles (v8) — replaces the removed official
     # include templates. `name` is kept so the existing profiles are adopted
     # and keep their current names in Sonarr.
@@ -41,22 +43,26 @@ sonarr:
         assign_scores_to:
           - name: WEB-1080p
           - name: FR-MULTi-VO-WEB-1080p
-      # Allow x265 HD releases with HDR/DV
+      # Prefer x265 (better size/quality ratio). Score kept below the language
+      # weight (101) so language preference still wins; codec only breaks ties.
       - trash_ids:
           - 47435ece6b99a0b477caf360e79ba0bb # x265 (HD)
         assign_scores_to:
           - name: WEB-1080p
-            score: 0
+            score: 50
           - name: FR-MULTi-VO-WEB-1080p
-            score: 0
+            score: 50
           - name: FR-MULTi-VF-WEB-1080p
-            score: 0
+            score: 50
       - trash_ids:
           - 9b64dff695c2115facf1b6ea59c9bd07 # x265 (no HDR/DV)
         assign_scores_to:
           - name: WEB-1080p
+            score: 50
           - name: FR-MULTi-VO-WEB-1080p
+            score: 50
           - name: FR-MULTi-VF-WEB-1080p
+            score: 50
       # Block FanSUB
       - trash_ids:
           - 84f0acbda9c0c9de783894fb66df25aa # FanSUB
@@ -230,6 +236,8 @@ radarr:
     delete_old_custom_formats: true
     quality_definition:
       type: movie
+      # Bias grabs toward smaller files within each quality band (save space)
+      preferred_ratio: 0.3
     quality_profiles:
       - trash_id: d1d67249d3890e49bc12e275d989a7e9 # HD Bluray + WEB
         name: HD Bluray + WEB
@@ -263,22 +271,26 @@ radarr:
         assign_scores_to:
           - name: HD Bluray + WEB
             score: -10000
+      # Prefer x265 (better size/quality ratio). Score kept below the language
+      # weight (101) so language preference still wins; codec only breaks ties.
       - trash_ids:
-          # Allow x265 HD releases with HDR/DV
           - dc98083864ea246d05a42df0d05f81cc # x265 (HD)
         assign_scores_to:
           - name: HD Bluray + WEB
-            score: 0
+            score: 50
           - name: FR-MULTi-VO-HD
-            score: 0
+            score: 50
           - name: FR-MULTi-VF-HD
-            score: 0
+            score: 50
       - trash_ids:
           - 839bea857ed2c0a8e084f3cbdbd65ecb # x265 (no HDR/DV)
         assign_scores_to:
           - name: HD Bluray + WEB
+            score: 50
           - name: FR-MULTi-VO-HD
+            score: 50
           - name: FR-MULTi-VF-HD
+            score: 50
       # Block FanSUB
       - trash_ids:
           - 02e48d30a176c91baf9e15de05e5dc6a # FanSUB
