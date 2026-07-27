@@ -10,5 +10,5 @@ spec:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
   ref:
-    tag: 1.36.0
+    tag: 1.36.3
   url: oci://ghcr.io/golgoth31/sreportal/charts/sreportal
