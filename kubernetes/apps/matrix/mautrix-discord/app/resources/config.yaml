@@ -1,7 +1,7 @@
 ---
 homeserver:
   # The address that this appservice can use to connect to the homeserver.
-  address: http://synapse-matrix-synapse.matrix.svc.cluster.local:8008
+  address: http://matrix-synapse.matrix.svc.cluster.local:8008
   # Publicly accessible base URL for media, used for avatars in relay mode.
   # If not set, the connection address above will be used.
   public_address: https://mautrix-discord.${SECRET_DOMAIN}
