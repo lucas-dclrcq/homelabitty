@@ -1,0 +1,16 @@
+---
+github:
+  auth:
+    id: {{ .GITHUB_APP_ID }}
+    privateKeyFile: /github/github-key.pem
+  webhook:
+    secret: {{ .GITHUB_WEBHOOK_SECRET }}
+  oauth:
+    client_id: {{ .GITHUB_OAUTH_CLIENT_ID }}
+    client_secret: {{ .GITHUB_OAUTH_CLIENT_SECRET }}
+    redirect_uri: https://matrix-hookshot.${SECRET_DOMAIN}/oauth/
+  defaultOptions:
+    showIssueRoomLink: false
+    hotlinkIssues:
+      prefix: "#"
+  userIdPrefix: _github_

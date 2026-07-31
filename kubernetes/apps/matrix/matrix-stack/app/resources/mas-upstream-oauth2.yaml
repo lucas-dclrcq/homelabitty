@@ -1,0 +1,22 @@
+---
+upstream_oauth2:
+  providers:
+    - id: "{{ .AUTHENTIK_PROVIDER_ID }}"
+      human_name: Hoohoot SSO
+      issuer: "https://sso.${SECRET_DOMAIN}/application/o/matrix/"
+      client_id: "{{ .AUTHENTIK_CLIENT_ID }}"
+      client_secret: "{{ .AUTHENTIK_CLIENT_SECRET }}"
+      token_endpoint_auth_method: client_secret_basic
+      scope: "openid profile email"
+      synapse_idp_id: "oidc-authentik"
+      claims_imports:
+        localpart:
+          action: require
+          template: "{{ `{{ user.preferred_username }}` }}"
+        displayname:
+          action: suggest
+          template: "{{ `{{ user.name }}` }}"
+        email:
+          action: suggest
+          template: "{{ `{{ user.email }}` }}"
+          set_email_verification: always
