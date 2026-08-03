@@ -28,38 +28,32 @@ spec:
             image:
               repository: opencloudeu/opencloud-rolling
               tag: "7.3.0"
-            command:
-              - /bin/sh
-            args:
-              - -c
-              - "opencloud init || true; opencloud server"
+            command: ["/bin/sh", "-c", "opencloud init || true; opencloud server"]
             env:
               OC_URL: "https://drive.${SECRET_DOMAIN}"
-              OC_DOMAIN: "drive.${SECRET_DOMAIN}"
-              IDP_DOMAIN: "sso.${SECRET_DOMAIN}"
-              PROXY_CSP_CONFIG_FILE_LOCATION: "/etc/opencloud-csp/csp.yaml"
-              OC_LOG_LEVEL: "info"
+              OC_INSECURE: "false"
+              OC_LOG_LEVEL: info
               OC_LOG_COLOR: "false"
               OC_LOG_PRETTY: "false"
-              OC_INSECURE: "false"
-              PROXY_TLS: "false"
-              PROXY_HTTP_ADDR: "0.0.0.0:9200"
-              PROXY_ENABLE_BASIC_AUTH: "false"
+              # the built-in IdP is replaced by Authentik
+              OC_EXCLUDE_RUN_SERVICES: idp
               IDM_CREATE_DEMO_USERS: "false"
+              PROXY_TLS: "false"
+              PROXY_ENABLE_BASIC_AUTH: "false"
+              PROXY_CSP_CONFIG_FILE_LOCATION: /etc/opencloud/csp.yaml
               FRONTEND_ARCHIVER_MAX_SIZE: "10000000000"
               FRONTEND_CHECK_FOR_UPDATES: "false"
-              NATS_NATS_HOST: "0.0.0.0"
-              GATEWAY_GRPC_ADDR: "0.0.0.0:9142"
-              PROXY_AUTOPROVISION_ACCOUNTS: "true"
-              PROXY_USER_OIDC_CLAIM: "preferred_username"
-              PROXY_USER_CS3_CLAIM: "username"
-              PROXY_OIDC_REWRITE_WELLKNOWN: "true"
-              PROXY_OIDC_ACCESS_TOKEN_VERIFY_METHOD: "none"
-              PROXY_OIDC_SKIP_VERIFICATION: "false"
-              PROXY_ROLE_ASSIGNMENT_DRIVER: "oidc"
-              WEB_OIDC_SCOPE: "openid profile email groups"
-              OC_OIDC_CLIENT_ID: "opencloud"
+              # OIDC via Authentik (single public client shared by web + native apps)
               OC_OIDC_ISSUER: "https://sso.${SECRET_DOMAIN}/application/o/opencloud/"
+              OC_OIDC_CLIENT_ID: opencloud
+              PROXY_OIDC_REWRITE_WELLKNOWN: "true"
+              PROXY_OIDC_ACCESS_TOKEN_VERIFY_METHOD: none
+              PROXY_AUTOPROVISION_ACCOUNTS: "true"
+              PROXY_USER_OIDC_CLAIM: preferred_username
+              PROXY_USER_CS3_CLAIM: username
+              # role mapping lives in proxy.yaml
+              PROXY_ROLE_ASSIGNMENT_DRIVER: oidc
+              WEB_OIDC_SCOPE: "openid profile email groups"
               WEBFINGER_WEB_OIDC_CLIENT_ID: opencloud
               WEBFINGER_WEB_OIDC_CLIENT_SCOPES: "openid profile email groups"
               WEBFINGER_DESKTOP_OIDC_CLIENT_ID: opencloud
@@ -68,7 +62,6 @@ spec:
               WEBFINGER_IOS_OIDC_CLIENT_SCOPES: "openid profile email groups offline_access"
               WEBFINGER_ANDROID_OIDC_CLIENT_ID: opencloud
               WEBFINGER_ANDROID_OIDC_CLIENT_SCOPES: "openid profile email groups offline_access"
-              FRONTEND_APP_HANDLER_SECURE_VIEW_APP_ADDR: "eu.opencloud.api.collaboration"
             envFrom:
               - secretRef:
                   name: opencloud-secret
@@ -97,42 +90,28 @@ spec:
         ports:
           http:
             port: 9200
-          nats:
-            port: 9233
-          gateway:
-            port: 9142
 
     persistence:
       config:
+        type: configMap
+        name: opencloud-config
+        globalMounts:
+          - path: /etc/opencloud/csp.yaml
+            subPath: csp.yaml
+            readOnly: true
+          - path: /etc/opencloud/proxy.yaml
+            subPath: proxy.yaml
+            readOnly: true
+      etc:
         existingClaim: *app
-        advancedMounts:
-          opencloud:
-            app:
-              - path: /etc/opencloud
-      csp:
-        type: configMap
-        name: opencloud-csp
-        advancedMounts:
-          opencloud:
-            app:
-              - path: /etc/opencloud-csp
-      proxy-config:
-        type: configMap
-        name: opencloud-proxy-config
-        advancedMounts:
-          opencloud:
-            app:
-              - path: /etc/opencloud/proxy.yaml
-                subPath: proxy.yaml
-                readOnly: true
+        globalMounts:
+          - path: /etc/opencloud
       data:
         type: nfs
         server: "truenas.${INTERNAL_DOMAIN}"
         path: /mnt/tank/Apps/opencloud/data
-        advancedMounts:
-          opencloud:
-            app:
-              - path: /var/lib/opencloud
+        globalMounts:
+          - path: /var/lib/opencloud
 
     route:
       opencloud:
