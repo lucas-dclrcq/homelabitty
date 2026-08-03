@@ -1,0 +1,276 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  # Release name "matrix" prefixes every chart resource (matrix-synapse,
+  # matrix-hookshot, ...). It also makes the chart-generated hookshot
+  # appservice URL identical to the pre-migration one.
+  name: matrix
+spec:
+  interval: 30m
+  chartRef:
+    kind: OCIRepository
+    name: matrix-stack
+  install:
+    remediation:
+      retries: -1
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    serverName: "${SECRET_DOMAIN}"
+
+    # No ingress controller runs in this cluster: the chart-generated Ingress
+    # objects are inert. Real routing is done by the HTTPRoutes in
+    # httproute.yaml pointing at the chart Services.
+    ingress:
+      tlsEnabled: false
+
+    postgres:
+      enabled: false
+
+    synapse:
+      enabled: true
+      ingress:
+        host: "matrix.${SECRET_DOMAIN}"
+      postgres:
+        host: postgres-16-primary.infrastructure.svc.cluster.local
+        port: 5432
+        user: synapse
+        database: synapse
+        sslMode: prefer
+        password:
+          secret: synapse-secret
+          secretKey: POSTGRES_PASSWORD
+      media:
+        storage:
+          existingClaim: synapse
+        maxUploadSize: 100M
+      signingKey:
+        secret: synapse-secret
+        secretKey: signing.key
+      appservices:
+        - secret: mautrix-whatsapp-secret
+          secretKey: registration.yaml
+        - secret: mautrix-facebook-secret
+          secretKey: registration.yaml
+        - secret: mautrix-instagram-secret
+          secretKey: registration.yaml
+        - secret: mautrix-discord-secret
+          secretKey: registration.yaml
+        - secret: mautrix-discord-secret
+          secretKey: double-puppet-registration.yaml
+      additional:
+        0-homelab:
+          config: |
+            email:
+              smtp_host: smtp-relay.infrastructure.svc.cluster.local
+              smtp_port: 2525
+              notif_from: "Hoohoot Matrix <noreply@${SECRET_DOMAIN}>"
+            presence:
+              enabled: true
+            enable_3pid_lookup: false
+            use_appservice_legacy_authorization: true
+            report_stats: true
+            url_preview_enabled: true
+            url_preview_ip_range_blacklist:
+              - "127.0.0.0/8"
+              - "10.0.0.0/8"
+              - "192.168.0.0/16"
+      # One-time migration: the ananace chart stored media at <pvc>/media,
+      # ESS expects <pvc>/media_store. Remove after the first successful start.
+      extraInitContainers:
+        - name: media-migrate
+          image: docker.io/library/busybox:1.37
+          command:
+            - sh
+            - -c
+            - if [ -d /media/media ] && [ ! -d /media/media_store ]; then mv /media/media /media/media_store; fi
+          volumeMounts:
+            - name: media
+              mountPath: /media
+      podSecurityContext:
+        fsGroupChangePolicy: OnRootMismatch
+      resources:
+        requests:
+          cpu: 1000m
+          memory: 2500Mi
+        limits:
+          memory: 2500Mi
+
+    matrixAuthenticationService:
+      enabled: true
+      ingress:
+        # Must never change: MAS public_base/issuer identity is derived from it.
+        host: "mas.${SECRET_DOMAIN}"
+      postgres:
+        host: postgres-16-primary.infrastructure.svc.cluster.local
+        port: 5432
+        user: mas
+        database: mas
+        sslMode: prefer
+        password:
+          secret: mas-secret
+          secretKey: POSTGRES_PASSWORD
+      encryptionSecret:
+        secret: mas-secret
+        secretKey: encryption
+      synapseSharedSecret:
+        secret: mas-secret
+        secretKey: synapse-shared-secret
+      privateKeys:
+        rsa:
+          secret: mas-secret
+          secretKey: rsa.pem
+        ecdsaPrime256v1:
+          secret: mas-secret
+          secretKey: ecdsa-prime256v1.pem
+        ecdsaSecp256k1:
+          secret: mas-secret
+          secretKey: ecdsa-secp256k1.pem
+        ecdsaSecp384r1:
+          secret: mas-secret
+          secretKey: ecdsa-secp384r1.pem
+      additional:
+        0-email:
+          config: |
+            email:
+              from: "matrix@${SECRET_DOMAIN}"
+              reply_to: "matrix@${SECRET_DOMAIN}"
+              transport: smtp
+              mode: plain
+              port: 2525
+              hostname: smtp-relay.infrastructure.svc.cluster.local
+        1-passwords:
+          config: |
+            passwords:
+              enabled: true
+              schemes:
+                - version: 1
+                  algorithm: bcrypt
+                - version: 2
+                  algorithm: argon2id
+              minimum_complexity: 3
+        2-upstream-oauth2:
+          configSecret: mas-additional-secret
+          configSecretKey: upstream-oauth2.yaml
+
+    elementWeb:
+      enabled: true
+      ingress:
+        host: "element.${SECRET_DOMAIN}"
+      additional:
+        user-config.json: |
+          {
+            "disable_custom_urls": false,
+            "disable_guests": false,
+            "disable_login_language_selector": false,
+            "disable_3pid_login": false,
+            "brand": "Element",
+            "integrations_ui_url": "https://scalar.vector.im/",
+            "integrations_rest_url": "https://scalar.vector.im/api",
+            "integrations_widgets_urls": [
+              "https://scalar.vector.im/_matrix/integrations/v1",
+              "https://scalar.vector.im/api",
+              "https://scalar-staging.vector.im/_matrix/integrations/v1",
+              "https://scalar-staging.vector.im/api",
+              "https://scalar-staging.riot.im/scalar/api"
+            ],
+            "bug_report_endpoint_url": "https://element.io/bugreports/submit",
+            "defaultCountryCode": "US",
+            "show_labs_settings": false,
+            "default_federate": true,
+            "default_theme": "dark",
+            "room_directory": {
+              "servers": ["matrix.org"]
+            },
+            "enable_presence_by_hs_url": {
+              "https://matrix.org": false,
+              "https://matrix-client.matrix.org": false
+            },
+            "setting_defaults": {
+              "breadcrumbs": true
+            },
+            "jitsi": {
+              "preferred_domain": "meet.element.io"
+            }
+          }
+
+    elementAdmin:
+      enabled: true
+      ingress:
+        host: "admin.${SECRET_DOMAIN}"
+
+    hookshot:
+      enabled: true
+      ingress:
+        # Keeps the GitHub OAuth redirect and webhook URLs valid.
+        host: "matrix-hookshot.${SECRET_DOMAIN}"
+      # Full pre-migration registration provided verbatim (id matrix-hookshot,
+      # as/hs tokens, ghost-user namespaces) so Synapse sees the same appservice.
+      appserviceRegistration:
+        secret: hookshot-secret
+        secretKey: registration.yaml
+      passkey:
+        secret: hookshot-secret
+        secretKey: passkey.pem
+      logging:
+        level: debug
+      additional:
+        0-permissions:
+          config: |
+            permissions:
+              - actor: "@lucasd:${SECRET_DOMAIN}"
+                services:
+                  - service: "*"
+                    level: admin
+              - actor: "*"
+                services:
+                  - service: "*"
+                    level: commands
+              - actor: "*"
+                services:
+                  - service: "*"
+                    level: notifications
+              - actor: "*"
+                services:
+                  - service: "*"
+                    level: manageConnections
+            bot:
+              displayname: Hookshot Bot
+              avatar: mxc://half-shot.uk/2876e89ccade4cb615e210c458e2a7a6883fe17d
+        1-github:
+          configSecret: hookshot-github-secret
+          configSecretKey: github.yaml
+      extraVolumes:
+        - name: github-key
+          secret:
+            secretName: hookshot-github-secret
+            items:
+              - key: github-key.pem
+                path: github-key.pem
+      extraVolumeMounts:
+        - name: github-key
+          mountPath: /github
+          readOnly: true
+
+    matrixRTC:
+      enabled: true
+      ingress:
+        host: "mrtc.${SECRET_DOMAIN}"
+      sfu:
+        exposedServices:
+          rtcTcp:
+            portType: LoadBalancer
+            annotations:
+              lbipam.cilium.io/ips: "${LB_IP_MATRIX_RTC}"
+              lbipam.cilium.io/sharing-key: matrix-rtc
+          rtcMuxedUdp:
+            portType: LoadBalancer
+            annotations:
+              lbipam.cilium.io/ips: "${LB_IP_MATRIX_RTC}"
+              lbipam.cilium.io/sharing-key: matrix-rtc
