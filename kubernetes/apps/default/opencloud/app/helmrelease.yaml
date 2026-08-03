@@ -24,6 +24,25 @@ spec:
             fsGroupChangePolicy: OnRootMismatch
         strategy: Recreate
         containers:
+          # rewrites the webfinger issuer href for the desktop client, which
+          # cannot use platform-based client discovery and authenticates with
+          # its baked-in OpenCloudDesktop client id against its own issuer
+          webfinger-proxy:
+            image:
+              repository: ghcr.io/2bros-group/opencloud-oidc-webfinger-proxy
+              tag: v1.0.0
+            env:
+              PORT: "9201"
+              UPSTREAM_URL: http://localhost:9200
+              HREF_PATTERN: &issuerBase "https://sso.${SECRET_DOMAIN}/application/o/"
+              HREF_REPLACEMENT: *issuerBase
+              DEFAULT_SUFFIX: opencloud
+            resources:
+              requests:
+                cpu: 5m
+                memory: 16Mi
+              limits:
+                memory: 64Mi
           app:
             image:
               repository: opencloudeu/opencloud-rolling
@@ -90,6 +109,8 @@ spec:
         ports:
           http:
             port: 9200
+          webfinger:
+            port: 9201
 
     persistence:
       config:
@@ -124,3 +145,22 @@ spec:
           - backendRefs:
               - name: opencloud
                 port: 9200
+          # desktop app: steer its webfinger lookup through the rewrite proxy
+          # so it discovers the OpenCloudDesktop issuer instead of opencloud
+          - matches:
+              - path:
+                  type: Exact
+                  value: /.well-known/webfinger
+                headers:
+                  - type: RegularExpression
+                    name: User-Agent
+                    value: ".*mirall.*OpenCloud.*"
+            filters:
+              - type: RequestHeaderModifier
+                requestHeaderModifier:
+                  add:
+                    - name: X-Issuer-Suffix
+                      value: openclouddesktop
+            backendRefs:
+              - name: opencloud
+                port: 9201
