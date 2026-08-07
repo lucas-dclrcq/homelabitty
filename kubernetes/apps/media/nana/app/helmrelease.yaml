@@ -25,6 +25,7 @@ spec:
             env:
               TZ: ${TIMEZONE}
               NANA_DOWNLOAD_DIR: /downloads
+              NANA_ALLOWED_FORMATS: "epub,pdf,cbz"
 
             envFrom:
               - secretRef:
