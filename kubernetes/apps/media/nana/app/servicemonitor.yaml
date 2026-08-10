@@ -1,0 +1,21 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: nana
+spec:
+  endpoints:
+    - interval: 1m
+      path: /q/metrics
+      port: http
+      scheme: http
+      scrapeTimeout: 10s
+  jobLabel: nana
+  namespaceSelector:
+    matchNames:
+      - media
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: nana
+      app.kubernetes.io/name: nana
+      app.kubernetes.io/service: nana

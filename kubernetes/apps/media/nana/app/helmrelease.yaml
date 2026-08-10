@@ -20,7 +20,7 @@ spec:
           app:
             image:
               repository: ghcr.io/lucas-dclrcq/nana
-              tag: 0.6.0
+              tag: 0.7.0
 
             env:
               TZ: ${TIMEZONE}
@@ -37,7 +37,7 @@ spec:
                 custom: true
                 spec:
                   httpGet:
-                    path: /
+                    path: /q/health/live
                     port: &port 8080
                   initialDelaySeconds: 10
                   periodSeconds: 30
@@ -48,7 +48,7 @@ spec:
                 custom: true
                 spec:
                   httpGet:
-                    path: /
+                    path: /q/health/ready
                     port: *port
                   initialDelaySeconds: 10
                   periodSeconds: 30
