@@ -2,6 +2,11 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
+  # The Kustomization keeps the historical name "synapse" on purpose:
+  # the VolSync component derives the PVC, ReplicationSource/Destination and
+  # Kopia repository identity from ${APP}, and the mautrix bridges depend on
+  # this Kustomization by name. Renaming it would orphan the media PVC and its
+  # backup history.
   name: &app synapse
   namespace: flux-system
 spec:
@@ -11,8 +16,7 @@ spec:
       app.kubernetes.io/name: *app
   components:
     - ../../../../components/volsync
-    - ../../../../components/dragonfly
-  path: ./kubernetes/apps/matrix/synapse/app
+  path: ./kubernetes/apps/matrix/matrix-stack/app
   dependsOn:
     - name: rook-ceph-cluster
       namespace: flux-system
@@ -20,8 +24,6 @@ spec:
       namespace: external-secrets
     - name: envoy-gateway
       namespace: network
-    - name: dragonfly
-      namespace: flux-system
   prune: true
   sourceRef:
     kind: GitRepository
@@ -34,4 +36,3 @@ spec:
     substitute:
       APP: *app
       VOLSYNC_CAPACITY: 50Gi
-      DRAGONFLY_ARGS_DEFAULT_LUA_FLAGS: allow-undeclared-keys

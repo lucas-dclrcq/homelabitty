@@ -1,4 +1,6 @@
 ---
+# Pre-ESS registration kept verbatim: same appservice id, tokens and
+# namespaces so Synapse keeps recognising the existing hookshot ghost users.
 id: matrix-hookshot
 url: http://matrix-hookshot.matrix.svc.cluster.local:9993
 as_token: {{ .AS_TOKEN }}
