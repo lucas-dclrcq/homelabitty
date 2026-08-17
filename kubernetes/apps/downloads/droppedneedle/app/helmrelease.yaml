@@ -30,7 +30,7 @@ spec:
           app:
             image:
               repository: docker.io/habirabbu/droppedneedle
-              tag: v2.3.0@sha256:2a64f2cad5e531efb4895df08aec08123e5aa7215658a1a57109bd66588941b6
+              tag: v2.6.0@sha256:fbd99ca78577c9da599abd2cff72025ee52b2e163dd632402d279430d8536cef
 
             env:
               TZ: ${TIMEZONE}
