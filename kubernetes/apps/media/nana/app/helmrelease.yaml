@@ -20,12 +20,14 @@ spec:
           app:
             image:
               repository: ghcr.io/lucas-dclrcq/nana
-              tag: 0.9.0
+              tag: 0.10.0
 
             env:
               TZ: ${TIMEZONE}
               NANA_DOWNLOAD_DIR: /downloads
               NANA_ALLOWED_FORMATS: "epub,pdf,cbz"
+              NANA_FLARESOLVERR_ENABLED: "true"
+              NANA_FLARESOLVERR_URL: http://nana-flaresolverr:8191
 
             envFrom:
               - secretRef:
@@ -67,6 +69,54 @@ spec:
               limits:
                 memory: 512Mi
 
+      flaresolverr:
+        strategy: RollingUpdate
+        containers:
+          app:
+            image:
+              repository: docker.io/rorqualx/flaresolverr-go
+              tag: 0.8.1
+
+            env:
+              TZ: ${TIMEZONE}
+              LOG_LEVEL: info
+              BROWSER_POOL_SIZE: "1"
+
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health
+                    port: &flaresolverrPort 8191
+                  initialDelaySeconds: 15
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 3
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health
+                    port: *flaresolverrPort
+                  initialDelaySeconds: 15
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 3
+
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities: {drop: ["ALL"]}
+
+            resources:
+              requests:
+                cpu: 50m
+                memory: 256Mi
+              limits:
+                memory: 8Gi
+
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
@@ -82,6 +132,11 @@ spec:
         ports:
           http:
             port: *port
+      flaresolverr:
+        controller: flaresolverr
+        ports:
+          http:
+            port: *flaresolverrPort
 
     route:
       app:
@@ -104,8 +159,10 @@ spec:
         type: nfs
         server: "truenas.${INTERNAL_DOMAIN}"
         path: /mnt/tank/Apps/nana/uploads
-        globalMounts:
-          - path: /downloads
+        advancedMounts:
+          nana:
+            app:
+              - path: /downloads
 
       tmp:
         type: emptyDir
