@@ -46,7 +46,7 @@ spec:
           app:
             image:
               repository: opencloudeu/opencloud-rolling
-              tag: "7.4.0"
+              tag: "7.5.0"
             command: ["/bin/sh", "-c", "opencloud init || true; opencloud server"]
             env:
               OC_URL: "https://drive.${SECRET_DOMAIN}"
