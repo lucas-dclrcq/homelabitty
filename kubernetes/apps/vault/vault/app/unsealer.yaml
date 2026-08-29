@@ -75,7 +75,7 @@ spec:
                 init_out="$(vault operator init -key-shares=1 -key-threshold=1)" || { log "DR: init failed"; return 1; }
                 tmp_key="$(echo "$${init_out}" | awk '/^Unseal Key 1:/ {print $NF}')"
                 tmp_token="$(echo "$${init_out}" | awk '/^Initial Root Token:/ {print $NF}')"
-                vault operator unseal "$${tmp_key}" >/dev/null
+                vault operator unseal "$${tmp_key}" >/dev/null || { log "DR: temp unseal failed"; return 1; }
                 tries=0
                 until vault status -format=json 2>/dev/null | grep -q '"sealed": false'; do
                   tries=$((tries + 1))
@@ -95,7 +95,9 @@ spec:
                 reachable=0
                 i=0
                 while [ "$${i}" -lt "$${REPLICAS}" ]; do
-                  s="$(pod_status "$${i}")"
+                  # `vault status` exits 2 when the pod is sealed; without
+                  # `|| true` the `sh -e` shell dies before it can unseal.
+                  s="$(pod_status "$${i}")" || true
                   if [ -n "$${s}" ]; then
                     reachable=$((reachable + 1))
                     echo "$${s}" | grep -q '"initialized": false' && uninit=$((uninit + 1))
@@ -109,7 +111,9 @@ spec:
 
                 i=0
                 while [ "$${i}" -lt "$${REPLICAS}" ]; do
-                  s="$(pod_status "$${i}")"
+                  # `vault status` exits 2 when the pod is sealed; without
+                  # `|| true` the `sh -e` shell dies before it can unseal.
+                  s="$(pod_status "$${i}")" || true
                   if [ -z "$${s}" ]; then
                     i=$((i + 1))
                     continue
