@@ -1,0 +1,154 @@
+---
+# JSON5 OpenClaw gateway config, rendered onto the PVC by the init-config
+# container. Flux postBuild substitutes ${VAR}; write $${VAR} here so Flux
+# emits a literal ${VAR} for OpenClaw's own runtime env substitution.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: openclaw-config
+data:
+  openclaw.json: |-
+    {
+      agents: {
+        defaults: {
+          model: {
+            // DeepSeek V4. `deepseek-chat` / `deepseek-reasoner` were retired
+            // upstream on 2026-07-24 and no longer resolve.
+            primary: "deepseek/deepseek-v4-pro",
+            fallbacks: ["deepseek/deepseek-v4-flash"],
+          },
+          contextInjection: "always",
+          thinkingDefault: "medium",
+          timeoutSeconds: 600,
+          maxConcurrent: 4,
+        },
+      },
+      // The DeepSeek provider plugin is installed at runtime (bundledDist:
+      // false) rather than shipped in the image, so its model catalog never
+      // reaches the embedded agent's model registry -- resolution consults the
+      // *bundled* static catalog plus this block and nothing else. The models
+      // must therefore be declared explicitly here, or every run dies with
+      // "Unknown model: deepseek/deepseek-v4-pro (model_not_found)" before any
+      // HTTP request is made. The plugin still earns its place: it supplies V4
+      // thinking and the reasoning_content replay that multi-turn tool use
+      // depends on.
+      models: {
+        providers: {
+          deepseek: {
+            baseUrl: "https://api.deepseek.com",
+            api: "openai-completions",
+            apiKey: "$${DEEPSEEK_API_KEY}",
+            // Per-provider HTTP request timeout (connect/headers/body/total
+            // abort), separate from agents.defaults.timeoutSeconds above.
+            timeoutSeconds: 180,
+            // `cost` is deliberately omitted: it only feeds OpenClaw's local
+            // spend estimates, and DeepSeek's published pricing is the
+            // authoritative source. Context/output limits are from the
+            // provider docs.
+            models: [
+              {
+                id: "deepseek-v4-pro",
+                name: "DeepSeek V4 Pro",
+                reasoning: true,
+                input: ["text"],
+                contextWindow: 1000000,
+                maxTokens: 384000,
+              },
+              {
+                id: "deepseek-v4-flash",
+                name: "DeepSeek V4 Flash",
+                reasoning: true,
+                input: ["text"],
+                contextWindow: 1000000,
+                maxTokens: 384000,
+              },
+            ],
+          },
+        },
+      },
+      // GitOps-managed skills mounted from the openclaw-skills ConfigMap teach
+      // the agent to query cluster metrics, logs, events, and GitOps
+      // reconciliation state during investigations.
+      skills: {
+        // Disable all bundled OpenClaw skills; only load the explicitly managed
+        // GitOps skills from /skills plus any plugin-provided skills.
+        allowBundled: [],
+        load: {
+          extraDirs: ["/skills"],
+        },
+        entries: {
+          prometheus: { enabled: true },
+          loki: { enabled: true },
+          "kubernetes-events": { enabled: true },
+          flux: { enabled: true },
+        },
+      },
+      tools: {
+        // Default profile: filesystem, runtime (exec), web, sessions, memory,
+        // and configured MCP servers. exec runs inside this container only --
+        // what it can reach in the cluster is bounded by the read-only RBAC in
+        // rbac.yaml, not by the tool policy.
+        profile: "coding",
+        sessions: { visibility: "all" },
+        agentToAgent: { enabled: true },
+        web: {
+          fetch: { enabled: true },
+          // Self-hosted SearXNG in this namespace; `json` is already in its
+          // settings.yml `formats` and the pod CIDR is in the limiter passlist.
+          search: { enabled: true, provider: "searxng" },
+        },
+      },
+      session: {
+        reset: { mode: "idle", idleMinutes: 1440 },
+        maintenance: {
+          mode: "enforce",
+          pruneAfter: "7d",
+          maxEntries: 1000,
+          resetArchiveRetention: "7d",
+        },
+      },
+      gateway: {
+        auth: { mode: "token", token: "$${OPENCLAW_GATEWAY_TOKEN}" },
+        controlUi: { allowedOrigins: ["https://openclaw.${LIMITED_DOMAIN}"] },
+        mode: "local",
+        port: 18789,
+        // Pod CIDR: Envoy terminates TLS and forwards X-Forwarded-For.
+        trustedProxies: ["10.69.0.0/16"],
+      },
+      // Inbound HTTP triggers on the gateway port. POST /hooks/agent runs a
+      // one-shot agent turn; the alert-adapter uses it to turn firing
+      // Alertmanager alerts into read-only cluster investigations (see
+      // alert-adapter.yaml). With no channel configured the reply lands as a
+      // completion event on the main session, readable in the Control UI.
+      hooks: {
+        enabled: true,
+        path: "/hooks",
+        token: "$${OPENCLAW_HOOKS_TOKEN}",
+        allowedAgentIds: ["main"],
+        allowRequestSessionKey: false,
+      },
+      plugins: {
+        entries: {
+          // Neither plugin ships in the published image (bundledDist: false);
+          // the app container installs both on first boot after an image bump.
+          deepseek: { enabled: true },
+          searxng: {
+            enabled: true,
+            config: {
+              webSearch: {
+                baseUrl: "http://searxng.ai.svc.cluster.local:8080",
+              },
+            },
+          },
+        },
+      },
+      // Kubernetes MCP sidecar on pod-local loopback.
+      mcp: {
+        servers: {
+          kubernetes: {
+            url: "http://localhost:8081/mcp",
+            transport: "streamable-http",
+          },
+        },
+      },
+    }

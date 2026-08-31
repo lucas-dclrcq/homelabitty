@@ -6,5 +6,6 @@ namespace: ai
 components:
   - ../../components/common
 resources:
+  - ./openclaw/ks.yaml
   - ./searxng/ks.yaml
 

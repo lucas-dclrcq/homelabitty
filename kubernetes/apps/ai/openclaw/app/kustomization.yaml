@@ -1,0 +1,24 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ./ocirepository.yaml
+  - ./externalsecret.yaml
+  - ./rbac.yaml
+  - ./configmap.yaml
+  - ./helmrelease.yaml
+  - ./alert-adapter.yaml
+configMapGenerator:
+  # Each key is mounted to its own /skills/<name>/SKILL.md by the HelmRelease
+  # (OpenClaw discovers skills by the SKILL.md filename). Adding a file here
+  # also needs a globalMount entry in helmrelease.yaml and a skills.entries
+  # entry in configmap.yaml.
+  - name: openclaw-skills
+    files:
+      - ./resources/skills/prometheus.md
+      - ./resources/skills/loki.md
+      - ./resources/skills/kubernetes-events.md
+      - ./resources/skills/flux.md
+generatorOptions:
+  disableNameSuffixHash: true

@@ -1,0 +1,131 @@
+---
+# openclaw investigates the cluster through the kubernetes-mcp-server sidecar,
+# which authenticates with this pod's ServiceAccount token. Access is
+# deliberately READ-ONLY:
+#
+#   * `view` covers namespaced built-in resources and explicitly excludes
+#     Secrets, so a prompt-injected agent cannot exfiltrate credentials.
+#   * `openclaw-read` below adds the cluster-scoped and custom resources that
+#     `view` does not aggregate, still read-only.
+#
+# The MCP sidecar is additionally started with `--read-only`, so writes are
+# blocked at two layers. Widening this is a deliberate decision: the gateway
+# also exposes an unrestricted `exec` tool, so any verb granted here is
+# effectively granted to whoever can talk to the gateway.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: openclaw-view
+  labels:
+    app.kubernetes.io/component: openclaw
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: view
+subjects:
+  - kind: ServiceAccount
+    name: openclaw
+    namespace: ai
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: openclaw-read
+  labels:
+    app.kubernetes.io/component: openclaw
+rules:
+  # Cluster-scoped core resources `view` does not include.
+  - apiGroups:
+      - ""
+    resources:
+      - "nodes"
+      - "persistentvolumes"
+      - "namespaces"
+    verbs:
+      - "get"
+      - "list"
+      - "watch"
+  - apiGroups:
+      - "metrics.k8s.io"
+    resources:
+      - "nodes"
+      - "pods"
+    verbs:
+      - "get"
+      - "list"
+      - "watch"
+  - apiGroups:
+      - "apiextensions.k8s.io"
+    resources:
+      - "customresourcedefinitions"
+    verbs:
+      - "get"
+      - "list"
+      - "watch"
+  - apiGroups:
+      - "apiregistration.k8s.io"
+    resources:
+      - "apiservices"
+    verbs:
+      - "get"
+      - "list"
+      - "watch"
+  - apiGroups:
+      - "storage.k8s.io"
+    resources:
+      - "*"
+    verbs:
+      - "get"
+      - "list"
+      - "watch"
+  - apiGroups:
+      - "node.k8s.io"
+    resources:
+      - "runtimeclasses"
+    verbs:
+      - "get"
+      - "list"
+      - "watch"
+  # Operator CRs the agent needs to diagnose this cluster. None of these carry
+  # credential material; app secrets live in Vault and in core Secrets, which
+  # stay unreadable.
+  - apiGroups:
+      - source.toolkit.fluxcd.io
+      - kustomize.toolkit.fluxcd.io
+      - helm.toolkit.fluxcd.io
+      - notification.toolkit.fluxcd.io
+      - image.toolkit.fluxcd.io
+      - cilium.io
+      - monitoring.coreos.com
+      - volsync.backube
+      - snapshot.storage.k8s.io
+      - external-secrets.io
+      - generators.external-secrets.io
+      - gateway.networking.k8s.io
+      - gateway.envoyproxy.io
+      - cert-manager.io
+      - postgres-operator.crunchydata.com
+      - ceph.rook.io
+      - objectbucket.io
+      - dragonflydb.io
+    resources:
+      - "*"
+    verbs:
+      - "get"
+      - "list"
+      - "watch"
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: openclaw-read
+  labels:
+    app.kubernetes.io/component: openclaw
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: openclaw-read
+subjects:
+  - kind: ServiceAccount
+    name: openclaw
+    namespace: ai

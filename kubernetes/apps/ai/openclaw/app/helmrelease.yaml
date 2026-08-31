@@ -1,0 +1,287 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app openclaw
+spec:
+  interval: 15m
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  values:
+    defaultPodOptions:
+      # The kube-mcp sidecar authenticates to the apiserver with this pod's
+      # ServiceAccount token (read-only, see rbac.yaml), so it must be mounted.
+      automountServiceAccountToken: true
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+    serviceAccount:
+      openclaw: {}
+    controllers:
+      openclaw:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        initContainers:
+          # git is the source of truth for openclaw.json, but the gateway
+          # rewrites its own config at runtime, so it has to live on the PVC.
+          init-config:
+            image:
+              repository: docker.io/library/alpine
+              tag: "3.24"
+            command:
+              - sh
+              - -c
+              - |
+                set -eu
+                mkdir -p /home/node/.openclaw
+                chmod 700 /home/node/.openclaw
+                cp /config/openclaw.json /home/node/.openclaw/openclaw.json
+                chmod 600 /home/node/.openclaw/openclaw.json
+        containers:
+          app:
+            image:
+              repository: ghcr.io/openclaw/openclaw
+              tag: 2026.8.1@sha256:e7849cb6c1ef1ead39ab4be7d85edb2df89611f486e283284c7cf35ce39a20d4
+            command:
+              - /bin/sh
+              - -c
+              - |
+                set -eu
+                # The DeepSeek provider and SearXNG search plugins are built
+                # with bundledDist:false, so the published image does not carry
+                # them and they must be installed onto the PVC. Both are
+                # versioned in lockstep with the gateway, so pin them to the
+                # image's own version rather than npm's `latest` (which can run
+                # ahead into a prerelease). The installer refuses to run against
+                # a config referencing not-yet-installed plugins, so move the
+                # config aside for the install and put it back for the gateway.
+                # --accept-capabilities is required: the consent prompt is
+                # interactive-only, so without it a non-TTY install downloads the
+                # package and then aborts, and the gateway refuses to start
+                # ("Plugin ... requires capability consent").
+                # $$ escapes Flux postBuild so the shell receives a literal $.
+                CFG=/home/node/.openclaw/openclaw.json
+                STAMP=/home/node/.openclaw/.plugins-installed
+                VER="$$(node -p 'require("/app/package.json").version')"
+                if [ "$$(cat "$$STAMP" 2>/dev/null)" != "$$VER" ]; then
+                  [ -f "$$CFG" ] && mv "$$CFG" "$$CFG.installtmp"
+                  ok=1
+                  install_plugin() {
+                    openclaw plugins install "$$1" \
+                      --pin --force --accept-capabilities
+                  }
+                  install_plugin "npm:@openclaw/deepseek-provider@$$VER" \
+                    || { echo "WARN: deepseek plugin install failed"; ok=0; }
+                  install_plugin "npm:@openclaw/searxng-plugin@$$VER" \
+                    || { echo "WARN: searxng plugin install failed"; ok=0; }
+                  [ -f "$$CFG.installtmp" ] && mv "$$CFG.installtmp" "$$CFG"
+                  if [ "$$ok" = 1 ]; then printf '%s' "$$VER" > "$$STAMP"; fi
+                fi
+                # OpenClaw's config-integrity guard persists a self-saved
+                # "last-good" snapshot on the PVC and restores it whenever the
+                # config it reads lacks the runtime-injected "meta" block. Our
+                # GitOps ConfigMap copy never has that block, so the guard would
+                # revert to a stale snapshot on every boot and silently drop
+                # config changes. Drop the persisted last-good/backup/health
+                # state so the gateway adopts the ConfigMap-derived config as
+                # its new baseline.
+                rm -f "$${CFG}.last-good" "$${CFG}".bak* \
+                  /home/node/.openclaw/logs/config-health.json
+                exec openclaw gateway --bind lan
+            env:
+              HOME: &homepath /home/node
+              TZ: ${TIMEZONE}
+              OPENCLAW_GATEWAY_PORT: &port 18789
+              OPENCLAW_LOG_LEVEL: info
+            envFrom:
+              - secretRef:
+                  name: *app
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /healthz
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 3
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /readyz
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 3
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /startupz
+                    port: *port
+                  periodSeconds: 10
+                  # First boot installs two plugins from npm before the gateway
+                  # binds, so allow up to 5 minutes.
+                  failureThreshold: 30
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities: {drop: ["ALL"]}
+            resources:
+              requests:
+                cpu: 100m
+                memory: 512Mi
+              limits:
+                memory: 4Gi
+          # Kubernetes MCP server sidecar. Auto-detects in-cluster config and so
+          # uses the pod's ServiceAccount token. Listens on localhost:8081;
+          # openclaw reaches it in-pod and the CiliumNetworkPolicy keeps the
+          # port unreachable from other pods. --read-only is defence in depth on
+          # top of the read-only RBAC in rbac.yaml.
+          kube-mcp:
+            image:
+              repository: ghcr.io/containers/kubernetes-mcp-server
+              tag: v0.0.66@sha256:6d650f4bd6ac303ad82713c997e73a2d001602f9bf17392c9b9a0e30e29c6423
+            args:
+              - --port
+              - "8081"
+              - --read-only
+              - --stateless
+              - --disable-multi-cluster
+              - --cluster-provider
+              - in-cluster
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: {drop: ["ALL"]}
+            resources:
+              requests:
+                cpu: 10m
+                memory: 64Mi
+              limits:
+                memory: 256Mi
+          # code-server sidecar to browse openclaw's config, state, and session
+          # logs on the PVC. Password-protected with the gateway token.
+          codeserver:
+            image:
+              repository: ghcr.io/coder/code-server
+              tag: 4.135.0@sha256:ccd326184d71efc5ebb94155eda7bb30153902342a35dbc8525450d81aa55012
+            env:
+              HOME: *homepath
+              TZ: ${TIMEZONE}
+              PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: *app
+                    key: OPENCLAW_GATEWAY_TOKEN
+            args:
+              - --auth
+              - password
+              - --user-data-dir
+              - /home/node/.vscode
+              - --extensions-dir
+              - /home/node/.vscode/extensions
+              - --port
+              - "12321"
+              - /home/node/.openclaw
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities: {drop: ["ALL"]}
+            resources:
+              requests:
+                cpu: 10m
+                memory: 128Mi
+              limits:
+                memory: 1Gi
+        pod:
+          labels:
+            ingress.home.arpa/gateway-internal: allow
+    persistence:
+      # advancedMounts, not globalMounts: the kube-mcp sidecar has no business
+      # seeing the state directory or the skills.
+      config:
+        existingClaim: *app
+        advancedMounts:
+          openclaw:
+            init-config:
+              - path: *homepath
+            app:
+              - path: *homepath
+            codeserver:
+              - path: *homepath
+      configmap:
+        type: configMap
+        name: openclaw-config
+        defaultMode: 0644
+        advancedMounts:
+          openclaw:
+            init-config:
+              - path: /config/openclaw.json
+                subPath: openclaw.json
+                readOnly: true
+      # Each ConfigMap key gets its own /skills/<name>/SKILL.md; OpenClaw
+      # discovers skills by the SKILL.md filename and skills.load.extraDirs in
+      # openclaw.json points at /skills.
+      skills:
+        type: configMap
+        name: openclaw-skills
+        defaultMode: 0644
+        advancedMounts:
+          openclaw:
+            app:
+              - path: /skills/prometheus/SKILL.md
+                subPath: prometheus.md
+                readOnly: true
+              - path: /skills/loki/SKILL.md
+                subPath: loki.md
+                readOnly: true
+              - path: /skills/kubernetes-events/SKILL.md
+                subPath: kubernetes-events.md
+                readOnly: true
+              - path: /skills/flux/SKILL.md
+                subPath: flux.md
+                readOnly: true
+      tmpfs:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: *port
+          codeserver:
+            port: &codeserverPort 12321
+    route:
+      app:
+        hostnames:
+          - "{{ .Release.Name }}.${LIMITED_DOMAIN}"
+        parentRefs:
+          - name: internal
+            namespace: network
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
+      codeserver:
+        hostnames:
+          - "openclaw-code.${LIMITED_DOMAIN}"
+        parentRefs:
+          - name: internal
+            namespace: network
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *codeserverPort

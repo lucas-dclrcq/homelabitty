@@ -27,6 +27,16 @@ spec:
           - name: severity
             value: critical
             matchType: =
+      # Fan critical alerts out to the openclaw agent, which runs a read-only
+      # cluster investigation and records the diagnosis. `continue: true` keeps
+      # the alert flowing to the receivers below.
+      - receiver: openclaw
+        continue: true
+        repeatInterval: 12h
+        matchers:
+          - name: severity
+            value: critical
+            matchType: =
       - receiver: matrix
         matchers:
           - name: severity
@@ -62,6 +72,10 @@ spec:
     - name: matrix
       webhookConfigs:
         - url: "http://matrix-alertmanager.matrix.svc.cluster.local/alerts?secret=noneedforasecrethere"
+    - name: openclaw
+      webhookConfigs:
+        - url: "http://openclaw-alert-adapter.ai.svc.cluster.local:8080/"
+          sendResolved: false
     - name: pushover
       pushoverConfigs:
         - html: true

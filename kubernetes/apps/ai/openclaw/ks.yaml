@@ -1,0 +1,39 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &app openclaw
+  namespace: &namespace ai
+spec:
+  targetNamespace: *namespace
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
+  components:
+    - ../../../../components/volsync
+  dependsOn:
+    - name: external-secrets-stores
+      namespace: external-secrets
+    - name: envoy-gateway
+      namespace: network
+    - name: searxng
+      namespace: *namespace
+  path: ./kubernetes/apps/ai/openclaw/app
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+    namespace: flux-system
+  wait: false
+  interval: 1h
+  timeout: 5m
+  postBuild:
+    substitute:
+      APP: *app
+      VOLSYNC_CAPACITY: 10Gi
+      # The openclaw image runs as the `node` user (uid/gid 1000). The kopia
+      # mover must restore ~/.openclaw with that same ownership, otherwise the
+      # gateway cannot write its own state directory.
+      VOLSYNC_PUID: "1000"
+      VOLSYNC_PGID: "1000"
