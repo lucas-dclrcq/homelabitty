@@ -22,3 +22,4 @@ resources:
   - ./bambuddy/ks.yaml
   - ./opencloud/ks.yaml
   - ./mealie/ks.yaml
+  - ./recherche-maison/ks.yaml

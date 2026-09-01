@@ -365,6 +365,11 @@ spec:
         - "nana"
       password:
         type: AlphaNumeric
+    - name: "recherchemaison"
+      databases:
+        - "recherchemaison"
+      password:
+        type: AlphaNumeric
   backups:
     pgbackrest:
       configuration:
