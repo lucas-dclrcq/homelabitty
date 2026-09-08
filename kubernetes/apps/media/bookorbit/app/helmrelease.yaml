@@ -131,3 +131,10 @@ spec:
         path: /mnt/tank/Apps/nana/uploads
         globalMounts:
           - path: /bookdrop
+
+      downloads:
+        type: nfs
+        server: "truenas.${INTERNAL_DOMAIN}"
+        path: /mnt/tank/Media/Downloads
+        globalMounts:
+          - path: /downloads
