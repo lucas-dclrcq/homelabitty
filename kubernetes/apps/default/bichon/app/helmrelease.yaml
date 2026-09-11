@@ -25,9 +25,17 @@ spec:
 
         containers:
           app:
+            # bichon 2.x rewrote the on-disk store (fjall -> bichon-blob) and
+            # refuses to start on a v1.x data layout:
+            #   ERROR bichon_server: Incompatible data format detected.
+            #   Error: Generic { message: "Legacy data layout detected" }
+            # The migration is the interactive `bichon-admin` TUI shipped in the
+            # image, so it cannot run as an initContainer/Job. Pinned to the last
+            # v1.x release until the migration is done by hand on the PVC; bump
+            # to 2.x only afterwards.
             image:
               repository: docker.io/rustmailer/bichon
-              tag: 2.0.2
+              tag: 1.4.3
 
             env:
               BICHON_HTTP_PORT: &httpPort 15630
