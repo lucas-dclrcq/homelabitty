@@ -10,6 +10,10 @@ spec:
     kind: OCIRepository
     name: *app
   values:
+    defaultPodOptions:
+      securityContext:
+        seccompProfile: {type: RuntimeDefault}
+
     controllers:
       vaultwarden:
         annotations:
@@ -36,6 +40,10 @@ spec:
                   name: vaultwarden-secret
               - secretRef:
                   name: vaultwarden-db-secret
+
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities: {drop: ["ALL"]}
 
             resources:
               requests:
