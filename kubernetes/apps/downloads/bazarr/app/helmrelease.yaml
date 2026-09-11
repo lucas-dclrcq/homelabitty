@@ -51,6 +51,21 @@ spec:
                   timeoutSeconds: 1
                   failureThreshold: 3
               readiness: *probes
+              # Bazarr 1.6.0 runs a long one-shot Alembic migration (subtitles
+              # offloaded to dedicated tables + ~40 new indexes) before binding
+              # the HTTP port. Measured ~2 min on this library, so the liveness
+              # probe must stay suspended until the migration completes.
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 5
+                  timeoutSeconds: 1
+                  failureThreshold: 60
 
             securityContext:
               allowPrivilegeEscalation: false
