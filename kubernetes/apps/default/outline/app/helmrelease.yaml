@@ -10,6 +10,15 @@ spec:
     kind: OCIRepository
     name: *app
   values:
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+        runAsGroup: 1001
+        fsGroup: 1001
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile: {type: RuntimeDefault}
+
     controllers:
       outline:
         annotations:
@@ -35,6 +44,10 @@ spec:
               FILE_STORAGE_LOCAL_ROOT_DIR: &storage_path /var/lib/outline/data
               FILE_STORAGE_UPLOAD_MAX_SIZE: "26214400"
               WEB_CONCURRENCY: "10"
+
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities: {drop: ["ALL"]}
 
             resources:
               requests:
