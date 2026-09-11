@@ -21,6 +21,13 @@ spec:
       runAsUser: ${VOLSYNC_PUID:=1026}
       runAsGroup: ${VOLSYNC_PGID:=1500}
       fsGroup: ${VOLSYNC_PGID:=1500}
+      # Without this, kubelet recursively chowns EVERY file of the volume on
+      # each mover start (Always is the default). On large datasets this takes
+      # 5-10 min per run (synapse ~357k files, jellyfin ~115k), keeps the RBD
+      # snapshot clone attached far longer than needed and triggers
+      # VolumeFailedDelete / "rbd image is still being used" churn.
+      # OnRootMismatch only chowns when the volume root gid differs from fsGroup.
+      fsGroupChangePolicy: OnRootMismatch
     moverVolumes:
       - mountPath: repository
         volumeSource:
