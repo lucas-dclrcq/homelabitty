@@ -28,7 +28,7 @@ spec:
     type: LoadBalancer
     metadata:
       annotations:
-        external-dns.alpha.kubernetes.io/hostname: "vector.postgres.${LIMITED_DOMAIN}"
+        external-dns.kubernetes.io/hostname: "vector.postgres.${LIMITED_DOMAIN}"
 
   patroni:
     dynamicConfiguration:

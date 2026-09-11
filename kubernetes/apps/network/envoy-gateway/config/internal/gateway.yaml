@@ -5,12 +5,12 @@ kind: Gateway
 metadata:
   name: internal
   annotations:
-    external-dns.alpha.kubernetes.io/target: &hostname gateway-int.${LIMITED_DOMAIN}
+    external-dns.kubernetes.io/target: &hostname gateway-int.${LIMITED_DOMAIN}
 spec:
   gatewayClassName: envoy
   infrastructure:
     annotations:
-      external-dns.alpha.kubernetes.io/hostname: *hostname
+      external-dns.kubernetes.io/hostname: *hostname
       lbipam.cilium.io/ips: "${LB_GATEWAY_INT}"
   listeners:
     - name: http

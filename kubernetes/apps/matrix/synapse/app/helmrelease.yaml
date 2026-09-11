@@ -140,7 +140,7 @@ spec:
     gateway:
       enabled: true
       annotations:
-        external-dns.alpha.kubernetes.io/target: "${HOME_IP}"
+        external-dns.kubernetes.io/target: "${HOME_IP}"
       parentRefs:
         - name: external
           namespace: network
