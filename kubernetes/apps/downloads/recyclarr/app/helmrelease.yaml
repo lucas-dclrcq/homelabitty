@@ -30,6 +30,10 @@ spec:
           schedule: "@daily"
           successfulJobsHistory: 1
           failedJobsHistory: 1
+          # A bad profile/CF config fails deterministically; the chart default
+          # (6) then spawns 7 Error pods per run. One retry is enough to ride
+          # out a transient *arr API hiccup.
+          backoffLimit: 1
         containers:
           app:
             image:
