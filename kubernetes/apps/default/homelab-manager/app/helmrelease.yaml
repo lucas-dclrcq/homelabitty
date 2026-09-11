@@ -26,6 +26,10 @@ spec:
         port: 80
       route:
         enabled: true
+        # apex CNAME + Cloudflare flattening makes external-dns re-update the
+        # record every cycle; publish a direct A record instead
+        annotations:
+          external-dns.kubernetes.io/target: "${HOME_IP}"
         parentRefs:
           - name: external
             namespace: network
