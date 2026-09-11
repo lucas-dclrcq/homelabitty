@@ -47,6 +47,29 @@ spec:
       autoscaling:
         enabled: true
         minReplicas: 2
+
+      # Required by the CPU-based HPA: without requests.cpu the HPA reports
+      # FailedGetResourceMetric. Sized from observed usage (~25m CPU / ~670Mi RSS).
+      resources:
+        requests:
+          cpu: 100m
+          memory: 768Mi
+        limits:
+          memory: 1500Mi
+
+      # /-/health/{live,ready}/ are served by the same ASGI worker pool as user
+      # traffic: OIDC authorize bursts push p99 request latency to 2-4.5s, which
+      # blew through the 3s default timeout and flapped pods out of rotation.
+      livenessProbe:
+        timeoutSeconds: 10
+        periodSeconds: 15
+        failureThreshold: 5
+      readinessProbe:
+        timeoutSeconds: 10
+        failureThreshold: 3
+      startupProbe:
+        timeoutSeconds: 10
+
       metrics:
         enabled: true
         serviceMonitor:
@@ -65,6 +88,27 @@ spec:
       autoscaling:
         enabled: true
         minReplicas: 2
+
+      # Required by the CPU-based HPA. Sized from observed usage (~58m CPU /
+      # ~280Mi RSS); 200m keeps steady-state utilization ~30% so the HPA only
+      # scales on real task bursts instead of flapping.
+      resources:
+        requests:
+          cpu: 200m
+          memory: 384Mi
+        limits:
+          memory: 1Gi
+
+      # `ak healthcheck` spawns a full Python interpreter, which can exceed the
+      # 3s default under load.
+      livenessProbe:
+        timeoutSeconds: 10
+        periodSeconds: 15
+        failureThreshold: 5
+      readinessProbe:
+        timeoutSeconds: 10
+      startupProbe:
+        timeoutSeconds: 10
 
     prometheus:
       rules:
