@@ -21,6 +21,10 @@ spec:
   uninstall:
     keepHistory: false
   values:
+    defaultPodOptions:
+      securityContext:
+        seccompProfile: {type: RuntimeDefault}
+
     controllers:
       droppedneedle:
         annotations:
@@ -38,6 +42,12 @@ spec:
               PGID: "${APP_GID}"
               PORT: &port 8688
               SLSKD_DOWNLOADS_PATH: /media/Downloads/nicotine/complete
+
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop: ["ALL"]
+                add: ["CHOWN", "DAC_OVERRIDE", "FOWNER", "SETGID", "SETUID"]
 
             resources:
               requests:
