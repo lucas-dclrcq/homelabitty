@@ -28,3 +28,28 @@ spec:
       enabled: true
     serviceMonitor:
       enabled: true
+  # The chart leaves the registry probes at the Kubernetes default timeout of 1s.
+  # /healthz (0.3.x) and /readyz (0.7.x) are served by the same HTTP mux that serves
+  # mirrored blobs, so under pull load the probe regularly exceeds 1s and the Pod
+  # flaps to NotReady ("context deadline exceeded"). The chart exposes no probe
+  # tunables, so patch them after rendering.
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: DaemonSet
+              name: ^spegel$
+            patch: |
+              apiVersion: apps/v1
+              kind: DaemonSet
+              metadata:
+                name: spegel
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: registry
+                        readinessProbe:
+                          timeoutSeconds: 5
+                        startupProbe:
+                          timeoutSeconds: 5
