@@ -58,10 +58,15 @@ spec:
                 LOG=/tmp/rsync.log
                 START=$(date +%s)
 
+                # --exclude='.*' skips upstream's in-flight temp files (e.g.
+                # .extra.files.tar.gz.dI031r), which are mode 0600 on the mirror
+                # and make rsync fail with "Permission denied (13)" -> exit 23
+                # whenever we sync while upstream is mid-update.
                 rsync -rtlvH --safe-links --delete-after --delete-excluded \
                   --delay-updates --no-motd --stats --itemize-changes \
                   --timeout=600 --contimeout=60 \
-                  --exclude='iso/' --exclude='*-debug/' --exclude='sources/' \
+                  --exclude='.*' --exclude='iso/' --exclude='*-debug/' \
+                  --exclude='sources/' \
                   rsync://ftp.halifax.rwth-aachen.de/archlinux/ /srv/repo/ >"$LOG" 2>&1
                 RC=$?
                 cat "$LOG"
