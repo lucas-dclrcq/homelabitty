@@ -4,8 +4,6 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
   name: matrix-synapse
-  annotations:
-    external-dns.alpha.kubernetes.io/target: "${HOME_IP}"
 spec:
   hostnames:
     - "matrix.${SECRET_DOMAIN}"
@@ -38,8 +36,6 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
   name: matrix-well-known
-  annotations:
-    external-dns.alpha.kubernetes.io/target: "${HOME_IP}"
 spec:
   hostnames:
     - "${SECRET_DOMAIN}"
@@ -63,8 +59,6 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
   name: matrix-mas
-  annotations:
-    external-dns.alpha.kubernetes.io/target: "${HOME_IP}"
 spec:
   hostnames:
     - "mas.${SECRET_DOMAIN}"
@@ -81,8 +75,6 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
   name: matrix-element-web
-  annotations:
-    external-dns.alpha.kubernetes.io/target: "${HOME_IP}"
 spec:
   hostnames:
     - "element.${SECRET_DOMAIN}"
@@ -111,13 +103,11 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
   name: matrix-element-admin
-  annotations:
-    external-dns.alpha.kubernetes.io/target: "${HOME_IP}"
 spec:
   hostnames:
-    - "admin.${SECRET_DOMAIN}"
+    - "admin.${LIMITED_DOMAIN}"
   parentRefs:
-    - name: external
+    - name: internal
       namespace: network
   rules:
     - backendRefs:
@@ -129,8 +119,6 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
   name: matrix-rtc
-  annotations:
-    external-dns.alpha.kubernetes.io/target: "${HOME_IP}"
 spec:
   hostnames:
     - "mrtc.${SECRET_DOMAIN}"
@@ -147,8 +135,6 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
   name: matrix-hookshot
-  annotations:
-    external-dns.alpha.kubernetes.io/target: "${HOME_IP}"
 spec:
   hostnames:
     - "matrix-hookshot.${SECRET_DOMAIN}"

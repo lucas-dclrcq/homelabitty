@@ -35,6 +35,11 @@ spec:
 
     synapse:
       enabled: true
+      # The chart copies extraInitContainers into the pre-install check-config
+      # hook Job, which has no `media` volume: the Job is rejected and the
+      # install loops forever. Re-enable together with removing media-migrate.
+      checkConfigHook:
+        enabled: false
       ingress:
         host: "matrix.${SECRET_DOMAIN}"
       postgres:
@@ -203,7 +208,9 @@ spec:
     elementAdmin:
       enabled: true
       ingress:
-        host: "admin.${SECRET_DOMAIN}"
+        # Internal-only like the old synapse-admin (LIMITED_DOMAIN is what the
+        # internal gateway listeners accept).
+        host: "admin.${LIMITED_DOMAIN}"
 
     hookshot:
       enabled: true
@@ -219,7 +226,7 @@ spec:
         secret: hookshot-secret
         secretKey: passkey.pem
       logging:
-        level: debug
+        level: info
       additional:
         0-permissions:
           config: |
