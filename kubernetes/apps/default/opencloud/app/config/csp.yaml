@@ -18,11 +18,13 @@ directives:
     - "'self'"
     - "blob:"
     - "https://embed.diagrams.net/"
+    - "https://onlyoffice.${SECRET_DOMAIN}/"
   img-src:
     - "'self'"
     - "data:"
     - "blob:"
     - "https://raw.githubusercontent.com/opencloud-eu/awesome-apps/"
+    - "https://onlyoffice.${SECRET_DOMAIN}/"
   manifest-src:
     - "'self'"
   media-src:

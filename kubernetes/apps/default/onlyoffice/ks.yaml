@@ -1,0 +1,33 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &app onlyoffice
+  namespace: &namespace default
+spec:
+  targetNamespace: *namespace
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
+  dependsOn:
+    - name: external-secrets-stores
+      namespace: external-secrets
+  components:
+    - ../../../../components/volsync
+  path: ./kubernetes/apps/default/onlyoffice/app
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+    namespace: flux-system
+  wait: false
+  interval: 1h
+  postBuild:
+    substitute:
+      APP: *app
+      VOLSYNC_CAPACITY: 1Gi
+      # the document server runs its whole supervisord stack as root, so the
+      # kopia mover has to read the data dir as root as well
+      VOLSYNC_PUID: "0"
+      VOLSYNC_PGID: "0"
