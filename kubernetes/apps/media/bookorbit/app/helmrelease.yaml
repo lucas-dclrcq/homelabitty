@@ -20,7 +20,7 @@ spec:
           app:
             image:
               repository: ghcr.io/bookorbit/bookorbit
-              tag: 2.10.0@sha256:5058da021067ce0ef455e66f74d03f0bb20d920661fe120060e3c364ae29853b
+              tag: 3.0.0
 
             env:
               TZ: ${TIMEZONE}
