@@ -32,7 +32,7 @@ spec:
             env:
               BICHON_HTTP_PORT: &httpPort 15630
               BICHON_LOG_LEVEL: info
-              BICHON_PUBLIC_URL: https://bichon.bjw-s.dev
+              BICHON_PUBLIC_URL: https://bichon.${LIMITED_DOMAIN}
               BICHON_ROOT_DIR: /data
 
             envFrom:
