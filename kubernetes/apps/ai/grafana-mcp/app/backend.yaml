@@ -1,0 +1,15 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/agentgateway.dev/agentgatewaybackend_v1alpha1.json
+apiVersion: agentgateway.dev/v1alpha1
+kind: AgentgatewayBackend
+metadata:
+  name: grafana-mcp
+spec:
+  mcp:
+    targets:
+      - name: grafana-mcp
+        static:
+          backendRef:
+            name: grafana-mcp
+          port: 8000
+          protocol: StreamableHTTP

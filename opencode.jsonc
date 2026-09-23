@@ -3,7 +3,7 @@
   "mcp": {
     "grafana": {
       "type": "remote",
-      "url": "https://grafana-mcp.hoohoot.xyz/mcp",
+      "url": "https://grafana.mcp.hoohoot.org/mcp",
       "enabled": true
     },
     "unifi": {
