@@ -1,0 +1,111 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app unifi-network-mcp
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  values:
+    global:
+      createDefaultServiceAccount: false
+    controllers:
+      unifi-network-mcp:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        pod:
+          labels:
+            egress.home.arpa/kubedns: allow
+            egress.home.arpa/world: allow
+        containers:
+          app:
+            image:
+              repository: ghcr.io/sirkirby/unifi-network-mcp
+              tag: 0.7.0
+            env:
+              HOME: /tmp
+              UNIFI_MCP_HTTP_ENABLED: "true"
+              UNIFI_MCP_HTTP_TRANSPORT: streamable-http
+              UNIFI_MCP_HOST: 0.0.0.0
+              UNIFI_MCP_PORT: &port 3000
+              UNIFI_MCP_LOG_LEVEL: INFO
+              UNIFI_MCP_ALLOWED_HOSTS: "localhost,localhost:3000,127.0.0.1,127.0.0.1:3000,unifi-network-mcp,unifi-network-mcp:3000,unifi-network-mcp.ai,unifi-network-mcp.ai:3000,unifi-network-mcp.ai.svc,unifi-network-mcp.ai.svc:3000,unifi-network-mcp.ai.svc.cluster.local,unifi-network-mcp.ai.svc.cluster.local:3000,unifi-network-mcp.${LIMITED_DOMAIN}"
+              UNIFI_TOOL_REGISTRATION_MODE: lazy
+              UNIFI_NETWORK_SITE: default
+              UNIFI_PORT: "443"
+              UNIFI_VERIFY_SSL: "false"
+            envFrom:
+              - secretRef:
+                  name: unifi-network-mcp-secret
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: *port
+                  initialDelaySeconds: 10
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 5
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: *port
+                  initialDelaySeconds: 10
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 5
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: *port
+                  failureThreshold: 30
+                  periodSeconds: 5
+            resources:
+              requests:
+                cpu: 10m
+                memory: 128Mi
+              limits:
+                memory: 512Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: {drop: ["ALL"]}
+    defaultPodOptions:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        seccompProfile: {type: RuntimeDefault}
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: *port
+    route:
+      app:
+        hostnames:
+          - "unifi-network-mcp.${LIMITED_DOMAIN}"
+        parentRefs:
+          - name: internal
+            namespace: network
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
+    persistence:
+      tmp:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
