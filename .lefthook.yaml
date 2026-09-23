@@ -4,3 +4,8 @@ pre-commit:
     - name: Format YAML
       run: yamlfmt {staged_files}
       glob: "*.yaml"
+
+commit-msg:
+  jobs:
+    - name: Lint commit message
+      run: commitlint --default-config --edit {1}
