@@ -32,7 +32,7 @@ spec:
           main:
             image:
               repository: dock.mau.dev/mautrix/meta
-              tag: v26.08.1
+              tag: ig-v26.09
 
             env:
               TZ: "${TIMEZONE}"
