@@ -6,6 +6,7 @@ namespace: ai
 components:
   - ../../components/common
 resources:
+  - ./agentgateway/ks.yaml
   - ./searxng/ks.yaml
   - ./grafana-mcp/ks.yaml
   - ./unifi-network-mcp/ks.yaml

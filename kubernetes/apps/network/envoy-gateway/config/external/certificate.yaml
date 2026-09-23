@@ -38,3 +38,23 @@ spec:
   dnsNames:
     - "superquinquin-sur-deule.org"
     - "*.superquinquin-sur-deule.org"
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: "mcp-${SECRET_DOMAIN/./-}-production"
+spec:
+  secretTemplate:
+    annotations:
+      reflector.v1.k8s.emberstack.com/reflection-auto-enabled: "true"
+      reflector.v1.k8s.emberstack.com/reflection-auto-namespaces: ""
+      reflector.v1.k8s.emberstack.com/reflection-allowed: "true"
+      reflector.v1.k8s.emberstack.com/reflection-allowed-namespaces: ""
+  secretName: "mcp-${SECRET_DOMAIN/./-}-production-tls"
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+  commonName: "mcp.${SECRET_DOMAIN}"
+  dnsNames:
+    - "mcp.${SECRET_DOMAIN}"
+    - "*.mcp.${SECRET_DOMAIN}"

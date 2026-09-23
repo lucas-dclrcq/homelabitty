@@ -81,3 +81,21 @@ spec:
         certificateRefs:
           - kind: Secret
             name: "${SECRET_DOMAIN/./-}-production-tls"
+    - name: http-mcp
+      protocol: HTTP
+      port: 80
+      hostname: "*.mcp.${SECRET_DOMAIN}"
+      allowedRoutes:
+        namespaces:
+          from: All
+    - name: https-mcp
+      protocol: HTTPS
+      port: 443
+      hostname: "*.mcp.${SECRET_DOMAIN}"
+      allowedRoutes:
+        namespaces:
+          from: All
+      tls:
+        certificateRefs:
+          - kind: Secret
+            name: "mcp-${SECRET_DOMAIN/./-}-production-tls"
