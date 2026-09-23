@@ -5,6 +5,11 @@
       "type": "remote",
       "url": "https://grafana-mcp.hoohoot.xyz/mcp",
       "enabled": true
+    },
+    "unifi": {
+      "type": "remote",
+      "url": "https://unifi-network-mcp.hoohoot.xyz/mcp",
+      "enabled": true
     }
   }
 }
