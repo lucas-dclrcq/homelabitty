@@ -13,5 +13,12 @@
       matchPackageNames: ["/factory\\.talos\\.dev/"],
       overridePackageName: "ghcr.io/siderolabs/installer",
     },
+    {
+      description: "Track mautrix-instagram ig- prefixed tags",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["dock.mau.dev/mautrix/meta"],
+      matchFileNames: ["kubernetes/apps/matrix/mautrix-instagram/**"],
+      versioning: "regex:^ig-v(?<major>\\d+)\\.(?<minor>\\d+)(?:\\.(?<patch>\\d+))?$",
+    },
   ],
 }
