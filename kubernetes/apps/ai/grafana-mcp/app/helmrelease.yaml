@@ -21,7 +21,7 @@ spec:
               tag: 1.5.1
             args:
               - --transport=streamable-http
-              - --allowed-hosts=localhost:8000,127.0.0.1:8000,grafana-mcp.ai.svc.cluster.local:8000,grafana-mcp.ai:8000,grafana-mcp:8000,grafana-mcp.${LIMITED_DOMAIN}
+              - --allowed-hosts=localhost:8000,127.0.0.1:8000,grafana-mcp.ai.svc.cluster.local:8000,grafana-mcp.ai:8000,grafana-mcp:8000,grafana.mcp.${SECRET_DOMAIN}
             env:
               GRAFANA_URL: http://grafana-service.observability.svc.cluster.local:3000
               GRAFANA_ORG_ID: "1"
@@ -72,18 +72,8 @@ spec:
         controller: *app
         ports:
           http:
+            appProtocol: agentgateway.dev/mcp
             port: *port
-    route:
-      app:
-        hostnames:
-          - "grafana-mcp.${LIMITED_DOMAIN}"
-        parentRefs:
-          - name: internal
-            namespace: network
-        rules:
-          - backendRefs:
-              - name: *app
-                port: *port
     persistence:
       tmp:
         type: emptyDir

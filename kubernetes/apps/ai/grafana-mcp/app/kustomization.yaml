@@ -6,3 +6,5 @@ resources:
   - ./ocirepository.yaml
   - ./externalsecret.yaml
   - ./helmrelease.yaml
+  - ./backend.yaml
+  - ./httproute.yaml
