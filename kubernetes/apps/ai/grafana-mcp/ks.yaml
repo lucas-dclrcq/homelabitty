@@ -12,6 +12,7 @@ spec:
       app.kubernetes.io/name: *app
   dependsOn:
     - name: grafana-instance
+      namespace: flux-system
     - name: external-secrets-stores
       namespace: external-secrets
   path: ./kubernetes/apps/ai/grafana-mcp/app
