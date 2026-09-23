@@ -10,6 +10,14 @@
       "type": "remote",
       "url": "https://unifi-network-mcp.hoohoot.xyz/mcp",
       "enabled": true
+    },
+    "vault": {
+      "type": "remote",
+      "url": "https://vault-mcp-server.hoohoot.xyz/mcp",
+      "enabled": true,
+      "headers": {
+        "X-Vault-Token": "{env:VAULT_TOKEN}"
+      }
     }
   }
 }

@@ -9,4 +9,5 @@ resources:
   - ./searxng/ks.yaml
   - ./grafana-mcp/ks.yaml
   - ./unifi-network-mcp/ks.yaml
+  - ./vault-mcp-server/ks.yaml
 

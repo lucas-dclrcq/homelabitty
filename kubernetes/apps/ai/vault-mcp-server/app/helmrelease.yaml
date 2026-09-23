@@ -1,0 +1,105 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app vault-mcp-server
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  values:
+    global:
+      createDefaultServiceAccount: false
+    controllers:
+      vault-mcp-server:
+        pod:
+          labels:
+            egress.home.arpa/kubedns: allow
+        containers:
+          app:
+            image:
+              repository: hashicorp/vault-mcp-server
+              tag: 0.2.0
+            command:
+              - /bin/vault-mcp-server
+            args:
+              - http
+              - --transport-host=0.0.0.0
+              - --transport-port=8080
+            env:
+              TRANSPORT_MODE: http
+              TRANSPORT_HOST: 0.0.0.0
+              MCP_ENDPOINT: /mcp
+              MCP_ALLOWED_ORIGINS: "https://vault-mcp-server.${LIMITED_DOMAIN}"
+              VAULT_ADDR: http://vault.vault.svc.cluster.local:8200
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: &port 8080
+                  initialDelaySeconds: 10
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 5
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: *port
+                  initialDelaySeconds: 10
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 5
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: *port
+                  failureThreshold: 30
+                  periodSeconds: 5
+            resources:
+              requests:
+                cpu: 10m
+                memory: 64Mi
+              limits:
+                memory: 256Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: {drop: ["ALL"]}
+    defaultPodOptions:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        seccompProfile: {type: RuntimeDefault}
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: *port
+    route:
+      app:
+        hostnames:
+          - "vault-mcp-server.${LIMITED_DOMAIN}"
+        parentRefs:
+          - name: internal
+            namespace: network
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
+    persistence:
+      tmp:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
