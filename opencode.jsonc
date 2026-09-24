@@ -13,11 +13,8 @@
     },
     "vault": {
       "type": "remote",
-      "url": "https://vault-mcp-server.hoohoot.xyz/mcp",
-      "enabled": true,
-      "headers": {
-        "X-Vault-Token": "{env:VAULT_TOKEN}"
-      }
+      "url": "https://vault.mcp.hoohoot.org/mcp",
+      "enabled": true
     }
   }
 }

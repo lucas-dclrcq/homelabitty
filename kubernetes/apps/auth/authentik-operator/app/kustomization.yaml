@@ -7,3 +7,4 @@ resources:
   - ./helmrelease.yaml
   - ./helmrepository.yaml
   - ./grafana-mcp.yaml
+  - ./vault-mcp.yaml

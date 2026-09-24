@@ -11,8 +11,10 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
-    - name: envoy-gateway
-      namespace: network
+    - name: external-secrets-stores
+      namespace: external-secrets
+    - name: agentgateway
+      namespace: ai
   path: ./kubernetes/apps/ai/vault-mcp-server/app
   prune: true
   sourceRef:

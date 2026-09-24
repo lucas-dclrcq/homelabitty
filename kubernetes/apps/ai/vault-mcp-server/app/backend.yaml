@@ -1,0 +1,15 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/agentgateway.dev/agentgatewaybackend_v1alpha1.json
+apiVersion: agentgateway.dev/v1alpha1
+kind: AgentgatewayBackend
+metadata:
+  name: vault-mcp-server
+spec:
+  mcp:
+    targets:
+      - name: vault-mcp-server
+        static:
+          backendRef:
+            name: vault-mcp-server
+          port: 8080
+          protocol: StreamableHTTP

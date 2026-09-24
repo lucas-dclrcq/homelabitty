@@ -1,0 +1,39 @@
+---
+apiVersion: agentgateway.dev/v1alpha1
+kind: AgentgatewayPolicy
+metadata:
+  name: vault-mcp-server-authentik-authn
+spec:
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      name: vault-mcp-server
+  traffic:
+    jwtAuthentication:
+      mode: Strict
+      providers:
+        - issuer: https://sso.${SECRET_DOMAIN}/application/o/vault-mcp/
+          audiences:
+            - vault-mcp
+          jwks:
+            remote:
+              backendRef:
+                name: authentik-server
+                namespace: auth
+                port: 80
+              jwksPath: /application/o/vault-mcp/jwks/
+      mcp:
+        provider: Authentik
+        clientId: vault-mcp
+        resourceMetadata:
+          resource: https://vault.mcp.${SECRET_DOMAIN}
+          scopesSupported:
+            - openid
+            - profile
+          bearerMethodsSupported:
+            - header
+    authorization:
+      action: Allow
+      policy:
+        matchExpressions:
+          - 'has(jwt.groups) && jwt.groups.exists(g, g == "Hoohoot Admins")'
