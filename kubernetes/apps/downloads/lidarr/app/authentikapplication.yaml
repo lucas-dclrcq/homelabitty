@@ -1,0 +1,29 @@
+---
+apiVersion: authentik.starry.blue/v1alpha1
+kind: AuthentikApplication
+metadata:
+  name: lidarr
+spec:
+  slug: lidarr
+  name: Lidarr
+  launchURL: https://lidarr.${SECRET_DOMAIN}
+  group: Downloads
+  adopt: IfMatch
+  provider:
+    flows:
+      authorization:
+        slug: default-provider-authorization-implicit-consent
+      invalidation:
+        slug: default-provider-invalidation-flow
+    proxy:
+      forwardAuthSingle:
+        externalHost: https://lidarr.${SECRET_DOMAIN}
+      interceptHeaderAuth: true
+      accessTokenValidity: hours=24
+      refreshTokenValidity: days=30
+      outpost:
+        name: Oauth2 Proxy Outpost
+  access:
+    rules:
+      - group:
+          name: Hoohoot Users

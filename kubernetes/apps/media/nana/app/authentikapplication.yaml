@@ -1,0 +1,28 @@
+---
+apiVersion: authentik.starry.blue/v1alpha1
+kind: AuthentikApplication
+metadata:
+  name: nana
+spec:
+  slug: nana
+  name: Nana
+  launchURL: https://nana.${SECRET_DOMAIN}
+  adopt: IfMatch
+  provider:
+    flows:
+      authorization:
+        slug: default-provider-authorization-implicit-consent
+      invalidation:
+        slug: default-provider-invalidation-flow
+    proxy:
+      forwardAuthSingle:
+        externalHost: https://nana.${SECRET_DOMAIN}
+      interceptHeaderAuth: true
+      accessTokenValidity: hours=24
+      refreshTokenValidity: days=30
+      outpost:
+        name: Oauth2 Proxy Outpost
+  access:
+    rules:
+      - group:
+          name: Hoohoot Users

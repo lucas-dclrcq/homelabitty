@@ -1,0 +1,29 @@
+---
+apiVersion: authentik.starry.blue/v1alpha1
+kind: AuthentikApplication
+metadata:
+  name: echo-server
+spec:
+  slug: echo-server
+  name: Echo Server
+  launchURL: https://echo-server.${SECRET_DOMAIN}
+  group: Infrastructure
+  adopt: IfMatch
+  provider:
+    flows:
+      authentication:
+        slug: default-authentication-flow
+      authorization:
+        slug: default-provider-authorization-implicit-consent
+      invalidation:
+        slug: default-provider-invalidation-flow
+    proxy:
+      forwardAuthSingle:
+        externalHost: https://echo-server.${SECRET_DOMAIN}
+      interceptHeaderAuth: true
+      accessTokenValidity: hours=24
+      refreshTokenValidity: days=30
+      outpost:
+        name: Oauth2 Proxy Outpost
+  access:
+    public: true
