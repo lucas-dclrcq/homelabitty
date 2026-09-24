@@ -1,0 +1,37 @@
+---
+apiVersion: authentik.starry.blue/v1alpha1
+kind: AuthentikApplication
+metadata:
+  name: grafana-mcp
+spec:
+  slug: grafana-mcp
+  name: Grafana MCP
+  launchURL: https://grafana.mcp.${SECRET_DOMAIN}
+  provider:
+    flows:
+      authorization:
+        slug: default-provider-authorization-implicit-consent
+      invalidation:
+        slug: default-provider-invalidation-flow
+    oauth2:
+      clientType: Public
+      redirectURIs:
+        - url: .*
+          matchingMode: Regex
+          type: Authorization
+      scopes:
+        - scopeName: openid
+        - scopeName: email
+        - scopeName: profile
+      grantTypes:
+        - AuthorizationCode
+        - RefreshToken
+      includeClaimsInIDToken: true
+      credentials:
+        clientID: grafana-mcp
+        secretRef:
+          name: grafana-mcp-oidc
+  access:
+    rules:
+      - group:
+          name: Hoohoot Developers

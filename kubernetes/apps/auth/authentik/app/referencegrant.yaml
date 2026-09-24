@@ -18,3 +18,17 @@ spec:
     - group: ""
       kind: Service
       name: ak-outpost-oauth2-proxy-outpost
+---
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: ReferenceGrant
+metadata:
+  name: allow-agentgateway-policy-auth
+spec:
+  from:
+    - group: agentgateway.dev
+      kind: AgentgatewayPolicy
+      namespace: ai
+  to:
+    - group: ""
+      kind: Service
+      name: authentik-server
