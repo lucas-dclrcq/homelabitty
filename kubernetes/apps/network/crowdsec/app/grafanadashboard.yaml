@@ -1,0 +1,63 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: crowdsec-overview
+spec:
+  allowCrossNamespaceImport: true
+  instanceSelector:
+    matchLabels:
+      grafana.internal/instance: grafana
+  datasources:
+    - datasourceName: prometheus
+      inputName: DS_PROMETHEUS
+  # `dashboards_v5` is the newest set upstream ships; a couple of panels query
+  # metrics renamed since (e.g. `cs_bucket_created_total` is now
+  # `cs_bucket_instantiation_total`) and stay empty.
+  url: https://raw.githubusercontent.com/crowdsecurity/grafana-dashboards/refs/heads/master/dashboards_v5/Crowdsec%20Overview.json
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: crowdsec-insight
+spec:
+  allowCrossNamespaceImport: true
+  instanceSelector:
+    matchLabels:
+      grafana.internal/instance: grafana
+  datasources:
+    - datasourceName: prometheus
+      inputName: DS_PROMETHEUS
+  url: https://raw.githubusercontent.com/crowdsecurity/grafana-dashboards/refs/heads/master/dashboards_v5/Crowdsec%20Insight.json
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: crowdsec-details
+spec:
+  allowCrossNamespaceImport: true
+  instanceSelector:
+    matchLabels:
+      grafana.internal/instance: grafana
+  datasources:
+    - datasourceName: prometheus
+      inputName: DS_PROMETHEUS
+  url: https://raw.githubusercontent.com/crowdsecurity/grafana-dashboards/refs/heads/master/dashboards_v5/Crowdsec%20Details%20per%20Machine.json
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: crowdsec-lapi
+spec:
+  allowCrossNamespaceImport: true
+  instanceSelector:
+    matchLabels:
+      grafana.internal/instance: grafana
+  datasources:
+    - datasourceName: prometheus
+      inputName: DS_PROMETHEUS
+  url: https://raw.githubusercontent.com/crowdsecurity/grafana-dashboards/refs/heads/master/dashboards_v5/LAPI%20Metrics.json
