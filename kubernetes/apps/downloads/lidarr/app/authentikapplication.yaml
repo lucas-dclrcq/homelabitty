@@ -6,7 +6,6 @@ metadata:
 spec:
   slug: lidarr
   name: Lidarr
-  launchURL: https://lidarr.${SECRET_DOMAIN}
   group: Downloads
   adopt: IfMatch
   provider:

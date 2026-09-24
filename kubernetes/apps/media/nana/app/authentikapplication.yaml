@@ -6,7 +6,6 @@ metadata:
 spec:
   slug: nana
   name: Nana
-  launchURL: https://nana.${SECRET_DOMAIN}
   adopt: IfMatch
   provider:
     flows:
