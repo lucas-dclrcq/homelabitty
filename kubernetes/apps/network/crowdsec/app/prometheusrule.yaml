@@ -1,0 +1,20 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/monitoring.coreos.com/prometheusrule_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: crowdsec-rules
+spec:
+  groups:
+    - name: crowdsec.rules
+      rules:
+        - alert: CrowdSecLocalBan
+          annotations:
+            summary: CrowdSec banned an IP
+            description: >-
+              {{ $value }} active ban(s) from scenario {{ $labels.reason }}.
+              Prometheus does not carry the addresses - run
+              `cscli decisions list --origin crowdsec` on the LAPI for those.
+          expr: sum by (reason) (cs_active_decisions{action="ban", origin="crowdsec"}) > 0
+          labels:
+            severity: warning
