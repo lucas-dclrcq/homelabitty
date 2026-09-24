@@ -58,7 +58,7 @@ spec:
           server:
             auto_registration:
               enabled: true
-              token: "${REGISTRATION_TOKEN}"
+              token: "$${REGISTRATION_TOKEN}"
               allowed_ranges:
                 - "127.0.0.1/32"
                 - "10.69.0.0/16"
