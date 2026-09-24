@@ -6,6 +6,8 @@ namespace: network
 components:
   - ../../components/common
 resources:
+  - ./crowdsec/ks.yaml
+  - ./envoy-gateway/ks.yaml
+  - ./envoy-proxy-bouncer/ks.yaml
   - ./external-dns/ks.yaml
   - ./nas-services/ks.yaml
-  - ./envoy-gateway/ks.yaml
