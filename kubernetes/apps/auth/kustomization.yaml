@@ -5,4 +5,5 @@ namespace: auth
 components:
   - ../../components/common
 resources:
+  - ./authentik-operator/ks.yaml
   - ./authentik/ks.yaml
