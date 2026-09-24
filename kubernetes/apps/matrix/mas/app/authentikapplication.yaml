@@ -1,0 +1,46 @@
+---
+apiVersion: authentik.starry.blue/v1alpha1
+kind: AuthentikApplication
+metadata:
+  name: matrix
+spec:
+  slug: matrix
+  name: Matrix
+  adopt: IfMatch
+  provider:
+    flows:
+      authorization:
+        slug: default-provider-authorization-implicit-consent
+      invalidation:
+        slug: default-provider-invalidation-flow
+    oauth2:
+      clientType: Confidential
+      redirectURIs:
+        - url: "https://matrix.hoohoot.org/_synapse/client/oidc/callback"
+          matchingMode: Strict
+          type: Authorization
+        - url: "https://mas.hoohoot.org/upstream/callback/01JWB1P6NS8G6D93TE0KKS0HQH"
+          matchingMode: Strict
+          type: Authorization
+      scopes:
+        - scopeName: openid
+        - scopeName: email
+        - scopeName: profile
+      grantTypes:
+        - AuthorizationCode
+        - Hybrid
+        - Implicit
+        - ClientCredentials
+        - Password
+        - DeviceCode
+        - RefreshToken
+      subjectMode: HashedUserID
+      issuerMode: PerProvider
+      includeClaimsInIDToken: true
+      credentials:
+        secretRef:
+          name: matrix-oidc
+  access:
+    rules:
+      - group:
+          name: Hoohoot Users

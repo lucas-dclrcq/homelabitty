@@ -1,0 +1,45 @@
+---
+apiVersion: authentik.starry.blue/v1alpha1
+kind: AuthentikApplication
+metadata:
+  name: outline
+spec:
+  slug: outline
+  name: Docs
+  adopt: IfMatch
+  provider:
+    flows:
+      authorization:
+        slug: default-provider-authorization-implicit-consent
+      invalidation:
+        slug: default-provider-invalidation-flow
+    oauth2:
+      clientType: Confidential
+      redirectURIs:
+        - url: "https://docs.hoohoot.org/auth/oidc.callback"
+          matchingMode: Strict
+          type: Authorization
+      scopes:
+        - scopeName: openid
+        - scopeName: email
+        - scopeName: profile
+      grantTypes:
+        - AuthorizationCode
+        - Hybrid
+        - Implicit
+        - ClientCredentials
+        - Password
+        - DeviceCode
+        - RefreshToken
+      subjectMode: HashedUserID
+      issuerMode: PerProvider
+      includeClaimsInIDToken: true
+      credentials:
+        secretRef:
+          name: outline-oidc
+  access:
+    rules:
+      - group:
+          name: Hoohoot Users
+      - group:
+          name: SuperQuinQuin

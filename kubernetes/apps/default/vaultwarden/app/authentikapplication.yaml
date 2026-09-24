@@ -1,0 +1,45 @@
+---
+apiVersion: authentik.starry.blue/v1alpha1
+kind: AuthentikApplication
+metadata:
+  name: vaultwarden
+spec:
+  slug: vaultwarden
+  name: Vaultwarden
+  group: Misc
+  adopt: IfMatch
+  provider:
+    flows:
+      authorization:
+        slug: default-provider-authorization-implicit-consent
+      invalidation:
+        slug: default-provider-invalidation-flow
+    oauth2:
+      clientType: Confidential
+      redirectURIs:
+        - url: "https://passwords.hoohoot.org/identity/connect/oidc-signin"
+          matchingMode: Strict
+          type: Authorization
+      scopes:
+        - scopeName: openid
+        - scopeName: email
+        - scopeName: profile
+        - scopeName: offline_access
+      grantTypes:
+        - AuthorizationCode
+        - Hybrid
+        - Implicit
+        - ClientCredentials
+        - Password
+        - DeviceCode
+        - RefreshToken
+      subjectMode: UserUsername
+      issuerMode: PerProvider
+      includeClaimsInIDToken: true
+      credentials:
+        secretRef:
+          name: vaultwarden-oidc
+  access:
+    rules:
+      - group:
+          name: Hoohoot Users

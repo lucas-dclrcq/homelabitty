@@ -1,0 +1,43 @@
+---
+apiVersion: authentik.starry.blue/v1alpha1
+kind: AuthentikApplication
+metadata:
+  name: forgejo
+spec:
+  slug: forgejo
+  name: Forgejo
+  adopt: IfMatch
+  provider:
+    flows:
+      authorization:
+        slug: default-provider-authorization-implicit-consent
+      invalidation:
+        slug: default-provider-invalidation-flow
+    oauth2:
+      clientType: Confidential
+      redirectURIs:
+        - url: "https://git.hoohoot.org/user/oauth2/Authentik/callback"
+          matchingMode: Strict
+          type: Authorization
+      scopes:
+        - scopeName: openid
+        - scopeName: email
+        - scopeName: profile
+      grantTypes:
+        - AuthorizationCode
+        - Hybrid
+        - Implicit
+        - ClientCredentials
+        - Password
+        - DeviceCode
+        - RefreshToken
+      subjectMode: HashedUserID
+      issuerMode: PerProvider
+      includeClaimsInIDToken: true
+      credentials:
+        secretRef:
+          name: forgejo-oidc
+  access:
+    rules:
+      - group:
+          name: Hoohoot Developers

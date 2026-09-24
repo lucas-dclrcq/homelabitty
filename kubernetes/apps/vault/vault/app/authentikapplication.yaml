@@ -1,0 +1,47 @@
+---
+apiVersion: authentik.starry.blue/v1alpha1
+kind: AuthentikApplication
+metadata:
+  name: vault
+spec:
+  slug: vault
+  name: Vault [internal]
+  group: Infrastructure
+  adopt: IfMatch
+  provider:
+    flows:
+      authorization:
+        slug: default-provider-authorization-implicit-consent
+      invalidation:
+        slug: default-provider-invalidation-flow
+    oauth2:
+      clientType: Confidential
+      redirectURIs:
+        - url: "https://vault.hoohoot.xyz/ui/vault/auth/oidc/oidc/callback"
+          matchingMode: Strict
+          type: Authorization
+        - url: "https://vault.hoohoot.xyz/oidc/callback"
+          matchingMode: Strict
+          type: Authorization
+        - url: "http://localhost:8250/oidc/callback"
+          matchingMode: Strict
+          type: Authorization
+      scopes:
+        - scopeName: openid
+        - scopeName: email
+        - scopeName: profile
+      grantTypes:
+        - AuthorizationCode
+        - Hybrid
+        - Implicit
+        - ClientCredentials
+        - Password
+        - DeviceCode
+        - RefreshToken
+      subjectMode: HashedUserID
+      issuerMode: PerProvider
+      includeClaimsInIDToken: true
+  access:
+    rules:
+      - group:
+          name: Hoohoot Developers

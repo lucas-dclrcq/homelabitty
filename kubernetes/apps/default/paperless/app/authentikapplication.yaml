@@ -1,0 +1,44 @@
+---
+apiVersion: authentik.starry.blue/v1alpha1
+kind: AuthentikApplication
+metadata:
+  name: paperless
+spec:
+  slug: paperless
+  name: Paperless
+  adopt: IfMatch
+  provider:
+    flows:
+      authorization:
+        slug: default-provider-authorization-implicit-consent
+      invalidation:
+        slug: default-provider-invalidation-flow
+    oauth2:
+      clientType: Confidential
+      redirectURIs:
+        - url: "https://paperless.hoohoot.org/accounts/oidc/sso/login/callback/"
+          matchingMode: Strict
+          type: Authorization
+      scopes:
+        - scopeName: openid
+        - scopeName: email
+        - scopeName: profile
+        - scopeName: offline_access
+      grantTypes:
+        - AuthorizationCode
+        - Hybrid
+        - Implicit
+        - ClientCredentials
+        - Password
+        - DeviceCode
+        - RefreshToken
+      subjectMode: UserUsername
+      issuerMode: PerProvider
+      includeClaimsInIDToken: true
+      credentials:
+        secretRef:
+          name: paperless-oidc
+  access:
+    rules:
+      - group:
+          name: Lulice

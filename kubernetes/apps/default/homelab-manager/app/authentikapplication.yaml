@@ -1,0 +1,42 @@
+---
+apiVersion: authentik.starry.blue/v1alpha1
+kind: AuthentikApplication
+metadata:
+  name: homelab-manager
+spec:
+  slug: homelab-manager
+  name: Homelab Manager
+  adopt: IfMatch
+  provider:
+    flows:
+      authorization:
+        slug: default-provider-authorization-implicit-consent
+      invalidation:
+        slug: default-provider-invalidation-flow
+    oauth2:
+      clientType: Confidential
+      redirectURIs:
+        - url: "https://hoohoot.org/.*"
+          matchingMode: Regex
+          type: Authorization
+      scopes:
+        - scopeName: roles
+        - scopeName: openid
+        - scopeName: email
+        - scopeName: profile
+      grantTypes:
+        - AuthorizationCode
+        - Implicit
+        - Hybrid
+        - RefreshToken
+        - ClientCredentials
+        - Password
+        - DeviceCode
+      subjectMode: UserUsername
+      issuerMode: PerProvider
+      includeClaimsInIDToken: true
+      credentials:
+        secretRef:
+          name: homelab-manager-oidc
+  access:
+    public: true

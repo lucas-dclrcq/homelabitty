@@ -1,0 +1,46 @@
+---
+apiVersion: authentik.starry.blue/v1alpha1
+kind: AuthentikApplication
+metadata:
+  name: mealie
+spec:
+  slug: mealie
+  name: Mealie
+  adopt: IfMatch
+  provider:
+    flows:
+      authorization:
+        slug: default-provider-authorization-implicit-consent
+      invalidation:
+        slug: default-provider-invalidation-flow
+    oauth2:
+      clientType: Confidential
+      redirectURIs:
+        - url: "https://recettes.hoohoot.org/login"
+          matchingMode: Strict
+          type: Authorization
+        - url: "https://recettes.hoohoot.org/login?direct=1"
+          matchingMode: Strict
+          type: Authorization
+      scopes:
+        - scopeName: openid
+        - scopeName: email
+        - scopeName: profile
+      grantTypes:
+        - AuthorizationCode
+        - Implicit
+        - Hybrid
+        - RefreshToken
+        - ClientCredentials
+        - Password
+        - DeviceCode
+      subjectMode: UserID
+      issuerMode: PerProvider
+      includeClaimsInIDToken: true
+      credentials:
+        secretRef:
+          name: mealie-oidc
+  access:
+    rules:
+      - group:
+          name: Hoohoot Users

@@ -1,0 +1,59 @@
+---
+apiVersion: authentik.starry.blue/v1alpha1
+kind: AuthentikApplication
+metadata:
+  name: opencloud
+spec:
+  slug: opencloud
+  name: Opencloud
+  adopt: IfMatch
+  provider:
+    flows:
+      authorization:
+        slug: default-provider-authorization-implicit-consent
+      invalidation:
+        slug: default-provider-invalidation-flow
+    oauth2:
+      clientType: Public
+      redirectURIs:
+        - url: "https://drive.hoohoot.org/"
+          matchingMode: Strict
+          type: Authorization
+        - url: "https://drive.hoohoot.org/oidc-callback.html"
+          matchingMode: Strict
+          type: Authorization
+        - url: "https://drive.hoohoot.org/oidc-silent-redirect.html"
+          matchingMode: Strict
+          type: Authorization
+        - url: "oc://ios.opencloud.eu"
+          matchingMode: Strict
+          type: Authorization
+        - url: "oc://android.opencloud.eu"
+          matchingMode: Strict
+          type: Authorization
+        - url: "http://127.0.0.1(:.*)?"
+          matchingMode: Regex
+          type: Authorization
+        - url: "http://localhost(:.*)?"
+          matchingMode: Regex
+          type: Authorization
+      scopes:
+        - scopeName: openid
+        - scopeName: email
+        - scopeName: profile
+        - scopeName: offline_access
+      grantTypes:
+        - AuthorizationCode
+        - Implicit
+        - Hybrid
+        - RefreshToken
+        - ClientCredentials
+        - Password
+        - DeviceCode
+      subjectMode: UserUsername
+      issuerMode: PerProvider
+      includeClaimsInIDToken: true
+  access:
+    rules:
+      - group:
+          name: Hoohoot Users

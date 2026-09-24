@@ -1,0 +1,40 @@
+---
+apiVersion: authentik.starry.blue/v1alpha1
+kind: AuthentikApplication
+metadata:
+  name: bambuddy
+spec:
+  slug: bambuddy
+  name: Bambuddy
+  adopt: IfMatch
+  provider:
+    flows:
+      authorization:
+        slug: default-provider-authorization-implicit-consent
+      invalidation:
+        slug: default-provider-invalidation-flow
+    oauth2:
+      clientType: Confidential
+      redirectURIs:
+        - url: "https://bambuddy.hoohoot.xyz/api/v1/auth/oidc/callback"
+          matchingMode: Strict
+          type: Authorization
+      scopes:
+        - scopeName: openid
+        - scopeName: email
+        - scopeName: profile
+      grantTypes:
+        - AuthorizationCode
+        - Implicit
+        - Hybrid
+        - RefreshToken
+        - ClientCredentials
+        - Password
+        - DeviceCode
+      subjectMode: UserUsername
+      issuerMode: PerProvider
+      includeClaimsInIDToken: true
+  access:
+    rules:
+      - group:
+          name: authentik Admins

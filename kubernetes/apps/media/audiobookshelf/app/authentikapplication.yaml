@@ -1,0 +1,47 @@
+---
+apiVersion: authentik.starry.blue/v1alpha1
+kind: AuthentikApplication
+metadata:
+  name: audiobookshelf
+spec:
+  slug: audiobookshelf
+  name: Audiobookshelf
+  group: Media
+  adopt: IfMatch
+  provider:
+    flows:
+      authorization:
+        slug: default-provider-authorization-implicit-consent
+      invalidation:
+        slug: default-provider-invalidation-flow
+    oauth2:
+      clientType: Confidential
+      redirectURIs:
+        - url: "https://audiobookshelf.hoohoot.org/audiobookshelf/auth/openid/callback"
+          matchingMode: Strict
+          type: Authorization
+        - url: "https://audiobookshelf.hoohoot.org/audiobookshelf/auth/openid/mobile-redirect"
+          matchingMode: Strict
+          type: Authorization
+        - url: "lissen://oauth"
+          matchingMode: Strict
+          type: Authorization
+      scopes:
+        - scopeName: openid
+        - scopeName: email
+        - scopeName: profile
+      grantTypes:
+        - AuthorizationCode
+        - Hybrid
+        - Implicit
+        - ClientCredentials
+        - Password
+        - DeviceCode
+        - RefreshToken
+      subjectMode: UserUsername
+      issuerMode: PerProvider
+      includeClaimsInIDToken: true
+  access:
+    rules:
+      - group:
+          name: Hoohoot Users
