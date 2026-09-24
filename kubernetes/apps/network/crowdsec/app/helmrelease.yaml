@@ -18,9 +18,6 @@ spec:
   values:
     container_runtime: containerd
 
-    podLabels:
-      egress.home.arpa/world: allow
-
     secrets:
       externalSecret:
         name: crowdsec-lapi-secrets
