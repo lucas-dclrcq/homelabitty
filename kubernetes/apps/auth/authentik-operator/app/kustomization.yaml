@@ -6,3 +6,4 @@ resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
   - ./helmrepository.yaml
+  - ./grafana-mcp.yaml
