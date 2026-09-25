@@ -68,6 +68,18 @@
       minimumGroupSize: 2,
     },
     {
+      description: "Agent Gateway Group",
+      groupName: "agentgateway",
+      matchDatasources: ["docker"],
+      matchPackageNames: [
+        "/^cr\\.agentgateway\\.dev/charts/agentgateway(-crds)?$/",
+      ],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+      minimumGroupSize: 2,
+    },
+    {
       "description": "Immich Group",
       "groupName": "Immich",
       "matchPackagePatterns": ["immich"],
