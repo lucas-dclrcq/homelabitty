@@ -50,6 +50,12 @@ spec:
       # PVC, so the sweeper never runs and the cache fills the volume.
       contentCacheSizeMb: 512
       metadataCacheSizeMb: 1024
+  parameters:
+    epoch:
+      # Adopted with 6500+ index blobs: the repo's stored 24h epoch minDuration
+      # gated compaction behind a day of hourly backups from 39 apps. 1h lets
+      # full maintenance actually shrink the index (TooManyIndexBlobs warning).
+      minDuration: 1h
   scheduleDefaults:
     timezone: ${TIMEZONE}
   server:
