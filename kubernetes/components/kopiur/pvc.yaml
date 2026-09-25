@@ -11,7 +11,8 @@ metadata:
     # kubectl patch, then mirror the value here.
     kustomize.toolkit.fluxcd.io/ssa: IfNotPresent
 spec:
-  accessModes: ["${KOPIUR_ACCESSMODES:=ReadWriteOnce}"]
+  accessModes:
+    - "${KOPIUR_ACCESSMODES:=ReadWriteOnce}"
   dataSourceRef:
     apiGroup: kopiur.home-operations.com
     kind: Restore
