@@ -35,6 +35,14 @@ spec:
     securityContext:
       runAsUser: 0
       runAsNonRoot: false
+      # kopiur keeps the hardened drop:[ALL] and never adds caps itself; uid 0
+      # without DAC_OVERRIDE still can't read other-uid 0600 files (volsync's
+      # privileged movers granted these same three)
+      capabilities:
+        add:
+          - DAC_OVERRIDE
+          - CHOWN
+          - FOWNER
     privilegedMode: true
     cache:
       # Deliberately decoupled from the data capacity: openebs-hostpath PVCs

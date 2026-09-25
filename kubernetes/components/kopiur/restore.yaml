@@ -21,4 +21,11 @@ spec:
     securityContext:
       runAsUser: 0
       runAsNonRoot: false
+      # CHOWN/FOWNER restore original UID/GID and modes; DAC_OVERRIDE writes
+      # through restored 0700 dirs (kopiur adds no caps itself)
+      capabilities:
+        add:
+          - DAC_OVERRIDE
+          - CHOWN
+          - FOWNER
     privilegedMode: true # restore files with their original UID/GID
