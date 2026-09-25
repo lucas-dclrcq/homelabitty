@@ -1,0 +1,41 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app kopiur
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  interval: 1h
+  install:
+    crds: CreateReplace
+  upgrade:
+    # The chart ships its CRDs in crds/, which plain helm upgrade never touches
+    crds: CreateReplace
+  values:
+    features:
+      # Copy the ClusterRepository credentials Secret into each mover namespace,
+      # replacing volsync's per-app duplicated SOPS secrets
+      credentialProjection:
+        enabled: true
+      # Required for ClusterRepository spec.server (the kopia web UI)
+      kopiaUi:
+        enabled: true
+    monitoring:
+      serviceMonitor:
+        enabled: true
+      prometheusRule:
+        enabled: true
+      dashboards:
+        enabled: true
+        grafanaOperator:
+          enabled: true
+          matchLabels:
+            grafana.internal/instance: grafana
+    resources:
+      requests:
+        cpu: 100m
+      limits:
+        memory: 2Gi

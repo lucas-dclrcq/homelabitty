@@ -1,0 +1,24 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kopiur.home-operations.com/restore_v1alpha1.json
+apiVersion: kopiur.home-operations.com/v1alpha1
+kind: Restore
+metadata:
+  name: "${APP}"
+spec:
+  # Volume-populator bootstrap: sits passive until a PVC claims it via
+  # dataSourceRef; a brand-new app with no snapshots gets an empty PVC
+  policy:
+    onMissingSnapshot: Continue
+  source:
+    fromPolicy:
+      name: "${APP}"
+      offset: 0
+  target:
+    populator: {}
+  credentialProjection:
+    enabled: true
+  mover:
+    securityContext:
+      runAsUser: 0
+      runAsNonRoot: false
+    privilegedMode: true # restore files with their original UID/GID

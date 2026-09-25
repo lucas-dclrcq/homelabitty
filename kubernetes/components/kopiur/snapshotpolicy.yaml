@@ -1,0 +1,46 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kopiur.home-operations.com/snapshotpolicy_v1alpha1.json
+apiVersion: kopiur.home-operations.com/v1alpha1
+kind: SnapshotPolicy
+metadata:
+  name: "${APP}"
+spec:
+  repository:
+    kind: ClusterRepository
+    name: truenas
+  # The ClusterRepository secret lives in kopiur-system; kopiur copies it into
+  # this namespace for each mover run (no per-app secret needed)
+  credentialProjection:
+    enabled: true
+  sources:
+    - pvc:
+        name: "${APP}"
+      # The repository was created by VolSync's kopia mover, which recorded
+      # every snapshot under <app>@<namespace>:/data. Kopiur's default source
+      # path is /pvc/<name>; pin /data so new snapshots continue the same
+      # lineage and dedup against existing data instead of re-uploading.
+      sourcePathOverride: /data
+  compression:
+    compressor: zstd-fastest
+  retention:
+    keepHourly: 24
+    keepDaily: 7
+  upload:
+    maxParallelFileReads: 2
+  mover:
+    # Same elevation as volsync's privileged movers: read any file on backup,
+    # preserve UID/GID on restore. TrueNAS NFS root-squashes repository writes
+    # to 65534, matching the existing repo ownership. Gated per namespace by
+    # the kopiur.home-operations.com/privileged-movers annotation.
+    securityContext:
+      runAsUser: 0
+      runAsNonRoot: false
+    privilegedMode: true
+    cache:
+      # Deliberately decoupled from the data capacity: openebs-hostpath PVCs
+      # cannot resize, and tying cache size to ${KOPIUR_CAPACITY} wedges any
+      # app that overrides it (see the old volsync cache-resize incident)
+      capacity: ${KOPIUR_CACHE_CAPACITY:=5Gi}
+      mode: Persistent
+      storageClassName: ${KOPIUR_CACHE_STORAGECLASS:=openebs-hostpath}
+  volumeSnapshotClassName: ${KOPIUR_SNAPSHOTCLASS:=csi-ceph-blockpool}

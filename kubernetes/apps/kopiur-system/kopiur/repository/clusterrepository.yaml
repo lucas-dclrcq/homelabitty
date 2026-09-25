@@ -1,0 +1,66 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kopiur.home-operations.com/clusterrepository_v1alpha1.json
+apiVersion: kopiur.home-operations.com/v1alpha1
+kind: ClusterRepository
+metadata:
+  name: truenas
+spec:
+  allowedNamespaces:
+    all: true
+  backend:
+    filesystem:
+      path: /repository
+      volume:
+        nfs:
+          server: truenas.${INTERNAL_DOMAIN}
+          path: /mnt/tank/Backup/kopia_backup
+  # The repository was created by VolSync's kopia mover and is ADOPTED as-is:
+  # never let kopiur initialize a fresh (empty) one, e.g. during disaster
+  # recovery while the NFS export is unreachable or wrongly mounted.
+  create:
+    enabled: false
+  encryption:
+    passwordSecretRef:
+      name: kopiur-repository-secret
+      namespace: kopiur-system
+      key: KOPIA_PASSWORD
+  # Owner gate: SnapshotPolicies/Restores opt in per-consumer to have this
+  # secret projected into their namespace (replaces volsync's per-app secrets)
+  credentialProjection:
+    allowed: true
+  maintenance:
+    schedule:
+      quick:
+        cron: 0 * * * *
+        jitter: 10m
+      full:
+        cron: 30 3 * * *
+        jitter: 1h
+  moverDefaults:
+    # The VolSync movers ran privileged (root) and TrueNAS NFS root-squashed
+    # them to nobody (65534), so the whole repository is owned by
+    # 65534:${APP_GID} with 0700 dirs. Maintenance (and any mover not
+    # overriding this) must run as that uid to read/write the repo.
+    podSecurityContext:
+      runAsUser: 65534
+      runAsGroup: ${APP_GID}
+    cache:
+      # Every cache PVC is 5Gi or larger (KOPIUR_CACHE_CAPACITY default).
+      # Kopia's own defaults are 5000 MiB per budget, larger than the whole
+      # PVC, so the sweeper never runs and the cache fills the volume.
+      contentCacheSizeMb: 512
+      metadataCacheSizeMb: 1024
+  scheduleDefaults:
+    timezone: ${TIMEZONE}
+  server:
+    namespace: kopiur-system
+    auth:
+      generate: {}
+    service:
+      type: ClusterIP
+      port: 51515
+    # Same uid story as moverDefaults: the web UI reads the repo over NFS
+    podSecurityContext:
+      runAsUser: 65534
+      runAsGroup: ${APP_GID}
+      fsGroup: ${APP_GID}
