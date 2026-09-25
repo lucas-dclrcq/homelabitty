@@ -11,4 +11,3 @@ resources:
   - ./backend-traffic-policy.yaml
   - ./client-traffic-policy.yaml
   - ./envoyproxy.yaml
-  - ./crowdsec-securitypolicy.yaml

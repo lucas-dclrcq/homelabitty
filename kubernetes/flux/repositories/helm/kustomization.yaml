@@ -32,7 +32,6 @@ resources:
   - ./jpgouin.yaml
   - ./bitnami.yaml
   - ./epamedb.yaml
-  - ./crowdsec.yaml
   - ./intel.yaml
   - ./nextcloud.yaml
   - ./authentik.yaml
