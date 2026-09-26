@@ -24,7 +24,7 @@ spec:
           app:
             image:
               repository: ghcr.io/sirkirby/unifi-network-mcp
-              tag: 0.32.10
+              tag: 0.33.0
             env:
               HOME: /tmp
               UNIFI_MCP_HTTP_ENABLED: "true"
