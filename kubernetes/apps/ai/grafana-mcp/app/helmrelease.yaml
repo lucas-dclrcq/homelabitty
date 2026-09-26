@@ -18,7 +18,7 @@ spec:
           app:
             image:
               repository: grafana/mcp-grafana
-              tag: 1.5.1
+              tag: 1.6.0
             args:
               - --transport=streamable-http
               - --allowed-hosts=localhost:8000,127.0.0.1:8000,grafana-mcp.ai.svc.cluster.local:8000,grafana-mcp.ai:8000,grafana-mcp:8000,grafana.mcp.${SECRET_DOMAIN}
