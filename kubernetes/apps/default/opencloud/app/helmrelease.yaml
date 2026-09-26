@@ -81,6 +81,16 @@ spec:
               WEBFINGER_IOS_OIDC_CLIENT_SCOPES: "openid profile email groups offline_access"
               WEBFINGER_ANDROID_OIDC_CLIENT_ID: opencloud
               WEBFINGER_ANDROID_OIDC_CLIENT_SCOPES: "openid profile email groups offline_access"
+              # WebOffice via OnlyOffice. The collaboration (WOPI) service runs
+              # inside the main process, so the proxy already serves its /wopi
+              # and /collaboration routes and no extra hostname is needed.
+              OC_ADD_RUN_SERVICES: collaboration
+              COLLABORATION_APP_NAME: OnlyOffice
+              COLLABORATION_APP_PRODUCT: OnlyOffice
+              COLLABORATION_APP_DESCRIPTION: Open office documents with OnlyOffice
+              COLLABORATION_APP_ADDR: "https://onlyoffice.${SECRET_DOMAIN}"
+              COLLABORATION_APP_ICON: "https://onlyoffice.${SECRET_DOMAIN}/web-apps/apps/documenteditor/main/resources/img/favicon.ico"
+              COLLABORATION_WOPI_SRC: "https://drive.${SECRET_DOMAIN}"
             envFrom:
               - secretRef:
                   name: opencloud-secret
@@ -122,6 +132,9 @@ spec:
             readOnly: true
           - path: /etc/opencloud/proxy.yaml
             subPath: proxy.yaml
+            readOnly: true
+          - path: /etc/opencloud/app-registry.yaml
+            subPath: app-registry.yaml
             readOnly: true
       etc:
         existingClaim: *app
