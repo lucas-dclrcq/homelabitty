@@ -20,6 +20,10 @@ spec:
       strategy: rollback
       retries: 3
   values:
+    # The chart TEMPLATES the VolumeSnapshot CRDs: without this, a helm
+    # uninstall (e.g. moving this release between namespaces) deletes the CRDs
+    # and with them every VolumeSnapshot in the cluster
+    keepCRDs: true
     controller:
       serviceMonitor:
         create: true
