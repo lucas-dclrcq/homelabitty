@@ -10,5 +10,6 @@ spec:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
   ref:
-    tag: v1.19.4
+    tag: v1.20.7
+    digest: 5b93478620b4e197d4a88fb424ab2ec752ebe7a07df582d5fb0e5bd68e9242a5
   url: oci://ocharted.flux-system.svc.cluster.local:8080/charts.rook.io/release/rook-ceph-cluster
