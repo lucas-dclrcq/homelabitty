@@ -22,7 +22,7 @@ metadata:
       ]
 spec:
   postgresVersion: 16
-  image: ghcr.io/zednotdead/cdpgvectorchord:16-0.4.3@sha256:a7d80906b9c292608c9d9e3a09e46f2f511bf2d07f8087d07dc931bd19001a04
+  image: ghcr.io/zednotdead/cdpgvectorchord:17-0.4.3@sha256:038ef70dd4a38ce1e3f3cc684bde1c0616260bfbff784507e126cec83455deef
 
   service:
     type: LoadBalancer
