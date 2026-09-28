@@ -17,6 +17,18 @@ spec:
       parentRefs:
         - name: internal
           namespace: network
+    auth:
+      oidc:
+        enabled: true
+        issuerUrl: "https://sso.${SECRET_DOMAIN}/application/o/renovate-operator/"
+        clientId: renovate-operator
+        existingSecret: renovate-operator-oidc
+        secretKey: client-secret
+        redirectScheme: https
+    authorization:
+      defaults:
+        adminGroups:
+          - Hoohoot Developers
     metrics:
       enabled: true
       serviceMonitor:
