@@ -23,21 +23,17 @@ view-secret namespace secret:
 browse-pvc namespace claim:
     kubectl browse-pvc -n {{ namespace }} -i mirror.gcr.io/alpine:latest {{ claim }}
 
-[doc('Snapshot VolSync PVCs')]
+[doc('Snapshot all kopiur-protected PVCs')]
 snapshot:
-    kubectl get replicationsources --no-headers -A | while read -r ns name _; do \
-        kubectl -n "$ns" patch replicationsources "$name" --type merge -p '{"spec":{"trigger":{"manual":"$(date +%s)"}}}'; \
+    kubectl get snapshotpolicies --no-headers -A | while read -r ns name _; do \
+        kubectl kopiur snapshot now --policy "$name" -n "$ns"; \
     done
 
-[doc('Force a VolSync backup for an app')]
+[doc('Force a kopiur backup for an app')]
 backup namespace app:
-    kubectl -n {{ namespace }} patch replicationsources {{ app }} --type merge -p '{"spec":{"trigger":{"manual":"'$(date +%s)'"}}}'
-    until kubectl -n {{ namespace }} get job/volsync-src-{{ app }} &>/dev/null; do sleep 5; done
-    kubectl -n {{ namespace }} wait job/volsync-src-{{ app }} --for=condition=complete --timeout=120m
+    kubectl kopiur snapshot now --policy {{ app }} -n {{ namespace }} --wait
 
-[doc('Suspend or resume VolSync')]
-volsync state:
-    flux -n volsync-system {{ state }} kustomization volsync
-    flux -n volsync-system {{ state }} helmrelease volsync
-    kubectl -n volsync-system scale deployment volsync --replicas {{ if state != "suspend" { "1" } else { "0" } }}
+[doc('Suspend or resume kopiur (all backups, restores and maintenance)')]
+kopiur state:
+    kubectl patch clusterrepository truenas --type merge -p '{"spec":{"suspend":{{ if state == "suspend" { "true" } else { "false" } }}}}'
 

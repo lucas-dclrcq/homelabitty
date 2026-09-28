@@ -38,6 +38,12 @@ kubectl scale deployment -n media audiobookshelf --replicas $replicas
 kubectl scale deployment -n media jellyfin --replicas $replicas
 kubectl scale deployment -n media komga --replicas $replicas
 kubectl scale deployment -n media navidrome --replicas $replicas
-kubectl scale deployment -n volsync-system volsync --replicas $replicas
+# kopiur: suspend the repository while the NAS is down (backups, restores and
+# maintenance all mount the TrueNAS NFS export)
+if [ "$replicas" = "0" ]; then
+  kubectl patch clusterrepository truenas --type merge -p '{"spec":{"suspend":true}}'
+else
+  kubectl patch clusterrepository truenas --type merge -p '{"spec":{"suspend":false}}'
+fi
 
 echo "NAS applications scaled $1"

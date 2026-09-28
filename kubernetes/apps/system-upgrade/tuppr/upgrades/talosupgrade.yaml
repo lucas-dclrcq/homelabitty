@@ -17,8 +17,3 @@ spec:
       kind: Snapshot
       expr: |-
         status.conditions.filter(c, c.type == "Reconciling").all(c, c.status == "False")
-    # volsync gate: kept while bichon (suspended ks) still backs up via volsync
-    - apiVersion: volsync.backube/v1alpha1
-      kind: ReplicationSource
-      expr: |-
-        status.conditions.filter(c, c.type == "Synchronizing").all(c, c.status == "False")
