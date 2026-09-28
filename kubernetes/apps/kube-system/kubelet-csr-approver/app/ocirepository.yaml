@@ -11,4 +11,4 @@ spec:
     operation: copy
   ref:
     tag: 1.2.15
-  url: oci://ocharted.flux-system.svc.cluster.local:8080/postfinance.github.io/kubelet-csr-approver/kubelet-csr-approver
+  url: oci://ocharted.hoohoot.org/postfinance.github.io/kubelet-csr-approver/kubelet-csr-approver

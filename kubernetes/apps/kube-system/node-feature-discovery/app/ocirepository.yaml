@@ -11,4 +11,4 @@ spec:
     operation: copy
   ref:
     tag: 0.19.0
-  url: oci://ocharted.flux-system.svc.cluster.local:8080/kubernetes-sigs.github.io/node-feature-discovery/charts/node-feature-discovery
+  url: oci://ocharted.hoohoot.org/kubernetes-sigs.github.io/node-feature-discovery/charts/node-feature-discovery
