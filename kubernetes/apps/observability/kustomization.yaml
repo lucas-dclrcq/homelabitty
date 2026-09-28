@@ -4,7 +4,8 @@ kind: Kustomization
 resources:
   - ./namespace.yaml
   - ./exporters
-  - ./kube-prometheus-stack/ks.yaml
+  - ./prometheus-crds/ks.yaml
+  - ./victoria-metrics-stack/ks.yaml
   - ./prometheus-pushgateway/ks.yaml
   - ./grafana/ks.yaml
   - ./loki/ks.yaml
@@ -13,5 +14,4 @@ resources:
   - ./keda/ks.yaml
   - ./silence-operator/ks.yaml
   - ./karma/ks.yaml
-  - ./tempo/ks.yaml
   - ./umami/ks.yaml

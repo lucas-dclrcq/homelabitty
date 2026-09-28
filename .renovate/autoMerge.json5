@@ -16,7 +16,7 @@
       automerge: true,
       automergeType: "pr",
       matchUpdateTypes: ["minor", "patch"],
-      matchPackageNames: ["/kube-prometheus-stack/", "/grafana/"],
+      matchPackageNames: ["/victoria-metrics-k8s-stack/", "/prometheus-operator-crds/", "/grafana/"],
       ignoreTests: false,
     },
     {

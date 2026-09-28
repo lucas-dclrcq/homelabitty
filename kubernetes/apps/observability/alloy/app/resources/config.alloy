@@ -149,8 +149,8 @@ otelcol.receiver.otlp "default" {
   }
 
   output {
-    metrics = [otelcol.processor.batch.default.input]
-    logs    = [otelcol.processor.batch.default.input]
+    metrics = [otelcol.processor.batch.metrics.input]
+    logs    = [otelcol.processor.batch.logs.input]
     traces  = [otelcol.processor.filter.traces.input]
   }
 }
@@ -166,24 +166,46 @@ otelcol.processor.filter "traces" {
   }
 
   output {
-    traces = [otelcol.processor.batch.default.input]
+    traces = [otelcol.processor.batch.traces.input]
   }
 }
 
-otelcol.processor.batch "default" {
+otelcol.processor.batch "traces" {
   output {
-    metrics = [otelcol.exporter.otlp.default.input]
-    logs    = [otelcol.exporter.otlp.default.input]
-    traces  = [otelcol.exporter.otlp.default.input]
+    traces = [otelcol.exporter.otlp.traces.input]
   }
 }
 
-otelcol.exporter.otlp "default" {
+otelcol.processor.batch "metrics" {
+  output {
+    metrics = [otelcol.exporter.otlp.metrics.input]
+  }
+}
+
+otelcol.processor.batch "logs" {
+  output {
+    logs = [otelcol.exporter.loki.default.input]
+  }
+}
+
+otelcol.exporter.otlp "traces" {
   client {
-    endpoint = "tempo:4317"
+    endpoint = "vtsingle-vmks.observability.svc.cluster.local:4317"
     tls {
-        insecure             = true
-        insecure_skip_verify = true
+      insecure = true
     }
   }
+}
+
+otelcol.exporter.otlp "metrics" {
+  client {
+    endpoint = "vmagent-vmks.observability.svc.cluster.local:4317"
+    tls {
+      insecure = true
+    }
+  }
+}
+
+otelcol.exporter.loki "default" {
+  forward_to = [loki.write.default.receiver]
 }

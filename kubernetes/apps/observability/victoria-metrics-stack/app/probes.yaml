@@ -3,7 +3,7 @@
 apiVersion: monitoring.coreos.com/v1
 kind: Probe
 metadata:
-  name: prometheus
+  name: victoriametrics
 spec:
   interval: 1m
   module: http_2xx
@@ -12,7 +12,7 @@ spec:
   targets:
     staticConfig:
       static:
-        - "https://prometheus.${LIMITED_DOMAIN}"
+        - "https://victoriametrics.${LIMITED_DOMAIN}"
   metricRelabelings:
     - targetLabel: service
       replacement: app-endpoint

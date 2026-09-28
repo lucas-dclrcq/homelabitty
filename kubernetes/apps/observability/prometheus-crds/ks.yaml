@@ -3,22 +3,17 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app kube-prometheus-stack
+  name: &app prometheus-crds
   namespace: flux-system
 spec:
   targetNamespace: observability
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  dependsOn:
-    - name: external-secrets-stores
-      namespace: external-secrets
-  path: ./kubernetes/apps/observability/kube-prometheus-stack/app
+  path: ./kubernetes/apps/observability/prometheus-crds/app
   prune: true
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
   wait: false
-  interval: 30m
-  retryInterval: 1m
-  timeout: 15m
+  interval: 1h
