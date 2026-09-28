@@ -1,0 +1,22 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/mogenius/renovate-operator/main/charts/renovate-operator/crd/renovate-operator.mogenius.com_renovatejobs.yaml
+apiVersion: renovate-operator.mogenius.com/v1alpha1
+kind: RenovateJob
+metadata:
+  name: homelabitty
+spec:
+  discoveryFilters:
+    - lucas-dclrcq/homelabitty
+  image: ghcr.io/renovatebot/renovate:44.116.0
+  parallelism: 1
+  provider:
+    name: github
+  schedule: "0 * * * *"
+  secretRef: renovate-secret
+  renovateConfig:
+    inline: |-
+      module.exports = {
+        secrets: {
+          OCHARTED_PASSWORD: process.env.OCHARTED_PASSWORD,
+        },
+      };

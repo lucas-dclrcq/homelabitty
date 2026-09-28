@@ -10,4 +10,5 @@ resources:
   - ./forgejo-runner/ks.yaml
   - ./harbor/ks.yaml
   - ./pacman/ks.yaml
+  - ./renovate-operator/ks.yaml
   - ./semaphore/ks.yaml
