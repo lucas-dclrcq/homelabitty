@@ -12,7 +12,7 @@ spec:
       app.kubernetes.io/name: *app
   components:
     - ../../../../components/dragonfly
-    - ../../../../components/volsync
+    - ../../../../components/kopiur
   dependsOn:
     - name: external-secrets-stores
       namespace: external-secrets
@@ -29,4 +29,4 @@ spec:
   postBuild:
     substitute:
       APP: *app
-      VOLSYNC_CAPACITY: 20Gi
+      KOPIUR_CAPACITY: 20Gi
