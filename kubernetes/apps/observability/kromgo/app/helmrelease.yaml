@@ -11,7 +11,7 @@ spec:
     name: *app
   values:
     config:
-      prometheus: http://prometheus-operated.{{ .Release.Namespace }}.svc.cluster.local:9090
+      prometheus: http://vmsingle-vmks.{{ .Release.Namespace }}.svc.cluster.local:8428
       badges:
         - title: Talos
           id: talos_version

@@ -1,0 +1,156 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: victoria-metrics-k8s-stack
+spec:
+  interval: 30m
+  timeout: 15m
+  chartRef:
+    kind: OCIRepository
+    name: victoria-metrics-k8s-stack
+  install:
+    remediation:
+      retries: -1
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  values:
+    nameOverride: vmks
+
+    victoria-metrics-operator:
+      enabled: true
+
+    vmsingle:
+      enabled: true
+      spec:
+        retentionPeriod: 30d
+        storage:
+          accessModes:
+            - ReadWriteOnce
+          storageClassName: openebs-hostpath
+          resources:
+            requests:
+              storage: 75Gi
+        resources:
+          requests:
+            cpu: 100m
+            memory: 512Mi
+          limits:
+            memory: 4Gi
+      route:
+        enabled: true
+        parentRefs:
+          - name: internal
+            namespace: network
+        hostnames:
+          - "victoriametrics.${LIMITED_DOMAIN}"
+
+    vmagent:
+      enabled: true
+      spec:
+        extraArgs:
+          opentelemetry.grpcListenAddr: ":4317"
+        serviceSpec:
+          useAsDefault: true
+          spec:
+            ports:
+              - name: http
+                port: 8429
+                targetPort: http
+                protocol: TCP
+              - name: opentelemetry-grpc
+                port: 4317
+                targetPort: 4317
+                protocol: TCP
+
+    vmalert:
+      enabled: true
+
+    alertmanager:
+      enabled: true
+      spec:
+        externalURL: https://alertmanager.${LIMITED_DOMAIN}
+        config:
+          global:
+            resolve_timeout: 5m
+          route:
+            receiver: blackhole
+      route:
+        enabled: true
+        parentRefs:
+          - name: internal
+            namespace: network
+        hostnames:
+          - "alertmanager.${LIMITED_DOMAIN}"
+
+    vtsingle:
+      enabled: true
+      spec:
+        retentionPeriod: "24h"
+        grpcSpec:
+          listenPort: 4317
+        storage:
+          accessModes:
+            - ReadWriteOnce
+          storageClassName: openebs-hostpath
+          resources:
+            requests:
+              storage: 10Gi
+
+    grafana:
+      enabled: false
+
+    defaultDashboards:
+      enabled: false
+
+    syncJob:
+      enabled: false
+
+    prometheus-node-exporter:
+      fullnameOverride: node-exporter
+      vmScrape:
+        spec:
+          endpoints:
+            - port: metrics
+              relabelConfigs:
+                - action: replace
+                  regex: (.*)
+                  replacement: $1
+                  sourceLabels: ["__meta_kubernetes_pod_node_name"]
+                  targetLabel: kubernetes_node
+              metricRelabelConfigs:
+                - action: drop
+                  sourceLabels: [mountpoint]
+                  regex: "/var/lib/kubelet/pods.+"
+
+    kube-state-metrics:
+      fullnameOverride: kube-state-metrics
+      metricLabelsAllowlist:
+        - pods=[*]
+        - deployments=[*]
+        - persistentvolumeclaims=[*]
+      vmScrape:
+        spec:
+          endpoints:
+            - port: http
+              honorLabels: true
+              relabelConfigs:
+                - action: replace
+                  regex: (.*)
+                  replacement: $1
+                  sourceLabels: ["__meta_kubernetes_pod_node_name"]
+                  targetLabel: kubernetes_node
+              metricRelabelConfigs:
+                - action: labeldrop
+                  regex: (uid|container_id|image_id)
+
+    kubeEtcd:
+      service:
+        selector:
+          component: kube-apiserver
+
+    kubeProxy:
+      enabled: false
