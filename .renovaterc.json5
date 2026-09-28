@@ -18,6 +18,7 @@
     ":semanticCommits",
     ":timezone(America/New_York)",
   ],
+  gitAuthor: "DanieloBot <danielobot@ldclrcq.top>",
   dependencyDashboardTitle: "Renovate Dashboard 🤖",
   suppressNotifications: [
     "prEditedNotification",
