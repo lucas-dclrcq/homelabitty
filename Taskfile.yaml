@@ -2,8 +2,10 @@
 # yaml-language-server: $schema=https://taskfile.dev/schema.json
 version: "3"
 
-set: [pipefail]
-shopt: [globstar]
+set:
+  - pipefail
+shopt:
+  - globstar
 
 vars:
   # Directories
@@ -56,7 +58,11 @@ tasks:
   configure:
     desc: Configure repository from bootstrap vars
     prompt: Any conflicting config in the kubernetes directory will be overwritten... continue?
-    deps: ["workstation:direnv", "workstation:venv", "sops:age-keygen", "init"]
+    deps:
+      - "workstation:direnv"
+      - "workstation:venv"
+      - "sops:age-keygen"
+      - "init"
     cmds:
       - task: .template
       - task: sops:encrypt

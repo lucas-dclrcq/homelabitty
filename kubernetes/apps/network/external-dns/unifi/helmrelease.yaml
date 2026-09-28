@@ -58,10 +58,16 @@ spec:
       - --exclude-domains=mcp.${SECRET_DOMAIN}
     triggerLoopOnEvent: true
     policy: sync
-    sources: ["service", "gateway-httproute", "gateway-tcproute", "crd"]
+    sources:
+      - "service"
+      - "gateway-httproute"
+      - "gateway-tcproute"
+      - "crd"
     txtOwnerId: main
     txtPrefix: k8s.main.
-    domainFilters: ["${LIMITED_DOMAIN}", "${SECRET_DOMAIN}"]
+    domainFilters:
+      - "${LIMITED_DOMAIN}"
+      - "${SECRET_DOMAIN}"
     serviceMonitor:
       enabled: true
     podAnnotations:
