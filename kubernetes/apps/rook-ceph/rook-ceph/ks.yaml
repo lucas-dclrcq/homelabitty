@@ -37,7 +37,7 @@ spec:
   dependsOn:
     - name: rook-ceph
       namespace: flux-system
-    - name: volsync
+    - name: snapshot-controller
       namespace: flux-system
   path: ./kubernetes/apps/rook-ceph/rook-ceph/cluster
   prune: false # never should be deleted

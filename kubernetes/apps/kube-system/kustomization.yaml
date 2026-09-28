@@ -14,3 +14,4 @@ resources:
   - ./intel-device-plugin/ks.yaml
   - ./generic-device-plugin/ks.yaml
   - ./multus/ks.yaml
+  - ./snapshot-controller/ks.yaml
