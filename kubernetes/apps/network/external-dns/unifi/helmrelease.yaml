@@ -55,6 +55,7 @@ spec:
           timeoutSeconds: 5
     extraArgs:
       - --ignore-ingress-tls-spec
+      - --exclude-domains=mcp.${SECRET_DOMAIN}
     triggerLoopOnEvent: true
     policy: sync
     sources: ["service", "gateway-httproute", "gateway-tcproute", "crd"]
