@@ -6,6 +6,7 @@ resources:
   - ./authentikapplication.yaml
   - ./oidc-externalsecret.yaml
   - ./helmrepository.yaml
+  # - ./ocirepository.yaml
   - ./externalsecret.yaml
   - ./persistentvolume.yaml
   - ./helmrelease.yaml
