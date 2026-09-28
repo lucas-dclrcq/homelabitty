@@ -14,6 +14,20 @@ spec:
     podDisruptionBudget:
       enabled: true
       minAvailable: 1
+    auth:
+      existingSecret: ocharted-secret
+      bypassNetworks:
+        - 10.69.0.0/16
+        - 10.96.0.0/16
+    deploymentAnnotations:
+      reloader.stakater.com/auto: "true"
+    httpRoute:
+      enabled: true
+      hostnames:
+        - "ocharted.${SECRET_DOMAIN}"
+      parentRefs:
+        - name: external
+          namespace: network
     resources:
       requests:
         cpu: 10m

@@ -11,4 +11,4 @@ spec:
     operation: copy
   ref:
     tag: 2026.8.1
-  url: oci://ocharted.flux-system.svc.cluster.local:8080/slashnephy.github.io/authentik-operator/authentik-operator
+  url: oci://ocharted.hoohoot.org/slashnephy.github.io/authentik-operator/authentik-operator
