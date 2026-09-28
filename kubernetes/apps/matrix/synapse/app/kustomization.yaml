@@ -9,6 +9,7 @@ resources:
   - ./prometheusrule.yaml
   - ./grafanadashboard.yaml
   - ./helmrepository.yaml
+  # - ./ocirepository.yaml
   - ./probes.yaml
 configMapGenerator:
   - name: mas-synapse-config

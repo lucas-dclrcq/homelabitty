@@ -8,4 +8,5 @@ components:
 resources:
   - ./konflate/ks.yaml
   - ./monitoring/ks.yaml
+  - ./ocharted/ks.yaml
   - ./webhooks/ks.yaml

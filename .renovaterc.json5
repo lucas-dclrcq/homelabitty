@@ -9,6 +9,7 @@
     "github>lucas-dclrcq/homelabitty//.renovate/grafanaDashboards.json5",
     "github>lucas-dclrcq/homelabitty//.renovate/groups.json5",
     "github>lucas-dclrcq/homelabitty//.renovate/labels.json5",
+    "github>lucas-dclrcq/homelabitty//.renovate/ocharted.json5",
     "github>lucas-dclrcq/homelabitty//.renovate/overrides.json5",
     "github>lucas-dclrcq/homelabitty//.renovate/semanticCommits.json5",
     ":automergeBranch",
