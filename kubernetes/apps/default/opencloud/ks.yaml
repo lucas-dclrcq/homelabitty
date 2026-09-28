@@ -14,7 +14,7 @@ spec:
     - name: external-secrets-stores
       namespace: external-secrets
   components:
-    - ../../../../components/volsync
+    - ../../../../components/kopiur
   path: ./kubernetes/apps/default/opencloud/app
   prune: true
   sourceRef:
@@ -26,8 +26,7 @@ spec:
   postBuild:
     substitute:
       APP: *app
-      VOLSYNC_CAPACITY: 2Gi
-      VOLSYNC_ACCESSMODES: ReadWriteMany
-      VOLSYNC_SNAP_ACCESSMODES: ReadOnlyMany
-      VOLSYNC_STORAGECLASS: ceph-filesystem
-      VOLSYNC_SNAPSHOTCLASS: csi-ceph-filesystem
+      KOPIUR_CAPACITY: 2Gi
+      KOPIUR_ACCESSMODES: ReadWriteMany
+      KOPIUR_STORAGECLASS: ceph-filesystem
+      KOPIUR_SNAPSHOTCLASS: csi-ceph-filesystem
