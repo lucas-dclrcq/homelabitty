@@ -15,6 +15,10 @@
       "type": "remote",
       "url": "https://vault.mcp.hoohoot.org/mcp",
       "enabled": true
+    },
+    "konflate": {
+      "type": "remote",
+      "url": "https://konflate.hoohoot.org/mcp"
     }
   }
 }
