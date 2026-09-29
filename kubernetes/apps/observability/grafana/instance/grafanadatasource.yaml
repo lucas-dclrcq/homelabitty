@@ -37,14 +37,15 @@ spec:
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDatasource
 metadata:
-  name: loki
+  name: victoria-logs
 spec:
   instanceSelector:
     matchLabels:
       grafana.internal/instance: grafana
   datasource:
-    type: loki
-    name: loki
+    type: victoriametrics-logs-datasource
+    name: victoria-logs
+    uid: victoria-logs
     access: proxy
     jsonData:
       maxLines: 250
@@ -65,7 +66,7 @@ spec:
     access: proxy
     jsonData:
       tracesToLogsV2:
-        datasourceUid: 'Loki'
+        datasourceUid: 'victoria-logs'
         tags:
           - 'job'
           - 'instance'
@@ -79,7 +80,7 @@ spec:
       search:
         hide: false
       lokiSearch:
-        datasourceUid: 'loki'
+        datasourceUid: 'victoria-logs'
       traceQuery:
         timeShiftEnabled: true
       spanBar:

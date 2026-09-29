@@ -47,6 +47,17 @@ spec:
         type: Recreate
       template:
         spec:
+          initContainers:
+            - name: install-victorialogs-plugin
+              image: docker.io/grafana/grafana:12.1.0
+              command:
+                - /bin/sh
+                - -c
+              args:
+                - HOME=/tmp grafana-cli plugins install victoriametrics-logs-datasource
+              volumeMounts:
+                - name: grafana-data
+                  mountPath: /var/lib/grafana
           containers:
             - name: grafana
               env:
