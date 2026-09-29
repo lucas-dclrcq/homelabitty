@@ -73,11 +73,11 @@ spec:
       enabled: true
       spec:
         externalURL: https://alertmanager.${LIMITED_DOMAIN}
-        config:
-          global:
-            resolve_timeout: 5m
-          route:
-            receiver: blackhole
+      config:
+        global:
+          resolve_timeout: 5m
+        route:
+          receiver: blackhole
       route:
         enabled: true
         parentRefs:
