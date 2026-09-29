@@ -48,22 +48,11 @@ spec:
         type: Recreate
       template:
         spec:
-          initContainers:
-            - name: install-victorialogs-plugin
-              image: docker.io/grafana/grafana:13.2.3
-              command:
-                - /bin/sh
-                - -ec
-              args:
-                - |
-                  curl -fsSL -o /tmp/vl.zip https://grafana.com/api/plugins/victoriametrics-logs-datasource/versions/latest/download
-                  unzip -qo /tmp/vl.zip -d /var/lib/grafana/plugins/
-              volumeMounts:
-                - name: grafana-data
-                  mountPath: /var/lib/grafana
           containers:
             - name: grafana
               env:
+                - name: GF_PLUGINS_PREINSTALL
+                  value: victoriametrics-logs-datasource@0.32.0
                 - name: AUTH_CLIENT_ID
                   valueFrom:
                     secretKeyRef:
