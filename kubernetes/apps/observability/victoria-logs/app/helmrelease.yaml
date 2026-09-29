@@ -20,6 +20,8 @@ spec:
     global:
       image:
         registry: quay.io
+    dashboards:
+      enabled: true
     server:
       fullnameOverride: victoria-logs
       retentionPeriod: 7d
