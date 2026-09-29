@@ -36,6 +36,18 @@ spec:
             namespace: network
         hostnames:
           - "vlogs.${LIMITED_DOMAIN}"
+        extraRules:
+          - filters:
+              - type: RequestRedirect
+                requestRedirect:
+                  path:
+                    type: ReplaceFullPath
+                    replaceFullPath: /select/vmui/
+                  statusCode: 302
+            matches:
+              - path:
+                  type: Exact
+                  value: /
       resources:
         requests:
           cpu: 100m
