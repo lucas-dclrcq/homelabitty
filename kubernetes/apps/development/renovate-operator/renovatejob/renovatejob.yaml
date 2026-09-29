@@ -20,4 +20,10 @@ spec:
         secrets: {
           OCHARTED_PASSWORD: process.env.OCHARTED_PASSWORD,
         },
+        hostRules: [
+          {
+            matchHost: "ocharted.hoohoot.org",
+            allowInternal: true,
+          },
+        ],
       };

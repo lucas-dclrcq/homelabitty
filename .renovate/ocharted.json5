@@ -5,7 +5,6 @@
       description: "Authenticate against the ocharted OCI registry",
       matchHost: "ocharted.hoohoot.org",
       hostType: "docker",
-      allowInternal: true,
       username: "renovate",
       password: "{{ secrets.OCHARTED_PASSWORD }}",
     },
