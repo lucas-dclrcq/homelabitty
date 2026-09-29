@@ -48,7 +48,7 @@ spec:
     access: proxy
     jsonData:
       maxLines: 250
-    url: http://loki-headless.observability.svc.cluster.local:3100
+    url: http://victoria-logs.observability.svc.cluster.local:9428
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadatasource_v1beta1.json
 apiVersion: grafana.integreatly.org/v1beta1

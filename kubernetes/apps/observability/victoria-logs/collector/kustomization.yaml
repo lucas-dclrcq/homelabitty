@@ -5,6 +5,3 @@ kind: Kustomization
 resources:
   - ./ocirepository.yaml
   - ./helmrelease.yaml
-  - ./prometheusrule.yaml
-  - ./servicemonitor.yaml
-  - ./grafanadashboard.yaml

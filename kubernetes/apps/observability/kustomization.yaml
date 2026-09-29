@@ -8,8 +8,7 @@ resources:
   - ./victoria-metrics-stack/ks.yaml
   - ./prometheus-pushgateway/ks.yaml
   - ./grafana/ks.yaml
-  - ./loki/ks.yaml
-  - ./alloy/ks.yaml
+  - ./victoria-logs/ks.yaml
   - ./kromgo/ks.yaml
   - ./keda/ks.yaml
   - ./silence-operator/ks.yaml
