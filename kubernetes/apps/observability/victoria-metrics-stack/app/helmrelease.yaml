@@ -18,7 +18,7 @@ spec:
     remediation:
       retries: 3
   values:
-    nameOverride: vmks
+    fullnameOverride: vmks
 
     victoria-metrics-operator:
       enabled: true
@@ -50,21 +50,6 @@ spec:
 
     vmagent:
       enabled: true
-      spec:
-        extraArgs:
-          opentelemetry.grpcListenAddr: ":4317"
-        serviceSpec:
-          useAsDefault: true
-          spec:
-            ports:
-              - name: http
-                port: 8429
-                targetPort: http
-                protocol: TCP
-              - name: opentelemetry-grpc
-                port: 4317
-                targetPort: 4317
-                protocol: TCP
 
     vmalert:
       enabled: true
@@ -119,11 +104,13 @@ spec:
                 - action: replace
                   regex: (.*)
                   replacement: $1
-                  sourceLabels: ["__meta_kubernetes_pod_node_name"]
+                  sourceLabels:
+                    - "__meta_kubernetes_pod_node_name"
                   targetLabel: kubernetes_node
               metricRelabelConfigs:
                 - action: drop
-                  sourceLabels: [mountpoint]
+                  sourceLabels:
+                    - mountpoint
                   regex: "/var/lib/kubelet/pods.+"
 
     kube-state-metrics:
@@ -141,7 +128,8 @@ spec:
                 - action: replace
                   regex: (.*)
                   replacement: $1
-                  sourceLabels: ["__meta_kubernetes_pod_node_name"]
+                  sourceLabels:
+                    - "__meta_kubernetes_pod_node_name"
                   targetLabel: kubernetes_node
               metricRelabelConfigs:
                 - action: labeldrop

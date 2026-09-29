@@ -178,7 +178,7 @@ otelcol.processor.batch "traces" {
 
 otelcol.processor.batch "metrics" {
   output {
-    metrics = [otelcol.exporter.otlp.metrics.input]
+    metrics = [otelcol.exporter.otlphttp.metrics.input]
   }
 }
 
@@ -197,13 +197,8 @@ otelcol.exporter.otlp "traces" {
   }
 }
 
-otelcol.exporter.otlp "metrics" {
-  client {
-    endpoint = "vmagent-vmks.observability.svc.cluster.local:4317"
-    tls {
-      insecure = true
-    }
-  }
+otelcol.exporter.otlphttp "metrics" {
+  metrics_endpoint = "http://vmagent-vmks.observability.svc.cluster.local:8429/opentelemetry/api/v1/push"
 }
 
 otelcol.exporter.loki "default" {
