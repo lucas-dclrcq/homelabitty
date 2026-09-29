@@ -53,9 +53,11 @@ spec:
               image: docker.io/grafana/grafana:13.2.3
               command:
                 - /bin/sh
-                - -c
+                - -ec
               args:
-                - HOME=/tmp grafana-cli plugins install victoriametrics-logs-datasource
+                - |
+                  curl -fsSL -o /tmp/vl.zip https://grafana.com/api/plugins/victoriametrics-logs-datasource/versions/latest/download
+                  unzip -qo /tmp/vl.zip -d /var/lib/grafana/plugins/
               volumeMounts:
                 - name: grafana-data
                   mountPath: /var/lib/grafana
