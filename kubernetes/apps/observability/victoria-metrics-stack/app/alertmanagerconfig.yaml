@@ -31,7 +31,7 @@ spec:
         matchers:
           - name: severity
             value: critical|error
-            matchType: =
+            matchType: =~
     groupBy:
       - alertname
       - cluster
