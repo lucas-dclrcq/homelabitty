@@ -11,12 +11,10 @@ spec:
     name: prometheus-operator-crds
   install:
     crds: CreateReplace
-    takeOwnership: true
     remediation:
       retries: 3
   upgrade:
     cleanupOnFail: true
     crds: CreateReplace
-    takeOwnership: true
     remediation:
       retries: 3
