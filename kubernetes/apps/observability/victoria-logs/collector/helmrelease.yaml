@@ -32,3 +32,5 @@ spec:
         - kubernetes.pod_namespace
         - kubernetes.container_name
         - kubernetes.pod_labels.app.kubernetes.io/name
+    extraArgs:
+      "kubernetesCollector.decolorizeFields": _msg
