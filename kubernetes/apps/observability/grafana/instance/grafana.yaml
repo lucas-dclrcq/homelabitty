@@ -52,7 +52,7 @@ spec:
             - name: grafana
               env:
                 - name: GF_PLUGINS_PREINSTALL
-                  value: victoriametrics-logs-datasource@0.32.0,prometheus@13.2.2,loki@13.2.1
+                  value: victoriametrics-logs-datasource@0.32.0,prometheus@13.2.2,loki@13.2.1,tempo@13.2.2
                 - name: AUTH_CLIENT_ID
                   valueFrom:
                     secretKeyRef:
@@ -63,9 +63,12 @@ spec:
                     secretKeyRef:
                       name: grafana-oauth-secret
                       key: client_secret
+              volumeMounts:
+                - name: grafana-plugins-bundled
+                  mountPath: /usr/share/grafana/data/plugins-bundled
               securityContext:
                 allowPrivilegeEscalation: false
-                readOnlyRootFilesystem: false
+                readOnlyRootFilesystem: true
                 capabilities: {drop: ["ALL"]}
           securityContext:
             runAsNonRoot: true
@@ -77,6 +80,8 @@ spec:
             - name: grafana-data
               persistentVolumeClaim:
                 claimName: grafana-pvc
+            - name: grafana-plugins-bundled
+              emptyDir: {}
   persistentVolumeClaim:
     spec:
       accessModes:
