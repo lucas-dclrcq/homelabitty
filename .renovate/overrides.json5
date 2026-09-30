@@ -20,5 +20,11 @@
       matchFileNames: ["kubernetes/apps/matrix/mautrix-instagram/**"],
       versioning: "regex:^ig-v(?<major>\\d+)\\.(?<minor>\\d+)(?:\\.(?<patch>\\d+))?$",
     },
+    {
+      description: "Limit renovate image updates to once per week",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["ghcr.io/renovatebot/renovate"],
+      schedule: ["on monday"],
+    },
   ],
 }
