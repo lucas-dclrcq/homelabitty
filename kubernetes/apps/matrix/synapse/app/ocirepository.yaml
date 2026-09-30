@@ -10,5 +10,5 @@ spec:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
   ref:
-    tag: 3.12.38
+    tag: 3.12.39
   url: oci://ocharted.hoohoot.org/ananace.gitlab.io/charts/matrix-synapse
