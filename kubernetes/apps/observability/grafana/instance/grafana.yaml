@@ -65,7 +65,7 @@ spec:
                       key: client_secret
               securityContext:
                 allowPrivilegeEscalation: false
-                readOnlyRootFilesystem: true
+                readOnlyRootFilesystem: false
                 capabilities: {drop: ["ALL"]}
           securityContext:
             runAsNonRoot: true
