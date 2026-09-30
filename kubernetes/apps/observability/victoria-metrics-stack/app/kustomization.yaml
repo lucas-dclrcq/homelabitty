@@ -9,6 +9,7 @@ resources:
   - ./helmrelease.yaml
   - ./prometheusrule.yaml
   - ./prometheusrule-ntp.yaml
+  - ./prometheusrule-watchdog.yaml
   - ./scrapeconfig.yaml
   - ./grafanadashboard.yaml
   - ./grafanadashboard-app-overview.yaml

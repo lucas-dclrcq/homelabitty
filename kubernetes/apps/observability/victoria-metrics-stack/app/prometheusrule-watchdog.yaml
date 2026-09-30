@@ -1,0 +1,17 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/monitoring.coreos.com/prometheusrule_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: watchdog-rules
+spec:
+  groups:
+    - name: watchdog
+      rules:
+        - alert: Watchdog
+          annotations:
+            summary: This is an alert meant to ensure that the entire alerting pipeline is functional.
+            description: This alert is always firing and should never resolve. It is used by Karma's healthcheck and the heartbeat dead man's switch.
+          expr: vector(1)
+          labels:
+            severity: none
