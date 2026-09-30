@@ -52,7 +52,7 @@ spec:
             - name: grafana
               env:
                 - name: GF_PLUGINS_PREINSTALL
-                  value: victoriametrics-logs-datasource@0.32.0
+                  value: victoriametrics-logs-datasource@0.32.0,prometheus@13.2.2,loki@13.2.1
                 - name: AUTH_CLIENT_ID
                   valueFrom:
                     secretKeyRef:
