@@ -15,6 +15,7 @@ spec:
       statusChecks: true
       prComments: true
       publicUrl: "https://konflate.${SECRET_DOMAIN}"
+      mergeCommand: "gh pr merge {{ .Number }} --repo {{ .Repo }} --rebase --admin"
     secret:
       existingSecret: konflate-secret
     httpRoute:
