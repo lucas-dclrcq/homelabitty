@@ -25,7 +25,6 @@ spec:
         type: LoadBalancer
         port: &sshPort 22
         loadBalancerIP: "${LB_IP_FORGEJO_SSH}"
-        externalTrafficPolicy: Local
         annotations:
           external-dns.kubernetes.io/hostname: "git.${LIMITED_DOMAIN}"
 

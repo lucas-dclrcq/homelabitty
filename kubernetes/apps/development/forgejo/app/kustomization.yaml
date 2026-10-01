@@ -9,4 +9,5 @@ resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
   - ./httproute.yaml
+  - ./tcproute.yaml
   - ./probes.yaml
