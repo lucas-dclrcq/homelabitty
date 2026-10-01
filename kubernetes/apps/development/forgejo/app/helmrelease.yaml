@@ -64,7 +64,7 @@ spec:
         server:
           DOMAIN: "git.${SECRET_DOMAIN}"
           ROOT_URL: "https://git.${SECRET_DOMAIN}"
-          SSH_DOMAIN: "git.${SECRET_DOMAIN}"
+          SSH_DOMAIN: "${SECRET_DOMAIN}"
           SSH_PORT: *sshPort
           APP_DATA_PATH: /data/gitea
           LANDING_PAGE: login
