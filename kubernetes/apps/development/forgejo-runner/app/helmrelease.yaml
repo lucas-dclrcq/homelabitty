@@ -207,15 +207,23 @@ spec:
           type: Role
           rules:
             - apiGroups:
+                - batch
+              resources:
+                - jobs
+              verbs:
+                - create
+                - get
+                - list
+                - watch
+                - delete
+            - apiGroups:
                 - ""
               resources:
                 - pods
               verbs:
+                - get
                 - list
                 - watch
-                - create
-                - get
-                - delete
             - apiGroups:
                 - ""
               resources:
@@ -228,8 +236,16 @@ spec:
               resources:
                 - pods/log
               verbs:
+                - get
                 - list
                 - watch
+            - apiGroups:
+                - ""
+              resources:
+                - events
+              verbs:
                 - get
+                - list
+                - watch
     serviceAccount:
       forgejo-runner: {}
