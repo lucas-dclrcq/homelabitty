@@ -5,6 +5,7 @@ kind: Kustomization
 resources:
   - ./authentikapplication.yaml
   - ./externalsecret.yaml
+  - ./forgejo-externalsecret.yaml
   - ./helmrelease.yaml
   - ./ocirepository.yaml
   - ./oidc-externalsecret.yaml

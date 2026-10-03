@@ -1,0 +1,33 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/mogenius/renovate-operator/main/charts/renovate-operator/crd/renovate-operator.mogenius.com_renovatejobs.yaml
+apiVersion: renovate-operator.mogenius.com/v1alpha1
+kind: RenovateJob
+metadata:
+  name: forgejo
+spec:
+  # No discoveryFilters/discoverTopics: autodiscover every repo the bot can reach
+  image: ghcr.io/renovatebot/renovate:44.130.0
+  parallelism: 1
+  provider:
+    name: forgejo
+    endpoint: "https://git.${SECRET_DOMAIN}"
+  schedule: "30 * * * *"
+  skipForks: true
+  secretRef: renovate-forgejo-secret
+  renovateConfig:
+    inline: |-
+      module.exports = {
+        hostRules: [
+          {
+            matchHost: "ocharted.hoohoot.org",
+            allowInternal: true,
+          },
+          {
+            description: "Authenticate against the ocharted OCI registry",
+            matchHost: "ocharted.hoohoot.org",
+            hostType: "docker",
+            username: "renovate",
+            password: process.env.OCHARTED_PASSWORD,
+          },
+        ],
+      };
