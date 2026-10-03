@@ -6,9 +6,9 @@ metadata:
   name: harbor
 spec:
   hostnames:
-    - "harbor.${LIMITED_DOMAIN}"
+    - "harbor.${SECRET_DOMAIN}"
   parentRefs:
-    - name: internal
+    - name: external
       namespace: network
   rules:
     - backendRefs:

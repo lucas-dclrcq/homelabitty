@@ -16,7 +16,7 @@ spec:
     oauth2:
       clientType: Confidential
       redirectURIs:
-        - url: "https://harbor.hoohoot.xyz/c/oidc/callback"
+        - url: "https://harbor.${SECRET_DOMAIN}/c/oidc/callback"
           matchingMode: Strict
           type: Authorization
       scopes:

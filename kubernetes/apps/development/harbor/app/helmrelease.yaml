@@ -25,7 +25,7 @@ spec:
       clusterIP:
         name: harbor
 
-    externalURL: "https://harbor.${LIMITED_DOMAIN}"
+    externalURL: "https://harbor.${SECRET_DOMAIN}"
 
     existingSecretAdminPassword: harbor-secret
     existingSecretAdminPasswordKey: HARBOR_ADMIN_PASSWORD
@@ -42,9 +42,6 @@ spec:
           jobLog:
             size: 2Gi
             accessMode: ReadWriteOnce
-        database:
-          size: 5Gi
-          accessMode: ReadWriteOnce
         redis:
           size: 1Gi
           accessMode: ReadWriteOnce
@@ -57,7 +54,14 @@ spec:
           rootdirectory: /storage
 
     database:
-      type: internal
+      type: external
+      external:
+        host: postgres-16-primary.infrastructure.svc.cluster.local
+        port: "5432"
+        username: harbor
+        coreDatabase: harbor
+        existingSecret: harbor-secret
+        sslmode: require
 
     redis:
       type: internal

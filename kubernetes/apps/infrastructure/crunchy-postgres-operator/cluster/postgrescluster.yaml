@@ -370,6 +370,11 @@ spec:
         - "recherchemaison"
       password:
         type: AlphaNumeric
+    - name: "harbor"
+      databases:
+        - "harbor"
+      password:
+        type: AlphaNumeric
   backups:
     pgbackrest:
       configuration:
