@@ -21,5 +21,6 @@ resources:
   - ./the-recipe-db/ks.yaml
   - ./bambuddy/ks.yaml
   - ./opencloud/ks.yaml
+  - ./onlyoffice/ks.yaml
   - ./mealie/ks.yaml
   - ./recherche-maison/ks.yaml

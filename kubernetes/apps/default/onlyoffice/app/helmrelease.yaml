@@ -1,0 +1,103 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app onlyoffice
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  values:
+    controllers:
+      onlyoffice:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        pod:
+          enableServiceLinks: false
+          securityContext:
+            # the all-in-one document server image boots nginx, postgresql and
+            # rabbitmq through supervisord, all of which need root in-container
+            runAsUser: 0
+            runAsGroup: 0
+            fsGroup: 0
+            fsGroupChangePolicy: OnRootMismatch
+        strategy: Recreate
+        containers:
+          app:
+            image:
+              repository: docker.io/onlyoffice/documentserver
+              tag: "9.4.0.1"
+            env:
+              # OpenCloud drives the editor over WOPI, not the classic JS API
+              WOPI_ENABLED: "true"
+              JWT_ENABLED: "true"
+              JWT_HEADER: Authorization
+              JWT_IN_BODY: "true"
+              # drive.${SECRET_DOMAIN} resolves to the gateway address on the
+              # LAN, which the request filter would otherwise refuse to call
+              ALLOW_PRIVATE_IP_ADDRESS: "true"
+            envFrom:
+              - secretRef:
+                  name: onlyoffice-secret
+            probes:
+              liveness: &ooProbes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /healthcheck
+                    port: 80
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 5
+              readiness: *ooProbes
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /healthcheck
+                    port: 80
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  # first boot regenerates the config and the database
+                  failureThreshold: 60
+            resources:
+              requests:
+                cpu: 100m
+                memory: 1Gi
+              limits:
+                memory: 4Gi
+
+    service:
+      app:
+        controller: onlyoffice
+        ports:
+          http:
+            port: 80
+
+    persistence:
+      # holds the WOPI proof keys; they must survive restarts or OpenCloud
+      # keeps validating against the cached, now stale, public key
+      data:
+        existingClaim: *app
+        globalMounts:
+          - path: /var/www/onlyoffice/Data
+      cache:
+        type: emptyDir
+        globalMounts:
+          - path: /var/lib/onlyoffice
+      logs:
+        type: emptyDir
+        globalMounts:
+          - path: /var/log/onlyoffice
+
+    route:
+      app:
+        hostnames:
+          - "onlyoffice.${SECRET_DOMAIN}"
+        parentRefs:
+          - name: external
+            namespace: network
