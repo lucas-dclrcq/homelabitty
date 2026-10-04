@@ -8,6 +8,8 @@ resources:
   - ./ocirepository.yaml
   - ./externalsecret.yaml
   - ./helmrelease.yaml
+  - ./servicemonitor.yaml
+  - ./grafanadashboard.yaml
   - ./httproute.yaml
   - ./tcproute.yaml
   - ./probes.yaml

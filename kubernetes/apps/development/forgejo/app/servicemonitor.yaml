@@ -1,0 +1,26 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/monitoring.coreos.com/servicemonitor_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: forgejo
+spec:
+  endpoints:
+    - interval: 1m
+      path: /metrics
+      port: http
+      scheme: http
+      scrapeTimeout: 10s
+      metricRelabelings:
+        - action: drop
+          regex: zoekt_.*
+          sourceLabels:
+            - __name__
+  jobLabel: app
+  namespaceSelector:
+    matchNames:
+      - development
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: forgejo
+      app.kubernetes.io/name: forgejo
