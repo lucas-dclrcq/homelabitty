@@ -1,0 +1,118 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app temporal
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  values:
+    fullnameOverride: *app
+
+    # Flux, not Helm hooks. With useHelmHooks=false the Job name carries the chart
+    # version and the release revision, so every upgrade renders a brand-new
+    # immutable Job instead of Flux trying to patch a completed one.
+    schema:
+      useHelmHooks: false
+      resources: &jobResources
+        requests:
+          cpu: 10m
+          memory: 64Mi
+        limits:
+          memory: 256Mi
+
+    server:
+      replicaCount: 1
+
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+
+      resources:
+        requests:
+          cpu: 25m
+          memory: 256Mi
+        limits:
+          memory: 1Gi # never set limits.cpu
+
+      config:
+        logLevel: "info"
+
+        persistence:
+          defaultStore: default
+          visibilityStore: visibility
+          # IMMUTABLE after the first deploy: changing it means wiping both
+          # Temporal databases. 512 is the chart default, kept deliberately.
+          numHistoryShards: 512
+          datastores:
+            default:
+              sql: &sqlStore
+                pluginName: postgres12
+                databaseName: temporal
+                connectAddr: "postgres-16-primary.infrastructure.svc.cluster.local:5432"
+                connectProtocol: tcp
+                user: temporal
+                existingSecret: temporal-db-secret
+                secretKey: password
+                # Both databases are created and owned by the CrunchyData PGO
+                # `temporal` role (see cluster/postgrescluster.yaml); the role is
+                # not allowed to CREATE DATABASE, so the job must only manage
+                # schema.
+                createDatabase: false
+                maxConns: 10
+                maxIdleConns: 10
+                maxConnLifetime: 1h
+            visibility:
+              sql:
+                <<: *sqlStore
+                databaseName: temporal_visibility
+
+        namespaces:
+          create: true
+          useHelmHooks: false
+          namespace:
+            # `default` is what quarkus-temporal connects to unless told otherwise.
+            - name: default
+              retention: 7d
+
+      frontend:
+        containerSecurityContext: &containerSecurityContext
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+              - "ALL"
+      history:
+        containerSecurityContext: *containerSecurityContext
+      matching:
+        containerSecurityContext: *containerSecurityContext
+      worker:
+        containerSecurityContext: *containerSecurityContext
+
+    # The schema Job renders from admintools.image regardless of this flag; only
+    # the long-lived admintools pod is dropped.
+    admintools:
+      enabled: false
+
+    web:
+      enabled: true
+      replicaCount: 1
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containerSecurityContext: *containerSecurityContext
+      resources: *jobResources
+      # The chart ships a networking.k8s.io Ingress; this cluster is Gateway API
+      # only, so routing lives in httproute.yaml.
+      ingress:
+        enabled: false

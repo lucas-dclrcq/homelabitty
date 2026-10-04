@@ -375,6 +375,12 @@ spec:
         - "harbor"
       password:
         type: AlphaNumeric
+    - name: "temporal"
+      databases:
+        - "temporal"
+        - "temporal_visibility"
+      password:
+        type: AlphaNumeric
   backups:
     pgbackrest:
       configuration:

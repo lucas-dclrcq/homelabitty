@@ -12,3 +12,4 @@ resources:
   - ./pacman/ks.yaml
   - ./renovate-operator/ks.yaml
   - ./semaphore/ks.yaml
+  - ./temporal/ks.yaml
