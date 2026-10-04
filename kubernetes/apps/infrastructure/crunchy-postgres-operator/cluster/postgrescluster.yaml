@@ -84,11 +84,6 @@ spec:
         - "sonarranime_main"
       password:
         type: AlphaNumeric
-    - name: "keycloak"
-      databases:
-        - "keycloak"
-      password:
-        type: AlphaNumeric
     - name: "miniflux"
       databases:
         - "miniflux"
@@ -104,24 +99,9 @@ spec:
         - "sso"
       password:
         type: AlphaNumeric
-    - name: "linkwarden"
-      databases:
-        - "linkwarden"
-      password:
-        type: AlphaNumeric
-    - name: "nc"
-      databases:
-        - "nc"
-      password:
-        type: AlphaNumeric
     - name: "synapse"
       databases:
         - "synapse"
-      password:
-        type: AlphaNumeric
-    - name: "matrixbridge"
-      databases:
-        - "matrixbridge"
       password:
         type: AlphaNumeric
     - name: "atuin"
@@ -134,49 +114,9 @@ spec:
         - "vaultwarden"
       password:
         type: AlphaNumeric
-    - name: "jellystat"
-      databases:
-        - "jellystat"
-      password:
-        type: AlphaNumeric
     - name: "wallabag"
       databases:
         - "wallabag"
-      password:
-        type: AlphaNumeric
-    - name: "tandoor"
-      databases:
-        - "tandoor"
-      password:
-        type: AlphaNumeric
-    - name: "conduktor"
-      databases:
-        - "conduktor"
-      password:
-        type: AlphaNumeric
-    - name: "piped"
-      databases:
-        - "piped"
-      password:
-        type: AlphaNumeric
-    - name: "wikijs"
-      databases:
-        - "wikijs"
-      password:
-        type: AlphaNumeric
-    - name: "teable"
-      databases:
-        - "teable"
-      password:
-        type: AlphaNumeric
-    - name: "gotosocial"
-      databases:
-        - "gotosocial"
-      password:
-        type: AlphaNumeric
-    - name: "planka"
-      databases:
-        - "planka"
       password:
         type: AlphaNumeric
     - name: "mautrixdiscord"
@@ -204,11 +144,6 @@ spec:
         - "elderscrobz"
       password:
         type: AlphaNumeric
-    - name: "flagsmith"
-      databases:
-        - "flagsmith"
-      password:
-        type: AlphaNumeric
     - name: "outline"
       databases:
         - "outline"
@@ -224,34 +159,9 @@ spec:
         - "mas"
       password:
         type: AlphaNumeric
-    - name: "graviteeapim"
-      databases:
-        - "graviteeapim"
-      password:
-        type: AlphaNumeric
-    - name: "filature"
-      databases:
-        - "filature"
-      password:
-        type: AlphaNumeric
-    - name: "veille"
-      databases:
-        - "veille"
-      password:
-        type: AlphaNumeric
-    - name: "sftpgo"
-      databases:
-        - "sftpgo"
-      password:
-        type: AlphaNumeric
     - name: "paperless"
       databases:
         - "paperless"
-      password:
-        type: AlphaNumeric
-    - name: "openwebui"
-      databases:
-        - "openwebui"
       password:
         type: AlphaNumeric
     - name: "umami"
@@ -259,54 +169,9 @@ spec:
         - "umami"
       password:
         type: AlphaNumeric
-    - name: "booklore"
-      databases:
-        - "booklore"
-      password:
-        type: AlphaNumeric
-    - name: "sqq"
-      databases:
-        - "sqq"
-      password:
-        type: AlphaNumeric
-    - name: "sqqstaging"
-      databases:
-        - "sqqstaging"
-      password:
-        type: AlphaNumeric
-    - name: "readur"
-      databases:
-        - "readur"
-      password:
-        type: AlphaNumeric
     - name: "therecipedb"
       databases:
         - "therecipedb"
-      password:
-        type: AlphaNumeric
-    - name: "keycloakx"
-      databases:
-        - "keycloakx"
-      password:
-        type: AlphaNumeric
-    - name: "sqqvg"
-      databases:
-        - "sqqvg"
-      password:
-        type: AlphaNumeric
-    - name: "sqqsondages"
-      databases:
-        - "sqqsondages"
-      password:
-        type: AlphaNumeric
-    - name: "sqqchoixcreneaux"
-      databases:
-        - "sqqchoixcreneaux"
-      password:
-        type: AlphaNumeric
-    - name: "sqqchoixcreneauxstaging"
-      databases:
-        - "sqqchoixcreneauxstaging"
       password:
         type: AlphaNumeric
     - name: "homelabmanager"
@@ -319,11 +184,6 @@ spec:
         - "forgejo"
       password:
         type: AlphaNumeric
-    - name: "firefly"
-      databases:
-        - "firefly"
-      password:
-        type: AlphaNumeric
     - name: "seerr"
       databases:
         - "seerr"
@@ -334,25 +194,10 @@ spec:
         - "semaphore"
       password:
         type: AlphaNumeric
-    - name: "bookboss"
-      databases:
-        - "bookboss"
-      password:
-        type: AlphaNumeric
     - name: "sprouttrack"
       databases:
         - "sprouttrack"
         - "sprouttrack_logs"
-      password:
-        type: AlphaNumeric
-    - name: "sure"
-      databases:
-        - "sure"
-      password:
-        type: AlphaNumeric
-    - name: "sparkyfitness"
-      databases:
-        - "sparkyfitness"
       password:
         type: AlphaNumeric
     - name: "bookorbit"
