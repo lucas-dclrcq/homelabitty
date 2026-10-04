@@ -15,11 +15,29 @@ spec:
         annotations:
           reloader.stakater.com/auto: "true"
 
-        containers:
-          jellyfin:
-            image:
+        initContainers:
+          # Jellyfin only serves /metrics when EnableMetrics is true in system.xml, and there
+          # is no environment variable for it (jellyfin/jellyfin#14052 is still unmerged), so
+          # flip the flag on the config volume before the server reads it.
+          enable-metrics:
+            image: &image
               repository: ghcr.io/jellyfin/jellyfin
               tag: 12.1@sha256:008ec8024bdaaa6f0a3f0de468e185633eeba9d67c56936e8dbf5ef6b8d6200f
+            command:
+              - /bin/sh
+              - -c
+              - |
+                set -eu
+                if [ ! -f /config/config/system.xml ]; then
+                  echo "no system.xml yet, Jellyfin writes one on first boot: metrics turn on at the next restart"
+                  exit 0
+                fi
+                sed -i 's|<EnableMetrics>false</EnableMetrics>|<EnableMetrics>true</EnableMetrics>|' /config/config/system.xml
+                grep -q '<EnableMetrics>true</EnableMetrics>' /config/config/system.xml
+
+        containers:
+          jellyfin:
+            image: *image
 
             env:
               DOTNET_SYSTEM_IO_DISABLEFILELOCKING: "true"
@@ -95,6 +113,21 @@ spec:
             namespace: network
 
         rules:
+          # /metrics is unauthenticated, and this route is on the external gateway:
+          # only the in-cluster ServiceMonitor is allowed to reach it. The match has to be
+          # a case-insensitive regex, not a PathPrefix: Gateway API matches paths
+          # case-sensitively while ASP.NET Core routes them case-insensitively, so a
+          # PathPrefix on /metrics still serves /Metrics.
+          - matches:
+              - path:
+                  type: RegularExpression
+                  value: (?i)^/metrics(/.*)?$
+            filters:
+              - type: ExtensionRef
+                extensionRef:
+                  group: gateway.envoyproxy.io
+                  kind: HTTPRouteFilter
+                  name: jellyfin-not-found-page
           - backendRefs:
               - name: *app
                 port: *port
@@ -108,6 +141,8 @@ spec:
         existingClaim: *app
         advancedMounts:
           jellyfin:
+            enable-metrics:
+              - path: /config
             jellyfin:
               - path: /config
       media:

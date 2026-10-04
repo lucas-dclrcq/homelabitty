@@ -7,3 +7,6 @@ resources:
   - ./helmrelease.yaml
   - ./externalsecret.yaml
   - ./probes.yaml
+  - ./httproutefilter.yaml
+  - ./servicemonitor.yaml
+  - ./grafanadashboard.yaml

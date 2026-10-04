@@ -1,0 +1,42 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/monitoring.coreos.com/servicemonitor_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: jellyfin
+spec:
+  endpoints:
+    - interval: 1m
+      path: /metrics
+      port: http
+      scheme: http
+      scrapeTimeout: 10s
+      metricRelabelings:
+        # Jellyfin exposes the same runtime through three collectors at once: the
+        # prometheus-net ones (dotnet_*, process_*, http_*) that the dashboard uses, plus
+        # the .NET meter and EventCounter adapters that restate them under system_runtime_*,
+        # system_net_*, microsoft_* and prometheus_net_*. private_internaldiagnostics_* is
+        # MsQuic internals and is permanently zero. Dropping those four prefixes takes the
+        # scrape from ~500 series to ~130 without losing anything.
+        - action: drop
+          regex: (microsoft|private_internaldiagnostics|prometheus_net|system_net|system_runtime)_.*
+          sourceLabels:
+            - __name__
+        # The http_* series carry their own "endpoint" label (the route template), which
+        # collides with the "endpoint" target label the operator adds for the service port.
+        # honorLabels is off, so the scrape has already renamed it to exported_endpoint by
+        # the time these rules run: move it to "route" and drop the leftover.
+        - action: labelmap
+          regex: exported_(endpoint)
+          replacement: route
+        - action: labeldrop
+          regex: exported_endpoint
+  jobLabel: app.kubernetes.io/name
+  namespaceSelector:
+    matchNames:
+      - media
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: jellyfin
+      app.kubernetes.io/name: jellyfin
+      app.kubernetes.io/service: jellyfin
