@@ -36,6 +36,14 @@ spec:
       subjectMode: HashedUserID
       issuerMode: PerProvider
       includeClaimsInIDToken: true
+      # Without this the provider gets a random client id, but the SPA sends
+      # the fixed `kalimba-frontend` it reads from GET /api/v1/config. The
+      # operator creates and owns the referenced Secret (client-secret only,
+      # unused by a public client).
+      credentials:
+        clientID: kalimba-frontend
+        secretRef:
+          name: kalimba-oidc
   access:
     rules:
       - group:
