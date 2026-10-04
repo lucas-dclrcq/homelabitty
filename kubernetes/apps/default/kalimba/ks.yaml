@@ -1,0 +1,35 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &app kalimba
+  namespace: &namespace default
+spec:
+  targetNamespace: *namespace
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
+  components:
+    - ../../../../components/kopiur
+  dependsOn:
+    - name: external-secrets-stores
+      namespace: external-secrets
+    - name: crunchy-postgres-operator
+      namespace: flux-system
+    - name: envoy-gateway
+      namespace: network
+    - name: temporal
+      namespace: development
+  path: ./kubernetes/apps/default/kalimba/app
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+    namespace: flux-system
+  wait: false
+  interval: 1h
+  postBuild:
+    substitute:
+      APP: *app
+      KOPIUR_CAPACITY: 10Gi

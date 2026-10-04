@@ -1,0 +1,12 @@
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  hostRules: [
+    {
+      description: "Authenticate against the self-hosted Harbor registry",
+      matchHost: "docker.hoohoot.org",
+      hostType: "docker",
+      username: "renovate",
+      password: "{{ secrets.HARBOR_PASSWORD }}",
+    },
+  ],
+}

@@ -381,6 +381,11 @@ spec:
         - "temporal_visibility"
       password:
         type: AlphaNumeric
+    - name: "kalimba"
+      databases:
+        - "kalimba"
+      password:
+        type: AlphaNumeric
   backups:
     pgbackrest:
       configuration:

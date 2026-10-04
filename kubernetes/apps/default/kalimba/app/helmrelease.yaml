@@ -1,0 +1,125 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app kalimba
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  values:
+    global:
+      createDefaultServiceAccount: false
+
+    controllers:
+      kalimba:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        replicas: 1
+        # Single worker by design: every activity of a sync run must see the
+        # same downloads directory, and the claim is RWO.
+        strategy: Recreate
+        containers:
+          app:
+            image:
+              repository: docker.hoohoot.org/homelab/kalimba
+              tag: 1.0.0
+
+            env:
+              TZ: ${TIMEZONE}
+              QUARKUS_TEMPORAL_CONNECTION_TARGET: temporal-frontend.development.svc.cluster.local:7233
+              QUARKUS_TEMPORAL_NAMESPACE: default
+              QUARKUS_OIDC_AUTH_SERVER_URL: "https://sso.${SECRET_DOMAIN}/application/o/kalimba/"
+              QUARKUS_OIDC_CLIENT_ID: &oidcClientId kalimba-frontend
+              QUARKUS_OIDC_APPLICATION_TYPE: service
+              # Echoed to the SPA by the public GET /api/v1/config endpoint.
+              KALIMBA_OIDC_CLIENT_ID: *oidcClientId
+              KALIMBA_DOWNLOADS_DIR: &downloadsDir /var/lib/kalimba/downloads
+
+            envFrom:
+              - secretRef:
+                  name: kalimba-secret
+
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /q/health/live
+                    port: &port 8080
+                  initialDelaySeconds: 30
+                  periodSeconds: 30
+                  failureThreshold: 5
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /q/health/ready
+                    port: *port
+                  initialDelaySeconds: 10
+                  periodSeconds: 10
+                  failureThreshold: 5
+
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - "ALL"
+
+            resources:
+              requests:
+                cpu: 25m
+                memory: 512Mi
+              limits:
+                memory: 1536Mi # never set limits.cpu
+
+    defaultPodOptions:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      imagePullSecrets:
+        - name: kalimba-pull-secret
+      securityContext:
+        runAsNonRoot: true
+        # ubi9/openjdk-21-runtime: COPY --chown=185 / USER 185, with /deployments
+        # group-writable for gid 0 (the UBI convention).
+        runAsUser: 185
+        runAsGroup: 0
+        fsGroup: 185
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile:
+          type: RuntimeDefault
+
+    persistence:
+      downloads:
+        enabled: true
+        existingClaim: *app # created by the kopiur component
+        globalMounts:
+          - path: *downloadsDir
+      tmp:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
+
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: *port
+
+    route:
+      app:
+        hostnames:
+          - "kalimba.${LIMITED_DOMAIN}"
+        parentRefs:
+          - name: internal
+            namespace: network
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
