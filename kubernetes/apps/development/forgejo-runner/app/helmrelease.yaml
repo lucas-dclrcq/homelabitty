@@ -42,6 +42,17 @@ spec:
                 - docker:k8s:/config/podspec-dind.yaml
               timeout: 3h
           podspec-default.yaml: |-
+            affinity:
+              podAntiAffinity:
+                requiredDuringSchedulingIgnoredDuringExecution:
+                  # CI builds saturate node ephemeral disks; keep them away from Postgres instances
+                  - labelSelector:
+                      matchLabels:
+                        postgres-operator.crunchydata.com/cluster: postgres-16
+                        postgres-operator.crunchydata.com/data: postgres
+                    namespaces:
+                      - infrastructure
+                    topologyKey: kubernetes.io/hostname
             containers:
               - env:
                   - name: DEBIAN_FRONTEND
@@ -57,6 +68,17 @@ spec:
                     memory: 256Mi
             restartPolicy: Never
           podspec-dind.yaml: |-
+            affinity:
+              podAntiAffinity:
+                requiredDuringSchedulingIgnoredDuringExecution:
+                  # CI builds saturate node ephemeral disks; keep them away from Postgres instances
+                  - labelSelector:
+                      matchLabels:
+                        postgres-operator.crunchydata.com/cluster: postgres-16
+                        postgres-operator.crunchydata.com/data: postgres
+                    namespaces:
+                      - infrastructure
+                    topologyKey: kubernetes.io/hostname
             initContainers:
               - name: dind
                 image: docker:29-dind
