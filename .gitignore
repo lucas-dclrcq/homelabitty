@@ -1,5 +1,9 @@
 # Trash
 .DS_Store
+# Env
+.env
+.env.*
+!.env.example
 Thumbs.db
 # k8s
 kubeconfig

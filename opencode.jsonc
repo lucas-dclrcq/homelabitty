@@ -19,6 +19,13 @@
     "konflate": {
       "type": "remote",
       "url": "https://konflate.hoohoot.org/mcp"
+    },
+    "homeassistant": {
+      "type": "remote",
+      "url": "https://hass.hoohoot.org/api/mcp",
+      "headers": {
+        "Authorization": "Bearer {env:HASS_TOKEN}"
+      }
     }
   }
 }
