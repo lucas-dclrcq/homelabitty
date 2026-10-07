@@ -25,7 +25,7 @@ spec:
           app:
             image:
               repository: docker.hoohoot.org/homelab/kalimba
-              tag: 1.9.0
+              tag: 1.10.0
 
             env:
               TZ: ${TIMEZONE}
