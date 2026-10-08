@@ -19,6 +19,7 @@ spec:
       module.exports = {
         secrets: {
           OCHARTED_PASSWORD: process.env.OCHARTED_PASSWORD,
+          HARBOR_PASSWORD: process.env.HARBOR_PASSWORD,
         },
         hostRules: [
           {
