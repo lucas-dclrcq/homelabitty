@@ -14,7 +14,7 @@ spec:
     - name: external-secrets-stores
       namespace: external-secrets
   components:
-    - ../../../../components/volsync
+    - ../../../../components/kopiur
   path: ./kubernetes/apps/default/onlyoffice/app
   prune: true
   sourceRef:
@@ -26,8 +26,4 @@ spec:
   postBuild:
     substitute:
       APP: *app
-      VOLSYNC_CAPACITY: 1Gi
-      # the document server runs its whole supervisord stack as root, so the
-      # kopia mover has to read the data dir as root as well
-      VOLSYNC_PUID: "0"
-      VOLSYNC_PGID: "0"
+      KOPIUR_CAPACITY: 1Gi
