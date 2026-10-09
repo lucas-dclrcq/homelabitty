@@ -92,7 +92,7 @@ spec:
       enabled: false
 
     syncJob:
-      enabled: false
+      enabled: true
 
     prometheus-node-exporter:
       fullnameOverride: node-exporter
