@@ -36,7 +36,6 @@ kubectl scale deployment -n home frigate  --replicas $replicas
 kubectl scale deployment -n infrastructure minio --replicas $replicas
 kubectl scale deployment -n media audiobookshelf --replicas $replicas
 kubectl scale deployment -n media jellyfin --replicas $replicas
-kubectl scale deployment -n media komga --replicas $replicas
 kubectl scale deployment -n media navidrome --replicas $replicas
 # kopiur: suspend the repository while the NAS is down (backups, restores and
 # maintenance all mount the TrueNAS NFS export)
