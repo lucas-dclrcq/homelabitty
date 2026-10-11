@@ -21,6 +21,14 @@ spec:
           - name: alertname
             value: Watchdog
             matchType: =
+      - receiver: robusta
+        continue: true
+        groupBy: ["..."]
+        groupWait: 30s
+        matchers:
+          - name: severity
+            value: critical|error
+            matchType: =~
       - receiver: pushover
         continue: true
         matchers:
@@ -62,6 +70,10 @@ spec:
     - name: matrix
       webhookConfigs:
         - url: "http://matrix-alertmanager.matrix.svc.cluster.local/alerts?secret=noneedforasecrethere"
+    - name: robusta
+      webhookConfigs:
+        - url: "http://robusta-runner.ai.svc.cluster.local/api/alerts"
+          sendResolved: true
     - name: pushover
       pushoverConfigs:
         - html: true

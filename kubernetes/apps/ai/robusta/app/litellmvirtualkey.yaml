@@ -1,0 +1,18 @@
+---
+# LiteLLM key used by HolmesGPT for both LLM calls and the GitHub/kubesearch MCP servers
+apiVersion: litellm.home-operations.com/v1alpha1
+kind: LiteLLMVirtualKey
+metadata:
+  name: robusta-holmes
+spec:
+  proxyRef: litellm
+  proxyNamespace: ai
+  keyAlias: robusta-holmes
+  secretName: robusta-holmes-litellm
+  secretKey: LITELLM_API_KEY
+  models:
+    - deepseek-v4-pro
+    - deepseek-flash
+  maxBudget: "20"
+  budgetDuration: 30d
+  maxParallelRequests: 4

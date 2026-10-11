@@ -1,0 +1,17 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ./externalsecret.yaml
+  - ./litellmvirtualkey.yaml
+  - ./helmrepository.yaml
+  - ./helmrelease.yaml
+configMapGenerator:
+  # Custom Robusta playbook package, imported by the runner via PYTHONPATH
+  - name: robusta-holmes-remediation
+    files:
+      - ./resources/holmes_remediation/__init__.py
+      - ./resources/holmes_remediation/remediation.py
+generatorOptions:
+  disableNameSuffixHash: true

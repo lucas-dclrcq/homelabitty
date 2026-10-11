@@ -8,3 +8,4 @@ components:
 resources:
   - ./searxng/ks.yaml
   - ./litellm/ks.yaml
+  - ./robusta/ks.yaml
