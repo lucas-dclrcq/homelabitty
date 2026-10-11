@@ -1,0 +1,83 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app hcpy
+spec:
+  interval: 30m
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  values:
+    global:
+      createDefaultServiceAccount: false
+
+    controllers:
+      hcpy:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/hcpy2-0/hcpy
+              tag: v0.4.12
+            # Bypass run.sh (HA addon wrapper); hc2mqtt reads all config from HCPY_* env vars
+            command:
+              - python3
+              - hc2mqtt.py
+            env:
+              TZ: "${TIMEZONE}"
+              HCPY_DEVICES_FILE: /config/devices.json
+              HCPY_DISCOVERY_FILE: /app/discovery.yaml
+              HCPY_MQTT_HOST: mosquitto.infrastructure.svc.cluster.local
+              HCPY_MQTT_PORT: "1883"
+              HCPY_MQTT_PREFIX: homeconnect/
+              HCPY_MQTT_CLIENTNAME: hcpy
+              HCPY_HA_DISCOVERY: "true"
+              HCPY_MQTT_USERNAME:
+                valueFrom:
+                  secretKeyRef:
+                    name: hcpy-secret
+                    key: HCPY_MQTT_USERNAME
+              HCPY_MQTT_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: hcpy-secret
+                    key: HCPY_MQTT_PASSWORD
+
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - "ALL"
+
+            resources:
+              requests:
+                cpu: 10m
+                memory: 32Mi
+              limits:
+                memory: 128Mi
+
+    defaultPodOptions:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+
+    persistence:
+      devices:
+        type: secret
+        name: hcpy-secret
+        globalMounts:
+          - path: /config/devices.json
+            subPath: devices.json
+      tmp:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
