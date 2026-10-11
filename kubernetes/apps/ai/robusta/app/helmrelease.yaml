@@ -1,0 +1,153 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app robusta
+spec:
+  interval: 1h
+  chart:
+    spec:
+      # renovate: registryUrl=https://robusta-charts.storage.googleapis.com
+      chart: robusta
+      version: 0.51.0
+      sourceRef:
+        kind: HelmRepository
+        name: *app
+      interval: 1h
+  values:
+    clusterName: hoohoot
+
+    globalConfig:
+      prometheus_url: http://vmsingle-vmks.observability.svc.cluster.local:8428
+      alertmanager_url: http://vmalertmanager-vmks.observability.svc.cluster.local:9093
+      # VictoriaMetrics does not expose Prometheus flags
+      check_prometheus_flags: false
+
+    # Only Holmes investigation results are sent; raw alerts already go through Alertmanager
+    sinksConfig:
+      - pushover_sink:
+          name: pushover
+          token: "{{ env.PUSHOVER_TOKEN }}"
+          user: "{{ env.PUSHOVER_USER_KEY }}"
+          send_files: false
+          scope:
+            include:
+              - identifier: HolmesRemediation
+
+    playbookRepos:
+      holmes_remediation:
+        url: file:///etc/robusta/custom/holmes_remediation
+        pip_install: false
+
+    customPlaybooks:
+      - name: holmes-remediation
+        triggers:
+          - on_prometheus_alert:
+              status: firing
+        actions:
+          - holmes_remediate:
+              severities: ["critical", "error"]
+              repository: lucas-dclrcq/homelabitty
+              base_branch: main
+              model: deepseek-v4-pro
+              rate_limit_seconds: 21600
+
+    enablePrometheusStack: false
+    enablePlatformPlaybooks: false
+    enableServiceMonitors: true
+
+    kubewatch:
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+        limits:
+          memory: 256Mi
+
+    runner:
+      sendAdditionalTelemetry: false
+      additional_env_vars:
+        - name: PYTHONPATH
+          value: /etc/robusta/custom
+        - name: ENABLE_TELEMETRY
+          value: "false"
+      additional_env_froms:
+        - secretRef:
+            name: robusta-secret
+      extraVolumes:
+        - name: holmes-remediation
+          configMap:
+            name: robusta-holmes-remediation
+      extraVolumeMounts:
+        - name: holmes-remediation
+          mountPath: /etc/robusta/custom/holmes_remediation
+          readOnly: true
+      resources:
+        requests:
+          cpu: 50m
+          memory: 512Mi
+        limits:
+          memory: 2Gi
+
+    enableHolmesGPT: true
+    holmes:
+      sentryDSN: ""
+      enableTelemetry: false
+      extraEnvVarsSecrets:
+        - robusta-holmes-litellm
+
+      modelList:
+        deepseek-v4-pro:
+          model: openai/deepseek-v4-pro
+          api_base: http://litellm.ai.svc.cluster.local:4000
+          api_key: envRef:LITELLM_API_KEY
+        deepseek-flash:
+          model: openai/deepseek-flash
+          api_base: http://litellm.ai.svc.cluster.local:4000
+          api_key: envRef:LITELLM_API_KEY
+
+      toolsets:
+        kubernetes/core:
+          enabled: true
+        kubernetes/logs:
+          enabled: true
+        # Robusta SaaS data source, not used
+        robusta:
+          enabled: false
+        internet:
+          enabled: true
+        prometheus/metrics:
+          enabled: true
+          subtype: victoriametrics
+          config:
+            prometheus_url: http://vmsingle-vmks.observability.svc.cluster.local:8428
+
+      mcp_servers:
+        github:
+          description: GitHub, proxied through the LiteLLM MCP gateway
+          config:
+            url: http://litellm.ai.svc.cluster.local:4000/github/mcp
+            mode: streamable-http
+            headers:
+              x-litellm-api-key: "Bearer {{ env.LITELLM_API_KEY }}"
+          llm_instructions: >-
+            Use GitHub to read the GitOps manifests of the cluster (repository lucas-dclrcq/homelabitty)
+            and to open remediation pull requests. Never merge pull requests or push to the main branch.
+        kubesearch:
+          description: kubesearch.dev, search how other homelab clusters configure Helm charts
+          config:
+            url: http://litellm.ai.svc.cluster.local:4000/kubesearch/mcp
+            mode: streamable-http
+            headers:
+              x-litellm-api-key: "Bearer {{ env.LITELLM_API_KEY }}"
+          llm_instructions: >-
+            Use kubesearch to find how other Flux homelab repositories configure a chart before proposing
+            value changes.
+
+      resources:
+        requests:
+          cpu: 50m
+          memory: 512Mi
+        limits:
+          memory: 2Gi
