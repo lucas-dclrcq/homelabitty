@@ -231,6 +231,11 @@ spec:
         - "kalimba"
       password:
         type: AlphaNumeric
+    - name: "litellm"
+      databases:
+        - "litellm"
+      password:
+        type: AlphaNumeric
   backups:
     pgbackrest:
       configuration:

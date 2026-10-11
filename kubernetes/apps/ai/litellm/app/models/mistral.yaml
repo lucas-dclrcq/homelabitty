@@ -1,0 +1,52 @@
+---
+apiVersion: litellm.home-operations.com/v1alpha1
+kind: LiteLLMModel
+metadata:
+  name: mistral-large
+spec:
+  proxyRef: litellm
+  modelName: mistral-large
+  params:
+    model: mistral/mistral-large-latest
+    apiKeyRef:
+      name: litellm-secret
+      key: MISTRAL_API_KEY
+---
+apiVersion: litellm.home-operations.com/v1alpha1
+kind: LiteLLMModel
+metadata:
+  name: mistral-medium
+spec:
+  proxyRef: litellm
+  modelName: mistral-medium
+  params:
+    model: mistral/mistral-medium-latest
+    apiKeyRef:
+      name: litellm-secret
+      key: MISTRAL_API_KEY
+---
+apiVersion: litellm.home-operations.com/v1alpha1
+kind: LiteLLMModel
+metadata:
+  name: mistral-small
+spec:
+  proxyRef: litellm
+  modelName: mistral-small
+  params:
+    model: mistral/mistral-small-latest
+    apiKeyRef:
+      name: litellm-secret
+      key: MISTRAL_API_KEY
+---
+apiVersion: litellm.home-operations.com/v1alpha1
+kind: LiteLLMModel
+metadata:
+  name: codestral
+spec:
+  proxyRef: litellm
+  modelName: codestral
+  params:
+    model: mistral/codestral-latest
+    apiKeyRef:
+      name: litellm-secret
+      key: MISTRAL_API_KEY

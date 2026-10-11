@@ -1,0 +1,35 @@
+---
+apiVersion: litellm.home-operations.com/v1alpha1
+kind: LiteLLMMCPServer
+metadata:
+  name: github-mcp
+spec:
+  proxyRef: litellm
+  proxyNamespace: ai
+  alias: github
+  transport: http
+  authType: bearer_token
+  authTokenRef:
+    name: litellm-secret
+    key: GITHUB_TOKEN
+  workload:
+    image: ghcr.io/github/github-mcp-server:v2.0.2
+    args: ["http"]
+    port: 8082
+    path: /mcp
+    automountServiceAccountToken: false
+    resources:
+      requests:
+        cpu: 10m
+        memory: 64Mi
+      limits:
+        memory: 256Mi
+    securityContext:
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+      capabilities: {drop: ["ALL"]}
+    podSecurityContext:
+      runAsNonRoot: true
+      runAsUser: 65532
+      runAsGroup: 65532
+      seccompProfile: {type: RuntimeDefault}

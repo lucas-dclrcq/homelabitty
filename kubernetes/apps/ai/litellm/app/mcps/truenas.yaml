@@ -1,0 +1,41 @@
+---
+apiVersion: litellm.home-operations.com/v1alpha1
+kind: LiteLLMMCPServer
+metadata:
+  name: truenas-mcp
+spec:
+  proxyRef: litellm
+  proxyNamespace: ai
+  alias: truenas
+  transport: http
+  authType: bearer_token
+  authTokenRef:
+    name: litellm-secret
+    key: TRUENAS_API_KEY
+  workload:
+    image: ghcr.io/cedricziel/truenas-mcp:0.4.2
+    port: 8080
+    path: /mcp
+    automountServiceAccountToken: false
+    env:
+      - name: TRUENAS_MCP_TARGET
+        value: "truenas.${INTERNAL_DOMAIN}:443"
+      - name: TRUENAS_MCP_ALLOW_PLAINTEXT
+        value: "true"
+      - name: TRUENAS_MCP_ENABLE_WRITES
+        value: "false"
+    resources:
+      requests:
+        cpu: 10m
+        memory: 64Mi
+      limits:
+        memory: 256Mi
+    securityContext:
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+      capabilities: {drop: ["ALL"]}
+    podSecurityContext:
+      runAsNonRoot: true
+      runAsUser: 65532
+      runAsGroup: 65532
+      seccompProfile: {type: RuntimeDefault}

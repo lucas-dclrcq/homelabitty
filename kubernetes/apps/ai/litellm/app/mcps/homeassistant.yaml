@@ -1,0 +1,15 @@
+---
+apiVersion: litellm.home-operations.com/v1alpha1
+kind: LiteLLMMCPServer
+metadata:
+  name: homeassistant-mcp
+spec:
+  proxyRef: litellm
+  proxyNamespace: ai
+  alias: homeassistant
+  transport: http
+  url: http://home-assistant.home.svc.cluster.local:8123/api/mcp
+  authType: bearer_token
+  authTokenRef:
+    name: litellm-secret
+    key: HOME_ASSISTANT_TOKEN
