@@ -50,6 +50,11 @@ spec:
 
     vmagent:
       enabled: true
+      spec:
+        extraArgs:
+          promscrape.streamParse: "true"
+          # apiserver /metrics exceeds the 16MiB default
+          promscrape.maxScrapeSize: 64MiB
 
     vmalert:
       enabled: true
@@ -147,6 +152,27 @@ spec:
           endpoints:
             - port: http-metrics
               scheme: http
+
+    # Talos serving certs are only valid for localhost
+    kubeControllerManager:
+      vmScrape:
+        spec:
+          endpoints:
+            - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+              port: http-metrics
+              scheme: https
+              tlsConfig:
+                insecureSkipVerify: true
+
+    kubeScheduler:
+      vmScrape:
+        spec:
+          endpoints:
+            - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+              port: http-metrics
+              scheme: https
+              tlsConfig:
+                insecureSkipVerify: true
 
     kubeProxy:
       enabled: false
