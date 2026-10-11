@@ -16,7 +16,7 @@ spec:
   jobLabel: slskd
   namespaceSelector:
     matchNames:
-      - media
+      - downloads
   selector:
     matchLabels:
       app.kubernetes.io/instance: slskd
