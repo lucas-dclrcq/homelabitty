@@ -19,7 +19,7 @@ spec:
               protocol: TCP
     - fromEndpoints:
         - matchLabels:
-            app.kubernetes.io/name: prometheus
+            app.kubernetes.io/name: vmagent
             io.kubernetes.pod.namespace: observability
       toPorts:
         - ports:

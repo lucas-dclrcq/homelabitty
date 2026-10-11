@@ -11,5 +11,5 @@ spec:
   ingress:
     - fromEndpoints:
         - matchLabels:
-            app.kubernetes.io/name: prometheus
+            app.kubernetes.io/name: vmagent
             k8s:io.kubernetes.pod.namespace: observability
