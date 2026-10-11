@@ -1,0 +1,11 @@
+---
+apiVersion: litellm.home-operations.com/v1alpha1
+kind: LiteLLMMCPServer
+metadata:
+  name: unifi-mcp
+spec:
+  proxyRef: litellm
+  proxyNamespace: ai
+  alias: unifi
+  transport: http
+  url: http://unifi-network-mcp.ai.svc.cluster.local:3000/mcp

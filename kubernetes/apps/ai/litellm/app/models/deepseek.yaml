@@ -1,0 +1,26 @@
+---
+apiVersion: litellm.home-operations.com/v1alpha1
+kind: LiteLLMModel
+metadata:
+  name: deepseek-chat
+spec:
+  proxyRef: litellm
+  modelName: deepseek-chat
+  params:
+    model: deepseek/deepseek-chat
+    apiKeyRef:
+      name: litellm-secret
+      key: DEEPSEEK_API_KEY
+---
+apiVersion: litellm.home-operations.com/v1alpha1
+kind: LiteLLMModel
+metadata:
+  name: deepseek-reasoner
+spec:
+  proxyRef: litellm
+  modelName: deepseek-reasoner
+  params:
+    model: deepseek/deepseek-reasoner
+    apiKeyRef:
+      name: litellm-secret
+      key: DEEPSEEK_API_KEY

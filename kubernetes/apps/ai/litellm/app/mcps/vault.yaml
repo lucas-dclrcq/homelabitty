@@ -1,0 +1,11 @@
+---
+apiVersion: litellm.home-operations.com/v1alpha1
+kind: LiteLLMMCPServer
+metadata:
+  name: vault-mcp
+spec:
+  proxyRef: litellm
+  proxyNamespace: ai
+  alias: vault
+  transport: http
+  url: http://vault-mcp-server.ai.svc.cluster.local:8080/mcp

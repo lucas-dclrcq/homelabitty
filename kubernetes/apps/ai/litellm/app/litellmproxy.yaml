@@ -1,0 +1,95 @@
+---
+apiVersion: litellm.home-operations.com/v1alpha1
+kind: LiteLLMProxy
+metadata:
+  name: litellm
+spec:
+  image: ghcr.io/berriai/litellm:v1.105.0
+  replicas: 1
+
+  applyMode: api
+  apiAccess:
+    masterKeyRef:
+      name: litellm-secret
+      key: LITELLM_MASTER_KEY
+
+  generalSettings:
+    master_key: os.environ/LITELLM_MASTER_KEY
+    database_url: os.environ/DATABASE_URL
+    proxy_base_url: https://litellm.${LIMITED_DOMAIN}
+    store_model_in_db: true
+    store_prompts_in_spend_logs: true
+    health_check_endpoint: /
+    require_auth_for_metrics_endpoint: false
+    prometheus_adapter: true
+
+  litellmSettings:
+    cache: true
+    cache_params:
+      type: redis
+      host: litellm-dragonfly.ai.svc.cluster.local
+      port: 6379
+    mcp_semantic_tool_filter:
+      enabled: false
+
+  routerSettings:
+    redis_host: litellm-dragonfly.ai.svc.cluster.local
+    redis_port: 6379
+    num_retries: 2
+    request_timeout: 600
+    drop_params: true
+
+  callbacks:
+    success: [prometheus]
+    failure: [prometheus]
+
+  env:
+    - name: LITELLM_MODE
+      value: PRODUCTION
+    - name: LITELLM_LOG
+      value: INFO
+    - name: LITELLM_LOCAL_MODEL_COST_MAP
+      value: "False"
+    - name: STORE_MODEL_IN_DB
+      value: "True"
+    - name: PROXY_BASE_URL
+      value: https://litellm.${LIMITED_DOMAIN}
+
+  envFrom:
+    - secretRef: {name: litellm-secret}
+    - secretRef: {name: litellm-pg}
+
+  resources:
+    requests:
+      cpu: 10m
+      memory: 1Gi
+    limits:
+      memory: 4Gi
+
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities: {drop: ["ALL"]}
+
+  livenessProbe:
+    httpGet:
+      path: /
+      port: 4000
+    initialDelaySeconds: 300
+    periodSeconds: 10
+    failureThreshold: 5
+
+  readinessProbe:
+    httpGet:
+      path: /
+      port: 4000
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    failureThreshold: 5
+
+  route:
+    hostnames: ["litellm.${LIMITED_DOMAIN}"]
+    parentRefs:
+      - group: gateway.networking.k8s.io
+        kind: Gateway
+        name: internal
+        namespace: network
