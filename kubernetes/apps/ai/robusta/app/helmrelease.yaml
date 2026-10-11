@@ -115,8 +115,9 @@ spec:
         # Robusta SaaS data source, not used
         robusta:
           enabled: false
+        # Disabled to limit exfiltration if an alert carries a prompt injection
         internet:
-          enabled: true
+          enabled: false
         prometheus/metrics:
           enabled: true
           subtype: victoriametrics
