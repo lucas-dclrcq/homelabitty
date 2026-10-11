@@ -2,12 +2,12 @@
 apiVersion: litellm.home-operations.com/v1alpha1
 kind: LiteLLMModel
 metadata:
-  name: deepseek-chat
+  name: deepseek-flash
 spec:
   proxyRef: litellm
-  modelName: deepseek-chat
+  modelName: deepseek-flash
   params:
-    model: deepseek/deepseek-chat
+    model: deepseek/deepseek-v4-flash
     apiKeyRef:
       name: litellm-secret
       key: DEEPSEEK_API_KEY
@@ -15,12 +15,12 @@ spec:
 apiVersion: litellm.home-operations.com/v1alpha1
 kind: LiteLLMModel
 metadata:
-  name: deepseek-reasoner
+  name: deepseek-v4-pro
 spec:
   proxyRef: litellm
-  modelName: deepseek-reasoner
+  modelName: deepseek-v4-pro
   params:
-    model: deepseek/deepseek-reasoner
+    model: deepseek/deepseek-v4-pro
     apiKeyRef:
       name: litellm-secret
       key: DEEPSEEK_API_KEY
