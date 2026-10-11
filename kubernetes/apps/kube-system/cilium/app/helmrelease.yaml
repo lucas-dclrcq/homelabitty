@@ -75,6 +75,12 @@ spec:
       ui:
         enabled: true
         rollOutPods: true
+      tls:
+        auto:
+          # Rotate hubble certs via certgen CronJob (helm-generated certs expired)
+          method: cronJob
+          certValidityDuration: 1095
+          schedule: "0 0 1 */4 *"
     ipam:
       mode: kubernetes
     ipv4NativeRoutingCIDR: "10.69.0.0/16"

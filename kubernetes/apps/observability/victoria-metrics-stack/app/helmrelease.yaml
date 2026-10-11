@@ -50,6 +50,11 @@ spec:
 
     vmagent:
       enabled: true
+      spec:
+        extraArgs:
+          promscrape.streamParse: "true"
+          # apiserver /metrics exceeds the 16MiB default
+          promscrape.maxScrapeSize: 64MiB
 
     vmalert:
       enabled: true
@@ -137,8 +142,36 @@ spec:
 
     kubeEtcd:
       service:
+        # Talos exposes etcd metrics over plain HTTP (listen-metrics-urls)
+        port: 2381
+        targetPort: 2381
         selector:
           component: kube-apiserver
+      vmScrape:
+        spec:
+          endpoints:
+            - port: http-metrics
+              scheme: http
+
+    kubeControllerManager:
+      vmScrape:
+        spec:
+          endpoints:
+            - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+              port: http-metrics
+              scheme: https
+              tlsConfig:
+                insecureSkipVerify: true
+
+    kubeScheduler:
+      vmScrape:
+        spec:
+          endpoints:
+            - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+              port: http-metrics
+              scheme: https
+              tlsConfig:
+                insecureSkipVerify: true
 
     kubeProxy:
       enabled: false
