@@ -9,4 +9,3 @@ resources:
   - ./zigbee2mqtt/ks.yaml
   - ./hcpy/ks.yaml
   - ./home-assistant/ks.yaml
-  - ./sprout-track/ks.yaml
