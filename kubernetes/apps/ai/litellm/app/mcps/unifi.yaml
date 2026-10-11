@@ -8,4 +8,70 @@ spec:
   proxyNamespace: ai
   alias: unifi
   transport: http
-  url: http://unifi-network-mcp.ai.svc.cluster.local:3000/mcp
+  workload:
+    image: ghcr.io/sirkirby/unifi-network-mcp:0.37.0
+    port: 3000
+    path: /mcp
+    automountServiceAccountToken: false
+    podLabels:
+      egress.home.arpa/kubedns: allow
+      egress.home.arpa/world: allow
+    env:
+      - name: HOME
+        value: /tmp
+      - name: UNIFI_MCP_HTTP_ENABLED
+        value: "true"
+      - name: UNIFI_MCP_HTTP_TRANSPORT
+        value: streamable-http
+      - name: UNIFI_MCP_HOST
+        value: 0.0.0.0
+      - name: UNIFI_MCP_PORT
+        value: "3000"
+      - name: UNIFI_MCP_LOG_LEVEL
+        value: INFO
+      - name: UNIFI_MCP_ALLOWED_HOSTS
+        value: "localhost,localhost:3000,127.0.0.1,127.0.0.1:3000,unifi-mcp,unifi-mcp:3000,unifi-mcp.ai,unifi-mcp.ai:3000,unifi-mcp.ai.svc,unifi-mcp.ai.svc:3000,unifi-mcp.ai.svc.cluster.local,unifi-mcp.ai.svc.cluster.local:3000"
+      - name: UNIFI_TOOL_REGISTRATION_MODE
+        value: lazy
+      - name: UNIFI_NETWORK_SITE
+        value: default
+      - name: UNIFI_PORT
+        value: "443"
+      - name: UNIFI_VERIFY_SSL
+        value: "false"
+      - name: UNIFI_HOST
+        valueFrom:
+          secretKeyRef:
+            name: litellm-secret
+            key: UNIFI_HOST
+      - name: UNIFI_USERNAME
+        valueFrom:
+          secretKeyRef:
+            name: litellm-secret
+            key: UNIFI_USERNAME
+      - name: UNIFI_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: litellm-secret
+            key: UNIFI_PASSWORD
+    volumes:
+      - name: tmp
+        emptyDir: {}
+    volumeMounts:
+      - name: tmp
+        mountPath: /tmp
+    resources:
+      requests:
+        cpu: 10m
+        memory: 128Mi
+      limits:
+        memory: 512Mi
+    securityContext:
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+      capabilities: {drop: ["ALL"]}
+    podSecurityContext:
+      runAsNonRoot: true
+      runAsUser: 1000
+      runAsGroup: 1000
+      seccompProfile: {type: RuntimeDefault}

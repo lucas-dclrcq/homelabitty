@@ -1,19 +1,12 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "mcp": {
-    "grafana": {
+    "litellm": {
       "type": "remote",
-      "url": "https://grafana.mcp.hoohoot.org/mcp",
-      "enabled": true
-    },
-    "unifi": {
-      "type": "remote",
-      "url": "https://unifi-network-mcp.hoohoot.xyz/mcp",
-      "enabled": true
-    },
-    "vault": {
-      "type": "remote",
-      "url": "https://vault.mcp.hoohoot.org/mcp",
+      "url": "https://litellm.hoohoot.xyz/mcp",
+      "headers": {
+        "x-litellm-api-key": "Bearer {env:LITELLM_API_KEY}"
+      },
       "enabled": true
     },
     "konflate": {

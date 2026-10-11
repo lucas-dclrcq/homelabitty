@@ -8,4 +8,42 @@ spec:
   proxyNamespace: ai
   alias: grafana
   transport: http
-  url: http://grafana-mcp.ai.svc.cluster.local:8000/mcp
+  workload:
+    image: grafana/mcp-grafana:2.0.2
+    args:
+      - --transport=streamable-http
+      - --allowed-hosts=localhost:8000,127.0.0.1:8000,grafana-mcp.ai.svc.cluster.local:8000,grafana-mcp.ai:8000,grafana-mcp:8000
+    port: 8000
+    path: /mcp
+    automountServiceAccountToken: false
+    env:
+      - name: GRAFANA_URL
+        value: http://grafana-service.observability.svc.cluster.local:3000
+      - name: GRAFANA_ORG_ID
+        value: "1"
+      - name: GRAFANA_SERVICE_ACCOUNT_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: litellm-secret
+            key: GRAFANA_SERVICE_ACCOUNT_TOKEN
+    volumes:
+      - name: tmp
+        emptyDir: {}
+    volumeMounts:
+      - name: tmp
+        mountPath: /tmp
+    resources:
+      requests:
+        cpu: 50m
+        memory: 128Mi
+      limits:
+        memory: 256Mi
+    securityContext:
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+      capabilities: {drop: ["ALL"]}
+    podSecurityContext:
+      runAsNonRoot: true
+      runAsUser: 1000
+      runAsGroup: 1000
+      seccompProfile: {type: RuntimeDefault}

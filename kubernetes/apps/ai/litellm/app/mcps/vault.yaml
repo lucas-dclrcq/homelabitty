@@ -8,4 +8,50 @@ spec:
   proxyNamespace: ai
   alias: vault
   transport: http
-  url: http://vault-mcp-server.ai.svc.cluster.local:8080/mcp
+  workload:
+    image: hashicorp/vault-mcp-server:0.2.0
+    command: ["/bin/vault-mcp-server"]
+    args:
+      - http
+      - --transport-host=0.0.0.0
+      - --transport-port=8080
+    port: 8080
+    path: /mcp
+    automountServiceAccountToken: false
+    podLabels:
+      egress.home.arpa/kubedns: allow
+    env:
+      - name: TRANSPORT_MODE
+        value: http
+      - name: TRANSPORT_HOST
+        value: 0.0.0.0
+      - name: MCP_ENDPOINT
+        value: /mcp
+      - name: VAULT_ADDR
+        value: http://vault.vault.svc.cluster.local:8200
+      - name: VAULT_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: litellm-secret
+            key: VAULT_MCP_TOKEN
+    volumes:
+      - name: tmp
+        emptyDir: {}
+    volumeMounts:
+      - name: tmp
+        mountPath: /tmp
+    resources:
+      requests:
+        cpu: 10m
+        memory: 64Mi
+      limits:
+        memory: 256Mi
+    securityContext:
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+      capabilities: {drop: ["ALL"]}
+    podSecurityContext:
+      runAsNonRoot: true
+      runAsUser: 65532
+      runAsGroup: 65532
+      seccompProfile: {type: RuntimeDefault}
