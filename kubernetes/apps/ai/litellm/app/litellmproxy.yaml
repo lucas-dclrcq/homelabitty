@@ -54,6 +54,21 @@ spec:
       value: "True"
     - name: PROXY_BASE_URL
       value: https://litellm.${LIMITED_DOMAIN}
+    # SSO (Authentik generic OIDC) - client id/secret come from litellm-secret
+    - name: GENERIC_AUTHORIZATION_ENDPOINT
+      value: https://sso.${SECRET_DOMAIN}/application/o/authorize/
+    - name: GENERIC_TOKEN_ENDPOINT
+      value: https://sso.${SECRET_DOMAIN}/application/o/token/
+    - name: GENERIC_USERINFO_ENDPOINT
+      value: https://sso.${SECRET_DOMAIN}/application/o/userinfo/
+    - name: GENERIC_SCOPE
+      value: openid profile email
+    - name: GENERIC_USER_ID_ATTRIBUTE
+      value: preferred_username
+    - name: GENERIC_USER_EMAIL_ATTRIBUTE
+      value: email
+    - name: GENERIC_USER_DISPLAY_NAME_ATTRIBUTE
+      value: name
 
   envFrom:
     - secretRef: {name: litellm-secret}
