@@ -8,6 +8,7 @@ spec:
   proxyRef: litellm
   proxyNamespace: ai
   keyAlias: robusta-holmes
+  teamID: robusta-holmes
   secretName: robusta-holmes-litellm
   secretKey: LITELLM_API_KEY
   models:

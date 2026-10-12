@@ -1,0 +1,20 @@
+---
+# LiteLLM team granting the robusta-holmes key access to the GitHub and kubesearch MCP servers.
+# The litellm-operator cannot attach mcp_servers directly to a virtual key; keys inherit MCP
+# server access from their team instead.
+apiVersion: litellm.home-operations.com/v1alpha1
+kind: LiteLLMTeam
+metadata:
+  name: robusta-holmes
+spec:
+  proxyRef: litellm
+  proxyNamespace: ai
+  teamID: robusta-holmes
+  # The operator sends `models` unconditionally; an empty list serializes to null,
+  # which LiteLLM rejects. Match the key's own model allowlist.
+  models:
+    - deepseek-v4-pro
+    - deepseek-flash
+  mcpServers:
+    - github
+    - kubesearch
