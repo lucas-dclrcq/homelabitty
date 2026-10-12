@@ -1,23 +1,14 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "mcp": {
-    "litellm": {
-      "type": "remote",
-      "url": "https://litellm.hoohoot.xyz/mcp",
-      "headers": {
-        "x-litellm-api-key": "Bearer {env:LITELLM_API_KEY}"
-      },
-      "enabled": true
-    },
-    "konflate": {
-      "type": "remote",
-      "url": "https://konflate.hoohoot.org/mcp"
-    },
-    "homeassistant": {
-      "type": "remote",
-      "url": "https://hass.hoohoot.org/api/mcp",
-      "headers": {
-        "Authorization": "Bearer {env:HASS_TOKEN}"
+    "servers": {
+      "litellm": {
+        "type": "remote",
+        "url": "https://litellm.hoohoot.xyz/mcp",
+        "oauth": false,
+        "headers": {
+          "x-litellm-api-key": "Bearer {env:LITELLM_API_KEY}"
+        }
       }
     }
   }
