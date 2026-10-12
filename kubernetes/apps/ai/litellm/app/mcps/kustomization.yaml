@@ -10,3 +10,6 @@ resources:
   - ./grafana.yaml
   - ./vault.yaml
   - ./unifi.yaml
+  - ./kubernetes-mcp-rbac.yaml
+  - ./kubernetes-mcp-config.yaml
+  - ./kubernetes-mcp.yaml

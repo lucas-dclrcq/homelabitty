@@ -1,0 +1,44 @@
+---
+apiVersion: litellm.home-operations.com/v1alpha1
+kind: LiteLLMMCPServer
+metadata:
+  name: kubernetes-mcp
+spec:
+  proxyRef: litellm
+  proxyNamespace: ai
+  alias: kubernetes
+  transport: http
+  workload:
+    image: quay.io/containers/kubernetes_mcp_server:v0.0.67
+    args:
+      - "--config"
+      - "/etc/kubernetes-mcp-server/config.toml"
+    port: 8080
+    path: /mcp
+    serviceAccountName: kubernetes-mcp
+    automountServiceAccountToken: true
+    volumes:
+      - name: config
+        configMap:
+          name: kubernetes-mcp-config
+      - name: tmp
+        emptyDir: {}
+    volumeMounts:
+      - name: config
+        mountPath: /etc/kubernetes-mcp-server
+        readOnly: true
+      - name: tmp
+        mountPath: /tmp
+    resources:
+      requests:
+        cpu: 10m
+        memory: 64Mi
+      limits:
+        memory: 256Mi
+    securityContext:
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+      capabilities: {drop: ["ALL"]}
+    podSecurityContext:
+      runAsNonRoot: true
+      seccompProfile: {type: RuntimeDefault}
