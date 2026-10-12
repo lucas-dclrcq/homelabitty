@@ -1,0 +1,16 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/litellm.home-operations.com/litellmguardrail_v1alpha1.json
+apiVersion: litellm.home-operations.com/v1alpha1
+kind: LiteLLMGuardrail
+metadata:
+  name: headroom-compression
+spec:
+  proxyRef: litellm
+  guardrailName: headroom-compression
+  guardrail: headroom
+  mode: pre_call
+  apiBase: http://headroom.ai.svc.cluster.local:8787
+  defaultOn: true
+  params:
+    timeout: 10
+    unreachable_fallback: fail_open

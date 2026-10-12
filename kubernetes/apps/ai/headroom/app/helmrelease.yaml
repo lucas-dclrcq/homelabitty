@@ -1,0 +1,97 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app headroom
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  values:
+    global:
+      createDefaultServiceAccount: false
+
+    defaultPodOptions:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        fsGroup: 65532
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile: {type: RuntimeDefault}
+
+    controllers:
+      headroom:
+        replicas: 2
+        strategy: RollingUpdate
+        pod:
+          labels:
+            egress.home.arpa/kubedns: allow
+            egress.home.arpa/world: allow
+        containers:
+          main:
+            image:
+              repository: ghcr.io/headroomlabs-ai/headroom
+              tag: 0.40.0-slim-nonroot@sha256:57a807c514fba745de519a1765308b285ffa6191592b84525d2969d0db32fba2
+            env:
+              HEADROOM_COMPRESS_ALLOW_REMOTE: "1"
+              HEADROOM_HOST: 0.0.0.0
+              HEADROOM_MODE: cache
+              HEADROOM_PORT: &port 8787
+              HEADROOM_TELEMETRY: "off"
+              HEADROOM_WORKSPACE_DIR: /data/headroom
+              HF_HOME: /data/huggingface
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /livez
+                    port: *port
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 3
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /readyz
+                    port: *port
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 3
+            resources:
+              requests:
+                cpu: 100m
+                memory: 1Gi
+              limits:
+                memory: 4Gi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
+
+    service:
+      app:
+        controller: headroom
+        ports:
+          http:
+            port: *port
+
+    persistence:
+      data:
+        type: emptyDir
+        globalMounts:
+          - path: /data
+      tmpfs:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
