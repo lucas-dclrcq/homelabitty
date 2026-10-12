@@ -6,7 +6,7 @@ metadata:
   name: forgejo
 spec:
   # No discoveryFilters/discoverTopics: autodiscover every repo the bot can reach
-  image: ghcr.io/renovatebot/renovate:44.130.0
+  image: ghcr.io/renovatebot/renovate:44.151.4
   parallelism: 1
   provider:
     name: forgejo
