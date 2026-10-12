@@ -55,6 +55,13 @@ spec:
           promscrape.streamParse: "true"
           # apiserver /metrics exceeds the 16MiB default
           promscrape.maxScrapeSize: 64MiB
+        resources:
+          requests:
+            cpu: 100m
+            memory: 200Mi
+          limits:
+            cpu: 500m
+            memory: 500Mi
 
     vmalert:
       enabled: true
