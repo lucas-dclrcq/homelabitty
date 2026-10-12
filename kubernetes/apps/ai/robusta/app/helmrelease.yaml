@@ -23,6 +23,10 @@ spec:
       alertmanager_url: http://vmalertmanager-vmks.observability.svc.cluster.local:9093
       # VictoriaMetrics does not expose Prometheus flags
       check_prometheus_flags: false
+      # Disable the "View Graph" link the bundled default_enricher adds to every alert.
+      # It points at an internal cluster URL and, because it enriches the finding after
+      # holmes_remediate already added it, logs a spurious "Updating a finding" warning.
+      alert_generator_link: false
 
     # Only Holmes investigation results are sent; raw alerts already go through Alertmanager
     sinksConfig:
@@ -96,6 +100,20 @@ spec:
       enableTelemetry: false
       extraEnvVarsSecrets:
         - robusta-holmes-litellm
+      # Grant Holmes read access to the VictoriaMetrics operator CRDs so it can inspect
+      # alert rules (VMRule/VMAlert) when investigating. The chart's built-in crdPermissions
+      # cover common operators but not VictoriaMetrics.
+      customClusterRoleRules:
+        - apiGroups:
+            - operator.victoriametrics.com
+          resources:
+            - vmrules
+            - vmalerts
+            - vmalertmanagerconfigs
+          verbs:
+            - get
+            - list
+            - watch
 
       modelList:
         deepseek-v4-pro:
