@@ -1,0 +1,11 @@
+---
+apiVersion: litellm.home-operations.com/v1alpha1
+kind: LiteLLMMCPServer
+metadata:
+  name: konflate-mcp
+spec:
+  proxyRef: litellm
+  proxyNamespace: ai
+  alias: konflate
+  transport: http
+  url: http://konflate.flux-system.svc.cluster.local:8080/mcp
