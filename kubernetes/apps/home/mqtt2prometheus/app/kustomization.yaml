@@ -5,5 +5,12 @@ kind: Kustomization
 resources:
   - ./ciliumnetworkpolicy.yaml
   - ./externalsecret.yaml
+  - ./grafanadashboard.yaml
   - ./helmrelease.yaml
   - ./ocirepository.yaml
+configMapGenerator:
+  - name: mqtt2prometheus-dashboard
+    files:
+      - mqtt2prometheus.json=./resources/dashboard.json
+generatorOptions:
+  disableNameSuffixHash: true
