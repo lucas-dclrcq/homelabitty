@@ -1,4 +1,3 @@
----
 # yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
@@ -40,6 +39,7 @@ spec:
             env:
               HEADROOM_COMPRESS_ALLOW_REMOTE: "1"
               HEADROOM_HOST: 0.0.0.0
+              HEADROOM_ALLOW_UNAUTHENTICATED_BIND: "1"
               HEADROOM_MODE: cache
               HEADROOM_PORT: &port 8787
               HEADROOM_TELEMETRY: "off"
