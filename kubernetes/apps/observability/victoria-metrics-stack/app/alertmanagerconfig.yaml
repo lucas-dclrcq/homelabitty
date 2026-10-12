@@ -1,4 +1,3 @@
----
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/monitoring.coreos.com/alertmanagerconfig_v1alpha1.json
 apiVersion: monitoring.coreos.com/v1alpha1
 kind: AlertmanagerConfig
@@ -35,11 +34,6 @@ spec:
           - name: severity
             value: critical
             matchType: =
-      - receiver: matrix
-        matchers:
-          - name: severity
-            value: critical|error
-            matchType: =~
     groupBy:
       - alertname
       - cluster
@@ -67,9 +61,6 @@ spec:
         - urlSecret:
             name: &secret alertmanager-secret
             key: ALERTMANAGER_HEARTBEAT_URL
-    - name: matrix
-      webhookConfigs:
-        - url: "http://matrix-alertmanager.matrix.svc.cluster.local/alerts?secret=noneedforasecrethere"
     - name: robusta
       webhookConfigs:
         - url: "http://robusta-runner.ai.svc.cluster.local/api/alerts"
