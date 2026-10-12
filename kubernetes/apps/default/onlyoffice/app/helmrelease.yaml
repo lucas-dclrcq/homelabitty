@@ -28,7 +28,7 @@ spec:
           app:
             image:
               repository: docker.io/onlyoffice/documentserver
-              tag: "9.4.0.1"
+              tag: "10.0.0.1"
             env:
               # OpenCloud drives the editor over WOPI, not the classic JS API
               WOPI_ENABLED: "true"
