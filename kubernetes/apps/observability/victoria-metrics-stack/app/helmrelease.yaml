@@ -20,6 +20,13 @@ spec:
   values:
     fullnameOverride: vmks
 
+    defaultRules:
+      groups:
+        # Only contains count:up0/count:up1. count:up0 has no data when all
+        # targets are up, which trips RecordingRulesNoData.
+        kube-prometheus-general.rules:
+          enabled: false
+
     victoria-metrics-operator:
       enabled: true
 
