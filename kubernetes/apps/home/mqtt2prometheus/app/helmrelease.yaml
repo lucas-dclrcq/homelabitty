@@ -1,0 +1,185 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app mqtt2prometheus
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  values:
+    global:
+      createDefaultServiceAccount: false
+
+    controllers:
+      mqtt2prometheus:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/hikhvar/mqtt2prometheus
+              tag: v0.1.7
+
+            envFrom:
+              - secretRef:
+                  name: mqtt2prometheus-secret
+
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /metrics
+                    port: 9641
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /metrics
+                    port: 9641
+
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - "ALL"
+
+            resources:
+              requests:
+                cpu: 10m
+                memory: 32Mi
+              limits:
+                memory: 128Mi
+
+    defaultPodOptions:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        seccompProfile:
+          type: RuntimeDefault
+
+    service:
+      app:
+        controller: mqtt2prometheus
+        ports:
+          metrics:
+            port: &port 9641
+
+    serviceMonitor:
+      app:
+        service:
+          identifier: app
+        endpoints:
+          - port: metrics
+            scheme: http
+            path: /metrics
+            interval: 1m
+            scrapeTimeout: 10s
+
+    configMaps:
+      config:
+        data:
+          config.yaml: |-
+            mqtt:
+              server: tcp://mosquitto.infrastructure.svc.cluster.local:1883
+              topic_path: zigbee2mqtt/+
+              qos: 0
+            cache:
+              timeout: 24h
+            json_parsing:
+              separator: .
+            metrics:
+              # Température / humidité (capteurs)
+              - prom_name: zigbee_temperature
+                mqtt_name: temperature
+                help: Temperature in Celsius
+                type: gauge
+              - prom_name: zigbee_humidity
+                mqtt_name: humidity
+                help: Humidity in percent
+                type: gauge
+              # Batterie / santé du mesh
+              - prom_name: zigbee_battery
+                mqtt_name: battery
+                help: Battery level in percent
+                type: gauge
+              - prom_name: zigbee_voltage
+                mqtt_name: voltage
+                help: Battery voltage in millivolts
+                type: gauge
+              - prom_name: zigbee_linkquality
+                mqtt_name: linkquality
+                help: Zigbee link quality (LQI)
+                type: gauge
+              # Prise connectée (SONOFF S60ZBTPF)
+              - prom_name: zigbee_power
+                mqtt_name: power
+                help: Power consumption in watts
+                type: gauge
+              - prom_name: zigbee_current
+                mqtt_name: current
+                help: Current in amperes
+                type: gauge
+              - prom_name: zigbee_energy
+                mqtt_name: energy
+                help: Total energy consumption in kWh
+                type: gauge
+              - prom_name: zigbee_energy_today
+                mqtt_name: energy_today
+                help: Energy consumed today in kWh
+                type: gauge
+              - prom_name: zigbee_energy_yesterday
+                mqtt_name: energy_yesterday
+                help: Energy consumed yesterday in kWh
+                type: gauge
+              - prom_name: zigbee_energy_month
+                mqtt_name: energy_month
+                help: Energy consumed this month in kWh
+                type: gauge
+              # Détecteurs de fumée
+              - prom_name: zigbee_smoke_density
+                mqtt_name: smoke_density
+                help: Smoke density
+                type: gauge
+              - prom_name: zigbee_power_outage_count
+                mqtt_name: power_outage_count
+                help: Number of power outages
+                type: gauge
+              # Compteur Linky (LiXee ZLinky_TIC)
+              - prom_name: zigbee_apparent_power
+                mqtt_name: apparent_power
+                help: Apparent power in VA
+                type: gauge
+              - prom_name: zigbee_current_summ_delivered
+                mqtt_name: current_summ_delivered
+                help: Total energy index (BASE) in kWh
+                type: gauge
+              - prom_name: zigbee_rms_current
+                mqtt_name: rms_current
+                help: Instantaneous current in amperes
+                type: gauge
+              - prom_name: zigbee_rms_current_max
+                mqtt_name: rms_current_max
+                help: Maximum current in amperes
+                type: gauge
+              - prom_name: zigbee_available_power
+                mqtt_name: available_power
+                help: Available subscribed power in kVA
+                type: gauge
+
+    persistence:
+      config:
+        type: configMap
+        identifier: config
+        globalMounts:
+          - path: /config.yaml
+            subPath: config.yaml
