@@ -191,13 +191,18 @@ spec:
             - action: labeldrop
               regex: (id|name)
             - action: drop
-              source_labels: [__name__]
+              source_labels:
+                - __name__
               regex: (rest_client_request_duration_seconds_bucket|rest_client_request_duration_seconds_sum|rest_client_request_duration_seconds_count)
             # Drop cgroup-hierarchy series: image="" AND name="" AND namespace="" AND pod=""
             # cAdvisor emits metrics for every cgroup in /sys/fs/cgroup. These carry
             # empty image/name/namespace/pod and account for the bulk of series count.
             - action: drop
-              source_labels: [image, name, namespace, pod]
+              source_labels:
+                - image
+                - name
+                - namespace
+                - pod
               regex: ";+;+;+"
               separator: ";"
           relabelConfigs:
@@ -210,7 +215,8 @@ spec:
               regex: .*kubevirt_io.*
             - action: labeldrop
               regex: .*home_arpa.*
-            - sourceLabels: [__metrics_path__]
+            - sourceLabels:
+                - __metrics_path__
               targetLabel: metrics_path
             - targetLabel: job
               replacement: kubelet
