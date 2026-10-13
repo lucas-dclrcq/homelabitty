@@ -90,7 +90,7 @@ spec:
         data:
           config.yaml: |-
             mqtt:
-              server: tcp://mosquitto.infrastructure.svc.cluster.local:1883
+              server: tcp://rmqtt.home.svc.cluster.local:1883
               topic_path: zigbee2mqtt/+
               qos: 0
             cache:

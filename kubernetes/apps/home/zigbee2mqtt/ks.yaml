@@ -13,7 +13,7 @@ spec:
   components:
     - ../../../../components/kopiur
   dependsOn:
-    - name: mosquitto
+    - name: rmqtt
       namespace: flux-system
     - name: external-secrets-stores
       namespace: external-secrets

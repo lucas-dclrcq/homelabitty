@@ -10,3 +10,4 @@ resources:
   - ./hcpy/ks.yaml
   - ./home-assistant/ks.yaml
   - ./mqtt2prometheus/ks.yaml
+  - ./rmqtt/ks.yaml

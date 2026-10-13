@@ -30,7 +30,7 @@ spec:
               TZ: "${TIMEZONE}"
               HCPY_DEVICES_FILE: /config/devices.json
               HCPY_DISCOVERY_FILE: /app/discovery.yaml
-              HCPY_MQTT_HOST: mosquitto.infrastructure.svc.cluster.local
+              HCPY_MQTT_HOST: rmqtt.home.svc.cluster.local
               HCPY_MQTT_PORT: "1883"
               HCPY_MQTT_PREFIX: homeconnect/
               HCPY_MQTT_CLIENTNAME: hcpy
