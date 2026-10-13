@@ -28,7 +28,9 @@ spec:
               - /bin/sh
               - -c
               - |
-                exec /app/rmqtt/rmqtt-bin/rmqttd -f /etc/rmqtt/rmqtt.toml --id "$(( ${POD_NAME##*-} + 1 ))"
+                ID=$(echo "$POD_NAME" | sed 's/.*-//')
+                ID=$((ID + 1))
+                exec /app/rmqtt/rmqtt-bin/rmqttd -f /etc/rmqtt/rmqtt.toml --id "$ID"
             env:
               TZ: "${TIMEZONE}"
               POD_NAME:
