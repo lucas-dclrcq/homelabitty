@@ -22,8 +22,8 @@ spec:
         containers:
           app:
             image:
-              repository: docker.io/rmqtt/rmqtt
-              tag: 0.24.0
+              repository: docker.hoohoot.org/homelab/rmqtt
+              tag: fix-dollar-topic-levels
             command:
               - /bin/sh
               - -c
