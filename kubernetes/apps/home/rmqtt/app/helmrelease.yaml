@@ -158,6 +158,8 @@ spec:
               "3@rmqtt-2.rmqtt-headless.home.svc.cluster.local:6003",
             ]
             laddr = "0.0.0.0:6003"
+            # Without a fixed bootstrap leader, parallel-started nodes each elect themselves
+            leader_id = 1
 
             [raft]
             grpc_reuseaddr = true
