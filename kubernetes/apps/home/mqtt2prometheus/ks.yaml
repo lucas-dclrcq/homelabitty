@@ -11,8 +11,8 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
-    - name: rmqtt
-      namespace: home
+    - name: mosquitto
+      namespace: flux-system
     - name: external-secrets-stores
       namespace: external-secrets
   path: ./kubernetes/apps/home/mqtt2prometheus/app

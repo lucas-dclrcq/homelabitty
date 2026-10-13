@@ -26,6 +26,7 @@ resources:
   - ./piraeus.yaml
   - ./backube.yaml
   - ./node-feature-discovery.yaml
+  - ./emqx.yaml
   - ./bank-vaults.yaml
   - ./codecentric.yaml
   - ./jpgouin.yaml
