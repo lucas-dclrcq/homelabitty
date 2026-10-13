@@ -14,7 +14,7 @@ spec:
     - ../../../../components/kopiur
   dependsOn:
     - name: rmqtt
-      namespace: flux-system
+      namespace: home
     - name: external-secrets-stores
       namespace: external-secrets
   path: ./kubernetes/apps/home/zigbee2mqtt/app

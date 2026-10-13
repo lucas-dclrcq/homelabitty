@@ -12,7 +12,7 @@ spec:
       app.kubernetes.io/name: *app
   dependsOn:
     - name: rmqtt
-      namespace: flux-system
+      namespace: home
     - name: external-secrets-stores
       namespace: external-secrets
   path: ./kubernetes/apps/home/hcpy/app
