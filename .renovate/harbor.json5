@@ -5,7 +5,6 @@
       description: "Authenticate against the self-hosted Harbor registry",
       matchHost: "docker.hoohoot.org",
       hostType: "docker",
-      allowInternal: true,
       username: "renovate",
       password: "{{ secrets.HARBOR_PASSWORD }}",
     },

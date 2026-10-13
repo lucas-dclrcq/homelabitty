@@ -28,5 +28,9 @@ spec:
             matchHost: "ocharted.hoohoot.org",
             allowInternal: true,
           },
+          {
+            matchHost: "docker.hoohoot.org",
+            allowInternal: true,
+          },
         ],
       };
