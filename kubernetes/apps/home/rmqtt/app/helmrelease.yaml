@@ -156,6 +156,9 @@ spec:
               "3@rmqtt-2.rmqtt-headless.home.svc.cluster.local:6003",
             ]
             laddr = "0.0.0.0:6003"
+
+            [raft]
+            grpc_reuseaddr = true
     persistence:
       config:
         type: configMap
