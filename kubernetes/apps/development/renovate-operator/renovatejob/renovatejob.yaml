@@ -17,9 +17,11 @@ spec:
   renovateConfig:
     inline: |-
       module.exports = {
+        gitAuthor: "DanieloBot <danielobot@ldclrcq.top>",
         secrets: {
           OCHARTED_PASSWORD: process.env.OCHARTED_PASSWORD,
           HARBOR_PASSWORD: process.env.HARBOR_PASSWORD,
+          GITHUB_COM_TOKEN: process.env.GITHUB_COM_TOKEN,
         },
         hostRules: [
           {

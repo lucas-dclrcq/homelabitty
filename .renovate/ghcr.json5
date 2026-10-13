@@ -1,0 +1,12 @@
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  hostRules: [
+    {
+      description: "Authenticate against GitHub Container Registry to avoid rate limits",
+      matchHost: "ghcr.io",
+      hostType: "docker",
+      username: "lucas-dclrcq",
+      password: "{{ secrets.GITHUB_COM_TOKEN }}",
+    },
+  ],
+}
