@@ -5,9 +5,13 @@ set shell := ['bash', '-eu', '-o', 'pipefail', '-c']
 default:
     just --list kube
 
+[doc('Apply local Flux Kustomization')]
+apply-ks ns ks:
+    just kube render-local-ks "{{ ns }}" "{{ ks }}" | kubectl apply --server-side --force-conflicts --field-manager=kustomize-controller -f -
+
 [doc('Spawn a shell on a node')]
 node-shell node:
-    kubectl node-shell -n kube-system -x {{node}}
+    kubectl node-shell -n kube-system -x {{ node }}
 
 [doc('Prune all unused Pods')]
 prune-pods:
@@ -37,3 +41,6 @@ backup namespace app:
 kopiur state:
     kubectl patch clusterrepository truenas --type merge -p '{"spec":{"suspend":{{ if state == "suspend" { "true" } else { "false" } }}}}'
 
+[private]
+render-local-ks ns ks:
+    flate build ks --namespace "{{ ns }}" --output yaml "{{ ks }}"
