@@ -39,25 +39,29 @@ spec:
                 valueFrom:
                   fieldRef:
                     fieldPath: metadata.name
+            # HTTP API endpoints fan out to raft peers; a slow/restarting peer must
+            # not fail liveness on healthy nodes, so liveness is TCP-only.
             probes:
               liveness:
                 enabled: true
-                type: HTTP
-                path: /api/v1/metrics/prometheus
+                type: TCP
                 port: 6060
               readiness:
                 enabled: true
                 type: HTTP
-                path: /api/v1/metrics/prometheus
+                path: /api/v1/health/check
                 port: 6060
+                spec:
+                  timeoutSeconds: 10
               startup:
                 enabled: true
                 type: HTTP
-                path: /api/v1/metrics/prometheus
+                path: /api/v1/health/check
                 port: 6060
                 spec:
                   failureThreshold: 30
                   periodSeconds: 10
+                  timeoutSeconds: 10
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
