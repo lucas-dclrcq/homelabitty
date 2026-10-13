@@ -40,11 +40,22 @@ spec:
             probes:
               liveness:
                 enabled: true
+                spec:
+                  httpGet:
+                    path: /api/v1/metrics/prometheus
+                    port: 6060
               readiness:
                 enabled: true
+                spec:
+                  httpGet:
+                    path: /api/v1/metrics/prometheus
+                    port: 6060
               startup:
                 enabled: true
                 spec:
+                  httpGet:
+                    path: /api/v1/metrics/prometheus
+                    port: 6060
                   failureThreshold: 30
                   periodSeconds: 10
             securityContext:
