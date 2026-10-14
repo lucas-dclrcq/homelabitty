@@ -94,6 +94,11 @@ spec:
             memory: 128Mi
           limits:
             memory: 256Mi
+      security:
+        cephx:
+          daemon:
+            keyRotationPolicy: KeyGeneration
+            keyGeneration: 2
     cephBlockPools:
       - name: ceph-blockpool
         spec:
