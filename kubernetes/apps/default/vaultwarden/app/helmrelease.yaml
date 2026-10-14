@@ -28,7 +28,7 @@ spec:
               DATA_FOLDER: data
               ICON_CACHE_FOLDER: data/icon_cache
               ATTACHMENTS_FOLDER: data/attachments
-              DOMAIN: "https://passwords.${SECRET_DOMAIN}"
+              DOMAIN: "https://passwords.hoohoot.org"
               TZ: "Europe/Paris"
               SIGNUPS_ALLOWED: "true"
               WEBSOCKET_ENABLED: "true"
@@ -67,7 +67,7 @@ spec:
           homelab-manager.hoohoot.org/description: "Gestionnaire de mots de passe"
           homelab-manager.hoohoot.org/logo-url: "https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/vaultwarden.png"
         hostnames:
-          - "passwords.${SECRET_DOMAIN}"
+          - "passwords.hoohoot.org"
         parentRefs:
           - name: external
             namespace: network

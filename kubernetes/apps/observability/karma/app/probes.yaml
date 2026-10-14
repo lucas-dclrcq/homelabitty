@@ -12,7 +12,7 @@ spec:
   targets:
     staticConfig:
       static:
-        - "https://karma.${LIMITED_DOMAIN}"
+        - "https://karma.hoohoot.xyz"
   metricRelabelings:
     - targetLabel: service
       replacement: app-endpoint

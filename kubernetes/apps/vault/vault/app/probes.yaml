@@ -12,7 +12,7 @@ spec:
   targets:
     staticConfig:
       static:
-        - "https://vault.${LIMITED_DOMAIN}"
+        - "https://vault.hoohoot.xyz"
   metricRelabelings:
     - targetLabel: service
       replacement: app-endpoint

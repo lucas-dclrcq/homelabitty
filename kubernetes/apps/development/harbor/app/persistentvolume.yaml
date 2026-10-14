@@ -17,7 +17,7 @@ spec:
     - nconnect=8
     - hard
   nfs:
-    server: "truenas.${INTERNAL_DOMAIN}"
+    server: "truenas.lulice.lan"
     path: /mnt/tank/Apps/harbor/registry
   claimRef:
     namespace: development

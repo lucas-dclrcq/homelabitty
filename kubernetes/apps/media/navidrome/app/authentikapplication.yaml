@@ -6,7 +6,7 @@ metadata:
 spec:
   slug: navidrome
   name: Navidrome
-  launchURL: https://music.${SECRET_DOMAIN}
+  launchURL: https://music.hoohoot.org
   group: Media
   adopt: IfMatch
   provider:
@@ -19,7 +19,7 @@ spec:
         slug: default-provider-invalidation-flow
     proxy:
       forwardAuthSingle:
-        externalHost: https://music.${SECRET_DOMAIN}
+        externalHost: https://music.hoohoot.org
       interceptHeaderAuth: true
       accessTokenValidity: hours=24
       refreshTokenValidity: days=30

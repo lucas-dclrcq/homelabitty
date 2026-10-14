@@ -14,7 +14,7 @@ spec:
   issuerRef:
     name: letsencrypt-production
     kind: ClusterIssuer
-  commonName: "${LIMITED_DOMAIN}"
+  commonName: "hoohoot.xyz"
   dnsNames:
-    - "${LIMITED_DOMAIN}"
-    - "*.${LIMITED_DOMAIN}"
+    - "hoohoot.xyz"
+    - "*.hoohoot.xyz"

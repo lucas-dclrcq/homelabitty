@@ -14,7 +14,7 @@ spec:
       repo: github://lucas-dclrcq/homelabitty
       statusChecks: true
       prComments: true
-      publicUrl: "https://konflate.${SECRET_DOMAIN}"
+      publicUrl: "https://konflate.hoohoot.org"
       mergeCommand: "gh pr merge {{ .Number }} --repo {{ .Repo }} --rebase --admin"
     secret:
       existingSecret: konflate-secret
@@ -24,7 +24,7 @@ spec:
         - name: external
           namespace: network
       hostnames:
-        - "konflate.${SECRET_DOMAIN}"
+        - "konflate.hoohoot.org"
     persistence:
       enabled: true
       size: 5Gi

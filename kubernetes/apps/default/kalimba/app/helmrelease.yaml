@@ -31,7 +31,7 @@ spec:
               TZ: Europe/Paris
               QUARKUS_TEMPORAL_CONNECTION_TARGET: temporal-frontend.development.svc.cluster.local:7233
               QUARKUS_TEMPORAL_NAMESPACE: default
-              QUARKUS_OIDC_AUTH_SERVER_URL: "https://sso.${SECRET_DOMAIN}/application/o/kalimba/"
+              QUARKUS_OIDC_AUTH_SERVER_URL: "https://sso.hoohoot.org/application/o/kalimba/"
               QUARKUS_OIDC_CLIENT_ID: &oidcClientId kalimba-frontend
               QUARKUS_OIDC_APPLICATION_TYPE: service
               # Echoed to the SPA by the public GET /api/v1/config endpoint.
@@ -115,7 +115,7 @@ spec:
     route:
       app:
         hostnames:
-          - "kalimba.${LIMITED_DOMAIN}"
+          - "kalimba.hoohoot.xyz"
         parentRefs:
           - name: internal
             namespace: network

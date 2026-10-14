@@ -12,7 +12,7 @@ spec:
   targets:
     staticConfig:
       static:
-        - "https://requests.${SECRET_DOMAIN}/api/v1/status"
+        - "https://requests.hoohoot.org/api/v1/status"
   metricRelabelings:
     - targetLabel: service
       replacement: app-endpoint

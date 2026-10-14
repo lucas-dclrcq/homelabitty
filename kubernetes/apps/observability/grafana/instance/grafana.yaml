@@ -17,7 +17,7 @@ spec:
     auth.anonymous:
       enabled: "false"
     auth:
-      signout_redirect_url: "https://sso.${SECRET_DOMAIN}/application/o/grafana/end-session/"
+      signout_redirect_url: "https://sso.hoohoot.org/application/o/grafana/end-session/"
       oauth_auto_login: "true"
     auth.generic_oauth:
       name: authentik
@@ -25,9 +25,9 @@ spec:
       client_id: $${AUTH_CLIENT_ID}
       client_secret: $${AUTH_CLIENT_SECRET}
       scopes: "openid profile email"
-      auth_url: "https://sso.${SECRET_DOMAIN}/application/o/authorize/"
-      token_url: "https://sso.${SECRET_DOMAIN}/application/o/token/"
-      api_url: "https://sso.${SECRET_DOMAIN}/application/o/userinfo/"
+      auth_url: "https://sso.hoohoot.org/application/o/authorize/"
+      token_url: "https://sso.hoohoot.org/application/o/token/"
+      api_url: "https://sso.hoohoot.org/application/o/userinfo/"
       role_attribute_path: contains(groups, 'Hoohoot Admins') && 'Admin' || contains(groups, 'Hoohoot Developers') && 'Editor' || 'Viewer'
     log:
       mode: console
@@ -41,7 +41,7 @@ spec:
       angular_support_enabled: "true"
     server:
       enable_gzip: "true"
-      root_url: https://grafana.${SECRET_DOMAIN}
+      root_url: https://grafana.hoohoot.org
   deployment:
     spec:
       strategy:
@@ -69,7 +69,7 @@ spec:
               securityContext:
                 allowPrivilegeEscalation: false
                 readOnlyRootFilesystem: true
-                capabilities: {drop: ["ALL"]}
+                capabilities: { drop: ["ALL"] }
           securityContext:
             runAsNonRoot: true
             runAsUser: 1000

@@ -6,7 +6,7 @@ metadata:
   name: harbor
 spec:
   hostnames:
-    - "docker.${SECRET_DOMAIN}"
+    - "docker.hoohoot.org"
   parentRefs:
     - name: external
       namespace: network

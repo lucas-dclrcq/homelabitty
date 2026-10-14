@@ -12,7 +12,7 @@ spec:
   targets:
     staticConfig:
       static:
-        - "https://qbittorrent.${LIMITED_DOMAIN}"
+        - "https://qbittorrent.hoohoot.xyz"
   metricRelabelings:
     - targetLabel: service
       replacement: app-endpoint

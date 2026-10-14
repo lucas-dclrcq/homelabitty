@@ -35,7 +35,7 @@ spec:
               JWT_ENABLED: "true"
               JWT_HEADER: Authorization
               JWT_IN_BODY: "true"
-              # drive.${SECRET_DOMAIN} resolves to the gateway address on the
+              # drive.hoohoot.org resolves to the gateway address on the
               # LAN, which the request filter would otherwise refuse to call
               ALLOW_PRIVATE_IP_ADDRESS: "true"
             envFrom:
@@ -97,7 +97,7 @@ spec:
     route:
       app:
         hostnames:
-          - "onlyoffice.${SECRET_DOMAIN}"
+          - "onlyoffice.hoohoot.org"
         parentRefs:
           - name: external
             namespace: network

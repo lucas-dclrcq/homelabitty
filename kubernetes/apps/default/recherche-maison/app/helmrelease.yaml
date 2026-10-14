@@ -76,7 +76,7 @@ spec:
     route:
       app:
         hostnames:
-          - "recherche-maison.${LIMITED_DOMAIN}"
+          - "recherche-maison.hoohoot.xyz"
         parentRefs:
           - name: internal
             namespace: network

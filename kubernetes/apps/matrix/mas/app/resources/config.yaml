@@ -11,7 +11,7 @@ http:
         - name: graphql
         - name: assets
       binds:
-        - address: '[::]:8080'
+        - address: "[::]:8080"
       proxy_protocol: false
     - name: internal
       resources:
@@ -23,7 +23,7 @@ http:
   trusted_proxies:
     - 10.69.0.0/16
     - 10.96.0.0/16
-  public_base: "https://mas.${SECRET_DOMAIN}"
+  public_base: "https://mas.hoohoot.org"
 database:
   uri: "{{ .pg_uri }}"
   max_connections: 10
@@ -32,8 +32,8 @@ database:
   idle_timeout: 600
   max_lifetime: 1800
 email:
-  from: "matrix@${SECRET_DOMAIN}"
-  reply_to: "matrix@${SECRET_DOMAIN}"
+  from: "matrix@hoohoot.org"
+  reply_to: "matrix@hoohoot.org"
   transport: smtp
   mode: plain
   port: 2525
@@ -63,7 +63,7 @@ passwords:
   minimum_complexity: 3
 matrix:
   kind: synapse
-  homeserver: "${SECRET_DOMAIN}"
+  homeserver: "hoohoot.org"
   secret: "{{ .SYNAPSE_SECRET }}"
   endpoint: http://synapse-matrix-synapse.matrix.svc.cluster.local:8008
 clients:
@@ -74,7 +74,7 @@ upstream_oauth2:
   providers:
     - id: "{{ .AUTHENTIK_PROVIDER_ID }}"
       human_name: Hoohoot SSO
-      issuer: "https://sso.${SECRET_DOMAIN}/application/o/matrix/"
+      issuer: "https://sso.hoohoot.org/application/o/matrix/"
       client_id: "{{ .AUTHENTIK_CLIENT_ID }}"
       client_secret: "{{ .AUTHENTIK_CLIENT_SECRET }}"
       token_endpoint_auth_method: client_secret_basic

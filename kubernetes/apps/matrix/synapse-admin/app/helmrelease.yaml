@@ -40,7 +40,7 @@ spec:
     route:
       app:
         hostnames:
-          - "{{ .Release.Name }}.${LIMITED_DOMAIN}"
+          - "{{ .Release.Name }}.hoohoot.xyz"
         parentRefs:
           - name: internal
             namespace: network

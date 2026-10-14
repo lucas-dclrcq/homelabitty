@@ -5,7 +5,7 @@ metadata:
   name: kopia
 spec:
   hostnames:
-    - kopia.${LIMITED_DOMAIN}
+    - kopia.hoohoot.xyz
   parentRefs:
     - name: internal
       namespace: network

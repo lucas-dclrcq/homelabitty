@@ -51,7 +51,7 @@ spec:
               ND_SCANNER_SCHEDULE: "*/30 * * * *"
               ND_SCANNER_ENABLED: "true"
               ND_DEFAULTTHEME: "Spotify-ish"
-              ND_LISTENBRAINZ_BASEURL: "https://the-elder-scrobz.${SECRET_DOMAIN}/api/v1/1"
+              ND_LISTENBRAINZ_BASEURL: "https://the-elder-scrobz.hoohoot.org/api/v1/1"
 
             probes:
               liveness: &probes
@@ -100,7 +100,7 @@ spec:
     route:
       api:
         hostnames:
-          - "music-api.${SECRET_DOMAIN}"
+          - "music-api.hoohoot.org"
         parentRefs:
           - name: external
             namespace: network
@@ -116,7 +116,7 @@ spec:
           homelab-manager.hoohoot.org/description: "Music Player"
           homelab-manager.hoohoot.org/logo-url: "https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/navidrome.png"
         hostnames:
-          - "music.${SECRET_DOMAIN}"
+          - "music.hoohoot.org"
         parentRefs:
           - name: external
             namespace: network
@@ -135,7 +135,7 @@ spec:
               - path: /config
       media:
         type: nfs
-        server: "truenas.${INTERNAL_DOMAIN}"
+        server: "truenas.lulice.lan"
         path: /mnt/tank/Media
         globalMounts:
           - path: /media

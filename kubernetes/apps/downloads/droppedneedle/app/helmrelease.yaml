@@ -89,7 +89,7 @@ spec:
           homelab-manager.hoohoot.org/description: "Téléchargement de musique"
           homelab-manager.hoohoot.org/logo-url: "https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/droppedneedle.png"
         hostnames:
-          - "{{ .Release.Name }}.${SECRET_DOMAIN}"
+          - "{{ .Release.Name }}.hoohoot.org"
         parentRefs:
           - name: external
             namespace: network
@@ -111,7 +111,7 @@ spec:
         type: emptyDir
       media:
         type: nfs
-        server: "truenas.${INTERNAL_DOMAIN}"
+        server: "truenas.lulice.lan"
         path: /mnt/tank/Media
         globalMounts:
           - path: /media

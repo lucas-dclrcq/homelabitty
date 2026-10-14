@@ -13,14 +13,14 @@ spec:
     route:
       enabled: true
       hostnames:
-        - "renovate.${LIMITED_DOMAIN}"
+        - "renovate.hoohoot.xyz"
       parentRefs:
         - name: internal
           namespace: network
     auth:
       oidc:
         enabled: true
-        issuerUrl: "https://sso.${SECRET_DOMAIN}/application/o/renovate-operator/"
+        issuerUrl: "https://sso.hoohoot.org/application/o/renovate-operator/"
         clientId: renovate-operator
         existingSecret: renovate-operator-oidc
         secretKey: client-secret

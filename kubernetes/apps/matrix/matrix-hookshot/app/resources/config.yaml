@@ -1,9 +1,9 @@
 ---
 bridge:
   # Basic homeserver configuration
-  domain: ${SECRET_DOMAIN}
-  url: https://matrix.${SECRET_DOMAIN}
-  mediaUrl: https://matrix.${SECRET_DOMAIN}
+  domain: hoohoot.org
+  url: https://matrix.hoohoot.org
+  mediaUrl: https://matrix.hoohoot.org
   port: 9993
   bindAddress: 0.0.0.0
 logging:
@@ -49,7 +49,7 @@ listeners:
 
 permissions:
   # Allow this specific user to do any action
-  - actor: "@lucasd:${SECRET_DOMAIN}"
+  - actor: "@lucasd:hoohoot.org"
     services:
       - service: "*"
         level: admin
@@ -72,16 +72,16 @@ github:
   # (Optional) Configure this to enable GitHub support
   auth:
     # Authentication for the GitHub App.
-    id: {{ .GITHUB_APP_ID }}
+    id: { { .GITHUB_APP_ID } }
     privateKeyFile: /data/github-key.pem
   webhook:
     # Webhook settings for the GitHub app.
-    secret: {{ .GITHUB_WEBHOOK_SECRET }}
+    secret: { { .GITHUB_WEBHOOK_SECRET } }
   oauth:
     # (Optional) Settings for allowing users to sign in via OAuth.
-    client_id: {{ .GITHUB_OAUTH_CLIENT_ID }}
-    client_secret: {{ .GITHUB_OAUTH_CLIENT_SECRET }}
-    redirect_uri: https://matrix-hookshot.${SECRET_DOMAIN}/oauth/
+    client_id: { { .GITHUB_OAUTH_CLIENT_ID } }
+    client_secret: { { .GITHUB_OAUTH_CLIENT_SECRET } }
+    redirect_uri: https://matrix-hookshot.hoohoot.org/oauth/
   defaultOptions:
     # (Optional) Default options for GitHub connections.
     showIssueRoomLink: false

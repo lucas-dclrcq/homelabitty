@@ -6,7 +6,7 @@ metadata:
 spec:
   slug: pinchflat
   name: Pinchflat
-  launchURL: https://pinchflat.${SECRET_DOMAIN}
+  launchURL: https://pinchflat.hoohoot.org
   group: Media
   adopt: IfMatch
   provider:
@@ -17,7 +17,7 @@ spec:
         slug: default-provider-invalidation-flow
     proxy:
       forwardAuthSingle:
-        externalHost: https://pinchflat.${SECRET_DOMAIN}
+        externalHost: https://pinchflat.hoohoot.org
       interceptHeaderAuth: true
       accessTokenValidity: hours=24
       refreshTokenValidity: days=30

@@ -34,7 +34,7 @@ spec:
             env:
               PORT: "9201"
               UPSTREAM_URL: http://localhost:9200
-              HREF_PATTERN: &issuerBase "https://sso.${SECRET_DOMAIN}/application/o/"
+              HREF_PATTERN: &issuerBase "https://sso.hoohoot.org/application/o/"
               HREF_REPLACEMENT: *issuerBase
               DEFAULT_SUFFIX: opencloud
             resources:
@@ -49,7 +49,7 @@ spec:
               tag: "8.1.0"
             command: ["/bin/sh", "-c", "opencloud init || true; opencloud server"]
             env:
-              OC_URL: "https://drive.${SECRET_DOMAIN}"
+              OC_URL: "https://drive.hoohoot.org"
               OC_INSECURE: "false"
               OC_LOG_LEVEL: info
               OC_LOG_COLOR: "false"
@@ -63,7 +63,7 @@ spec:
               FRONTEND_ARCHIVER_MAX_SIZE: "10000000000"
               FRONTEND_CHECK_FOR_UPDATES: "false"
               # OIDC via Authentik (single public client shared by web + native apps)
-              OC_OIDC_ISSUER: "https://sso.${SECRET_DOMAIN}/application/o/opencloud/"
+              OC_OIDC_ISSUER: "https://sso.hoohoot.org/application/o/opencloud/"
               OC_OIDC_CLIENT_ID: opencloud
               PROXY_OIDC_REWRITE_WELLKNOWN: "true"
               PROXY_OIDC_ACCESS_TOKEN_VERIFY_METHOD: none
@@ -88,9 +88,9 @@ spec:
               COLLABORATION_APP_NAME: OnlyOffice
               COLLABORATION_APP_PRODUCT: OnlyOffice
               COLLABORATION_APP_DESCRIPTION: Open office documents with OnlyOffice
-              COLLABORATION_APP_ADDR: "https://onlyoffice.${SECRET_DOMAIN}"
-              COLLABORATION_APP_ICON: "https://onlyoffice.${SECRET_DOMAIN}/web-apps/apps/documenteditor/main/resources/img/favicon.ico"
-              COLLABORATION_WOPI_SRC: "https://drive.${SECRET_DOMAIN}"
+              COLLABORATION_APP_ADDR: "https://onlyoffice.hoohoot.org"
+              COLLABORATION_APP_ICON: "https://onlyoffice.hoohoot.org/web-apps/apps/documenteditor/main/resources/img/favicon.ico"
+              COLLABORATION_WOPI_SRC: "https://drive.hoohoot.org"
             envFrom:
               - secretRef:
                   name: opencloud-secret
@@ -142,7 +142,7 @@ spec:
           - path: /etc/opencloud
       data:
         type: nfs
-        server: "truenas.${INTERNAL_DOMAIN}"
+        server: "truenas.lulice.lan"
         path: /mnt/tank/Apps/opencloud/data
         globalMounts:
           - path: /var/lib/opencloud
@@ -150,7 +150,7 @@ spec:
     route:
       opencloud:
         hostnames:
-          - "drive.${SECRET_DOMAIN}"
+          - "drive.hoohoot.org"
         parentRefs:
           - name: external
             namespace: network

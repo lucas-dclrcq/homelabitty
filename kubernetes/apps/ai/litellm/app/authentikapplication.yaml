@@ -6,7 +6,7 @@ metadata:
 spec:
   slug: litellm
   name: LiteLLM
-  launchURL: https://litellm.${LIMITED_DOMAIN}/ui
+  launchURL: https://litellm.hoohoot.xyz/ui
   adopt: IfMatch
   provider:
     flows:
@@ -17,7 +17,7 @@ spec:
     oauth2:
       clientType: Confidential
       redirectURIs:
-        - url: "https://litellm.${LIMITED_DOMAIN}/sso/callback"
+        - url: "https://litellm.hoohoot.xyz/sso/callback"
           matchingMode: Strict
           type: Authorization
       scopes:

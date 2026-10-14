@@ -5,7 +5,7 @@ metadata:
   name: vault
 spec:
   hostnames:
-    - vault.${LIMITED_DOMAIN}
+    - vault.hoohoot.xyz
   parentRefs:
     - name: internal
       namespace: network

@@ -16,7 +16,7 @@ spec:
     oauth2:
       clientType: Confidential
       redirectURIs:
-        - url: "https://renovate.${LIMITED_DOMAIN}/auth/callback"
+        - url: "https://renovate.hoohoot.xyz/auth/callback"
           matchingMode: Strict
           type: Authorization
       scopes:

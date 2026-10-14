@@ -19,7 +19,7 @@ spec:
     automountServiceAccountToken: false
     env:
       - name: TRUENAS_MCP_TARGET
-        value: "truenas.${INTERNAL_DOMAIN}:443"
+        value: "truenas.lulice.lan:443"
       - name: TRUENAS_MCP_ALLOW_PLAINTEXT
         value: "true"
       - name: TRUENAS_MCP_ENABLE_WRITES
@@ -33,9 +33,9 @@ spec:
     securityContext:
       allowPrivilegeEscalation: false
       readOnlyRootFilesystem: true
-      capabilities: {drop: ["ALL"]}
+      capabilities: { drop: ["ALL"] }
     podSecurityContext:
       runAsNonRoot: true
       runAsUser: 65532
       runAsGroup: 65532
-      seccompProfile: {type: RuntimeDefault}
+      seccompProfile: { type: RuntimeDefault }

@@ -5,7 +5,7 @@ kind: Gateway
 metadata:
   name: internal
   annotations:
-    external-dns.kubernetes.io/target: &hostname gateway-int.${LIMITED_DOMAIN}
+    external-dns.kubernetes.io/target: &hostname gateway-int.hoohoot.xyz
 spec:
   gatewayClassName: envoy
   infrastructure:
@@ -16,18 +16,18 @@ spec:
     - name: http
       protocol: HTTP
       port: 80
-      hostname: "*.${LIMITED_DOMAIN}"
+      hostname: "*.hoohoot.xyz"
       allowedRoutes:
         namespaces:
           from: All
     - name: https
       protocol: HTTPS
       port: 443
-      hostname: "*.${LIMITED_DOMAIN}"
+      hostname: "*.hoohoot.xyz"
       allowedRoutes:
         namespaces:
           from: All
       tls:
         certificateRefs:
           - kind: Secret
-            name: "${LIMITED_DOMAIN/./-}-production-tls"
+            name: "hoohoot-xyz-production-tls"

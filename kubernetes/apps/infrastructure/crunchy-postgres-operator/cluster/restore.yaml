@@ -15,7 +15,6 @@ spec:
   service:
     type: LoadBalancer
 
-
   patroni:
     dynamicConfiguration:
       synchronous_mode: true
@@ -66,10 +65,10 @@ spec:
         - name: repo1
           s3:
             bucket: "postgres-backup"
-            endpoint: "s3.${SECRET_DOMAIN}"
+            endpoint: "s3.hoohoot.org"
             region: "us-east-1"
         - name: repo2
           s3:
             bucket: "matrix-backup"
-            endpoint: "s3.${SECRET_DOMAIN}"
+            endpoint: "s3.hoohoot.org"
             region: "us-east-1"
