@@ -6,6 +6,7 @@ namespace: flux-system
 components:
   - ../../components/common
 resources:
+  - ./cluster-secrets/ks.yaml
   - ./konflate/ks.yaml
   - ./monitoring/ks.yaml
   - ./ocharted/ks.yaml

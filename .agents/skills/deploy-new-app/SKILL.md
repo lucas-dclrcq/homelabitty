@@ -232,7 +232,7 @@ spec:
                     homelab-manager.hoohoot.org/description: "<short description>"
                     homelab-manager.hoohoot.org/logo-url: "<logo url>"
                 hostnames:
-                    - "{{ .Release.Name }}.${SECRET_DOMAIN}"
+                    - "{{ .Release.Name }}.hoohoot.org"
                 parentRefs:
                     - name: external # or `internal` for LAN-only
                       namespace: network
@@ -242,7 +242,7 @@ spec:
                             port: *port
 ```
 
-**Variable substitution** — `${SECRET_DOMAIN}`, `${LIMITED_DOMAIN}`, `${INTERNAL_DOMAIN}`, etc. come from the `cluster-secrets` Secret (applied cluster-wide by `cluster-apps`). Use them only for secret values. Non-secret values (timezone, UID/GID, load balancer IPs) are hardcoded directly. `${APP}` is set per-app in `ks.yaml`.
+**Variable substitution** — domains (`hoohoot.org`, `hoohoot.xyz`, `lulice.lan`) and other non-secret values (timezone, UID/GID, load balancer IPs) are hardcoded directly in manifests. `${APP}` is set per-app in `ks.yaml`. Flux substitution is only used for genuinely secret values sourced from Vault-backed secrets (via ExternalSecret).
 
 **Common additions:**
 
