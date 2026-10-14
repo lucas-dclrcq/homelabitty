@@ -248,6 +248,9 @@ appservice:
   as_token: {{ .AS_TOKEN }}
   hs_token: {{ .HS_TOKEN }}
 
+  # Localpart template for MXIDs of remote users.
+  username_template: "{{ `fb_{{.}}` }}"
+
 # Config options that affect the Matrix connector of the bridge.
 matrix:
   # Whether the bridge should send the message status as a custom com.beeper.message_send_status event.
