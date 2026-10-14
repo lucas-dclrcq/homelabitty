@@ -11,4 +11,4 @@ spec:
     operation: copy
   ref:
     tag: v1.19.11
-  url: oci://ocharted.hoohoot.org/charts.rook.io/release/rook-ceph-cluster
+  url: oci://ghcr.io/rook/rook-ceph-cluster
