@@ -27,7 +27,7 @@ spec:
               - python3
               - hc2mqtt.py
             env:
-              TZ: "${TIMEZONE}"
+              TZ: "Europe/Paris"
               HCPY_DEVICES_FILE: /config/devices.json
               HCPY_DISCOVERY_FILE: /app/discovery.yaml
               HCPY_MQTT_HOST: mosquitto.infrastructure.svc.cluster.local

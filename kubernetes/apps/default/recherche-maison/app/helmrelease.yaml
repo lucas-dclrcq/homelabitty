@@ -21,7 +21,7 @@ spec:
               tag: latest@sha256:c306a19f430dec1518e7bdeb95f8d643807b5c7a3ad4e5a13f322cd9d5c3f4ab
 
             env:
-              TZ: ${TIMEZONE}
+              TZ: Europe/Paris
 
             envFrom:
               - secretRef:

@@ -21,7 +21,7 @@ spec:
               repository: ghcr.io/umami-software/umami
               tag: postgresql-v2.11.3
             env:
-              TZ: ${TIMEZONE}
+              TZ: Europe/Paris
               DISABLE_TELEMETRY: "true"
 
             envFrom:
@@ -50,12 +50,12 @@ spec:
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities: {drop: ["ALL"]}
+              capabilities: { drop: ["ALL"] }
 
     defaultPodOptions:
       securityContext:
-        runAsGroup: ${APP_GID}
-        runAsUser: ${APP_UID}
+        runAsGroup: 1500
+        runAsUser: 1026
         runAsNonRoot: true
         seccompProfile:
           type: RuntimeDefault

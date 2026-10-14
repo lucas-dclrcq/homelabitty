@@ -39,11 +39,11 @@ spec:
   moverDefaults:
     # The VolSync movers ran privileged (root) and TrueNAS NFS root-squashed
     # them to nobody (65534), so the whole repository is owned by
-    # 65534:${APP_GID} with 0700 dirs. Maintenance (and any mover not
+    # 65534:1500 with 0700 dirs. Maintenance (and any mover not
     # overriding this) must run as that uid to read/write the repo.
     podSecurityContext:
       runAsUser: 65534
-      runAsGroup: ${APP_GID}
+      runAsGroup: 1500
     cache:
       # Every cache PVC is 5Gi or larger (KOPIUR_CACHE_CAPACITY default).
       # Kopia's own defaults are 5000 MiB per budget, larger than the whole
@@ -57,7 +57,7 @@ spec:
       # full maintenance actually shrink the index (TooManyIndexBlobs warning).
       minDuration: 1h
   scheduleDefaults:
-    timezone: ${TIMEZONE}
+    timezone: Europe/Paris
   server:
     namespace: kopiur-system
     auth:
@@ -68,5 +68,5 @@ spec:
     # Same uid story as moverDefaults: the web UI reads the repo over NFS
     podSecurityContext:
       runAsUser: 65534
-      runAsGroup: ${APP_GID}
-      fsGroup: ${APP_GID}
+      runAsGroup: 1500
+      fsGroup: 1500

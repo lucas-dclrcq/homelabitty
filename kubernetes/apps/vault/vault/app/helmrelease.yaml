@@ -24,7 +24,7 @@ spec:
         storageClass: "ceph-block"
 
       extraEnvironmentVars:
-        TZ: ${TIMEZONE}
+        TZ: Europe/Paris
 
       resources:
         requests:

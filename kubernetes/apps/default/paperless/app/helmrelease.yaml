@@ -22,8 +22,8 @@ spec:
 
             env:
               PAPERLESS_PORT: &port 8000
-              USERMAP_UID: "${APP_UID}"
-              USERMAP_GID: "${APP_GID}"
+              USERMAP_UID: "1026"
+              USERMAP_GID: "1500"
 
             envFrom:
               - secretRef:

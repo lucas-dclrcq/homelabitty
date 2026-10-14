@@ -28,7 +28,7 @@ spec:
               tag: 1.15.1
 
             env:
-              TZ: ${TIMEZONE}
+              TZ: Europe/Paris
               QUARKUS_TEMPORAL_CONNECTION_TARGET: temporal-frontend.development.svc.cluster.local:7233
               QUARKUS_TEMPORAL_NAMESPACE: default
               QUARKUS_OIDC_AUTH_SERVER_URL: "https://sso.${SECRET_DOMAIN}/application/o/kalimba/"
