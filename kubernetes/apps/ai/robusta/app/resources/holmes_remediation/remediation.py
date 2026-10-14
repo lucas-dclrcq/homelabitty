@@ -41,7 +41,7 @@ Repository layout:
 - kubernetes/apps/<namespace>/<app>/app/ocirepository.yaml: chart source and version
 - kubernetes/components/: shared Kustomize components (volsync, dragonfly, ...)
 - talos/: node configuration (talhelper), not reconciled by Flux
-- Variables like SECRET_DOMAIN are substituted by Flux at reconcile time, keep them as-is.
+- Domains and other non-secret values are hardcoded directly in manifests.
 - Secrets come from Vault through ExternalSecret resources, never commit secret values.
 - *.sops.yaml files are encrypted, never edit them.
 
