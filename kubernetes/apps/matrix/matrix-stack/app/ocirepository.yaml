@@ -3,12 +3,12 @@
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: OCIRepository
 metadata:
-  name: synapse
+  name: matrix-stack
 spec:
   interval: 15m
   layerSelector:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
   ref:
-    tag: 3.12.39
-  url: oci://ocharted.hoohoot.org/ananace.gitlab.io/charts/matrix-synapse
+    tag: 26.9.1
+  url: oci://ghcr.io/element-hq/ess-helm/matrix-stack
