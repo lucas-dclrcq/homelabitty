@@ -1,8 +1,8 @@
 ---
 id: matrix-hookshot
 url: http://matrix-hookshot.matrix.svc.cluster.local:9993
-as_token: { { .AS_TOKEN } }
-hs_token: { { .HS_TOKEN } }
+as_token: {{ .AS_TOKEN }}
+hs_token: {{ .HS_TOKEN }}
 sender_localpart: hookshot
 rate_limited: false
 namespaces:
