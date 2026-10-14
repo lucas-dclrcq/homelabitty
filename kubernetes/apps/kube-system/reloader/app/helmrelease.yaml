@@ -10,7 +10,7 @@ spec:
       chart: reloader
       version: 2.2.18
       sourceRef:
-        kind: HelmRepository
+        kind: OCIRepository
         name: stakater
         namespace: flux-system
   install:

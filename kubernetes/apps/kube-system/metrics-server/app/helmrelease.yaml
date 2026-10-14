@@ -10,7 +10,7 @@ spec:
       chart: metrics-server
       version: 3.14.0
       sourceRef:
-        kind: HelmRepository
+        kind: OCIRepository
         name: metrics-server
         namespace: flux-system
   install:
