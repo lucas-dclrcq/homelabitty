@@ -10,7 +10,7 @@ spec:
     spec:
       # renovate: registryUrl=https://robusta-charts.storage.googleapis.com
       chart: robusta
-      version: 0.51.0
+      version: 0.52.0
       sourceRef:
         kind: HelmRepository
         name: *app
