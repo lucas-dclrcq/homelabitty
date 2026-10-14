@@ -6,12 +6,6 @@ metadata:
   namespace: system
 spec:
   interval: 5m
-  chart:
-    spec:
-      chart: reflector
-      version: 10.0.65
-      sourceRef:
-        kind: OCIRepository
-        name: emberstack
-        namespace: flux-system
-      interval: 5m
+  chartRef:
+    kind: OCIRepository
+    name: reflector
