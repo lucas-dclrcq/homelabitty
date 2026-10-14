@@ -125,7 +125,29 @@ spec:
   parentRefs:
     - name: external
       namespace: network
+  # Mirrors the split in the chart's own matrix-matrix-rtc Ingress: only the
+  # three lk-jwt-service endpoints go to the authorisation service, everything
+  # else (the LiveKit WebSocket and the server-side Twirp API that
+  # lk-jwt-service itself calls back on LIVEKIT_URL) belongs to the SFU.
+  # Sending "/" to the authorisation service makes CreateLiveKitRoom 404.
   rules:
-    - backendRefs:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /sfu/get
+        - path:
+            type: PathPrefix
+            value: /get_token
+        - path:
+            type: PathPrefix
+            value: /delegate_delayed_leave
+      backendRefs:
         - name: matrix-matrix-rtc-authorisation-service
           port: 8080
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: matrix-matrix-rtc-sfu
+          port: 7880
