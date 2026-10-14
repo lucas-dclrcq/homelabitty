@@ -1,9 +1,0 @@
-apiVersion: source.toolkit.fluxcd.io/v1beta2
-kind: OCIRepository
-metadata:
-  name: postfinance
-  namespace: flux-system
-spec:
-  interval: 24h
-  url: oci://ghcr.io/postfinance/kubelet-csr-approver
-  provider: generic
