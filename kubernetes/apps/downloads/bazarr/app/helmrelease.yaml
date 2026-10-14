@@ -100,7 +100,7 @@ spec:
     route:
       app:
         hostnames:
-          - "{{ .Release.Name }}.${LIMITED_DOMAIN}"
+          - "{{ .Release.Name }}.hoohoot.xyz"
         parentRefs:
           - name: internal
             namespace: network
@@ -125,7 +125,7 @@ spec:
           - path: /config/log
       media:
         type: nfs
-        server: "truenas.${INTERNAL_DOMAIN}"
+        server: "truenas.lulice.lan"
         path: /mnt/tank/Media
         globalMounts:
           - path: /media

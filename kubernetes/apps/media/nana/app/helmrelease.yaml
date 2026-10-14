@@ -148,7 +148,7 @@ spec:
           homelab-manager.hoohoot.org/category: "Livres"
           homelab-manager.hoohoot.org/description: "Télécharger des ebooks"
         hostnames:
-          - "{{ .Release.Name }}.${SECRET_DOMAIN}"
+          - "{{ .Release.Name }}.hoohoot.org"
         parentRefs:
           - name: external
             namespace: network
@@ -160,7 +160,7 @@ spec:
     persistence:
       downloads:
         type: nfs
-        server: "truenas.${INTERNAL_DOMAIN}"
+        server: "truenas.lulice.lan"
         path: /mnt/tank/Apps/nana/uploads
         advancedMounts:
           nana:

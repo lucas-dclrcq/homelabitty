@@ -38,7 +38,7 @@ spec:
 
             env:
               DEBUG: "true"
-              SMTP_DOMAIN: "${SECRET_DOMAIN}"
+              SMTP_DOMAIN: "hoohoot.org"
               SMTP_PORT: "465"
 
             envFrom:
@@ -57,7 +57,7 @@ spec:
         controller: *app
         type: LoadBalancer
         annotations:
-          external-dns.kubernetes.io/hostname: "smtp.${LIMITED_DOMAIN}"
+          external-dns.kubernetes.io/hostname: "smtp.hoohoot.xyz"
           io.cilium/lb-ipam-ips: "192.168.1.46"
         externalTrafficPolicy: Local
         ports:

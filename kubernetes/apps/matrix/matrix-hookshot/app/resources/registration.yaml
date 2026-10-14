@@ -1,25 +1,25 @@
 ---
 id: matrix-hookshot
 url: http://matrix-hookshot.matrix.svc.cluster.local:9993
-as_token: {{ .AS_TOKEN }}
-hs_token: {{ .HS_TOKEN }}
+as_token: { { .AS_TOKEN } }
+hs_token: { { .HS_TOKEN } }
 sender_localpart: hookshot
 rate_limited: false
 namespaces:
   rooms: []
   users:
-    - regex: "@_github_.*:${SECRET_DOMAIN}"
+    - regex: "@_github_.*:hoohoot.org"
       exclusive: true
-    - regex: "@_gitlab_.*:${SECRET_DOMAIN}"
+    - regex: "@_gitlab_.*:hoohoot.org"
       exclusive: true
-    - regex: "@_jira_.*:${SECRET_DOMAIN}"
+    - regex: "@_jira_.*:hoohoot.org"
       exclusive: true
-    - regex: "@_webhooks_.*:${SECRET_DOMAIN}" # Where _webhooks_ is set by userIdPrefix in config.yml
+    - regex: "@_webhooks_.*:hoohoot.org" # Where _webhooks_ is set by userIdPrefix in config.yml
       exclusive: true
-    - regex: "@feeds:${SECRET_DOMAIN}" # Matches the localpart of all serviceBots in config.yml
+    - regex: "@feeds:hoohoot.org" # Matches the localpart of all serviceBots in config.yml
       exclusive: true
   aliases:
-    - regex: "#github_.+:${SECRET_DOMAIN}"
+    - regex: "#github_.+:hoohoot.org"
       exclusive: true
 de.sorunome.msc2409.push_ephemeral: false
 push_ephemeral: false

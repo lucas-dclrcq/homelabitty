@@ -43,8 +43,8 @@ spec:
       # the apex ownership TXT (txt-prefix + apex) falls outside the zone, so
       # external-dns can never converge on the apex record and updates it every
       # cycle; exclude the apex and manage its A record manually in Cloudflare
-      - --regex-domain-filter=(^|\.)${SECRET_DOMAIN}$
-      - --regex-domain-exclusion=^${SECRET_DOMAIN}$
+      - --regex-domain-filter=(^|\.)hoohoot.org$
+      - --regex-domain-exclusion=^hoohoot.org$
     policy: sync
     sources:
       - "gateway-httproute"

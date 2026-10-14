@@ -6,7 +6,7 @@ metadata:
 spec:
   slug: echo-server
   name: Echo Server
-  launchURL: https://echo-server.${SECRET_DOMAIN}
+  launchURL: https://echo-server.hoohoot.org
   group: Infrastructure
   adopt: IfMatch
   provider:
@@ -19,7 +19,7 @@ spec:
         slug: default-provider-invalidation-flow
     proxy:
       forwardAuthSingle:
-        externalHost: https://echo-server.${SECRET_DOMAIN}
+        externalHost: https://echo-server.hoohoot.org
       interceptHeaderAuth: true
       accessTokenValidity: hours=24
       refreshTokenValidity: days=30

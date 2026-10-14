@@ -12,7 +12,7 @@ spec:
   targets:
     staticConfig:
       static:
-        - "https://victoriametrics.${LIMITED_DOMAIN}"
+        - "https://victoriametrics.hoohoot.xyz"
   metricRelabelings:
     - targetLabel: service
       replacement: app-endpoint
@@ -31,7 +31,7 @@ spec:
   targets:
     staticConfig:
       static:
-        - "https://alertmanager.${LIMITED_DOMAIN}"
+        - "https://alertmanager.hoohoot.xyz"
   metricRelabelings:
     - targetLabel: service
       replacement: app-endpoint

@@ -12,7 +12,7 @@ spec:
   targets:
     staticConfig:
       static:
-        - "https://recherche-maison.${LIMITED_DOMAIN}"
+        - "https://recherche-maison.hoohoot.xyz"
   metricRelabelings:
     - targetLabel: service
       replacement: app-endpoint

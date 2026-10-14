@@ -12,7 +12,7 @@ spec:
   targets:
     staticConfig:
       static:
-        - "https://synapse-admin.${LIMITED_DOMAIN}"
+        - "https://synapse-admin.hoohoot.xyz"
   metricRelabelings:
     - targetLabel: service
       replacement: app-endpoint

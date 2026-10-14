@@ -107,7 +107,7 @@ spec:
           homelab-manager.hoohoot.org/description: "Regarder Séries & Films"
           homelab-manager.hoohoot.org/logo-url: "https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/jellyfin.png"
         hostnames:
-          - "{{ .Release.Name }}.${SECRET_DOMAIN}"
+          - "{{ .Release.Name }}.hoohoot.org"
         parentRefs:
           - name: external
             namespace: network
@@ -147,7 +147,7 @@ spec:
               - path: /config
       media:
         type: nfs
-        server: "truenas.${INTERNAL_DOMAIN}"
+        server: "truenas.lulice.lan"
         path: /mnt/tank/Media
         advancedMounts:
           jellyfin:

@@ -12,8 +12,8 @@ spec:
   targets:
     staticConfig:
       static:
-        - "https://music.${SECRET_DOMAIN}"
-        - "https://music-api.${SECRET_DOMAIN}"
+        - "https://music.hoohoot.org"
+        - "https://music-api.hoohoot.org"
   metricRelabelings:
     - targetLabel: service
       replacement: app-endpoint

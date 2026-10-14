@@ -15,7 +15,7 @@ spec:
         runAsNonRoot: true
         runAsUser: 65534
         runAsGroup: 65534
-        seccompProfile: {type: RuntimeDefault}
+        seccompProfile: { type: RuntimeDefault }
 
     controllers:
       main:
@@ -37,7 +37,7 @@ spec:
               repository: ghcr.io/miniflux/miniflux
               tag: 2.3.3
             env:
-              BASE_URL: "https://miniflux.${SECRET_DOMAIN}"
+              BASE_URL: "https://miniflux.hoohoot.org"
               CREATE_ADMIN: "0"
               DEBUG: "1"
               LOG_DATE_TIME: "1"
@@ -50,7 +50,7 @@ spec:
               RUN_MIGRATIONS: "1"
               OAUTH2_USER_CREATION: "1"
               OAUTH2_PROVIDER: oidc
-              OAUTH2_REDIRECT_URL: "https://{{ .Release.Name }}.${SECRET_DOMAIN}/oauth2/oidc/callback"
+              OAUTH2_REDIRECT_URL: "https://{{ .Release.Name }}.hoohoot.org/oauth2/oidc/callback"
 
             envFrom:
               - secretRef:
@@ -71,7 +71,7 @@ spec:
 
             securityContext:
               allowPrivilegeEscalation: false
-              capabilities: {drop: ["ALL"]}
+              capabilities: { drop: ["ALL"] }
 
             resources:
               requests:
@@ -105,7 +105,7 @@ spec:
           homelab-manager.hoohoot.org/description: "Lecteur de flux RSS"
           homelab-manager.hoohoot.org/logo-url: "https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/miniflux.png"
         hostnames:
-          - "{{ .Release.Name }}.${SECRET_DOMAIN}"
+          - "{{ .Release.Name }}.hoohoot.org"
         parentRefs:
           - name: external
             namespace: network

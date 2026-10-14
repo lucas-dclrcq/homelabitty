@@ -6,7 +6,7 @@ metadata:
 spec:
   slug: vault-mcp
   name: Vault MCP
-  launchURL: https://vault.mcp.${SECRET_DOMAIN}
+  launchURL: https://vault.mcp.hoohoot.org
   provider:
     flows:
       authorization:

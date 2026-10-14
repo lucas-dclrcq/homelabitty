@@ -18,7 +18,7 @@ spec:
   values:
     clusterName: hoohoot
     authentik:
-      url: https://sso.${SECRET_DOMAIN}
+      url: https://sso.hoohoot.org
       token:
         secretName: authentik-operator-token
     prometheus:

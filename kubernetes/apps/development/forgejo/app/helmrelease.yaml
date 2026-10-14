@@ -26,7 +26,7 @@ spec:
         port: &sshPort 22
         loadBalancerIP: "192.168.1.50"
         annotations:
-          external-dns.kubernetes.io/hostname: "git.${LIMITED_DOMAIN}"
+          external-dns.kubernetes.io/hostname: "git.hoohoot.xyz"
 
     httpRoute:
       enabled: false
@@ -62,9 +62,9 @@ spec:
           PROVIDER_CONFIG: redis://forgejo-dragonfly:6379?pool_size=100&idle_timeout=180s
           SESSION_LIFE_TIME: "1209600"
         server:
-          DOMAIN: "git.${SECRET_DOMAIN}"
-          ROOT_URL: "https://git.${SECRET_DOMAIN}"
-          SSH_DOMAIN: "${SECRET_DOMAIN}"
+          DOMAIN: "git.hoohoot.org"
+          ROOT_URL: "https://git.hoohoot.org"
+          SSH_DOMAIN: "hoohoot.org"
           SSH_PORT: *sshPort
           APP_DATA_PATH: /data/gitea
           LANDING_PAGE: login
@@ -84,7 +84,7 @@ spec:
           PROTOCOL: smtp
           SMTP_ADDR: smtp-relay.infrastructure.svc.cluster.local
           SMTP_PORT: "2525"
-          FROM: "git@${SECRET_DOMAIN}"
+          FROM: "git@hoohoot.org"
         metrics:
           ENABLED: true
         log:
@@ -112,5 +112,5 @@ spec:
         - name: Authentik
           provider: openidConnect
           existingSecret: forgejo-secret
-          autoDiscoverUrl: "https://sso.${SECRET_DOMAIN}/application/o/forgejo/.well-known/openid-configuration"
+          autoDiscoverUrl: "https://sso.hoohoot.org/application/o/forgejo/.well-known/openid-configuration"
           scopes: "openid profile email"

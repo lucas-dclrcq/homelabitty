@@ -82,7 +82,7 @@ spec:
     route:
       app:
         hostnames:
-          - "requests.${SECRET_DOMAIN}"
+          - "requests.hoohoot.org"
         parentRefs:
           - name: external
             namespace: network

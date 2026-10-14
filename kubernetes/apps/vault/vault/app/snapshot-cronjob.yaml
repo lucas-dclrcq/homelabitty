@@ -88,5 +88,5 @@ spec:
           volumes:
             - name: snapshots
               nfs:
-                server: truenas.${INTERNAL_DOMAIN}
+                server: truenas.lulice.lan
                 path: /mnt/tank/Backup/vault

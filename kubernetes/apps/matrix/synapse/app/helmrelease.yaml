@@ -15,8 +15,8 @@ spec:
         name: ananace
       interval: 5m
   values:
-    serverName: "${SECRET_DOMAIN}"
-    publicServerName: "matrix.${SECRET_DOMAIN}"
+    serverName: "hoohoot.org"
+    publicServerName: "matrix.hoohoot.org"
 
     wellknown:
       enabled: true
@@ -25,7 +25,7 @@ spec:
         tag: 1.4.76
       client:
         m.homeserver:
-          base_url: "https://matrix.${SECRET_DOMAIN}"
+          base_url: "https://matrix.hoohoot.org"
 
     workers:
       default:
@@ -113,7 +113,7 @@ spec:
       email:
         smtp_host: smtp-relay.infrastructure.svc.cluster.local
         smtp_port: 2525
-        notif_from: "Hoohoot Matrix <noreply@${SECRET_DOMAIN}>"
+        notif_from: "Hoohoot Matrix <noreply@hoohoot.org>"
 
       presence:
         enabled: true
@@ -128,8 +128,8 @@ spec:
       use_appservice_legacy_authorization: true
       url_preview_ip_range_blacklist:
         - "127.0.0.0/8"
-        - '192.168.0.0/16'
-        - '10.0.0.0/8'
+        - "192.168.0.0/16"
+        - "10.0.0.0/8"
       url_preview_enabled: true
       experimental_features:
         msc3575_enabled: true

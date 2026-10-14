@@ -41,7 +41,7 @@ spec:
                 sabnzbd.default.svc,
                 sabnzbd.default.svc.cluster,
                 sabnzbd.default.svc.cluster.local,
-                sabnzbd.${LIMITED_DOMAIN}
+                sabnzbd.hoohoot.xyz
 
             probes:
               liveness:
@@ -86,7 +86,7 @@ spec:
     route:
       app:
         hostnames:
-          - "{{ .Release.Name }}.${LIMITED_DOMAIN}"
+          - "{{ .Release.Name }}.hoohoot.xyz"
         parentRefs:
           - name: internal
             namespace: network
@@ -107,7 +107,7 @@ spec:
               - path: /tmp
       media:
         type: nfs
-        server: "truenas.${INTERNAL_DOMAIN}"
+        server: "truenas.lulice.lan"
         path: /mnt/tank/Media/Downloads/sabnzbd
         advancedMounts:
           sabnzbd:

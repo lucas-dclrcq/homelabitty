@@ -12,7 +12,7 @@ spec:
   targets:
     staticConfig:
       static:
-        - "https://docker.${SECRET_DOMAIN}"
+        - "https://docker.hoohoot.org"
   metricRelabelings:
     - targetLabel: service
       replacement: app-endpoint

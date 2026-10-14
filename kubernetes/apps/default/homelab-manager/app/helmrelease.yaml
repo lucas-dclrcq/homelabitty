@@ -30,7 +30,7 @@ spec:
           - name: external
             namespace: network
         hostnames:
-          - "${SECRET_DOMAIN}"
+          - "hoohoot.org"
       resources:
         requests:
           cpu: 12m

@@ -67,7 +67,7 @@ spec:
           homelab-manager.hoohoot.org/description: "Gestionnaire de photos"
           homelab-manager.hoohoot.org/logo-url: "https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/immich.png"
         hostnames:
-          - "photos.${SECRET_DOMAIN}"
+          - "photos.hoohoot.org"
         parentRefs:
           - name: external
             namespace: network
@@ -86,7 +86,7 @@ spec:
               - path: /config/matplotlib
       library:
         type: nfs
-        server: "truenas.${INTERNAL_DOMAIN}"
+        server: "truenas.lulice.lan"
         path: /mnt/tank/Photos
         advancedMounts:
           server:

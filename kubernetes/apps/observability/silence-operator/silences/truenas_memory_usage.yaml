@@ -8,4 +8,4 @@ spec:
     - name: alertname
       value: NodeMemoryHighUtilization
     - name: instance
-      value: truenas.${INTERNAL_DOMAIN}:9100
+      value: truenas.lulice.lan:9100

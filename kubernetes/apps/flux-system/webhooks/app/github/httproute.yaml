@@ -6,7 +6,7 @@ metadata:
   name: webhook-receiver
 spec:
   hostnames:
-    - "flux-webhook.${SECRET_DOMAIN}"
+    - "flux-webhook.hoohoot.org"
   parentRefs:
     - name: external
       namespace: network

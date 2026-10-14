@@ -12,7 +12,7 @@ spec:
   targets:
     staticConfig:
       static:
-        - "https://drive.${SECRET_DOMAIN}"
+        - "https://drive.hoohoot.org"
   metricRelabelings:
     - targetLabel: service
       replacement: app-endpoint

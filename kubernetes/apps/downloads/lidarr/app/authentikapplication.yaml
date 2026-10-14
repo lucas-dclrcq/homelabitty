@@ -16,7 +16,7 @@ spec:
         slug: default-provider-invalidation-flow
     proxy:
       forwardAuthSingle:
-        externalHost: https://lidarr.${SECRET_DOMAIN}
+        externalHost: https://lidarr.hoohoot.org
       interceptHeaderAuth: true
       accessTokenValidity: hours=24
       refreshTokenValidity: days=30

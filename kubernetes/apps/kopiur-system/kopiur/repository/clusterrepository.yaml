@@ -12,7 +12,7 @@ spec:
       path: /repository
       volume:
         nfs:
-          server: truenas.${INTERNAL_DOMAIN}
+          server: truenas.lulice.lan
           path: /mnt/tank/Backup/kopia_backup
   # The repository was created by VolSync's kopia mover and is ADOPTED as-is:
   # never let kopiur initialize a fresh (empty) one, e.g. during disaster

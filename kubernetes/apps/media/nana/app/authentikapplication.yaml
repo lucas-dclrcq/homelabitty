@@ -15,7 +15,7 @@ spec:
         slug: default-provider-invalidation-flow
     proxy:
       forwardAuthSingle:
-        externalHost: https://nana.${SECRET_DOMAIN}
+        externalHost: https://nana.hoohoot.org
       interceptHeaderAuth: true
       accessTokenValidity: hours=24
       refreshTokenValidity: days=30

@@ -5,7 +5,7 @@ kind: Gateway
 metadata:
   name: external
   annotations:
-    external-dns.kubernetes.io/target: &hostname gateway-ext.${SECRET_DOMAIN}
+    external-dns.kubernetes.io/target: &hostname gateway-ext.hoohoot.org
 spec:
   gatewayClassName: envoy
   infrastructure:
@@ -16,39 +16,39 @@ spec:
     - name: http
       protocol: HTTP
       port: 80
-      hostname: "*.${SECRET_DOMAIN}"
+      hostname: "*.hoohoot.org"
       allowedRoutes:
         namespaces:
           from: All
     - name: http-root
       protocol: HTTP
       port: 80
-      hostname: "${SECRET_DOMAIN}"
+      hostname: "hoohoot.org"
       allowedRoutes:
         namespaces:
           from: All
     - name: https
       protocol: HTTPS
       port: 443
-      hostname: "*.${SECRET_DOMAIN}"
+      hostname: "*.hoohoot.org"
       allowedRoutes:
         namespaces:
           from: All
       tls:
         certificateRefs:
           - kind: Secret
-            name: "${SECRET_DOMAIN/./-}-production-tls"
+            name: "hoohoot-org-production-tls"
     - name: https-root
       protocol: HTTPS
       port: 443
-      hostname: "${SECRET_DOMAIN}"
+      hostname: "hoohoot.org"
       allowedRoutes:
         namespaces:
           from: All
       tls:
         certificateRefs:
           - kind: Secret
-            name: "${SECRET_DOMAIN/./-}-production-tls"
+            name: "hoohoot-org-production-tls"
     - name: http-sqq
       protocol: HTTP
       port: 80
@@ -78,7 +78,7 @@ spec:
     - name: mqtt-tls
       protocol: TLS
       port: 8883
-      hostname: "mqtt.${SECRET_DOMAIN}"
+      hostname: "mqtt.hoohoot.org"
       allowedRoutes:
         kinds:
           - kind: TCPRoute
@@ -88,22 +88,22 @@ spec:
         mode: Terminate
         certificateRefs:
           - kind: Secret
-            name: "${SECRET_DOMAIN/./-}-production-tls"
+            name: "hoohoot-org-production-tls"
     - name: http-mcp
       protocol: HTTP
       port: 80
-      hostname: "*.mcp.${SECRET_DOMAIN}"
+      hostname: "*.mcp.hoohoot.org"
       allowedRoutes:
         namespaces:
           from: All
     - name: https-mcp
       protocol: HTTPS
       port: 443
-      hostname: "*.mcp.${SECRET_DOMAIN}"
+      hostname: "*.mcp.hoohoot.org"
       allowedRoutes:
         namespaces:
           from: All
       tls:
         certificateRefs:
           - kind: Secret
-            name: "mcp-${SECRET_DOMAIN/./-}-production-tls"
+            name: "mcp-hoohoot-org-production-tls"

@@ -25,7 +25,7 @@ spec:
       clusterIP:
         name: harbor
 
-    externalURL: "https://docker.${SECRET_DOMAIN}"
+    externalURL: "https://docker.hoohoot.org"
 
     existingSecretAdminPassword: harbor-secret
     existingSecretAdminPasswordKey: HARBOR_ADMIN_PASSWORD

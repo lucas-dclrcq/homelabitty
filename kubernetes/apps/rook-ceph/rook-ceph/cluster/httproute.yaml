@@ -6,7 +6,7 @@ metadata:
   name: rook-ceph-dashboard
 spec:
   hostnames:
-    - "rook.${LIMITED_DOMAIN}"
+    - "rook.hoohoot.xyz"
   parentRefs:
     - name: internal
       namespace: network

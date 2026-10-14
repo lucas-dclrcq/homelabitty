@@ -7,7 +7,7 @@ directives:
     - "blob:"
     - "https://raw.githubusercontent.com/opencloud-eu/awesome-apps/"
     - "https://update.opencloud.eu/"
-    - "https://sso.${SECRET_DOMAIN}/"
+    - "https://sso.hoohoot.org/"
   default-src:
     - "'none'"
   font-src:
@@ -18,13 +18,13 @@ directives:
     - "'self'"
     - "blob:"
     - "https://embed.diagrams.net/"
-    - "https://onlyoffice.${SECRET_DOMAIN}/"
+    - "https://onlyoffice.hoohoot.org/"
   img-src:
     - "'self'"
     - "data:"
     - "blob:"
     - "https://raw.githubusercontent.com/opencloud-eu/awesome-apps/"
-    - "https://onlyoffice.${SECRET_DOMAIN}/"
+    - "https://onlyoffice.hoohoot.org/"
   manifest-src:
     - "'self'"
   media-src:

@@ -6,7 +6,7 @@ metadata:
 spec:
   slug: grafana-mcp
   name: Grafana MCP
-  launchURL: https://grafana.mcp.${SECRET_DOMAIN}
+  launchURL: https://grafana.mcp.hoohoot.org
   provider:
     flows:
       authorization:

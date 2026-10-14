@@ -18,18 +18,18 @@ spec:
 
     global:
       volumeMounts:
-        - name: "${SECRET_DOMAIN/./-}-production-tls"
+        - name: "hoohoot-org-production-tls"
           mountPath: /certs
           readOnly: true
       volumes:
-        - name: "${SECRET_DOMAIN/./-}-production-tls"
+        - name: "hoohoot-org-production-tls"
           secret:
-            secretName: "${SECRET_DOMAIN/./-}-production-tls"
+            secretName: "hoohoot-org-production-tls"
             items:
               - key: tls.crt
-                path: "${SECRET_DOMAIN/./-}-production-tls.pem"
+                path: "hoohoot-org-production-tls.pem"
               - key: tls.key
-                path: "${SECRET_DOMAIN/./-}-production-tls.key"
+                path: "hoohoot-org-production-tls.key"
 
       podAnnotations:
         reloader.stakater.com/auto: "true"
@@ -79,7 +79,7 @@ spec:
         main:
           enabled: true
           hostnames:
-            - "sso.${SECRET_DOMAIN}"
+            - "sso.hoohoot.org"
           parentRefs:
             - name: external
               namespace: network

@@ -88,7 +88,7 @@ spec:
           homelab-manager.hoohoot.org/description: "TODO listes"
           homelab-manager.hoohoot.org/logo-url: "https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/vikunja.png"
         hostnames:
-          - "tasks.${SECRET_DOMAIN}"
+          - "tasks.hoohoot.org"
         parentRefs:
           - name: external
             namespace: network
