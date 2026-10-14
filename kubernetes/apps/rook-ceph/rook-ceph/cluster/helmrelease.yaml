@@ -41,6 +41,11 @@ spec:
     cephClusterSpec:
       crashCollector:
         disable: false
+      security:
+        cephx:
+          daemon:
+            keyRotationPolicy: KeyGeneration
+            keyGeneration: 2
       dashboard:
         enabled: true
         urlPrefix: /
