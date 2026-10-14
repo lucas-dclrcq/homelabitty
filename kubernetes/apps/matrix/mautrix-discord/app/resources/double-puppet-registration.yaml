@@ -8,9 +8,9 @@ url:
 # Generate random strings for these three fields. Only the as_token really
 # matters, hs_token is never used because there's no url, and the default
 # user (sender_localpart) is never used either.
-as_token: { { .DOUBLE_PUPPET_AS_TOKEN } }
-hs_token: { { .DOUBLE_PUPPET_HS_TOKEN } }
-sender_localpart: { { .DOUBLE_PUPPET_LOCAL_PART } }
+as_token: {{ .DOUBLE_PUPPET_AS_TOKEN }}
+hs_token: {{ .DOUBLE_PUPPET_HS_TOKEN }}
+sender_localpart: {{ .DOUBLE_PUPPET_LOCAL_PART }}
 # Bridges don't like ratelimiting. This should only apply when using the
 # as_token, normal user tokens will still be ratelimited.
 rate_limited: false
