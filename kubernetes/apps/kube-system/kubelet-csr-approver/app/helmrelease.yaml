@@ -10,7 +10,7 @@ spec:
       chart: kubelet-csr-approver
       version: 1.2.15
       sourceRef:
-        kind: HelmRepository
+        kind: OCIRepository
         name: postfinance
         namespace: flux-system
   install:
