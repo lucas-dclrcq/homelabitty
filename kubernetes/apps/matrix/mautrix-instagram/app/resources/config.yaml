@@ -1,11 +1,10 @@
----
 # Network-specific config options
 network:
   # Which service is this bridge for? Available options:
   # * unset - allow users to pick any service when logging in (except facebook-tor)
   # * facebook - connect to FB Messenger via facebook.com
   # * facebook-tor - connect to FB Messenger via facebookwkhpilnemxj7asaniu7vnjjbiltxjqhye3mhbshg7kx5tfyd.onion
-  #                  (note: does not currently proxy media downloads)
+  #   (note: does not currently proxy media downloads)
   # * messenger - connect to FB Messenger via messenger.com (can be used with the facebook side deactivated)
   # * instagram - connect to Instagram DMs via instagram.com
   #
@@ -17,58 +16,65 @@ network:
   ig_e2ee: false
 
   # Displayname template for FB/IG users. Available variables:
-  #  .DisplayName - The display name set by the user.
-  #  .Username - The username set by the user.
-  #  .ID - The internal user ID of the user.
+  #   .DisplayName - display name set by the user.
+  #   .Username - username set by the user.
+  #   .ID - internal user ID of the user.
   displayname_template: '{{ `{{or .DisplayName .Username "Unknown user"}}` }}'
 
   # Static proxy address (HTTP or SOCKS5) for connecting to Meta.
   proxy:
-  # HTTP endpoint to request new proxy address from, for dynamically assigned proxies.
-  # The endpoint must return a JSON body with a string field called proxy_url.
-  get_proxy_from:
-  # Should media be proxied too?
-  proxy_media: false
-  # Minimum interval between full reconnects in seconds, default is 1 hour
-  min_full_reconnect_interval_seconds: 3600
-  # Interval to force refresh the connection (full reconnect), default is 20 hours. Set 0 to disable force refreshes.
-  force_refresh_interval_seconds: 72000
-  # Disable fetching XMA media (reels, stories, etc) when backfilling.
-  disable_xma_backfill: true
-  # Disable fetching XMA media entirely.
-  disable_xma_always: false
+    # HTTP endpoint to request a new proxy address from, for dynamically assigned proxies.
+    # The endpoint must return a JSON body with a string field called proxy_url.
+    get_proxy_from:
+      url: null
+      auth_token: null
+      cache_for: 3600
+      retry_after: 20
+      retry_on_error: true
+      timeout: 0
+    # Whether to disable XMA backfill when using the proxy.
+    disable_xma_backfill: true
 
 # Config options that affect the central bridge module.
 bridge:
   # The prefix for commands. Only required in non-management rooms.
   command_prefix: "!instagram"
+
   # Should the bridge create a space for each login containing the rooms that account is in?
   personal_filtering_spaces: true
+
   # Whether the bridge should set names and avatars explicitly for DM portals.
   # This is only necessary when using clients that don't support MSC4171.
   private_chat_portal_meta: true
+
   # Should events be handled asynchronously within portal rooms?
   # If true, events may end up being out of order, but slow events won't block other ones.
   # This is not yet safe to use.
   async_events: false
+
   # Should every user have their own portals rather than sharing them?
   # By default, users who are in the same group on the remote network will be
   # in the same Matrix room bridged to that group. If this is set to true,
   # every user will get their own Matrix room instead.
   split_portals: false
+
   # Should the bridge resend `m.bridge` events to all portals on startup?
   resend_bridge_info: false
+
   # Should `m.bridge` events be sent without a state key?
   # By default, the bridge uses a unique key that won't conflict with other bridges.
   no_bridge_info_state_key: false
 
   # Should leaving Matrix rooms be bridged as leaving groups on the remote network?
   bridge_matrix_leave: false
+
   # Should room tags only be synced when creating the portal? Tags mean things like favorite/pin and archive/low priority.
-  # Tags currently can't be synced back to the remote network, so a continuous sync means tagging from Matrix will be undone.
+  # Tags currently can't be synced back to the remote network, so continuous sync means tagging from Matrix will be undone.
   tag_only_on_create: true
+
   # List of tags to allow bridging. If empty, no tags will be bridged.
   only_bridge_tags: [m.favourite, m.lowpriority]
+
   # Should room mute status only be synced when creating the portal?
   # Like tags, mutes can't currently be synced back to the remote network.
   mute_only_on_create: true
@@ -82,15 +88,15 @@ bridge:
   cleanup_on_logout:
     # Should cleanup on logout be enabled at all?
     enabled: false
-    # Settings for manual logouts (explicitly initiated by the Matrix user)
+    # Settings for manual logouts (explicitly initiated by a Matrix user)
     manual:
-      # Action for private portals which will never be shared with other Matrix users.
+      # Action for private portals that will never be shared with other Matrix users.
       private: nothing
-      # Action for portals with a relay user configured.
+      # Action for portals that are relayed to a user configured relay.
       relayed: nothing
-      # Action for portals which may be shared, but don't currently have any other Matrix users.
+      # Action for portals that may be shared, but don't currently have any other Matrix users.
       shared_no_users: nothing
-      # Action for portals which have other logged-in Matrix users.
+      # Action for portals that have other logged-in Matrix users.
       shared_has_users: nothing
     # Settings for credentials being invalidated (initiated by the remote network, possibly through user action).
     # Keys have the same meanings as in the manual section.
@@ -108,39 +114,41 @@ bridge:
     # Should only admins be allowed to set themselves as relay users?
     # If true, non-admins can only set users listed in default_relays as relays in a room.
     admin_only: true
-    # List of user login IDs which anyone can set as a relay, as long as the relay user is in the room.
+    # List of user login IDs that anyone can set as a relay, as long as the relay user is in the room.
     default_relays: []
-    # The formats to use when sending messages via the relaybot.
-    # Available variables:
-    #   .Sender.UserID - The Matrix user ID of the sender.
-    #   .Sender.Displayname - The display name of the sender (if set).
-    #   .Sender.RequiresDisambiguation - Whether the sender's name may be confused with the name of another user in the room.
-    #   .Sender.DisambiguatedName - The disambiguated name of the sender. This will be the displayname if set,
-    #                               plus the user ID in parentheses if the displayname is not unique.
-    #                               If the displayname is not set, this is just the user ID.
-    #   .Message - The `formatted_body` field of the message.
-    #   .Caption - The `formatted_body` field of the message, if it's a caption. Otherwise an empty string.
-    #   .FileName - The name of the file being sent.
-    message_formats:
-      m.text: "{{ `<b>{{ .Sender.DisambiguatedName }}</b>: {{ .Message }}` }}"
-      m.notice: "{{ `<b>{{ .Sender.DisambiguatedName }}</b>: {{ .Message }}` }}"
-      m.emote: "{{ `* <b>{{ .Sender.DisambiguatedName }}</b> {{ .Message }}` }}"
-      m.file: "{{ `<b>{{ .Sender.DisambiguatedName }}</b> sent a file{{ if .Caption }}: {{ .Caption }}{{ end }}` }}"
-      m.image: "{{ `<b>{{ .Sender.DisambiguatedName }}</b> sent an image{{ if .Caption }}: {{ .Caption }}{{ end }}` }}"
-      m.audio: "{{ `<b>{{ .Sender.DisambiguatedName }}</b> sent an audio file{{ if .Caption }}: {{ .Caption }}{{ end }}` }}"
-      m.video: "{{ `<b>{{ .Sender.DisambiguatedName }}</b> sent a video{{ if .Caption }}: {{ .Caption }}{{ end }}` }}"
-      m.location: "{{ `<b>{{ .Sender.DisambiguatedName }}</b> sent a location{{ if .Caption }}: {{ .Caption }}{{ end }}` }}"
-    # For networks that support per-message displaynames (i.e. Slack and Discord), the template for those names.
-    # This has all the Sender variables available under message_formats (but without the .Sender prefix).
-    # Note that you need to manually remove the displayname from message_formats above.
-    displayname_format: "{{ `{{ .DisambiguatedName }}` }}"
+
+  # Formats to use when sending messages to the bridge via a relaybot.
+  # Available variables:
+  #   .Sender.UserID - The Matrix user ID of the sender.
+  #   .Sender.Displayname - The display name of the sender (if set).
+  #   .Sender.RequiresDisambiguation - Whether the sender's name may be confused with the name of another user in the room.
+  #   .Sender.DisambiguatedName - The disambiguated name of the sender. This will be the displayname if set,
+  #                              plus the user ID in parentheses if the displayname is not unique.
+  #                              If the displayname is not set, this is just the user ID.
+  #   .Message - The `formatted_body` field of the message.
+  #   .Caption - The `formatted_body` field of the message, if it's a caption. Otherwise an empty string.
+  #   .FileName - The name of the file being sent.
+  message_formats:
+    m.text: "{{ `<b>{{ .Sender.DisambiguatedName }}</b>: {{ .Message }}` }}"
+    m.notice: "{{ `<b>{{ .Sender.DisambiguatedName }}</b>: {{ .Message }}` }}"
+    m.emote: "{{ `* <b>{{ .Sender.DisambiguatedName }}</b> {{ .Message }}` }}"
+    m.file: "{{ `<b>{{ .Sender.DisambiguatedName }}</b> sent a file{{ if .Caption }}: {{ .Caption }}{{ end }}` }}"
+    m.image: "{{ `<b>{{ .Sender.DisambiguatedName }}</b> sent an image{{ if .Caption }}: {{ .Caption }}{{ end }}` }}"
+    m.audio: "{{ `<b>{{ .Sender.DisambiguatedName }}</b> sent an audio file{{ if .Caption }}: {{ .Caption }}{{ end }}` }}"
+    m.video: "{{ `<b>{{ .Sender.DisambiguatedName }}</b> sent a video{{ if .Caption }}: {{ .Caption }}{{ end }}` }}"
+    m.location: "{{ `<b>{{ .Sender.DisambiguatedName }}</b> sent a location{{ if .Caption }}: {{ .Caption }}{{ end }}` }}"
+
+  # For networks that support per-message displaynames (i.e. Slack and Discord), the template for those names.
+  # This has all the Sender variables available under message_formats (but without the .Sender prefix).
+  # Note that you need to manually remove the displayname from the message_formats above.
+  displayname_format: "{{ `{{ .DisambiguatedName }}` }}"
 
   # Permissions for using the bridge.
   # Permitted values:
   #    relay - Talk through the relaybot (if enabled), no access otherwise
   # commands - Access to use commands in the bridge, but not login.
-  #     user - Access to use the bridge with puppeting.
-  #    admin - Full access, user level with some additional administration tools.
+  #     user - Access to use the bridge to puppeting.
+  #    admin - Full access, user level and some additional administration tools
   # Permitted keys:
   #        * - All Matrix users
   #   domain - All users on that homeserver
@@ -155,12 +163,12 @@ database:
   # The database type. "sqlite3-fk-wal" and "postgres" are supported.
   type: postgres
   # The database URI.
-  #   SQLite: A raw file path is supported, but `file:<path>?_txlock=immediate` is recommended.
-  #           https://github.com/mattn/go-sqlite3#connection-string
-  #   Postgres: Connection string. For example, postgres://user:password@host/database?sslmode=disable
-  #             To connect via Unix socket, use something like postgres:///dbname?host=/var/run/postgresql
-  uri: { { .pg_uri } }
-  # Maximum number of connections.
+  # SQLite: A raw file path is supported, but `file:<path>?_txlock=immediate` is recommended.
+  #         https://github.com/mattn/go-sqlite3#connection-string
+  # Postgres: Connection string. For example, postgres://user:password@host/database?sslmode=disable
+  #           To connect via Unix socket, use something like postgres:///dbname?host=/var/run/postgresql
+  uri: {{ .pg_uri }}
+  # Maximum number of connections. Mostly relevant for Postgres.
   max_open_conns: 5
   max_idle_conns: 1
   # Maximum connection idle time and lifetime before they're closed. Disabled if null.
@@ -187,7 +195,7 @@ homeserver:
   # Endpoint for reporting per-message status.
   # If set, the bridge will make POST requests to this URL when processing a message from Matrix.
   # It will make one request when receiving the message (step BRIDGE), one after decrypting if applicable
-  # (step DECRYPTED) and one after sending to the remote network (step REMOTE). Errors will also be reported.
+  # (step DECRYPTED) and one after sending to the remote network (step REMOTE). Errors are also reported.
   # The bridge will use the appservice as_token to authorize requests.
   message_send_checkpoint_endpoint:
   # Does the homeserver support https://github.com/matrix-org/matrix-spec-proposals/pull/2246?
@@ -201,12 +209,11 @@ homeserver:
   ping_interval_seconds: 0
 
 # Application service host/registration related details.
-# Changing these values requires regeneration of the registration (except when noted otherwise)
+# Changing these values requires regeneration of the registration.
 appservice:
   # The address that the homeserver can use to connect to this appservice.
   # Like the homeserver address, a local non-https address is recommended when the bridge is on the same machine.
   # If the bridge is elsewhere, you must secure the connection yourself (e.g. with https or wireguard)
-  # If you want to use https, you need to use a reverse proxy. The bridge does not have TLS support built in.
   address: http://mautrix-instagram.matrix.svc.cluster.local:29319
   # A public address that external services can use to reach this appservice.
   # This is only needed for things like public media. A reverse proxy is generally necessary when using this field.
@@ -214,7 +221,7 @@ appservice:
   public_address: https://mautrix-instagram.hoohoot.org
 
   # The hostname and port where this appservice should listen.
-  # For Docker, you generally have to change the hostname to 0.0.0.0.
+  # For Docker, you generally change the hostname to 0.0.0.0.
   hostname: 0.0.0.0
   port: 29319
 
@@ -224,8 +231,8 @@ appservice:
   bot:
     # Username of the appservice bot.
     username: instabot
-    # Display name and avatar for bot. Set to "remove" to remove display name/avatar, leave empty
-    # to leave display name/avatar as-is.
+    # Display name and avatar for the bot. Set to "remove" to remove the display name/avatar, leave empty
+    # to leave the display name/avatar as-is.
     displayname: Instagram bridge bot
     avatar: mxc://maunium.net/DxpVrwwzPUwaUSazpsjXgcKB
 
@@ -238,10 +245,10 @@ appservice:
   async_transactions: false
 
   # Authentication tokens for AS <-> HS communication. Autogenerated; do not modify.
-  as_token: { { .AS_TOKEN } }
-  hs_token: { { .HS_TOKEN } }
+  as_token: {{ .AS_TOKEN }}
+  hs_token: {{ .HS_TOKEN }}
 
-  # Localpart template of MXIDs for remote users.
+  # Localpart template for MXIDs of remote users.
   username_template: "{{ `insta_{{.}}` }}"
 
 # Config options that affect the Matrix connector of the bridge.
@@ -255,9 +262,9 @@ matrix:
   # Whether the bridge should update the m.direct account data event when double puppeting is enabled.
   sync_direct_chat_list: true
   # Whether created rooms should have federation enabled. If false, created portal rooms
-  # will never be federated. Changing this option requires recreating rooms.
+  # will never be federated. Changing this option requires recreating the rooms.
   federate_rooms: true
-  # The threshold as bytes after which the bridge should roundtrip uploads via the disk
+  # The threshold in bytes that the bridge should roundtrip uploads via disk
   # rather than keeping the whole file in memory.
   upload_file_threshold: 5242880
 
@@ -267,10 +274,10 @@ analytics:
   token: null
   # Address to send tracking requests to.
   url: https://api.segment.io/v1/track
-  # Optional user ID for tracking events. If null, defaults to using Matrix user ID.
+  # Optional user ID for tracking events. If null, defaults to using the Matrix user ID.
   user_id: null
 
-# Settings for provisioning API
+# Settings for the provisioning API
 provisioning:
   # Prefix for the provisioning API paths.
   prefix: /_matrix/provision
@@ -278,13 +285,13 @@ provisioning:
   # or if set to "disable", the provisioning API will be disabled.
   shared_secret: generate
   # Whether to allow provisioning API requests to be authed using Matrix access tokens.
-  # This follows the same rules as double puppeting to determine which server to contact to check the token,
-  # which means that by default, it only works for users on the same server as the bridge.
+  # This follows the same rules as double puppeting to determine the server to contact to check the token,
+  # which means by default, it only works for users on the same server as the bridge.
   allow_matrix_auth: true
   # Enable debug API at /debug with provisioning authentication.
   debug_endpoints: false
 
-# Some networks require publicly accessible media download links (e.g. for user avatars when using Discord webhooks).
+# Some networks require publicly accessible media download links (e.g. user avatars when using Discord webhooks).
 # These settings control whether the bridge will provide such public media access.
 public_media:
   # Should public media be enabled at all?
@@ -304,9 +311,9 @@ public_media:
 direct_media:
   # Should custom mxc:// URIs be used instead of reuploading media?
   enabled: false
-  # The server name to use for the custom mxc:// URIs.
-  # This server name will effectively be a real Matrix server, it just won't implement anything other than media.
-  # You must either set up .well-known delegation from this domain to the bridge, or proxy the domain directly to the bridge.
+  # The server name to use for custom mxc:// URIs.
+  # This server name will effectively be the real Matrix server, it just won't implement anything other than media.
+  # You must either set up .well-known delegation from the domain to the bridge, or proxy the domain directly to the bridge.
   server_name: discord-media.example.com
   # Optionally a custom .well-known response. This defaults to `server_name:443`
   well_known_response:
@@ -317,12 +324,12 @@ direct_media:
   # and not allow proxying at all by setting this to false.
   # This option does nothing if the remote network does not support media downloads over HTTP.
   allow_proxy: true
-  # Matrix server signing key to make the federation tester pass, same format as synapse's .signing.key file.
-  # This key is also used to sign the mxc:// URIs to ensure only the bridge can generate them.
+  # Matrix server signing key to make federation tester pass, same format as synapse's .signing.key file.
+  # This key is also used to sign mxc:// URIs to ensure only the bridge can generate them.
   server_key: generate
 
 # Settings for backfilling messages.
-# Note that the exact way settings are applied depends on the network connector.
+# Note that the exact way these settings are applied depends on the network connector.
 # See https://docs.mau.fi/bridges/general/backfill.html for more details.
 backfill:
   # Whether to do backfilling at all.
@@ -339,7 +346,7 @@ backfill:
     # Maximum number of messages to backfill in a new thread.
     max_initial_messages: 50
   # Settings for the backwards backfill queue. This only applies when connecting to
-  # Beeper as standard Matrix servers don't support inserting messages into history.
+  # Beeper standard Matrix servers that don't support inserting messages into history.
   queue:
     # Should the backfill queue be enabled?
     enabled: false
@@ -350,9 +357,9 @@ backfill:
     # Maximum number of batches to backfill per portal.
     # If set to -1, all available messages will be backfilled.
     max_batches: -1
-    # Optional network-specific overrides for max batches.
-    # Interpretation of this field depends on the network connector.
-    max_batches_override: {}
+  # Optional network-specific overrides for max batches.
+  # The interpretation of this field depends on the network connector.
+  max_batches_override: {}
 
 # Settings for enabling double puppeting
 double_puppet:
@@ -361,7 +368,7 @@ double_puppet:
   servers:
     anotherserver.example.org: https://matrix.anotherserver.example.org
   # Whether to allow client API URL discovery for other servers. When using this option,
-  # users on other servers can use double puppeting even if their server URLs aren't
+  # users on other servers can use double puppeting even if the server URLs aren't
   # explicitly added to the servers map above.
   allow_discovery: false
   # Shared secrets for automatic double puppeting.
@@ -384,8 +391,8 @@ encryption:
   # Changing this option requires updating the appservice registration file.
   appservice: false
   # Whether to use MSC4190 instead of appservice login to create the bridge bot device.
-  # Requires the homeserver to support MSC4190 and the device masquerading parts of MSC3202.
-  # Only relevant when using end-to-bridge encryption, required when using encryption with next-gen auth (MSC3861).
+  # Requires homeserver support for MSC4190 and the device masquerading parts of MSC3202.
+  # Only relevant when using end-to-bridge encryption, and required when using encryption with next-gen auth (MSC3861).
   # Changing this option requires updating the appservice registration file.
   msc4190: false
   # Enable key sharing? If enabled, key requests for rooms where users are in will be fulfilled.
@@ -405,7 +412,7 @@ encryption:
     ratchet_on_decrypt: false
     # Delete fully used keys (index >= max_messages) after decrypting messages.
     delete_fully_used_on_decrypt: false
-    # Delete previous megolm sessions from same device when receiving a new one.
+    # Delete previous megolm sessions from the same device when receiving a new one.
     delete_prev_on_new_session: false
     # Delete megolm sessions received from a device when the device is deleted.
     delete_on_device_delete: false
@@ -418,7 +425,7 @@ encryption:
   # What level of device verification should be required from users?
   #
   # Valid levels:
-  #   unverified - Send keys to all device in the room.
+  #   unverified - Send keys to all devices in the room.
   #   cross-signed-untrusted - Require valid cross-signing, but trust all cross-signing keys.
   #   cross-signed-tofu - Require valid cross-signing, trust cross-signing keys on first use (and reject changes).
   #   cross-signed-verified - Require valid cross-signing, plus a valid user signature from the bridge bot.
@@ -436,7 +443,8 @@ encryption:
   # See https://spec.matrix.org/v1.10/client-server-api/#mroomencryption for more information about that event.
   rotation:
     # Enable custom Megolm room key rotation settings. Note that these
-    # settings will only apply to rooms created after this option is set.
+    # settings will only apply to rooms created after this option is
+    # set.
     enable_custom: false
     # The maximum number of milliseconds a session should be used
     # before changing it. The Matrix spec recommends 604800000 (a week)
