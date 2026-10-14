@@ -108,6 +108,16 @@ spec:
 
     matrixAuthenticationService:
       enabled: true
+      # Pinned ahead of the chart: ESS 26.10.0 ships MAS 1.26.0, but the
+      # cluster already runs 1.27. The downgrade would be schema-safe (no
+      # migrations between 1.24 and 1.27) but is still a needless regression.
+      # Remove this override once an ESS release ships 1.27+, so the image
+      # tracks the chart again. The annotation is required because ESS splits
+      # registry/repository, which renovate's helm-values manager cannot
+      # resolve on its own.
+      image:
+        # renovate: datasource=docker depName=oci.element.io/matrix-authentication-service
+        tag: "1.27.0"
       ingress:
         # Must never change: MAS public_base/issuer identity is derived from it.
         host: "mas.hoohoot.org"
