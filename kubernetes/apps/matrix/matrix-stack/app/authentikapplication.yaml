@@ -16,9 +16,6 @@ spec:
     oauth2:
       clientType: Confidential
       redirectURIs:
-        - url: "https://matrix.hoohoot.org/_synapse/client/oidc/callback"
-          matchingMode: Strict
-          type: Authorization
         - url: "https://mas.hoohoot.org/upstream/callback/01JWB1P6NS8G6D93TE0KKS0HQH"
           matchingMode: Strict
           type: Authorization

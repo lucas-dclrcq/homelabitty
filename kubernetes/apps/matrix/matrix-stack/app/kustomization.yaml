@@ -6,11 +6,15 @@ resources:
   - ./authentikapplication.yaml
   - ./oidc-externalsecret.yaml
   - ./externalsecret.yaml
+  - ./ocirepository.yaml
   - ./helmrelease.yaml
+  - ./httproute.yaml
+  - ./prometheusrule.yaml
+  - ./grafanadashboard.yaml
   - ./probes.yaml
 configMapGenerator:
-  - name: mas-config
+  - name: mas-additional-config
     files:
-      - config.yaml=./resources/config.yaml
+      - upstream-oauth2.yaml=./resources/mas-upstream-oauth2.yaml
 generatorOptions:
   disableNameSuffixHash: true
