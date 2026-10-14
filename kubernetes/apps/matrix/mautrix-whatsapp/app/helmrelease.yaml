@@ -1,3 +1,4 @@
+
 # yaml-language-server: $schema=https://kubernetes-schemas.devbu.io/helm.toolkit.fluxcd.io/helmrelease_v2beta1.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
@@ -23,21 +24,27 @@ spec:
     controllers:
       mautrix-whatsapp:
         type: statefulset
+
         annotations:
           reloader.stakater.com/auto: "true"
+
         containers:
           main:
             image:
               repository: dock.mau.dev/mautrix/whatsapp
               tag: v0.2609.0
+
             env:
               TZ: "Europe/Paris"
+
             command:
               - "mautrix-whatsapp"
+
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
+
             probes:
               liveness: &probes
                 enabled: true
@@ -52,12 +59,14 @@ spec:
                   failureThreshold: 5
               readiness: *probes
               startup: *probes
+
             resources:
               requests:
                 cpu: 10m
                 memory: 128Mi
               limits:
                 memory: 512Mi
+
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
@@ -67,25 +76,16 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
         supplementalGroups:
           - 10000
-        seccompProfile:
-          type: RuntimeDefault
-    persistence:
-      config:
-        type: secret
-        name: mautrix-whatsapp-secret
-        globalMounts:
-          - path: /data/registration.yaml
-            subPath: registration.yaml
-          - path: /data/config.yaml
-            subPath: config.yaml
-      data:
-        existingClaim: mautrix-whatsapp
-        globalMounts:
-          - path: /data
-      tmp:
-        type: emptyDir
-        globalMounts:
-          - path: /tmp
+        seccompProfile: { type: RuntimeDefault }
+
+    service:
+      app:
+        controller: *app
+        publishNotReadyAddresses: true
+        ports:
+          http:
+            port: *port
+
     route:
       app:
         hostnames:
@@ -93,14 +93,26 @@ spec:
         parentRefs:
           - name: external
             namespace: network
+
         rules:
           - backendRefs:
-              - name: mautrix-whatsapp
-                port: 29318
-    service:
-      app:
-        controller: mautrix-whatsapp
-        ports:
-          http:
-            port: 29318
-        publishNotReadyAddresses: true
+              - name: *app
+                port: *port
+
+    persistence:
+      data:
+        existingClaim: *app
+        globalMounts:
+          - path: /data
+      config:
+        type: secret
+        name: mautrix-whatsapp-secret
+        globalMounts:
+          - subPath: registration.yaml
+            path: /data/registration.yaml
+          - subPath: config.yaml
+            path: /data/config.yaml
+      tmp:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
