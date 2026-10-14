@@ -12,10 +12,10 @@ spec:
   values:
     defaultPodOptions:
       securityContext:
-        runAsUser: "${APP_UID}"
-        runAsGroup: "${APP_GID}"
+        runAsUser: "1026"
+        runAsGroup: "1500"
         runAsNonRoot: true
-        fsGroup: "${APP_GID}"
+        fsGroup: "1500"
         fsGroupChangePolicy: "OnRootMismatch"
 
     controllers:

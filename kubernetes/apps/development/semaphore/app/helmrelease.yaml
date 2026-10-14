@@ -28,7 +28,7 @@ spec:
               SEMAPHORE_PORT: &port 3000
               SEMAPHORE_WEB_ROOT: "https://semaphore.${LIMITED_DOMAIN}"
               SEMAPHORE_PLAYBOOK_PATH: /tmp/semaphore
-              TZ: "${TIMEZONE}"
+              TZ: "Europe/Paris"
 
             resources:
               requests:

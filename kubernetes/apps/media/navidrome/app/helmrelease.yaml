@@ -37,7 +37,7 @@ spec:
                   name: navidrome-secret
 
             env:
-              TZ: "${TIMEZONE}"
+              TZ: "Europe/Paris"
               ND_AUTHREQUESTLIMIT: 0
               ND_DATAFOLDER: /config
               ND_ENABLEGRAVATAR: true
@@ -78,7 +78,7 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
         supplementalGroups:
           - 10000
-        seccompProfile: {type: RuntimeDefault}
+        seccompProfile: { type: RuntimeDefault }
 
     service:
       main:

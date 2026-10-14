@@ -34,7 +34,7 @@ spec:
               tag: v0.7.7
 
             env:
-              TZ: "${TIMEZONE}"
+              TZ: "Europe/Paris"
 
             probes:
               liveness:

@@ -38,7 +38,7 @@ spec:
               SONARR__LOG__LEVEL: info
               SONARR__SERVER__PORT: &port 80
               SONARR__UPDATE__BRANCH: develop
-              TZ: "${TIMEZONE}"
+              TZ: "Europe/Paris"
               SONARR__POSTGRES__HOST: "postgres-16-pgbouncer.infrastructure.svc.cluster.local"
               SONARR__POSTGRES__PORT: "5432"
               SONARR__POSTGRES__MAINDB: "sonarranime_main"
@@ -64,7 +64,7 @@ spec:
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities: {drop: ["ALL"]}
+              capabilities: { drop: ["ALL"] }
 
             resources:
               requests:
@@ -81,7 +81,7 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
         supplementalGroups:
           - 10000
-        seccompProfile: {type: RuntimeDefault}
+        seccompProfile: { type: RuntimeDefault }
 
     service:
       app:
