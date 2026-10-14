@@ -1,9 +1,9 @@
 ---
 id: instagram
 url: http://mautrix-instagram.matrix.svc.cluster.local:29319
-as_token: { { .AS_TOKEN } }
-hs_token: { { .HS_TOKEN } }
-sender_localpart: { { .SENDER_LOCALPART } }
+as_token: {{ .AS_TOKEN }}
+hs_token: {{ .HS_TOKEN }}
+sender_localpart: {{ .SENDER_LOCALPART }}
 rate_limited: false
 namespaces:
   users:
