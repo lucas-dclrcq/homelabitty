@@ -230,10 +230,10 @@ spec:
           rtcTcp:
             portType: LoadBalancer
             annotations:
-              lbipam.cilium.io/ips: "192.168.1.51"
+              lbipam.cilium.io/ips: "192.168.1.45"
               lbipam.cilium.io/sharing-key: matrix-rtc
           rtcMuxedUdp:
             portType: LoadBalancer
             annotations:
-              lbipam.cilium.io/ips: "192.168.1.51"
+              lbipam.cilium.io/ips: "192.168.1.45"
               lbipam.cilium.io/sharing-key: matrix-rtc
