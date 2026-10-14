@@ -6,7 +6,7 @@ resources:
   - ./externalsecret.yaml
   - ./litellmteam.yaml
   - ./litellmvirtualkey.yaml
-  - ./ocirepository.yaml
+  - ./helmrepository.yaml
   - ./helmrelease.yaml
 configMapGenerator:
   # Custom Robusta playbook package, imported by the runner via PYTHONPATH
