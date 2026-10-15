@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # --- build stage: build the Quarkus app (Roq renders the site at runtime) ---
-FROM maven:3.9-eclipse-temurin-21 AS build
+FROM maven:3.10-eclipse-temurin-21 AS build
 WORKDIR /src
 
 COPY . .
