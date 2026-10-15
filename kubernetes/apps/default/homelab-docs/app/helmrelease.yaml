@@ -62,7 +62,7 @@ spec:
           homelab-manager.hoohoot.org/category: "Infrastructure"
           homelab-manager.hoohoot.org/description: "Documentation du homelab"
         hostnames:
-          - "docs.hoohoot.org"
+          - "homelab-docs.hoohoot.org"
         parentRefs:
           - name: internal
             namespace: network
