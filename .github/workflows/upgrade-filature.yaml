@@ -1,3 +1,5 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
 name: Upgrade Filature
 
 on:
@@ -16,6 +18,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
       - name: Update HelmRelease File
         env:
           SHA256: ${{ inputs.image_sha }}
@@ -24,8 +29,8 @@ jobs:
             -i kubernetes/apps/default/filature/app/helmrelease.yaml
       - uses: EndBug/add-and-commit@cc9c08ba6c8df3b93a8f2db63e89b98368ae2ae8 # v11.1.1
         with:
-          message: 'chore(filature): upgrade to latest'
-          add: 'kubernetes/apps/default/filature/app/helmrelease.yaml --force'
+          message: "chore(filature): upgrade to latest"
+          add: "kubernetes/apps/default/filature/app/helmrelease.yaml --force"
           committer_name: Homelab Bot
           committer_email: homelab@bot.com
           push: true
