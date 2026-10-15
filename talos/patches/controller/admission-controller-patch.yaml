@@ -1,5 +1,6 @@
 ---
-cluster:
-  apiServer:
-    admissionControl:
-      $$patch: delete
+# PSA is generated as its own document in 1.14; drop it so Rook can run
+apiVersion: v1alpha1
+kind: KubeAdmissionControlConfig
+name: PodSecurity
+$$patch: delete
