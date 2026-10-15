@@ -25,10 +25,10 @@ jobs:
   build-and-publish:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout # zizmor: ignore[artipacked] credentials are required to push the pull request branch
+      - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          persist-credentials: true
+          persist-credentials: false
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
@@ -67,22 +67,13 @@ jobs:
           yq eval '.spec.values.controllers.homelab-docs.containers.app.image.tag = strenv(SHORT_SHA)' \
             -i kubernetes/apps/default/homelab-docs/app/helmrelease.yaml
 
-      - name: Open pull request
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          set -euo pipefail
-          if git diff --quiet -- kubernetes/apps/default/homelab-docs/app/helmrelease.yaml; then
-            echo "No image tag change; skipping pull request"
-            exit 0
-          fi
-          git config user.name "Homelab Bot"
-          git config user.email "homelab@bot.com"
-          branch="ci/homelab-docs-${GITHUB_SHA::7}"
-          git checkout -b "${branch}"
-          git commit -m "chore(homelab-docs): bump image" \
-            kubernetes/apps/default/homelab-docs/app/helmrelease.yaml
-          git push origin "${branch}"
-          gh pr create --base main --head "${branch}" \
-            --title "chore(homelab-docs): bump image" \
-            --body "Automated homelab-docs image tag bump to \`${GITHUB_SHA::7}\`."
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          commit-message: "chore(homelab-docs): bump image"
+          branch: ci/homelab-docs
+          delete-branch: true
+          title: "chore(homelab-docs): bump image"
+          body: "Automated homelab-docs image tag bump."
+          author: "Homelab Bot <homelab@bot.com>"
+          committer: "Homelab Bot <homelab@bot.com>"
