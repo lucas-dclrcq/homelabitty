@@ -63,8 +63,8 @@ jobs:
 
       - name: Update HelmRelease image tag
         run: |
-          export SHORT_SHA="${GITHUB_SHA::7}"
-          yq eval '.spec.values.controllers.homelab-docs.containers.app.image.tag = strenv(SHORT_SHA)' \
+          export TAG="sha-${GITHUB_SHA::7}"
+          yq eval '.spec.values.controllers.homelab-docs.containers.app.image.tag = strenv(TAG)' \
             -i kubernetes/apps/default/homelab-docs/app/helmrelease.yaml
 
       - name: Create pull request
