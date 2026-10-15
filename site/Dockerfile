@@ -11,7 +11,7 @@ RUN ./site/sync-content.sh \
     && mvn -B -q -e package
 
 # --- runtime stage: run the Quarkus app ---
-FROM eclipse-temurin:21-jre-alpine
+FROM eclipse-temurin:25-jre-alpine
 
 WORKDIR /app
 COPY --from=build /src/site/target/quarkus-app/ /app/
