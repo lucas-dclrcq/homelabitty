@@ -6,10 +6,14 @@ metadata:
   name: talos
 spec:
   talos:
-    # renovate: datasource=docker depName=ghcr.io/siderolabs/installer
+    # renovate: datasource=docker depName=ghcr.io/siderolabs/talos
     version: v1.13.2
   policy:
     rebootMode: powercycle
+    # Wait for Ceph RBD volumes to detach before the reboot, otherwise a
+    # fast reboot orphans the mount and the pod hits Multi-Attach on
+    # reschedule
+    waitForVolumeDetach: true
   healthChecks:
     # No kopiur backup in flight (Snapshot only: standing populator Restores
     # sit Reconciling=True by design and would block forever)
