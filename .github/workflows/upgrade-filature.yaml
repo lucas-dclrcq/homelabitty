@@ -11,12 +11,13 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
 
 jobs:
   upgrade:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout # zizmor: ignore[artipacked] credentials are required by the commit step
+      - name: Checkout # zizmor: ignore[artipacked] credentials are required to push the pull request branch
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: true
@@ -27,10 +28,24 @@ jobs:
         run: |
           VERSION="jvm-development@sha256:${SHA256}" yq eval '.spec.values.controllers.filature.containers.main.image.tag = strenv(VERSION)' \
             -i kubernetes/apps/default/filature/app/helmrelease.yaml
-      - uses: EndBug/add-and-commit@cc9c08ba6c8df3b93a8f2db63e89b98368ae2ae8 # v11.1.1
-        with:
-          message: "chore(filature): upgrade to latest"
-          add: "kubernetes/apps/default/filature/app/helmrelease.yaml --force"
-          committer_name: Homelab Bot
-          committer_email: homelab@bot.com
-          push: true
+
+      - name: Open pull request
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SHA256: ${{ inputs.image_sha }}
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- kubernetes/apps/default/filature/app/helmrelease.yaml; then
+            echo "No image change; skipping pull request"
+            exit 0
+          fi
+          git config user.name "Homelab Bot"
+          git config user.email "homelab@bot.com"
+          branch="ci/filature-${SHA256::7}"
+          git checkout -b "${branch}"
+          git commit -m "chore(filature): upgrade to latest" \
+            kubernetes/apps/default/filature/app/helmrelease.yaml
+          git push origin "${branch}"
+          gh pr create --base main --head "${branch}" \
+            --title "chore(filature): upgrade to latest" \
+            --body "Automated Filature image upgrade to \`sha256:${SHA256}\`."
