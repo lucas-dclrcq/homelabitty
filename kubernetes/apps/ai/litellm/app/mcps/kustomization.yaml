@@ -8,6 +8,7 @@ resources:
   - ./kubesearch.yaml
   - ./truenas.yaml
   - ./homeassistant.yaml
+  - ./trilium.yaml
   - ./grafana.yaml
   - ./vault.yaml
   - ./unifi.yaml

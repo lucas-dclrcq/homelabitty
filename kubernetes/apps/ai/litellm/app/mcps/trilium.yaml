@@ -1,0 +1,15 @@
+---
+apiVersion: litellm.home-operations.com/v1alpha1
+kind: LiteLLMMCPServer
+metadata:
+  name: trilium-mcp
+spec:
+  proxyRef: litellm
+  proxyNamespace: ai
+  alias: trilium
+  transport: http
+  url: https://trilium.hoohoot.org/mcp
+  authType: bearer_token
+  authTokenRef:
+    name: litellm-secret
+    key: TRILIUM_MCP_TOKEN
