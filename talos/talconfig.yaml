@@ -2,7 +2,7 @@
 ---
 # talosVersion is owned by the talosFactory renovate preset (custom.talos-factory):
 # ghcr.io/siderolabs/installer is no longer published from Talos 1.14 onward
-talosVersion: 1.13.2
+talosVersion: 1.14.2
 
 # renovate: datasource=docker depName=ghcr.io/siderolabs/kubelet
 kubernetesVersion: v1.34.8
@@ -202,10 +202,9 @@ nodes:
             mtu: 1500
             dhcp: false
 patches:
-  - "@./patches/global/machine-features.yaml"
+  - "@./patches/global/resolver.yaml"
   - "@./patches/global/machine-files.yaml"
   - "@./patches/global/machine-kubelet.yaml"
-  - "@./patches/global/machine-network.yaml"
   - "@./patches/global/machine-sysctls.yaml"
   - "@./patches/global/machine-sysfs.yaml"
   - "@./patches/global/machine-time.yaml"
