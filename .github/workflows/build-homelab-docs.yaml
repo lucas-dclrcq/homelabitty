@@ -66,6 +66,7 @@ jobs:
           export TAG="sha-${GITHUB_SHA::7}"
           yq eval '.spec.values.controllers.homelab-docs.containers.app.image.tag = strenv(TAG)' \
             -i kubernetes/apps/default/homelab-docs/app/helmrelease.yaml
+          npx --yes oxfmt@0.71.0 kubernetes/apps/default/homelab-docs/app/helmrelease.yaml
 
       - name: Create pull request
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
