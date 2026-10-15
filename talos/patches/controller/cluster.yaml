@@ -1,13 +1,32 @@
 ---
+apiVersion: v1alpha1
+kind: KubeAPIServerConfig
+# talhelper drops additionalApiServerCertSans under the 1.14 contract, so the
+# VIP has to be restated here or kubectl breaks against the kubeconfig endpoint
+certExtraSANs:
+  - 192.168.1.42
+  - 127.0.0.1
+extraArgs:
+  feature-gates: MutatingAdmissionPolicy=true
+  runtime-config: admissionregistration.k8s.io/v1beta1=true
+---
+apiVersion: v1alpha1
+kind: KubeControllerManagerConfig
+extraArgs:
+  bind-address: 0.0.0.0
+---
+apiVersion: v1alpha1
+kind: KubeSchedulerConfig
+extraArgs:
+  bind-address: 0.0.0.0
+---
+apiVersion: v1alpha1
+kind: KubeProxyConfig
+enabled: false
+---
+# No dedicated document in 1.14 for these two
 cluster:
   allowSchedulingOnControlPlanes: true
-  apiServer:
-    extraArgs:
-      feature-gates: MutatingAdmissionPolicy=true
-      runtime-config: admissionregistration.k8s.io/v1beta1=true
-  controllerManager:
-    extraArgs:
-      bind-address: 0.0.0.0
   coreDNS:
     disabled: true
   etcd:
@@ -15,8 +34,3 @@ cluster:
       listen-metrics-urls: http://0.0.0.0:2381
     advertisedSubnets:
       - 192.168.1.0/24
-  proxy:
-    disabled: true
-  scheduler:
-    extraArgs:
-      bind-address: 0.0.0.0
