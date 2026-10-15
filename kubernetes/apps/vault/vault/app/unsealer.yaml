@@ -27,7 +27,7 @@ spec:
         fsGroup: 1500
       containers:
         - name: unsealer
-          image: docker.io/hashicorp/vault:2.1.2
+          image: docker.io/hashicorp/vault:2.2.0
           env:
             - name: REPLICAS
               value: "3"
