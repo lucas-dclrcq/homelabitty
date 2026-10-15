@@ -16,10 +16,10 @@ jobs:
   upgrade:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout # zizmor: ignore[artipacked] credentials are required by the commit step
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          persist-credentials: false
+          persist-credentials: true
 
       - name: Update HelmRelease File
         env:
