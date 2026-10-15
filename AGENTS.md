@@ -107,3 +107,7 @@ Automated dependency updates via Renovate. Config in `.renovaterc.json5` with pr
 ### Label Convention
 
 `app.kubernetes.io/name` is set via `commonMetadata.labels` in `ks.yaml` and propagates to all resources. Use `app.kubernetes.io/component` for labels that must survive Flux's `commonMetadata` override. The label `substitution.flux.home.arpa/disabled` opts out of variable substitution.
+
+### Documentation
+
+All documentation, README files, comments, and commit messages must be written in English.

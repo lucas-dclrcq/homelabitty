@@ -1,0 +1,43 @@
+# VCS & tooling
+.git
+.gitignore
+.github
+.idea
+.vscode
+.opencode
+.agents
+.renovate
+.specify
+.lefthook.toml
+.oxfmtrc.json
+.yayammlls
+.editorconfig
+
+# Secrets / keys (never in the build context)
+age.key
+*.key
+*.pub
+kubeconfig
+talosconfig
+cluster-keys.json
+.env
+.env.*
+.private
+.sops.yaml
+
+# Build outputs
+site/target
+**/target
+**/node_modules
+.venv
+
+# Large / irrelevant directories
+ansible
+talos
+bootstrap
+hack
+book
+wiki
+.task
+.just
+.venv

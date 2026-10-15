@@ -1,0 +1,11 @@
+---
+title: Docs
+link: /docs/
+---
+<h1>Cluster documentation</h1>
+<p>Cluster-wide documentation, runbooks and troubleshooting guides.</p>
+<ul>
+{#for doc in site.collections.docs}
+<li><a href="{doc.url}">{doc.title}</a></li>
+{/for}
+</ul>

@@ -1,0 +1,11 @@
+---
+title: Applications
+link: /apps/
+---
+<h1>Applications</h1>
+<p>Documentation for applications deployed on the cluster.</p>
+<ul>
+{#for app in site.collections.apps}
+<li><a href="{app.url}">{app.title}</a></li>
+{/for}
+</ul>

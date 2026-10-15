@@ -1,4 +1,3 @@
----
 # yaml-language-server: $schema=https://json.schemastore.org/kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
@@ -12,6 +11,7 @@ resources:
   - ./vaultwarden/ks.yaml
   - ./wallabag/ks.yaml
   - ./immich/ks.yaml
+  - ./homelab-docs/ks.yaml
   - ./homelab-manager/ks.yaml
   - ./outline/ks.yaml
   - ./vikunja/ks.yaml
