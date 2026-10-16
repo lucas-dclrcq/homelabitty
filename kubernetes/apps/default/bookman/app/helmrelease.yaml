@@ -30,7 +30,7 @@ spec:
               # every push to main publishes `:latest`, a release publishes the
               # SemVer tag. The Harbor project is public, so no pull secret.
               # renovate: ignore
-              repository: docker.hoohoot.org/oknozor/bookman
+              repository: docker.hoohoot.org/bookman/bookman
               tag: latest
               pullPolicy: Always
 
