@@ -1,0 +1,32 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+# Ingress from the gateway is handled by the `ingress.home.arpa/*` pod labels
+# and DNS/Postgres/world egress by the `egress.home.arpa/*` ones. What those
+# policies cannot express is same-namespace traffic, so the API's calls to
+# Meilisearch — and to the cluster SMTP relay, if SMTP_URL points at it — are
+# allowed explicitly.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: bookman
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: bookman
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: bookman-meilisearch
+            io.kubernetes.pod.namespace: default
+      toPorts:
+        - ports:
+            - port: "7700"
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: smtp-relay
+            io.kubernetes.pod.namespace: default
+      toPorts:
+        - ports:
+            - port: "2525"
+              protocol: TCP

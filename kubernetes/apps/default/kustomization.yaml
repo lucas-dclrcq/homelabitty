@@ -25,3 +25,4 @@ resources:
   - ./mealie/ks.yaml
   - ./kalimba/ks.yaml
   - ./trilium/ks.yaml
+  - ./bookman/ks.yaml
