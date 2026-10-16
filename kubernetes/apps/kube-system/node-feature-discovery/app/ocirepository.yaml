@@ -10,5 +10,5 @@ spec:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
   ref:
-    tag: 0.19.0
+    tag: 0.20.0
   url: oci://ocharted.hoohoot.org/kubernetes-sigs.github.io/node-feature-discovery/charts/node-feature-discovery
