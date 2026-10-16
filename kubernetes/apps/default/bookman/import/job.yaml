@@ -1,0 +1,109 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/batch/job_v1.json
+# One-shot first load of the directory index.
+#
+# The stages mirror the bulk chain in the bookman repository (`README.md` §5 and
+# `docs/PRODUCTION.md` §12): stage both sources, geocode, deduplicate, push to
+# Meilisearch and apply the index settings + embedder. Everything is idempotent —
+# `run` rewrites its NDJSON, `index` upserts and `settings` re-applies — so the
+# Job can simply be deleted to run it again:
+#   kubectl -n default delete job bookman-import
+#
+# The inputs ship inside the image (`/app/data`, see the bookman `Dockerfile`),
+# and `bookman-ingest` resolves its defaults relative to the working directory
+# (`/app`), so no data needs mounting. The staged working set and the geocoder
+# cache live on a claim (see `pvc.yaml`) so a retry resumes the slow geocode
+# stage instead of restarting it.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: bookman-import
+spec:
+  # The chain is long (geocoding throttles to ~1 request/second upstream), so
+  # allow it to fail once and retry rather than giving up on a transient error.
+  backoffLimit: 2
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: bookman-import
+        egress.home.arpa/kubedns: allow
+        egress.home.arpa/world: allow
+    spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      restartPolicy: Never
+      securityContext:
+        runAsNonRoot: true
+        # The image's `bookman` user.
+        runAsUser: 10001
+        runAsGroup: 10001
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: ingest
+          image: docker.hoohoot.org/bookman/bookman:latest
+          command:
+            - /bin/sh
+            - -c
+          args:
+            - |
+              set -eu
+              # The pipeline's scratch directory is the `--build-dir` flag, not
+              # `BUILD_DIR` (that variable only configures the API). The flag is
+              # repeated rather than held in a shell variable, because Flux's
+              # postBuild substitution rewrites dollar-prefixed names and this
+              # resource has no opt-out annotation.
+              bookman-ingest --build-dir /var/lib/bookman/build sources
+              bookman-ingest --build-dir /var/lib/bookman/build run prospectacles
+              bookman-ingest --build-dir /var/lib/bookman/build run ecotour
+              bookman-ingest --build-dir /var/lib/bookman/build geocode
+              bookman-ingest --build-dir /var/lib/bookman/build merge
+              bookman-ingest --build-dir /var/lib/bookman/build index
+              bookman-ingest --build-dir /var/lib/bookman/build settings
+          env:
+            - name: MEILI_URL
+              value: http://bookman-meilisearch.default.svc.cluster.local:7700
+            - name: BOOKMAN_PROVIDER_MODE
+              value: live
+            # `run ecotour` prefers the live Supabase API when
+            # ECOTOUR_SUPABASE_ANON_KEY is set and otherwise reads the committed
+            # snapshot. An explicit `env` entry beats `envFrom`, so an empty
+            # value here pins the import to the snapshot even if the Vault entry
+            # carries the key (the source logs the failed call and falls back).
+            - name: ECOTOUR_SUPABASE_ANON_KEY
+              value: ""
+            # `bookman-ingest` defaults to `docs/Prospectacles …`, but the
+            # workbook moved to `data/` (see the data commit upstream).
+            - name: PROSPECTACLES_XLSX
+              value: /app/data/Prospectacles - INTÉGRAAL - 28.08.2025.xlsx
+            - name: RUST_LOG
+              value: info
+          envFrom:
+            - secretRef:
+                name: bookman-secret # MEILI_MASTER_KEY, MISTRAL_API_KEY
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              memory: 2Gi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - "ALL"
+          volumeMounts:
+            # Staged NDJSON and the geocoder cache. The claim outlives the Job
+            # on purpose: geocoding takes hours and a retry should resume.
+            - name: scratch
+              mountPath: /var/lib/bookman
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: scratch
+          persistentVolumeClaim:
+            claimName: bookman-import-scratch
+        - name: tmp
+          emptyDir:
+            sizeLimit: 1Gi
