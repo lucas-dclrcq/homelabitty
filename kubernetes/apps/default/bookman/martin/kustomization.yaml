@@ -1,0 +1,29 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ./helmrelease.yaml
+  - ./ocirepository.yaml
+configMapGenerator:
+  # Copies of `deploy/martin` from the bookman repository, which the Martin
+  # image does not carry. Refresh them from there when the upstream style,
+  # sprites or configuration change.
+  - name: bookman-martin-config
+    files:
+      - config.yaml=./resources/config.yaml
+  - name: bookman-martin-style
+    files:
+      - bookman.json=./resources/styles/bookman.json
+  - name: bookman-martin-sprites
+    files:
+      - arrow.svg=./resources/sprites/arrow.svg
+      - capital.svg=./resources/sprites/capital.svg
+      - train_station.svg=./resources/sprites/train_station.svg
+      - townspot.svg=./resources/sprites/townspot.svg
+generatorOptions:
+  disableNameSuffixHash: true
+  annotations:
+    # The MapLibre style filters on `$type`; a shell-style substitution would
+    # delete it and leave an invalid style.
+    kustomize.toolkit.fluxcd.io/substitute: disabled

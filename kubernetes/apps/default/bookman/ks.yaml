@@ -1,0 +1,128 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &app bookman
+  namespace: &namespace default
+spec:
+  targetNamespace: *namespace
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
+  components:
+    - ../../../../components/kopiur
+  dependsOn:
+    - name: external-secrets-stores
+      namespace: external-secrets
+    - name: crunchy-postgres-operator
+      namespace: flux-system
+    - name: envoy-gateway
+      namespace: network
+    - name: bookman-meilisearch
+      namespace: default
+  path: ./kubernetes/apps/default/bookman/app
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+    namespace: flux-system
+  wait: false
+  interval: 1h
+  postBuild:
+    substitute:
+      APP: *app
+      # Raw provider payloads (for replay) and the geocode cache, see BUILD_DIR.
+      KOPIUR_CAPACITY: 5Gi
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &app bookman-meilisearch
+  namespace: &namespace default
+spec:
+  targetNamespace: *namespace
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
+  components:
+    - ../../../../components/kopiur
+  dependsOn:
+    - name: external-secrets-stores
+      namespace: external-secrets
+    - name: envoy-gateway
+      namespace: network
+  path: ./kubernetes/apps/default/bookman/meilisearch
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+    namespace: flux-system
+  wait: false
+  interval: 1h
+  postBuild:
+    substitute:
+      APP: *app
+      # The directory index carries the Mistral embeddings.
+      KOPIUR_CAPACITY: 10Gi
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+# Owns the tiles claim and the one-shot Job that fills it. `wait: true` makes
+# Flux wait for the Job to complete, and `bookman-martin` depends on this
+# Kustomization, so the tile server only starts once the basemap exists (the
+# claim is ReadWriteOnce, so the two must never run at the same time).
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &app bookman-basemap
+  namespace: &namespace default
+spec:
+  targetNamespace: *namespace
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
+  components:
+    - ../../../../components/kopiur
+  path: ./kubernetes/apps/default/bookman/basemap
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+    namespace: flux-system
+  # The France extract is a multi-gigabyte download; give it room to finish.
+  timeout: 30m
+  wait: true
+  interval: 1h
+  postBuild:
+    substitute:
+      APP: *app
+      KOPIUR_CAPACITY: 20Gi
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &app bookman-martin
+  namespace: &namespace default
+spec:
+  targetNamespace: *namespace
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
+  dependsOn:
+    - name: envoy-gateway
+      namespace: network
+    - name: bookman-basemap
+      namespace: default
+  path: ./kubernetes/apps/default/bookman/martin
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+    namespace: flux-system
+  wait: false
+  interval: 1h
+  postBuild:
+    substitute:
+      APP: *app

@@ -1,0 +1,126 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app bookman-martin
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  values:
+    global:
+      createDefaultServiceAccount: false
+
+    controllers:
+      bookman-martin:
+        # ReadWriteOnce claim, and a single writer is never desirable anyway.
+        strategy: Recreate
+        pod:
+          labels:
+            # The SPA loads the MapLibre style straight from the browser, so the
+            # tiles have their own public origin (the style uses root-relative
+            # paths, which a path prefix on the app's host could not carry).
+            ingress.home.arpa/gateway-external: allow
+        containers:
+          app:
+            image:
+              repository: ghcr.io/maplibre/martin
+              # Keep aligned with bookman's docker-compose.yml.
+              tag: 2.0.0-beta.3
+            args:
+              - --config
+              - /config/config.yaml
+            env:
+              TZ: ${TIMEZONE}
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health
+                    port: &port 3000
+                  initialDelaySeconds: 10
+                  periodSeconds: 30
+                  failureThreshold: 5
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health
+                    port: *port
+                  initialDelaySeconds: 5
+                  periodSeconds: 10
+                  failureThreshold: 5
+            resources:
+              requests:
+                cpu: 25m
+                memory: 128Mi
+              limits:
+                memory: 1Gi # never set limits.cpu
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - "ALL"
+
+    defaultPodOptions:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+
+    persistence:
+      # The basemap, its fonts and the geocode-friendly tile archives: written
+      # by the bookman-basemap Job and only ever read from here.
+      tiles:
+        enabled: true
+        existingClaim: bookman-basemap
+        globalMounts:
+          - path: /tiles
+      config:
+        type: configMap
+        name: bookman-martin-config
+        globalMounts:
+          - path: /config
+      styles:
+        type: configMap
+        name: bookman-martin-style
+        globalMounts:
+          - path: /config/styles
+      sprites:
+        type: configMap
+        name: bookman-martin-sprites
+        globalMounts:
+          - path: /config/sprites/bookman
+      tmp:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
+
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: *port
+
+    route:
+      app:
+        hostnames:
+          - "bookman-tiles.${SECRET_DOMAIN}"
+        parentRefs:
+          - name: external
+            namespace: network
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port

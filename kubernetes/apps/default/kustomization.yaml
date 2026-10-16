@@ -25,3 +25,4 @@ resources:
   - ./mealie/ks.yaml
   - ./recherche-maison/ks.yaml
   - ./kalimba/ks.yaml
+  - ./bookman/ks.yaml

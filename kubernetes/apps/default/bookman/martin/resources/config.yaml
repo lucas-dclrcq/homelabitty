@@ -1,0 +1,21 @@
+# Martin tile-server configuration for BookMan.
+#
+# Mounted from a ConfigMap. The only divergence from
+# `deploy/martin/config.yaml` in the bookman repository is `fonts.paths`: the
+# fonts travel with the tiles (downloaded onto the claim by the
+# `bookman-basemap` Job, see ../basemap) because a ConfigMap cannot hold them.
+listen_addresses: 0.0.0.0:3000
+pmtiles:
+  paths:
+    - /tiles
+styles:
+  paths:
+    - /config/styles
+fonts:
+  paths:
+    - /tiles/fonts
+sprites:
+  # Each entry is published under its directory name, so this yields the
+  # `/sprite/bookman` source referenced by `styles/bookman.json`.
+  paths:
+    - /config/sprites/bookman
