@@ -1,0 +1,22 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/core/persistentvolumeclaim_v1.json
+# Scratch space for the first import: the staged NDJSON working set and, more
+# importantly, the geocoder cache. Geocoding is rate-limited to about one
+# request per second upstream and the corpus is tens of thousands of venues, so
+# the stage runs for a long time — keeping the cache means a retry (or a later
+# re-import) resumes instead of starting over.
+#
+# A plain claim rather than the `kopiur` component: this is disposable scratch
+# data, not something worth snapshotting and backing up.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: bookman-import-scratch
+spec:
+  storageClassName: ceph-block
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 5Gi
