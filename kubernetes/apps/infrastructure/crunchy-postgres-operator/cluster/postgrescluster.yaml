@@ -236,6 +236,11 @@ spec:
         - "litellm"
       password:
         type: AlphaNumeric
+    - name: "bookman"
+      databases:
+        - "bookman"
+      password:
+        type: AlphaNumeric
   backups:
     pgbackrest:
       configuration:
