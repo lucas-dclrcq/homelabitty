@@ -89,7 +89,7 @@ spec:
       # ESS expects <pvc>/media_store. Remove after the first successful start.
       extraInitContainers:
         - name: media-migrate
-          image: docker.io/library/busybox:1.37
+          image: docker.io/library/busybox:1.38
           command:
             - sh
             - -c
