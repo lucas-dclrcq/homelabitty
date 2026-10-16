@@ -1,0 +1,163 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app bookman
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  values:
+    global:
+      createDefaultServiceAccount: false
+
+    controllers:
+      bookman:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        pod:
+          labels:
+            ingress.home.arpa/gateway-external: allow
+            egress.home.arpa/kubedns: allow
+            egress.home.arpa/postgres: allow
+            egress.home.arpa/world: allow
+        containers:
+          app:
+            image:
+              # Built by the bookman repository's Forgejo CI (`.forgejo/workflows`):
+              # every push to main publishes `:latest`, a release publishes the
+              # SemVer tag. The Harbor project is public, so no pull secret.
+              # renovate: ignore
+              repository: docker.hoohoot.org/oknozor/bookman
+              tag: latest
+              pullPolicy: Always
+
+            env:
+              TZ: ${TIMEZONE}
+              # The API serves the SPA itself (`STATIC_DIR` is baked into the
+              # image) and owns `/api`, so the browser only talks to one origin:
+              # the session cookie stays first-party and CORS is not involved.
+              # Martin and Meilisearch are separate origins, configured in the
+              # frontend bundle at build time (VITE_*), not here.
+              APP_BASE_URL: &baseUrl "https://bookman.${SECRET_DOMAIN}"
+              PUBLIC_BASE_URL: *baseUrl
+              # The password-less `dev` provider must never be reachable in
+              # production; the first admin comes from the Vault secret
+              # (BOOKMAN_BOOTSTRAP_ADMIN_EMAIL/_PASSWORD).
+              DEV_AUTH_ENABLED: "false"
+
+              MEILI_URL: http://bookman-meilisearch.default.svc.cluster.local:7700
+
+              # Mail is only actually sent when SMTP_URL is set (Vault) *and*
+              # MAIL_DRY_RUN is false.
+              MAIL_DRY_RUN: "false"
+              MAIL_FROM: "BookMan <no-reply@${SECRET_DOMAIN}>"
+
+              BUILD_DIR: /var/lib/bookman/build
+              BOOKMAN_PROVIDER_MODE: live
+              # MusicBrainz blocks default user agents; both must carry a real
+              # contact.
+              MUSICBRAINZ_USER_AGENT: "BookMan/0.1.0 (+https://bookman.${SECRET_DOMAIN})"
+              RA_USER_AGENT: "BookMan/0.1.0 (+https://bookman.${SECRET_DOMAIN})"
+
+            envFrom:
+              - secretRef:
+                  name: bookman-secret
+              - secretRef:
+                  name: bookman-db-secret
+
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health
+                    port: &port 8080
+                  initialDelaySeconds: 10
+                  periodSeconds: 30
+                  failureThreshold: 5
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /readyz
+                    port: *port
+                  initialDelaySeconds: 10
+                  periodSeconds: 10
+                  failureThreshold: 5
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health
+                    port: *port
+                  failureThreshold: 30
+                  periodSeconds: 5
+
+            resources:
+              requests:
+                cpu: 25m
+                memory: 128Mi
+              limits:
+                memory: 512Mi # never set limits.cpu
+
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - "ALL"
+
+    defaultPodOptions:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      securityContext:
+        runAsNonRoot: true
+        # The image's `bookman` user.
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile:
+          type: RuntimeDefault
+
+    persistence:
+      build:
+        enabled: true
+        existingClaim: *app # created by the kopiur component
+        globalMounts:
+          # The image declares this path as BUILD_DIR (`/var/lib/bookman/build`).
+          - path: /var/lib/bookman
+      tmp:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
+
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: *port
+
+    route:
+      app:
+        annotations:
+          homelab-manager.hoohoot.org/enabled: "true"
+          homelab-manager.hoohoot.org/category: "Misc"
+          homelab-manager.hoohoot.org/description: "Booking as a service pour artistes"
+          homelab-manager.hoohoot.org/logo-url: "https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/musicbrainz.png"
+        hostnames:
+          - "{{ .Release.Name }}.${SECRET_DOMAIN}"
+        parentRefs:
+          - name: external
+            namespace: network
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
