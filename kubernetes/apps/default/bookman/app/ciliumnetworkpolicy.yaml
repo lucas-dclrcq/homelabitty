@@ -3,8 +3,8 @@
 # Ingress from the gateway is handled by the `ingress.home.arpa/*` pod labels
 # and DNS/Postgres/world egress by the `egress.home.arpa/*` ones. What those
 # policies cannot express is same-namespace traffic, so the API's calls to
-# Meilisearch — and to the cluster SMTP relay, if SMTP_URL points at it — are
-# allowed explicitly.
+# Meilisearch — and to the cluster SMTP relay, if the operator points the SMTP
+# URL runtime setting at it — are allowed explicitly.
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:

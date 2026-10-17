@@ -59,7 +59,12 @@ spec:
     kind: GitRepository
     name: home-kubernetes
     namespace: flux-system
-  wait: false
+  # `bookman` and the one-shot `bookman-import` depend on this Kustomization.
+  # With `wait: false` it reports Ready as soon as its resources are applied, so
+  # a dependent can start before Meilisearch actually serves requests; wait for
+  # the HelmRelease instead.
+  wait: true
+  timeout: 10m
   interval: 1h
   postBuild:
     substitute:
@@ -129,8 +134,16 @@ spec:
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 # One-shot first load of the directory index. Runs after the API (which owns the
-# ExternalSecret for `bookman-secret`); the Job itself is idempotent, so deleting
-# it re-imports.
+# ExternalSecret for `bookman-secret`) and Meilisearch; the Job itself is
+# idempotent, so deleting it re-imports. The two source snapshots are fetched
+# into a temporary claim by the Job's init container — they are not part of the
+# image.
+#
+# This Kustomization is disposable: once `kubectl -n default get job
+# bookman-import` reports `Complete`, delete the Job and remove this entry plus
+# `kubernetes/apps/default/bookman/import/` from Git. Flux then prunes both
+# claims and the network policy; the directory index lives in Meilisearch, so
+# nothing else is affected.
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
