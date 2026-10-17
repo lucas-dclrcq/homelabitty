@@ -1,5 +1,0 @@
----
-matrix_authentication_service:
-  enabled: true
-  endpoint: "http://mas.matrix.svc.cluster.local:8080/"
-  secret: "{{ .SYNAPSE_SECRET }}"

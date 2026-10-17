@@ -1,4 +1,3 @@
----
 # yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
@@ -12,10 +11,10 @@ spec:
   values:
     defaultPodOptions:
       securityContext:
-        runAsUser: "${APP_UID}"
-        runAsGroup: "${APP_GID}"
+        runAsUser: 1026
+        runAsGroup: 1500
         runAsNonRoot: true
-        fsGroup: "${APP_GID}"
+        fsGroup: 1500
         fsGroupChangePolicy: "OnRootMismatch"
 
     controllers:
@@ -57,7 +56,7 @@ spec:
     route:
       app:
         hostnames:
-          - "{{ .Release.Name }}.${SECRET_DOMAIN}"
+          - "{{ .Release.Name }}.hoohoot.org"
         parentRefs:
           - name: external
             namespace: network

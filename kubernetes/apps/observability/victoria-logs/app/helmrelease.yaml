@@ -37,7 +37,7 @@ spec:
           - name: internal
             namespace: network
         hostnames:
-          - "vlogs.${LIMITED_DOMAIN}"
+          - "vlogs.hoohoot.xyz"
         extraRules:
           - filters:
               - type: RequestRedirect

@@ -18,9 +18,9 @@ spec:
       audiobookshelf:
         pod:
           securityContext:
-            runAsUser: ${APP_UID}
-            runAsGroup: ${APP_GID}
-            fsGroup: ${APP_GID}
+            runAsUser: 1026
+            runAsGroup: 1500
+            fsGroup: 1500
             fsGroupChangePolicy: OnRootMismatch
 
         containers:
@@ -30,10 +30,10 @@ spec:
               tag: 2.37.1
 
             env:
-              TZ: ${TIMEZONE}
+              TZ: Europe/Paris
               PORT: &port 8080
-              AUDIOBOOKSHELF_UID: ${APP_UID}
-              AUDIOBOOKSHELF_GID: ${APP_GID}
+              AUDIOBOOKSHELF_UID: 1026
+              AUDIOBOOKSHELF_GID: 1500
               CONFIG_PATH: /config
               METADATA_PATH: /config/metadata
 
@@ -69,7 +69,7 @@ spec:
           homelab-manager.hoohoot.org/description: "Podcasts et audiobooks"
           homelab-manager.hoohoot.org/logo-url: "https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/audiobookshelf.png"
         hostnames:
-          - "{{ .Release.Name }}.${SECRET_DOMAIN}"
+          - "{{ .Release.Name }}.hoohoot.org"
         parentRefs:
           - name: external
             namespace: network
@@ -84,13 +84,13 @@ spec:
         existingClaim: *app
       audiobooks:
         type: nfs
-        server: "truenas.${INTERNAL_DOMAIN}"
+        server: "truenas.lulice.lan"
         path: /mnt/tank/Media/Audiobooks
         globalMounts:
           - path: /audiobooks
       podcasts:
         type: nfs
-        server: "truenas.${INTERNAL_DOMAIN}"
+        server: "truenas.lulice.lan"
         path: /mnt/tank/Media/Podcasts
         globalMounts:
           - path: /podcasts

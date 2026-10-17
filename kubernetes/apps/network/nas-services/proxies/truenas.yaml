@@ -5,7 +5,7 @@ metadata:
   name: truenas
 spec:
   hostnames:
-    - truenas.${LIMITED_DOMAIN}
+    - truenas.hoohoot.xyz
   parentRefs:
     - name: internal
       namespace: network
@@ -43,4 +43,4 @@ ports:
     port: 80
 endpoints:
   - addresses:
-      - "truenas.${INTERNAL_DOMAIN}"
+      - "truenas.lulice.lan"

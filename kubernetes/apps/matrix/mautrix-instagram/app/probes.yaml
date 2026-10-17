@@ -12,7 +12,7 @@ spec:
   targets:
     staticConfig:
       static:
-        - "https://mautrix-instagram.${SECRET_DOMAIN}/_matrix/mau/live"
+        - "https://mautrix-instagram.hoohoot.org/_matrix/mau/live"
   metricRelabelings:
     - targetLabel: service
       replacement: app-endpoint

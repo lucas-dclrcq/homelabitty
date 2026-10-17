@@ -20,13 +20,13 @@ spec:
           app:
             image:
               repository: ghcr.io/bookorbit/bookorbit
-              tag: 3.3.0
+              tag: 3.4.0
 
             env:
-              TZ: ${TIMEZONE}
+              TZ: Europe/Paris
               NODE_ENV: production
               PORT: &port 3000
-              APP_URL: https://bookorbit.${SECRET_DOMAIN}
+              APP_URL: https://bookorbit.hoohoot.org
               LIBRARY_BROWSE_ROOT: /books
               BOOKORBIT_FIX_PERMISSIONS: "false"
               OIDC_ALLOW_LOCAL_ISSUERS: "true"
@@ -64,7 +64,7 @@ spec:
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities: {drop: ["ALL"]}
+              capabilities: { drop: ["ALL"] }
 
             resources:
               requests:
@@ -76,11 +76,11 @@ spec:
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
-        runAsUser: "${APP_UID}"
-        runAsGroup: "${APP_GID}"
-        fsGroup: "${APP_GID}"
+        runAsUser: 1026
+        runAsGroup: 1500
+        fsGroup: 1500
         fsGroupChangePolicy: OnRootMismatch
-        seccompProfile: {type: RuntimeDefault}
+        seccompProfile: { type: RuntimeDefault }
 
     service:
       app:
@@ -97,7 +97,7 @@ spec:
           homelab-manager.hoohoot.org/description: "Bibliothèque numérique — ebooks, BD et livres audio, synchronisation multi-appareils"
           homelab-manager.hoohoot.org/logo-url: "https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/bookorbit.png"
         hostnames:
-          - "{{ .Release.Name }}.${SECRET_DOMAIN}"
+          - "{{ .Release.Name }}.hoohoot.org"
         parentRefs:
           - name: external
             namespace: network
@@ -115,7 +115,7 @@ spec:
 
       books:
         type: nfs
-        server: "truenas.${INTERNAL_DOMAIN}"
+        server: "truenas.lulice.lan"
         path: /mnt/tank/Apps/bookorbit
         globalMounts:
           - path: /books
@@ -127,14 +127,14 @@ spec:
 
       bookdrop:
         type: nfs
-        server: "truenas.${INTERNAL_DOMAIN}"
+        server: "truenas.lulice.lan"
         path: /mnt/tank/Apps/nana/uploads
         globalMounts:
           - path: /bookdrop
 
       downloads:
         type: nfs
-        server: "truenas.${INTERNAL_DOMAIN}"
+        server: "truenas.lulice.lan"
         path: /mnt/tank/Media/Downloads
         globalMounts:
           - path: /downloads

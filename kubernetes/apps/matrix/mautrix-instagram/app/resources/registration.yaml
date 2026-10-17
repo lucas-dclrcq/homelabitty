@@ -7,9 +7,9 @@ sender_localpart: {{ .SENDER_LOCALPART }}
 rate_limited: false
 namespaces:
   users:
-    - regex: ^@instabot:${SECRET_DOMAIN/./\\.}$
+    - regex: ^@instabot:hoohoot\.org$
       exclusive: true
-    - regex: ^@insta_.*:${SECRET_DOMAIN/./\\.}$
+    - regex: ^@insta_.*:hoohoot\.org$
       exclusive: true
 de.sorunome.msc2409.push_ephemeral: true
 push_ephemeral: true

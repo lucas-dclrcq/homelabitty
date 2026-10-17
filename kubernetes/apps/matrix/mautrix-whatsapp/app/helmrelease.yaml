@@ -32,10 +32,10 @@ spec:
           main:
             image:
               repository: dock.mau.dev/mautrix/whatsapp
-              tag: v0.2609.0
+              tag: v0.2610.0
 
             env:
-              TZ: "${TIMEZONE}"
+              TZ: "Europe/Paris"
 
             command:
               - "mautrix-whatsapp"
@@ -43,7 +43,7 @@ spec:
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities: {drop: ["ALL"]}
+              capabilities: { drop: ["ALL"] }
 
             probes:
               liveness: &probes
@@ -70,13 +70,13 @@ spec:
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
-        runAsUser: "${APP_UID}"
-        runAsGroup: "${APP_GID}"
-        fsGroup: "${APP_GID}"
+        runAsUser: 1026
+        runAsGroup: 1500
+        fsGroup: 1500
         fsGroupChangePolicy: OnRootMismatch
         supplementalGroups:
           - 10000
-        seccompProfile: {type: RuntimeDefault}
+        seccompProfile: { type: RuntimeDefault }
 
     service:
       app:
@@ -89,7 +89,7 @@ spec:
     route:
       app:
         hostnames:
-          - "{{ .Release.Name }}.${SECRET_DOMAIN}"
+          - "{{ .Release.Name }}.hoohoot.org"
         parentRefs:
           - name: external
             namespace: network

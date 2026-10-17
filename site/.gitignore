@@ -1,0 +1,9 @@
+# Transient build artifacts
+.generated-manifest
+target/
+node_modules/
+
+# Generated content (built from co-located markdown by sync-content.sh)
+content/docs/
+content/namespaces/
+content/apps/

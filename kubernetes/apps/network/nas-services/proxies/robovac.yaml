@@ -5,7 +5,7 @@ metadata:
   name: robovac
 spec:
   hostnames:
-    - robovac.${LIMITED_DOMAIN}
+    - robovac.hoohoot.xyz
   parentRefs:
     - name: internal
       namespace: network
@@ -43,4 +43,4 @@ ports:
     port: 80
 endpoints:
   - addresses:
-      - "robovac.${INTERNAL_DOMAIN}"
+      - "robovac.lulice.lan"

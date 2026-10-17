@@ -4,7 +4,7 @@ kind: LiteLLMProxy
 metadata:
   name: litellm
 spec:
-  image: ghcr.io/berriai/litellm:v1.105.0
+  image: ghcr.io/berriai/litellm:v1.105.1
   replicas: 1
 
   applyMode: api
@@ -16,7 +16,7 @@ spec:
   generalSettings:
     master_key: os.environ/LITELLM_MASTER_KEY
     database_url: os.environ/DATABASE_URL
-    proxy_base_url: https://litellm.${LIMITED_DOMAIN}
+    proxy_base_url: https://litellm.hoohoot.xyz
     store_model_in_db: true
     store_prompts_in_spend_logs: true
     health_check_endpoint: /
@@ -53,14 +53,14 @@ spec:
     - name: STORE_MODEL_IN_DB
       value: "True"
     - name: PROXY_BASE_URL
-      value: https://litellm.${LIMITED_DOMAIN}
+      value: https://litellm.hoohoot.xyz
     # SSO (Authentik generic OIDC) - client id/secret come from litellm-secret
     - name: GENERIC_AUTHORIZATION_ENDPOINT
-      value: https://sso.${SECRET_DOMAIN}/application/o/authorize/
+      value: https://sso.hoohoot.org/application/o/authorize/
     - name: GENERIC_TOKEN_ENDPOINT
-      value: https://sso.${SECRET_DOMAIN}/application/o/token/
+      value: https://sso.hoohoot.org/application/o/token/
     - name: GENERIC_USERINFO_ENDPOINT
-      value: https://sso.${SECRET_DOMAIN}/application/o/userinfo/
+      value: https://sso.hoohoot.org/application/o/userinfo/
     - name: GENERIC_SCOPE
       value: openid profile email
     - name: GENERIC_USER_ID_ATTRIBUTE
@@ -71,8 +71,8 @@ spec:
       value: name
 
   envFrom:
-    - secretRef: {name: litellm-secret}
-    - secretRef: {name: litellm-pg}
+    - secretRef: { name: litellm-secret }
+    - secretRef: { name: litellm-pg }
 
   resources:
     requests:
@@ -83,7 +83,7 @@ spec:
 
   securityContext:
     allowPrivilegeEscalation: false
-    capabilities: {drop: ["ALL"]}
+    capabilities: { drop: ["ALL"] }
 
   livenessProbe:
     httpGet:
@@ -102,7 +102,7 @@ spec:
     failureThreshold: 5
 
   route:
-    hostnames: ["litellm.${LIMITED_DOMAIN}"]
+    hostnames: ["litellm.hoohoot.xyz"]
     parentRefs:
       - group: gateway.networking.k8s.io
         kind: Gateway

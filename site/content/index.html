@@ -1,0 +1,29 @@
+---
+title: Homelab Docs
+description: Documentation for the hoohoot homelab cluster
+---
+<h1>Homelab Docs</h1>
+<p>
+  Welcome to the documentation for my homelab: a Talos Linux Kubernetes cluster managed
+  with GitOps (Flux CD). This site is generated with
+  <a href="https://roq.quarkiverse.io/">Roq</a> from markdown pages that live next to the
+  things they document.
+</p>
+<h2>Applications</h2>
+<ul>
+{#for app in site.collections.apps}
+<li><a href="{app.url}">{app.title}</a></li>
+{/for}
+</ul>
+<h2>Namespaces</h2>
+<ul>
+{#for ns in site.collections.namespaces}
+<li><a href="{ns.url}">{ns.title}</a></li>
+{/for}
+</ul>
+<h2>Cluster documentation</h2>
+<ul>
+{#for doc in site.collections.docs}
+<li><a href="{doc.url}">{doc.title}</a></li>
+{/for}
+</ul>

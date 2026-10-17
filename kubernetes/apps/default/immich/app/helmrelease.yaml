@@ -18,16 +18,16 @@ spec:
         pod: &podSecurity
           enableServiceLinks: false
           securityContext:
-            runAsUser: ${APP_UID}
-            runAsGroup: ${APP_GID}
+            runAsUser: 1026
+            runAsGroup: 1500
             runAsNonRoot: true
-            fsGroup: ${APP_GID}
+            fsGroup: 1500
             fsGroupChangePolicy: OnRootMismatch
         containers:
           main:
             image:
               repository: ghcr.io/immich-app/immich-server
-              tag: v3.3.1@sha256:db996e352359771c6a3db121a0ed8761516b22f727fc092a0f46dcfef82c1bc1
+              tag: v3.3.3@sha256:bae7664ff3aa4c2c1fcbdcdd86b40b105643c5f861f3e6a770fc760089f25862
             envFrom:
               - secretRef:
                   name: immich-secret
@@ -40,7 +40,7 @@ spec:
           main:
             image:
               repository: ghcr.io/immich-app/immich-machine-learning
-              tag: v3.3.1@sha256:513c831cfb010ad319341a0c86b42c575a0d5b688d3e8cae346ee624074a58ed
+              tag: v3.3.3@sha256:73915f07e1f4289ba45b174c58443db74cef47ddf502613f475fc5e52458ea42
             envFrom:
               - secretRef:
                   name: immich-secret
@@ -67,7 +67,7 @@ spec:
           homelab-manager.hoohoot.org/description: "Gestionnaire de photos"
           homelab-manager.hoohoot.org/logo-url: "https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/immich.png"
         hostnames:
-          - "photos.${SECRET_DOMAIN}"
+          - "photos.hoohoot.org"
         parentRefs:
           - name: external
             namespace: network
@@ -86,7 +86,7 @@ spec:
               - path: /config/matplotlib
       library:
         type: nfs
-        server: "truenas.${INTERNAL_DOMAIN}"
+        server: "truenas.lulice.lan"
         path: /mnt/tank/Photos
         advancedMounts:
           server:

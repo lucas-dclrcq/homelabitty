@@ -5,12 +5,8 @@ namespace: matrix
 components:
   - ../../components/common
 resources:
-  - ./synapse/ks.yaml
-  - ./element/ks.yaml
-  - ./synapse-admin/ks.yaml
+  - ./matrix-stack/ks.yaml
   - ./mautrix-discord/ks.yaml
   - ./mautrix-instagram/ks.yaml
   - ./mautrix-facebook/ks.yaml
   - ./mautrix-whatsapp/ks.yaml
-  - ./mas/ks.yaml
-  - ./matrix-hookshot/ks.yaml

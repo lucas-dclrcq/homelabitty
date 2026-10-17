@@ -19,12 +19,13 @@ spec:
       bypassNetworks:
         - 10.69.0.0/16
         - 10.96.0.0/16
+        - 192.168.0.0/16
     deploymentAnnotations:
       reloader.stakater.com/auto: "true"
     httpRoute:
       enabled: true
       hostnames:
-        - "ocharted.${SECRET_DOMAIN}"
+        - "ocharted.hoohoot.org"
       parentRefs:
         - name: external
           namespace: network

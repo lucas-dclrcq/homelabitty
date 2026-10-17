@@ -1,0 +1,80 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+name: Build Homelab Docs
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "site/**"
+      - "docs/**"
+      - "kubernetes/apps/**/README.md"
+      - ".github/workflows/build-homelab-docs.yaml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  packages: write
+  pull-requests: write
+
+concurrency:
+  group: homelab-docs
+  cancel-in-progress: false
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3.12.0
+
+      - name: Login to GHCR
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3.7.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Image metadata
+        id: meta
+        uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 # v5.10.0
+        with:
+          images: ghcr.io/lucas-dclrcq/homelab-docs
+          tags: |
+            type=sha,format=short
+            type=raw,value=main
+
+      - name: Build and push
+        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6.19.2
+        with:
+          context: .
+          file: site/Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Update HelmRelease image tag
+        run: |
+          export TAG="sha-${GITHUB_SHA::7}"
+          yq eval '.spec.values.controllers.homelab-docs.containers.app.image.tag = strenv(TAG)' \
+            -i kubernetes/apps/default/homelab-docs/app/helmrelease.yaml
+          npx --yes oxfmt@0.71.0 kubernetes/apps/default/homelab-docs/app/helmrelease.yaml
+
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          commit-message: "chore(homelab-docs): bump image"
+          branch: ci/homelab-docs
+          delete-branch: true
+          title: "chore(homelab-docs): bump image"
+          body: "Automated homelab-docs image tag bump."
+          author: "Homelab Bot <homelab@bot.com>"
+          committer: "Homelab Bot <homelab@bot.com>"

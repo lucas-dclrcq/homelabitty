@@ -23,7 +23,7 @@ spec:
   values:
     defaultPodOptions:
       securityContext:
-        seccompProfile: {type: RuntimeDefault}
+        seccompProfile: { type: RuntimeDefault }
 
     controllers:
       droppedneedle:
@@ -37,9 +37,9 @@ spec:
               tag: v2.11.0@sha256:a9bf954689e9ebc5bf1cde88a3dcc43a8c9c1aa077285346cd5696f1ad6fdf95
 
             env:
-              TZ: ${TIMEZONE}
-              PUID: "${APP_UID}"
-              PGID: "${APP_GID}"
+              TZ: Europe/Paris
+              PUID: "1026"
+              PGID: "1500"
               PORT: &port 8688
               SLSKD_DOWNLOADS_PATH: /media/Downloads/nicotine/complete
 
@@ -89,7 +89,7 @@ spec:
           homelab-manager.hoohoot.org/description: "Téléchargement de musique"
           homelab-manager.hoohoot.org/logo-url: "https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/droppedneedle.png"
         hostnames:
-          - "{{ .Release.Name }}.${SECRET_DOMAIN}"
+          - "{{ .Release.Name }}.hoohoot.org"
         parentRefs:
           - name: external
             namespace: network
@@ -111,7 +111,7 @@ spec:
         type: emptyDir
       media:
         type: nfs
-        server: "truenas.${INTERNAL_DOMAIN}"
+        server: "truenas.lulice.lan"
         path: /mnt/tank/Media
         globalMounts:
           - path: /media

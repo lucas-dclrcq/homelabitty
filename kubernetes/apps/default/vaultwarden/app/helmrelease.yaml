@@ -12,7 +12,7 @@ spec:
   values:
     defaultPodOptions:
       securityContext:
-        seccompProfile: {type: RuntimeDefault}
+        seccompProfile: { type: RuntimeDefault }
 
     controllers:
       vaultwarden:
@@ -28,8 +28,8 @@ spec:
               DATA_FOLDER: data
               ICON_CACHE_FOLDER: data/icon_cache
               ATTACHMENTS_FOLDER: data/attachments
-              DOMAIN: "https://passwords.${SECRET_DOMAIN}"
-              TZ: "${TIMEZONE}"
+              DOMAIN: "https://passwords.hoohoot.org"
+              TZ: "Europe/Paris"
               SIGNUPS_ALLOWED: "true"
               WEBSOCKET_ENABLED: "true"
               WEBSOCKET_ADDRESS: 0.0.0.0
@@ -43,7 +43,7 @@ spec:
 
             securityContext:
               allowPrivilegeEscalation: false
-              capabilities: {drop: ["ALL"]}
+              capabilities: { drop: ["ALL"] }
 
             resources:
               requests:
@@ -67,7 +67,7 @@ spec:
           homelab-manager.hoohoot.org/description: "Gestionnaire de mots de passe"
           homelab-manager.hoohoot.org/logo-url: "https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/vaultwarden.png"
         hostnames:
-          - "passwords.${SECRET_DOMAIN}"
+          - "passwords.hoohoot.org"
         parentRefs:
           - name: external
             namespace: network

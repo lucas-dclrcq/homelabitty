@@ -12,16 +12,16 @@ spec:
   targets:
     staticConfig:
       static:
-        - "truenas.${INTERNAL_DOMAIN}."
-        - "ups.${INTERNAL_DOMAIN}."
-        - "robovac.${INTERNAL_DOMAIN}."
+        - "truenas.lulice.lan."
+        - "ups.lulice.lan."
+        - "robovac.lulice.lan."
         # Nodes
-        - "bee.${INTERNAL_DOMAIN}."
-        - "burrich.${INTERNAL_DOMAIN}."
-        - "chade.${INTERNAL_DOMAIN}."
-        - "fitz.${INTERNAL_DOMAIN}."
-        - "fool.${INTERNAL_DOMAIN}."
-        - "nighteyes.${INTERNAL_DOMAIN}."
+        - "bee.lulice.lan."
+        - "burrich.lulice.lan."
+        - "chade.lulice.lan."
+        - "fitz.lulice.lan."
+        - "fool.lulice.lan."
+        - "nighteyes.lulice.lan."
   metricRelabelings:
     - targetLabel: service
       replacement: blackbox-exporter-lan
@@ -60,7 +60,7 @@ spec:
   targets:
     staticConfig:
       static:
-        - "truenas.${INTERNAL_DOMAIN}.:2049"
+        - "truenas.lulice.lan.:2049"
   metricRelabelings:
     - targetLabel: service
       replacement: blackbox-exporter-lan

@@ -3,7 +3,6 @@ web:
   authentication:
     api_keys:
       lidarr:
-        key: "${SLSKD_API_KEY}"
         cidr: 10.69.0.0/16,10.96.0.0/16
 directories:
   downloads: "/media/Downloads/nicotine/complete"

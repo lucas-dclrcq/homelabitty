@@ -7,9 +7,9 @@ sender_localpart: {{ .SENDER_LOCALPART }}
 rate_limited: false
 namespaces:
   users:
-    - regex: ^@facebookbot:${SECRET_DOMAIN/./\\.}$
+    - regex: ^@facebookbot:hoohoot\.org$
       exclusive: true
-    - regex: ^@fb_.*:${SECRET_DOMAIN/./\\.}$
+    - regex: ^@fb_.*:hoohoot\.org$
       exclusive: true
 de.sorunome.msc2409.push_ephemeral: true
 push_ephemeral: true

@@ -45,7 +45,7 @@ spec:
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities: {drop: ["ALL"]}
+              capabilities: { drop: ["ALL"] }
             resources:
               requests:
                 cpu: 49m
@@ -63,9 +63,9 @@ spec:
           }]
       securityContext:
         runAsNonRoot: true
-        runAsUser: ${APP_UID}
-        runAsGroup: ${APP_GID}
-        fsGroup: ${APP_GID}
+        runAsUser: 1026
+        runAsGroup: 1500
+        fsGroup: 1500
         fsGroupChangePolicy: OnRootMismatch
 
     service:
@@ -77,7 +77,7 @@ spec:
     route:
       app:
         hostnames:
-          - "{{ .Release.Name }}.${LIMITED_DOMAIN}"
+          - "{{ .Release.Name }}.hoohoot.xyz"
         parentRefs:
           - name: internal
             namespace: network
@@ -92,7 +92,7 @@ spec:
         existingClaim: qbittorrent
       media:
         type: nfs
-        server: "truenas.${INTERNAL_DOMAIN}"
+        server: "truenas.lulice.lan"
         path: /mnt/tank/Media/Downloads/qbittorrent
         advancedMounts:
           qbittorrent:

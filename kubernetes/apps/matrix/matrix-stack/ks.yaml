@@ -1,0 +1,38 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  # The Kustomization keeps the historical name "synapse" on purpose:
+  # the kopiur component derives the PVC, SnapshotPolicy/Restore and
+  # Kopia repository identity from ${APP}, and the mautrix bridges depend on
+  # this Kustomization by name. Renaming it would orphan the media PVC and its
+  # backup history.
+  name: &app synapse
+  namespace: matrix
+spec:
+  targetNamespace: matrix
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
+  components:
+    - ../../../../components/kopiur
+  path: ./kubernetes/apps/matrix/matrix-stack/app
+  dependsOn:
+    - name: rook-ceph-cluster
+      namespace: flux-system
+    - name: external-secrets-stores
+      namespace: external-secrets
+    - name: envoy-gateway
+      namespace: network
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+    namespace: flux-system
+  interval: 1h
+  retryInterval: 2m
+  timeout: 5m
+  postBuild:
+    substitute:
+      APP: *app
+      KOPIUR_CAPACITY: 50Gi

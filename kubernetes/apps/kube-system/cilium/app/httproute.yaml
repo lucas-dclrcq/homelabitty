@@ -5,7 +5,7 @@ metadata:
   name: hubble
 spec:
   hostnames:
-    - hubble.${LIMITED_DOMAIN}
+    - hubble.hoohoot.xyz
   parentRefs:
     - name: internal
       namespace: network

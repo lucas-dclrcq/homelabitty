@@ -34,7 +34,7 @@ spec:
               tag: v0.7.7
 
             env:
-              TZ: "${TIMEZONE}"
+              TZ: "Europe/Paris"
 
             probes:
               liveness:
@@ -59,7 +59,7 @@ spec:
     route:
       app:
         hostnames:
-          - "{{ .Release.Name }}.${SECRET_DOMAIN}"
+          - "{{ .Release.Name }}.hoohoot.org"
         parentRefs:
           - name: external
             namespace: network

@@ -17,9 +17,9 @@ spec:
 
         pod:
           securityContext:
-            runAsUser: ${APP_UID}
-            runAsGroup: ${APP_GID}
-            fsGroup: ${APP_GID}
+            runAsUser: 1026
+            runAsGroup: 1500
+            fsGroup: 1500
             runAsNonRoot: true
             fsGroupChangePolicy: OnRootMismatch
 
@@ -32,7 +32,7 @@ spec:
             env:
               BICHON_HTTP_PORT: &httpPort 15630
               BICHON_LOG_LEVEL: info
-              BICHON_PUBLIC_URL: https://bichon.${LIMITED_DOMAIN}
+              BICHON_PUBLIC_URL: https://bichon.hoohoot.xyz
               BICHON_ROOT_DIR: /data
 
             envFrom:
@@ -81,7 +81,7 @@ spec:
     route:
       app:
         hostnames:
-          - bichon.${LIMITED_DOMAIN}
+          - bichon.hoohoot.xyz
         parentRefs:
           - name: internal
             namespace: network

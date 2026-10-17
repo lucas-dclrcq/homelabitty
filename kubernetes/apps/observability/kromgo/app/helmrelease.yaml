@@ -77,7 +77,7 @@ spec:
         - name: external
           namespace: network
       hostnames:
-        - "{{ .Release.Name }}.${SECRET_DOMAIN}"
+        - "{{ .Release.Name }}.hoohoot.org"
     resources:
       requests:
         cpu: 10m

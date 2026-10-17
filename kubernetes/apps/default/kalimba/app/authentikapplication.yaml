@@ -18,10 +18,10 @@ spec:
       # (oidc-client-ts, src/main/webui/src/lib/auth.ts): no secret to keep.
       clientType: Public
       redirectURIs:
-        - url: "https://kalimba.${LIMITED_DOMAIN}/auth/callback"
+        - url: "https://kalimba.hoohoot.xyz/auth/callback"
           matchingMode: Strict
           type: Authorization
-        - url: "https://kalimba.${LIMITED_DOMAIN}/login"
+        - url: "https://kalimba.hoohoot.xyz/login"
           matchingMode: Strict
           type: Authorization
       scopes:

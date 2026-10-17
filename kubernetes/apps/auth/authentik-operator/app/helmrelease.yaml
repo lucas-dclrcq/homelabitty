@@ -6,19 +6,13 @@ metadata:
   name: &app authentik-operator
 spec:
   interval: 1h
-  chart:
-    spec:
-      # renovate: registryUrl=https://slashnephy.github.io/authentik-operator
-      chart: authentik-operator
-      version: 2026.8.1
-      sourceRef:
-        kind: HelmRepository
-        name: authentik-operator
-      interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: *app
   values:
     clusterName: hoohoot
     authentik:
-      url: https://sso.${SECRET_DOMAIN}
+      url: https://sso.hoohoot.org
       token:
         secretName: authentik-operator-token
     prometheus:

@@ -10,7 +10,7 @@ spec:
   parallelism: 1
   provider:
     name: forgejo
-    endpoint: "https://git.${SECRET_DOMAIN}"
+    endpoint: "https://git.hoohoot.org"
   schedule: "30 * * * *"
   skipForks: true
   secretRef: renovate-forgejo-secret

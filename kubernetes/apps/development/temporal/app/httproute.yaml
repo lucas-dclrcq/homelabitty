@@ -6,7 +6,7 @@ metadata:
   name: temporal
 spec:
   hostnames:
-    - "temporal.${LIMITED_DOMAIN}"
+    - "temporal.hoohoot.xyz"
   parentRefs:
     - name: internal
       namespace: network

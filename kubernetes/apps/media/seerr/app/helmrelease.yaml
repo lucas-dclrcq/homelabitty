@@ -33,7 +33,7 @@ spec:
               tag: v3.5.0@sha256:27602401178d54f1964442287b9f23f67a3fa2252645ee8065839ea1c3f69e45
 
             env:
-              TZ: ${TIMEZONE}
+              TZ: Europe/Paris
               PORT: &port 5055
 
             envFrom:
@@ -70,7 +70,7 @@ spec:
         runAsGroup: 1000
         fsGroup: 1000
         fsGroupChangePolicy: OnRootMismatch
-        seccompProfile: {type: RuntimeDefault}
+        seccompProfile: { type: RuntimeDefault }
 
     service:
       main:
@@ -82,7 +82,7 @@ spec:
     route:
       app:
         hostnames:
-          - "requests.${SECRET_DOMAIN}"
+          - "requests.hoohoot.org"
         parentRefs:
           - name: external
             namespace: network

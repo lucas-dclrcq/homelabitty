@@ -6,7 +6,7 @@ metadata:
   name: kopiur-ui
 spec:
   hostnames:
-    - "kopiur.${LIMITED_DOMAIN}"
+    - "kopiur.hoohoot.xyz"
   parentRefs:
     - name: internal
       namespace: network

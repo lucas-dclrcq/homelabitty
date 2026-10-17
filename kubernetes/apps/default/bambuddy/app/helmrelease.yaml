@@ -19,7 +19,7 @@ spec:
               repository: ghcr.io/maziggy/bambuddy
               tag: 1.2.5.7@sha256:ec3e1fbc84218838d832931d1d5c506d7d81146103a16dfe055684be3a79fa57
             env:
-              TZ: ${TIMEZONE}
+              TZ: Europe/Paris
               LOG_LEVEL: INFO
               PORT: &port 8000
             securityContext:
@@ -34,9 +34,9 @@ spec:
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
-        runAsUser: ${APP_UID}
-        runAsGroup: ${APP_GID}
-        fsGroup: ${APP_GID}
+        runAsUser: 1026
+        runAsGroup: 1500
+        fsGroup: 1500
         fsGroupChangePolicy: OnRootMismatch
     service:
       app:
@@ -46,7 +46,7 @@ spec:
     route:
       app:
         hostnames:
-          - "{{ .Release.Name }}.${LIMITED_DOMAIN}"
+          - "{{ .Release.Name }}.hoohoot.xyz"
         parentRefs:
           - name: internal
             namespace: network

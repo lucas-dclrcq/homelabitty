@@ -26,9 +26,9 @@ spec:
 
             env:
               SEMAPHORE_PORT: &port 3000
-              SEMAPHORE_WEB_ROOT: "https://semaphore.${LIMITED_DOMAIN}"
+              SEMAPHORE_WEB_ROOT: "https://semaphore.hoohoot.xyz"
               SEMAPHORE_PLAYBOOK_PATH: /tmp/semaphore
-              TZ: "${TIMEZONE}"
+              TZ: "Europe/Paris"
 
             resources:
               requests:
@@ -54,7 +54,7 @@ spec:
     route:
       app:
         hostnames:
-          - "semaphore.${LIMITED_DOMAIN}"
+          - "semaphore.hoohoot.xyz"
         parentRefs:
           - name: internal
             namespace: network

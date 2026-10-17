@@ -13,5 +13,5 @@ spec:
   persistentVolumeReclaimPolicy: Retain
   storageClassName: ""
   nfs:
-    server: "truenas.${INTERNAL_DOMAIN}"
+    server: "truenas.lulice.lan"
     path: /mnt/tank/Backup/postgresql/postgres-16

@@ -1,0 +1,11 @@
+---
+title: Namespaces
+link: /namespaces/
+---
+<h1>Namespaces</h1>
+<p>Namespace-level documentation.</p>
+<ul>
+{#for ns in site.collections.namespaces}
+<li><a href="{ns.url}">{ns.title}</a></li>
+{/for}
+</ul>

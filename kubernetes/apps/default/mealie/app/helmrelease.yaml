@@ -17,9 +17,9 @@ spec:
         pod:
           securityContext:
             runAsNonRoot: true
-            runAsUser: ${APP_UID}
-            runAsGroup: ${APP_GID}
-            fsGroup: ${APP_GID}
+            runAsUser: 1026
+            runAsGroup: 1500
+            fsGroup: 1500
             fsGroupChangePolicy: OnRootMismatch
         containers:
           app:
@@ -27,14 +27,14 @@ spec:
               repository: ghcr.io/mealie-recipes/mealie
               tag: v3.28.0@sha256:8b02290f4d1806f02acac6f25f6d48a3c965612fda1f8e914d5af533276f8688
             env:
-              BASE_URL: https://recettes.${SECRET_DOMAIN}
+              BASE_URL: https://recettes.hoohoot.org
             envFrom:
               - secretRef:
                   name: mealie-secret
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities: {drop: ["ALL"]}
+              capabilities: { drop: ["ALL"] }
             resources:
               requests:
                 cpu: 100m
@@ -49,7 +49,7 @@ spec:
     route:
       app:
         hostnames:
-          - recettes.${SECRET_DOMAIN}
+          - recettes.hoohoot.org
         parentRefs:
           - name: external
             namespace: network

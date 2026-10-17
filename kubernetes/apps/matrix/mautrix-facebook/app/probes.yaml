@@ -12,7 +12,7 @@ spec:
   targets:
     staticConfig:
       static:
-        - "https://mautrix-facebook.${SECRET_DOMAIN}/_matrix/mau/live"
+        - "https://mautrix-facebook.hoohoot.org/_matrix/mau/live"
   metricRelabelings:
     - targetLabel: service
       replacement: app-endpoint

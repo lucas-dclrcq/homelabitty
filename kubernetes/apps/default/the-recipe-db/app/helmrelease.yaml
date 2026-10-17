@@ -14,7 +14,7 @@ spec:
       securityContext:
         runAsNonRoot: true
         runAsUser: 185
-        seccompProfile: {type: RuntimeDefault}
+        seccompProfile: { type: RuntimeDefault }
 
     controllers:
       main:
@@ -30,7 +30,7 @@ spec:
 
             securityContext:
               allowPrivilegeEscalation: false
-              capabilities: {drop: ["ALL"]}
+              capabilities: { drop: ["ALL"] }
 
             resources:
               requests:
@@ -49,7 +49,7 @@ spec:
     route:
       app:
         hostnames:
-          - "the-recipe-db.${LIMITED_DOMAIN}"
+          - "the-recipe-db.hoohoot.xyz"
         parentRefs:
           - name: internal
             namespace: network

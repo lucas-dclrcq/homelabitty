@@ -6,15 +6,9 @@ metadata:
   name: &app harbor
 spec:
   interval: 30m
-  chart:
-    spec:
-      # renovate: registryUrl=https://helm.goharbor.io
-      chart: harbor
-      version: 1.19.2
-      sourceRef:
-        kind: HelmRepository
-        name: goharbor
-      interval: 30m
+  chartRef:
+    kind: OCIRepository
+    name: *app
   values:
     fullnameOverride: *app
 
@@ -25,7 +19,7 @@ spec:
       clusterIP:
         name: harbor
 
-    externalURL: "https://docker.${SECRET_DOMAIN}"
+    externalURL: "https://docker.hoohoot.org"
 
     existingSecretAdminPassword: harbor-secret
     existingSecretAdminPasswordKey: HARBOR_ADMIN_PASSWORD

@@ -34,7 +34,7 @@ spec:
             env:
               COMPlus_EnableDiagnostics: "0"
               DOTNET_BUNDLE_EXTRACT_BASE_DIR: /tmp/.net
-              TZ: "${TIMEZONE}"
+              TZ: "Europe/Paris"
               SLSKD_APP_DIR: /config
               SLSKD_HTTP_PORT: &port 80
               SLSKD_NO_HTTPS: true
@@ -68,7 +68,7 @@ spec:
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities: {drop: ["ALL"]}
+              capabilities: { drop: ["ALL"] }
 
             resources:
               requests:
@@ -88,11 +88,11 @@ spec:
           }]
       securityContext:
         runAsNonRoot: true
-        runAsUser: "${APP_UID}"
-        runAsGroup: "${APP_GID}"
-        fsGroup: "${APP_GID}"
+        runAsUser: 1026
+        runAsGroup: 1500
+        fsGroup: 1500
         fsGroupChangePolicy: OnRootMismatch
-        seccompProfile: {type: RuntimeDefault}
+        seccompProfile: { type: RuntimeDefault }
 
     service:
       app:
@@ -104,7 +104,7 @@ spec:
     route:
       app:
         hostnames:
-          - "{{ .Release.Name }}.${SECRET_DOMAIN}"
+          - "{{ .Release.Name }}.hoohoot.org"
         parentRefs:
           - name: external
             namespace: network
@@ -128,7 +128,7 @@ spec:
         type: emptyDir
       media:
         type: nfs
-        server: "truenas.${INTERNAL_DOMAIN}"
+        server: "truenas.lulice.lan"
         path: /mnt/tank/Media
         globalMounts:
           - path: /media

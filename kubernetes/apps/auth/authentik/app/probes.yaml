@@ -12,7 +12,7 @@ spec:
   targets:
     staticConfig:
       static:
-        - "https://sso.${SECRET_DOMAIN}"
+        - "https://sso.hoohoot.org"
   metricRelabelings:
     - targetLabel: service
       replacement: app-endpoint

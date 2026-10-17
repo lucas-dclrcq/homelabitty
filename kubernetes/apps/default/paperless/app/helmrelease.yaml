@@ -18,12 +18,12 @@ spec:
           app:
             image:
               repository: ghcr.io/paperless-ngx/paperless-ngx
-              tag: 3.3.1@sha256:cb91bfb468e63025a9d10c01b54c33665113668eee61b490db96de19b860b9c4
+              tag: 3.3.2@sha256:d232cba37cc0bab0d6c6581ecd320383b7a6f49f33e0fd16adda4d009eb600dd
 
             env:
               PAPERLESS_PORT: &port 8000
-              USERMAP_UID: "${APP_UID}"
-              USERMAP_GID: "${APP_GID}"
+              USERMAP_UID: "1026"
+              USERMAP_GID: "1500"
 
             envFrom:
               - secretRef:
@@ -57,7 +57,7 @@ spec:
     route:
       app:
         hostnames:
-          - "{{ .Release.Name }}.${SECRET_DOMAIN}"
+          - "{{ .Release.Name }}.hoohoot.org"
         parentRefs:
           - name: external
             namespace: network
@@ -79,7 +79,7 @@ spec:
                 subPath: media
       nas:
         type: nfs
-        server: "truenas.${INTERNAL_DOMAIN}"
+        server: "truenas.lulice.lan"
         path: /mnt/tank/Paperless
         globalMounts:
           - path: /data/nas

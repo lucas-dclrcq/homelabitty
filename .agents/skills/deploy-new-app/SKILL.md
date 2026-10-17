@@ -19,16 +19,16 @@ The cluster is GitOps-driven: push to `main` and Flux reconciles. Everything liv
 
 Before creating any files, ask the user for:
 
-| Question                    | Notes                                                                                                                                                                                            |
-| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Container image**         | Full reference, e.g. `ghcr.io/foo/bar:1.2.3`. This repo uses plain semver tags (not digests) for app images — check existing apps.                                                               |
-| **Namespace**               | Must be one of the existing directories under `kubernetes/apps/`. If a new namespace is needed, that is a separate task — see [Creating a new namespace](#creating-a-new-namespace).              |
-| **App name**                | Kebab-case slug, used as the directory name and the Kubernetes resource name.                                                                                                                    |
-| **Exposed port**            | The port the container listens on.                                                                                                                                                               |
-| **HTTP route needed?**      | `internal` (LAN-only, behind the `internal` Gateway) or `external` (public internet, behind the `external` Gateway). Both live in the `network` namespace.                                      |
-| **Persistent data needed?** | If yes, ask capacity (e.g. `5Gi`). Stateful apps use the `volsync` component; ephemeral scratch space uses `emptyDir`.                                                                           |
-| **Secrets needed?**         | If yes, ask what to store. App secrets live in HashiCorp Vault (ClusterSecretStore `hashicorp-vault`); PostgreSQL credentials come from CrunchyData PGO (`crunchy-pgo-secrets`).                  |
-| **Database needed?**        | If yes, a PostgreSQL user/db must be provisioned in the PGO `PostgresCluster` and its credentials pulled via a dedicated ExternalSecret.                                                         |
+| Question                    | Notes                                                                                                                                                                                |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Container image**         | Full reference, e.g. `ghcr.io/foo/bar:1.2.3`. This repo uses plain semver tags (not digests) for app images — check existing apps.                                                   |
+| **Namespace**               | Must be one of the existing directories under `kubernetes/apps/`. If a new namespace is needed, that is a separate task — see [Creating a new namespace](#creating-a-new-namespace). |
+| **App name**                | Kebab-case slug, used as the directory name and the Kubernetes resource name.                                                                                                        |
+| **Exposed port**            | The port the container listens on.                                                                                                                                                   |
+| **HTTP route needed?**      | `internal` (LAN-only, behind the `internal` Gateway) or `external` (public internet, behind the `external` Gateway). Both live in the `network` namespace.                           |
+| **Persistent data needed?** | If yes, ask capacity (e.g. `5Gi`). Stateful apps use the `volsync` component; ephemeral scratch space uses `emptyDir`.                                                               |
+| **Secrets needed?**         | If yes, ask what to store. App secrets live in HashiCorp Vault (ClusterSecretStore `hashicorp-vault`); PostgreSQL credentials come from CrunchyData PGO (`crunchy-pgo-secrets`).     |
+| **Database needed?**        | If yes, a PostgreSQL user/db must be provisioned in the PGO `PostgresCluster` and its credentials pulled via a dedicated ExternalSecret.                                             |
 
 ### Optional: search for prior art
 
@@ -70,30 +70,31 @@ There is **no** top-level `kustomization.yaml` inside the app directory — the 
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app <app-name>
-  namespace: &namespace <namespace>
+    name: &app <app-name>
+    namespace: &namespace <namespace>
 spec:
-  targetNamespace: *namespace
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *app
-  dependsOn:
-    - name: external-secrets-stores
-      namespace: external-secrets
-  path: ./kubernetes/apps/<namespace>/<app-name>/app
-  prune: true
-  sourceRef:
-    kind: GitRepository
-    name: home-kubernetes
-    namespace: flux-system
-  wait: false
-  interval: 1h
-  postBuild:
-    substitute:
-      APP: *app
+    targetNamespace: *namespace
+    commonMetadata:
+        labels:
+            app.kubernetes.io/name: *app
+    dependsOn:
+        - name: external-secrets-stores
+          namespace: external-secrets
+    path: ./kubernetes/apps/<namespace>/<app-name>/app
+    prune: true
+    sourceRef:
+        kind: GitRepository
+        name: home-kubernetes
+        namespace: flux-system
+    wait: false
+    interval: 1h
+    postBuild:
+        substitute:
+            APP: *app
 ```
 
 Notes:
+
 - `metadata.name` is the Flux Kustomization name (anchored `&app`); the actual release name is `targetNamespace` + the HelmRelease `metadata.name`.
 - `wait: false`, `interval: 1h` are the repo-wide defaults — keep them.
 - `dependsOn` entries are `{name, namespace}` objects, **not** plain names.
@@ -101,14 +102,15 @@ Notes:
 
 **When to add `components` (paths relative to `kubernetes/apps/<namespace>/<app-name>/`):**
 
-| Need                              | Add to `spec.components`                            | Extra `postBuild.substitute`        | Extra `dependsOn`                                        |
-| --------------------------------- | --------------------------------------------------- | ----------------------------------- | -------------------------------------------------------- |
-| Persistent data with backup       | `../../../../components/volsync`                    | `VOLSYNC_CAPACITY: <size>`          | — (volsync is not a hard dependency here)                |
-| Redis cache sidecar               | `../../../../components/dragonfly`                  | (optional) `DRAGONFLY_ARGS_DEFAULT_LUA_FLAGS` | `{name: dragonfly, namespace: flux-system}` |
-| Forward-auth (Authentik)          | `../../../../components/security-policy/forward-auth` | —                                 | —                                                       |
-| HTTP route                        | —                                                   | —                                   | `{name: envoy-gateway, namespace: network}`             |
+| Need                        | Add to `spec.components`                              | Extra `postBuild.substitute`                  | Extra `dependsOn`                           |
+| --------------------------- | ----------------------------------------------------- | --------------------------------------------- | ------------------------------------------- |
+| Persistent data with backup | `../../../../components/volsync`                      | `VOLSYNC_CAPACITY: <size>`                    | — (volsync is not a hard dependency here)   |
+| Redis cache sidecar         | `../../../../components/dragonfly`                    | (optional) `DRAGONFLY_ARGS_DEFAULT_LUA_FLAGS` | `{name: dragonfly, namespace: flux-system}` |
+| Forward-auth (Authentik)    | `../../../../components/security-policy/forward-auth` | —                                             | —                                           |
+| HTTP route                  | —                                                     | —                                             | `{name: envoy-gateway, namespace: network}` |
 
 **Standard `dependsOn` entries:**
+
 - `{name: external-secrets-stores, namespace: external-secrets}` — whenever the app uses an ExternalSecret.
 - `{name: envoy-gateway, namespace: network}` — whenever the app defines a `route`.
 - `{name: dragonfly, namespace: flux-system}` — when using the dragonfly component.
@@ -117,7 +119,7 @@ Notes:
 **Dragonfly health check** — when using the dragonfly component, also add:
 
 ```yaml
-  healthCheckExprs:
+healthCheckExprs:
     - apiVersion: dragonflydb.io/v1alpha1
       kind: Dragonfly
       failed: status.phase != 'ready'
@@ -132,15 +134,15 @@ Notes:
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: OCIRepository
 metadata:
-  name: <app-name>
+    name: <app-name>
 spec:
-  interval: 15m
-  layerSelector:
-    mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
-    operation: copy
-  ref:
-    tag: 5.2.1
-  url: oci://ghcr.io/bjw-s-labs/helm/app-template
+    interval: 15m
+    layerSelector:
+        mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
+        operation: copy
+    ref:
+        tag: 5.2.1
+    url: oci://ghcr.io/bjw-s-labs/helm/app-template
 ```
 
 - `name` must match the HelmRelease's `chartRef.name` (and thus the anchor `*app`).
@@ -157,134 +159,134 @@ Start from this minimal secure template and expand only as needed:
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &app <app-name>
+    name: &app <app-name>
 spec:
-  interval: 1h
-  chartRef:
-    kind: OCIRepository
-    name: *app
-  values:
-    global:
-      createDefaultServiceAccount: false
+    interval: 1h
+    chartRef:
+        kind: OCIRepository
+        name: *app
+    values:
+        global:
+            createDefaultServiceAccount: false
 
-    controllers:
-      <app-name>:
-        annotations:
-          reloader.stakater.com/auto: "true" # remove if no configmaps/secrets
-        pod:
-          labels:
-            ingress.home.arpa/gateway-external: allow # for external routes (CiliumNetworkPolicy)
-            ingress.home.arpa/prometheus: allow      # if a ServiceMonitor/Probe scrapes it
-            egress.home.arpa/kubedns: allow
-            egress.home.arpa/world: allow
-        containers:
-          app:
-            image:
-              repository: <image-repo>
-              tag: <image-tag>
+        controllers:
+            <app-name>:
+                annotations:
+                    reloader.stakater.com/auto: "true" # remove if no configmaps/secrets
+                pod:
+                    labels:
+                        ingress.home.arpa/gateway-external: allow # for external routes (CiliumNetworkPolicy)
+                        ingress.home.arpa/prometheus: allow # if a ServiceMonitor/Probe scrapes it
+                        egress.home.arpa/kubedns: allow
+                        egress.home.arpa/world: allow
+                containers:
+                    app:
+                        image:
+                            repository: <image-repo>
+                            tag: <image-tag>
 
-            probes:
-              liveness:
-                enabled: true
-              readiness:
-                enabled: true
-              startup:
-                enabled: true
-                spec:
-                  failureThreshold: 30
-                  periodSeconds: 5
+                        probes:
+                            liveness:
+                                enabled: true
+                            readiness:
+                                enabled: true
+                            startup:
+                                enabled: true
+                                spec:
+                                    failureThreshold: 30
+                                    periodSeconds: 5
 
-            resources:
-              requests:
-                cpu: 10m
-                memory: 64Mi
-              limits:
-                memory: 256Mi # tune based on app; NEVER set limits.cpu
+                        resources:
+                            requests:
+                                cpu: 10m
+                                memory: 64Mi
+                            limits:
+                                memory: 256Mi # tune based on app; NEVER set limits.cpu
 
+                        securityContext:
+                            allowPrivilegeEscalation: false
+                            readOnlyRootFilesystem: true # start true; relax only if proven necessary
+                            capabilities: { drop: ["ALL"] }
+
+        defaultPodOptions:
+            automountServiceAccountToken: false
+            enableServiceLinks: false
             securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true # start true; relax only if proven necessary
-              capabilities: { drop: ["ALL"] }
+                runAsNonRoot: true
+                runAsUser: 1000
+                runAsGroup: 1000
+                seccompProfile: { type: RuntimeDefault }
 
-    defaultPodOptions:
-      automountServiceAccountToken: false
-      enableServiceLinks: false
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 1000
-        runAsGroup: 1000
-        seccompProfile: { type: RuntimeDefault }
+        service:
+            app:
+                controller: *app
+                ports:
+                    http:
+                        port: &port <port>
 
-    service:
-      app:
-        controller: *app
-        ports:
-          http:
-            port: &port <port>
-
-    route:
-      app:
-        annotations:
-          homelab-manager.hoohoot.org/enabled: "true"
-          homelab-manager.hoohoot.org/category: "Misc"
-          homelab-manager.hoohoot.org/description: "<short description>"
-          homelab-manager.hoohoot.org/logo-url: "<logo url>"
-        hostnames:
-          - "{{ .Release.Name }}.${SECRET_DOMAIN}"
-        parentRefs:
-          - name: external # or `internal` for LAN-only
-            namespace: network
-        rules:
-          - backendRefs:
-              - name: *app
-                port: *port
+        route:
+            app:
+                annotations:
+                    homelab-manager.hoohoot.org/enabled: "true"
+                    homelab-manager.hoohoot.org/category: "Misc"
+                    homelab-manager.hoohoot.org/description: "<short description>"
+                    homelab-manager.hoohoot.org/logo-url: "<logo url>"
+                hostnames:
+                    - "{{ .Release.Name }}.hoohoot.org"
+                parentRefs:
+                    - name: external # or `internal` for LAN-only
+                      namespace: network
+                rules:
+                    - backendRefs:
+                          - name: *app
+                            port: *port
 ```
 
-**Variable substitution** — `${SECRET_DOMAIN}`, `${LIMITED_DOMAIN}`, `${INTERNAL_DOMAIN}`, `${TIMEZONE}`, etc. come from `cluster-settings`/`cluster-secrets` (applied cluster-wide by `cluster-apps`). Use them for non-secret configuration. `${APP}` is set per-app in `ks.yaml`.
+**Variable substitution** — domains (`hoohoot.org`, `hoohoot.xyz`, `lulice.lan`) and other non-secret values (timezone, UID/GID, load balancer IPs) are hardcoded directly in manifests. `${APP}` is set per-app in `ks.yaml`. Flux substitution is only used for genuinely secret values sourced from Vault-backed secrets (via ExternalSecret).
 
 **Common additions:**
 
 - **Writable paths with `readOnlyRootFilesystem: true`** — mount `emptyDir` for any path the app writes:
 
 ```yaml
-    persistence:
-      tmp:
+persistence:
+    tmp:
         type: emptyDir
         globalMounts:
-          - path: /tmp
+            - path: /tmp
 ```
 
 - **Persistent volume via volsync** — reference the claim created by the component (named `${APP}`):
 
 ```yaml
-    persistence:
-      config:
+persistence:
+    config:
         enabled: true
         existingClaim: *app
         globalMounts:
-          - path: /data
+            - path: /data
 ```
 
 - **Secrets from ExternalSecret** — inject the whole secret via `envFrom`:
 
 ```yaml
-            envFrom:
-              - secretRef:
-                  name: <app-name>-secret
+envFrom:
+    - secretRef:
+          name: <app-name>-secret
 ```
 
-  or a single key:
+or a single key:
 
 ```yaml
-            env:
-              SOME_VAR:
-                valueFrom:
-                  secretKeyRef:
-                    name: <app-name>-secret
-                    key: SOME_VAR
+env:
+    SOME_VAR:
+        valueFrom:
+            secretKeyRef:
+                name: <app-name>-secret
+                key: SOME_VAR
 ```
 
-- **Standalone PVC** (shared/RWX scratch space, e.g. machine-learning cache) — create `<name>.pvc.yaml` and mount via `existingClaim`. This is *not* the volsync pattern (see `immich/app/ml-cache-pvc.yaml`).
+- **Standalone PVC** (shared/RWX scratch space, e.g. machine-learning cache) — create `<name>.pvc.yaml` and mount via `existingClaim`. This is _not_ the volsync pattern (see `immich/app/ml-cache-pvc.yaml`).
 
 - **Non-standard UID** — if the upstream image runs as a specific UID, adjust `runAsUser`/`runAsGroup`. Use `568` for apps following the home-operations convention, or `65534` for nginx-based images. Verify with the image docs — do not assume 1000.
 
@@ -300,13 +302,13 @@ List every file in the `app/` directory (alphabetical order):
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - ./externalsecret.yaml
-  - ./helmrelease.yaml
-  - ./ocirepository.yaml
-  # - ./probes.yaml
-  # - ./servicemonitor.yaml
-  # - ./ciliumnetworkpolicy.yaml
-  # - ./grafanadashboard.yaml
+    - ./externalsecret.yaml
+    - ./helmrelease.yaml
+    - ./ocirepository.yaml
+    # - ./probes.yaml
+    # - ./servicemonitor.yaml
+    # - ./ciliumnetworkpolicy.yaml
+    # - ./grafanadashboard.yaml
 ```
 
 ### 3e. `kubernetes/apps/<namespace>/<app-name>/app/externalsecret.yaml` (optional)
@@ -321,45 +323,45 @@ Only create this if the app needs secrets. The `name` is `<app-name>` (not `<app
 apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
-  name: <app-name>
+    name: <app-name>
 spec:
-  secretStoreRef:
-    kind: ClusterSecretStore
-    name: hashicorp-vault
-  target:
-    name: <app-name>-secret
-    creationPolicy: Owner
-    template:
-      engineVersion: v2
-      data:
-        SOME_VAR: "{{ .vault_key_name }}"
-  dataFrom:
-    - extract:
-        key: <namespace>/<app-name>
+    secretStoreRef:
+        kind: ClusterSecretStore
+        name: hashicorp-vault
+    target:
+        name: <app-name>-secret
+        creationPolicy: Owner
+        template:
+            engineVersion: v2
+            data:
+                SOME_VAR: "{{ .vault_key_name }}"
+    dataFrom:
+        - extract:
+              key: <namespace>/<app-name>
 ```
 
-**PostgreSQL credentials from PGO** (a *separate* ExternalSecret, `target.name: <app-name>-db-secret`):
+**PostgreSQL credentials from PGO** (a _separate_ ExternalSecret, `target.name: <app-name>-db-secret`):
 
 ```yaml
 ---
 apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
-  name: <app-name>-db-secret
-spec:
-  refreshInterval: 1m
-  secretStoreRef:
-    name: crunchy-pgo-secrets
-    kind: ClusterSecretStore
-  target:
     name: <app-name>-db-secret
-    template:
-      engineVersion: v2
-      data:
-        DATABASE_URL: '{{ index . "uri" }}'
-  dataFrom:
-    - extract:
-        key: postgres-16-pguser-<app-name>
+spec:
+    refreshInterval: 1m
+    secretStoreRef:
+        name: crunchy-pgo-secrets
+        kind: ClusterSecretStore
+    target:
+        name: <app-name>-db-secret
+        template:
+            engineVersion: v2
+            data:
+                DATABASE_URL: '{{ index . "uri" }}'
+    dataFrom:
+        - extract:
+              key: postgres-16-pguser-<app-name>
 ```
 
 ### 3f. Optional companion files
@@ -378,9 +380,9 @@ Open `kubernetes/apps/<namespace>/kustomization.yaml` and add `./<app-name>/ks.y
 
 ```yaml
 resources:
-  - ./existing-app-1/ks.yaml
-  - ./new-app-name/ks.yaml   # add here
-  - ./existing-app-2/ks.yaml
+    - ./existing-app-1/ks.yaml
+    - ./new-app-name/ks.yaml # add here
+    - ./existing-app-2/ks.yaml
 ```
 
 The namespace kustomization itself follows one of two styles (do **not** modify it beyond adding the one line):
@@ -391,6 +393,7 @@ The namespace kustomization itself follows one of two styles (do **not** modify 
 ### Creating a new namespace (separate task)
 
 Do not conflate with adding an app. Creating a new namespace means:
+
 1. Create `kubernetes/apps/<namespace>/kustomization.yaml` (copy an existing namespace's, using the component style with `components: [../../components/common]`).
 2. If the older explicit style is required, also add a `namespace.yaml` with the `kustomize.toolkit.fluxcd.io/prune: disabled` and `volsync.backube/privileged-movers: "true"` annotations.
 3. Register the namespace directory wherever sibling namespaces are aggregated.
@@ -430,5 +433,5 @@ Verify every item before finishing:
 - **Wrong UID**: some images (nginx, etc.) run as a specific non-1000 UID. Verify with the image docs rather than assuming 1000.
 - **Not listed in the namespace kustomization**: the namespace `kustomization.yaml` is the source of truth for what Flux deploys. A directory that exists but is not listed there will not be deployed.
 - **Missing `VOLSYNC_CAPACITY`**: using the `volsync` component without setting `VOLSYNC_CAPACITY` in `postBuild.substitute` defaults to `5Gi` and may fail to reconcile if the substitution is expected.
-- **Postgres not provisioned**: creating the  ExternalSecret without adding a matching `users` entry (name + database) to `kubernetes/apps/infrastructure/crunchy-postgres-operator/cluster/postgrescluster.yaml` will fail — the `postgres-16-pguser-<app>` key will not exist.
+- **Postgres not provisioned**: creating the ExternalSecret without adding a matching `users` entry (name + database) to `kubernetes/apps/infrastructure/crunchy-postgres-operator/cluster/postgrescluster.yaml` will fail — the `postgres-16-pguser-<app>` key will not exist.
 - **Route without backendRefs**: the app-template `route` requires `rules[].backendRefs` pointing at the service port; omit it and Envoy has nothing to forward to.

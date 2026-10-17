@@ -33,9 +33,9 @@ spec:
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
-        runAsUser: "${APP_UID}"
-        runAsGroup: "${APP_GID}"
-        seccompProfile: {type: RuntimeDefault}
+        runAsUser: 1026
+        runAsGroup: 1500
+        seccompProfile: { type: RuntimeDefault }
       topologySpreadConstraints:
         - maxSkew: 1
           topologyKey: kubernetes.io/hostname
@@ -64,7 +64,7 @@ spec:
     route:
       app:
         hostnames:
-          - "{{ .Release.Name }}.${LIMITED_DOMAIN}"
+          - "{{ .Release.Name }}.hoohoot.xyz"
         parentRefs:
           - name: internal
             namespace: network

@@ -7,9 +7,9 @@ sender_localpart: {{ .SENDER_LOCALPART }}
 rate_limited: false
 namespaces:
   users:
-    - regex: ^@discorder:${SECRET_DOMAIN/./\\.}$
+    - regex: ^@discorder:hoohoot\.org$
       exclusive: true
-    - regex: ^@discorder_.*:${SECRET_DOMAIN/./\\.}$
+    - regex: ^@discorder_.*:hoohoot\.org$
       exclusive: true
 de.sorunome.msc2409.push_ephemeral: true
 push_ephemeral: true

@@ -80,7 +80,7 @@ spec:
           - name: internal
             namespace: network
         hostnames:
-          - "victoriametrics.${LIMITED_DOMAIN}"
+          - "victoriametrics.hoohoot.xyz"
 
     vmagent:
       enabled: true
@@ -103,7 +103,7 @@ spec:
     alertmanager:
       enabled: true
       spec:
-        externalURL: https://alertmanager.${LIMITED_DOMAIN}
+        externalURL: https://alertmanager.hoohoot.xyz
         disableNamespaceMatcher: true
       config:
         global:
@@ -116,7 +116,7 @@ spec:
           - name: internal
             namespace: network
         hostnames:
-          - "alertmanager.${LIMITED_DOMAIN}"
+          - "alertmanager.hoohoot.xyz"
 
     vtsingle:
       enabled: true
