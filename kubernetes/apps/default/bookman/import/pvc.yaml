@@ -7,7 +7,9 @@
 # re-import) resumes instead of starting over.
 #
 # A plain claim rather than the `kopiur` component: this is disposable scratch
-# data, not something worth snapshotting and backing up.
+# data, not something worth snapshotting and backing up. It is deleted together
+# with the Job once the import is done, like the `bookman-import-data` claim
+# that holds the source snapshots (`data-pvc.yaml`).
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
