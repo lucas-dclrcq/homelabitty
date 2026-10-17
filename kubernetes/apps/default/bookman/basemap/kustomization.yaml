@@ -1,0 +1,16 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ./job.yaml
+configMapGenerator:
+  - name: bookman-basemap-script
+    files:
+      - basemap.sh=./resources/basemap.sh
+generatorOptions:
+  disableNameSuffixHash: true
+  annotations:
+    # The script is shell: `$(( ))`, `$d` and `${BASEMAP_BBOX:-…}` must reach the
+    # container verbatim instead of being read as Flux substitutions.
+    kustomize.toolkit.fluxcd.io/substitute: disabled

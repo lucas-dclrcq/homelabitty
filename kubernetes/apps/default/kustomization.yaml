@@ -24,4 +24,5 @@ resources:
   - ./onlyoffice/ks.yaml
   - ./mealie/ks.yaml
   - ./kalimba/ks.yaml
+  - ./bookman/ks.yaml
   - ./trilium/ks.yaml

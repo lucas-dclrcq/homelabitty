@@ -1,0 +1,23 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+# The cluster-wide `ingress.home.arpa/gateway-internal` policy lets the internal
+# Envoy read the web UI. What it cannot express is same-namespace traffic, so
+# the API's SMTP delivery is allowed explicitly. Everything else is denied once
+# this policy selects the pod.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: bookman-mailpit
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: bookman-mailpit
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: bookman
+            io.kubernetes.pod.namespace: default
+      toPorts:
+        - ports:
+            - port: "1025"
+              protocol: TCP

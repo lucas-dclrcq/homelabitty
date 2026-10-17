@@ -1,0 +1,77 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/batch/job_v1.json
+# One-shot: builds the tile server's basemap (`/tiles/basemap.pmtiles`) and
+# downloads its fonts. `bookman-martin` depends on this Kustomization (which
+# waits for the Job), so the tile server only starts once the claim is filled —
+# the claim is ReadWriteOnce, so the two pods must never hold it at once.
+#
+# The Job spec is immutable in Kubernetes. Changing it (or deleting it to
+# rebuild the basemap) means removing the object and letting Flux recreate it:
+#   kubectl -n default delete job bookman-basemap
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: bookman-basemap
+spec:
+  backoffLimit: 3
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: bookman-basemap
+        egress.home.arpa/kubedns: allow
+        egress.home.arpa/world: allow
+    spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      restartPolicy: Never
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: basemap
+          image: docker.io/library/alpine:3.22
+          command:
+            - /bin/sh
+            - /scripts/basemap.sh
+          env:
+            # Metropolitan France; `pmtiles extract` reads only the ranges it
+            # needs out of the daily planet build.
+            - name: BASEMAP_BBOX
+              value: "-5.6,41.0,9.9,51.5"
+            - name: BASEMAP_MAXZOOM
+              value: "14"
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              memory: 2Gi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - "ALL"
+          volumeMounts:
+            - name: tiles
+              mountPath: /tiles
+            - name: script
+              mountPath: /scripts
+              readOnly: true
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tiles
+          persistentVolumeClaim:
+            claimName: bookman-basemap # created by the kopiur component
+        - name: script
+          configMap:
+            name: bookman-basemap-script
+        - name: tmp
+          emptyDir:
+            sizeLimit: 1Gi
