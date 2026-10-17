@@ -73,6 +73,36 @@ spec:
       KOPIUR_CAPACITY: 10Gi
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+# A throwaway mail sink for this test deployment: BookMan sends campaign mail
+# here (set the SMTP URL runtime setting to
+# `smtp://bookman-mailpit.default.svc.cluster.local:1025`) so nothing reaches a
+# real relay. The web UI is on the internal gateway only.
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &app bookman-mailpit
+  namespace: &namespace default
+spec:
+  targetNamespace: *namespace
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
+  dependsOn:
+    - name: envoy-gateway
+      namespace: network
+  path: ./kubernetes/apps/default/bookman/mailpit
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+    namespace: flux-system
+  wait: false
+  interval: 1h
+  postBuild:
+    substitute:
+      APP: *app
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 # Owns the tiles claim and the one-shot Job that fills it. `wait: true` makes
 # Flux wait for the Job to complete, and `bookman-martin` depends on this
 # Kustomization, so the tile server only starts once the basemap exists (the

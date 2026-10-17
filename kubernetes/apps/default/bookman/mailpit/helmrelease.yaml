@@ -1,0 +1,120 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app bookman-mailpit
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+    namespace: flux-system
+  values:
+    global:
+      createDefaultServiceAccount: false
+
+    controllers:
+      bookman-mailpit:
+        pod:
+          labels:
+            # The admin reads caught mail from a browser; the UI is exposed on
+            # the internal gateway only (no auth, and nothing here is secret).
+            ingress.home.arpa/gateway-internal: allow
+        containers:
+          app:
+            image:
+              repository: axllent/mailpit
+              # Keep aligned with bookman's docker-compose.yml.
+              tag: v1.31.5
+            env:
+              TZ: ${TIMEZONE}
+              # A sink only: never relay, forward or auto-send. Mailpit relays
+              # nothing unless a relay is explicitly configured, and none is.
+              MP_DISABLE_VERSION_CHECK: "true"
+            probes:
+              # The SMTP port is what BookMan talks to; if it answers, the
+              # process (and therefore the UI) is up.
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: &smtp 1025
+                  initialDelaySeconds: 5
+                  periodSeconds: 30
+                  failureThreshold: 5
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: *smtp
+                  initialDelaySeconds: 2
+                  periodSeconds: 10
+                  failureThreshold: 5
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: *smtp
+                  failureThreshold: 30
+                  periodSeconds: 5
+            resources:
+              requests:
+                cpu: 10m
+                memory: 32Mi
+              limits:
+                memory: 128Mi # never set limits.cpu
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - "ALL"
+
+    defaultPodOptions:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      securityContext:
+        runAsNonRoot: true
+        # The image runs as root by default; the binary needs no privileges.
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile:
+          type: RuntimeDefault
+
+    persistence:
+      # Mailpit's default database is a temporary SQLite file under $TMPDIR
+      # (deleted on exit), copied from the compose service, which has no
+      # volume either. This is a throwaway mail sink, not a mail archive.
+      tmp:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
+
+    service:
+      app:
+        controller: *app
+        ports:
+          smtp:
+            port: 1025
+          http:
+            port: 8025
+
+    route:
+      app:
+        # Internal gateway: the UI has no authentication and the mail it holds
+        # is test data. BookMan reaches SMTP over the cluster service instead.
+        hostnames:
+          - "bookman-mail.${LIMITED_DOMAIN}"
+        parentRefs:
+          - name: internal
+            namespace: network
+        rules:
+          - backendRefs:
+              - name: *app
+                port: 8025

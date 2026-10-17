@@ -3,8 +3,9 @@
 # Ingress from the gateway is handled by the `ingress.home.arpa/*` pod labels
 # and DNS/Postgres/world egress by the `egress.home.arpa/*` ones. What those
 # policies cannot express is same-namespace traffic, so the API's calls to
-# Meilisearch — and to the cluster SMTP relay, if the operator points the SMTP
-# URL runtime setting at it — are allowed explicitly.
+# Meilisearch and to the `bookman-mailpit` SMTP sink are allowed explicitly.
+# Real mail is deliberately not possible through a cluster relay: this is a
+# test deployment, and `smtp-relay` (maddy) is not allowed from here.
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
@@ -24,9 +25,9 @@ spec:
               protocol: TCP
     - toEndpoints:
         - matchLabels:
-            app.kubernetes.io/name: smtp-relay
+            app.kubernetes.io/name: bookman-mailpit
             io.kubernetes.pod.namespace: default
       toPorts:
         - ports:
-            - port: "2525"
+            - port: "1025"
               protocol: TCP
