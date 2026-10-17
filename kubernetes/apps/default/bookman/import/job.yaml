@@ -9,15 +9,28 @@
 # Job can simply be deleted to run it again:
 #   kubectl -n default delete job bookman-import
 #
-# The inputs ship inside the image (`/app/data`, see the bookman `Dockerfile`),
-# and `bookman-ingest` resolves its defaults relative to the working directory
-# (`/app`), so no data needs mounting. The staged working set and the geocoder
-# cache live on a claim (see `pvc.yaml`) so a retry resumes the slow geocode
-# stage instead of restarting it.
+# The source snapshots are **not** baked into the image. The `fetch-snapshots`
+# init container downloads the Prospectacles workbook and the ecotour export, at
+# pinned commits, from the public bookman repository into the temporary
+# `bookman-import-data` claim (see `data-pvc.yaml`). The ingest container mounts
+# that claim at `/app/data`, the path `bookman-ingest` resolves its defaults
+# against (the CLI defaults moved from `docs/` to `data/` upstream).
+#
+# This is a one-shot bootstrap: once the Job reports `Complete`, delete it and
+# both claims, then drop the `bookman-import` Kustomization and this directory
+# from Git (see `../ks.yaml`). The directory index lives in Meilisearch, so
+# nothing durable is lost.
+#
+# The staged working set and the geocoder cache live on a separate claim (see
+# `pvc.yaml`) so a retry resumes the slow geocode stage instead of restarting it.
 apiVersion: batch/v1
 kind: Job
 metadata:
   name: bookman-import
+  annotations:
+    # The init container is plain shell: `$base`, `$dest` and `$(…)` must reach
+    # it verbatim instead of being read as Flux postBuild substitutions.
+    kustomize.toolkit.fluxcd.io/substitute: disabled
 spec:
   # The chain is long (geocoding throttles to ~1 request/second upstream), so
   # allow it to fail once and retry rather than giving up on a transient error.
@@ -27,6 +40,8 @@ spec:
       labels:
         app.kubernetes.io/name: bookman-import
         egress.home.arpa/kubedns: allow
+        # The snapshot download, the BAN/Nominatim geocoders and the Mistral
+        # embedder all call out to the internet.
         egress.home.arpa/world: allow
     spec:
       automountServiceAccountToken: false
@@ -34,11 +49,61 @@ spec:
       restartPolicy: Never
       securityContext:
         runAsNonRoot: true
-        # The image's `bookman` user.
+        # The image's `bookman` user, and the owner of the claim mounts: the
+        # init container writes the snapshots and the ingest container needs a
+        # writable scratch directory (the first draft forgot `fsGroup`, so the
+        # non-root process could not write either claim).
         runAsUser: 10001
         runAsGroup: 10001
+        fsGroup: 10001
+        fsGroupChangePolicy: OnRootMismatch
         seccompProfile:
           type: RuntimeDefault
+      initContainers:
+        - name: fetch-snapshots
+          # Same plain Alpine + busybox `wget` as the basemap Job.
+          image: docker.io/library/alpine:3.22
+          command:
+            - /bin/sh
+            - -c
+          args:
+            - |
+              set -eu
+              # Pinned commits, not a branch: the import is reproducible, and a
+              # later push to `main` cannot change what a retry reads. Bump both
+              # when a new snapshot is committed upstream.
+              base=https://git.hoohoot.org/oknozor/bookman/raw/commit
+              fetch() {
+                dest="/data/$1"
+                if [ -s "$dest" ]; then
+                  echo "present: $1"
+                  return 0
+                fi
+                echo "fetching: $1"
+                # Write beside the final name and move on success, so an
+                # interrupted download never looks like a complete snapshot.
+                wget -q -O "$dest.part" "$2"
+                mv "$dest.part" "$dest"
+              }
+              fetch 'Prospectacles - INTÉGRAAL - 28.08.2025.xlsx' \
+                "$base/a36d625b285bd4aebb06b3fc134e874a04698bbf/data/Prospectacles%20-%20INT%C3%89GRAAL%20-%2028.08.2025.xlsx"
+              fetch 'ecotour-export.json' \
+                "$base/afbc4dd42711d5a6edefc54ef20a2a47e3450925/data/ecotour-export.json"
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              memory: 128Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - "ALL"
+          volumeMounts:
+            - name: data
+              mountPath: /data
       containers:
         - name: ingest
           image: docker.hoohoot.org/bookman/bookman:latest
@@ -51,8 +116,7 @@ spec:
               # The pipeline's scratch directory is the `--build-dir` flag, not
               # `BUILD_DIR` (that variable only configures the API). The flag is
               # repeated rather than held in a shell variable, because Flux's
-              # postBuild substitution rewrites dollar-prefixed names and this
-              # resource has no opt-out annotation.
+              # postBuild substitution rewrites dollar-prefixed names.
               bookman-ingest --build-dir /var/lib/bookman/build sources
               bookman-ingest --build-dir /var/lib/bookman/build run prospectacles
               bookman-ingest --build-dir /var/lib/bookman/build run ecotour
@@ -72,10 +136,6 @@ spec:
             # carries the key (the source logs the failed call and falls back).
             - name: ECOTOUR_SUPABASE_ANON_KEY
               value: ""
-            # `bookman-ingest` defaults to `docs/Prospectacles …`, but the
-            # workbook moved to `data/` (see the data commit upstream).
-            - name: PROSPECTACLES_XLSX
-              value: /app/data/Prospectacles - INTÉGRAAL - 28.08.2025.xlsx
             - name: RUST_LOG
               value: info
           envFrom:
@@ -94,6 +154,12 @@ spec:
               drop:
                 - "ALL"
           volumeMounts:
+            # The two pinned snapshots: `bookman-ingest` defaults to
+            # `data/<file>` relative to its working directory (`/app`), so the
+            # claim name must match. Read-only: the pipeline only reads it.
+            - name: data
+              mountPath: /app/data
+              readOnly: true
             # Staged NDJSON and the geocoder cache. The claim outlives the Job
             # on purpose: geocoding takes hours and a retry should resume.
             - name: scratch
@@ -101,6 +167,10 @@ spec:
             - name: tmp
               mountPath: /tmp
       volumes:
+        # Temporary: filled by the init container, deleted with the Job.
+        - name: data
+          persistentVolumeClaim:
+            claimName: bookman-import-data
         - name: scratch
           persistentVolumeClaim:
             claimName: bookman-import-scratch
