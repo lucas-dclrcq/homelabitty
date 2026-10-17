@@ -39,10 +39,14 @@ spec:
               # The API serves the SPA itself (`STATIC_DIR` is baked into the
               # image) and owns `/api`, so the browser only talks to one origin:
               # the session cookie stays first-party and CORS is not involved.
-              # Martin and Meilisearch are separate origins, configured in the
-              # frontend bundle at build time (VITE_*), not here.
-              APP_BASE_URL: &baseUrl "https://bookman.${SECRET_DOMAIN}"
-              PUBLIC_BASE_URL: *baseUrl
+              #
+              # Everything else the app needs is a *runtime* setting stored in
+              # Postgres and edited in the admin Settings tab: the browser-facing
+              # Meilisearch URL/search key, the basemap style URL, the provider
+              # user agents and keys, contact enrichment and mail. Those are no
+              # longer environment variables (MAIL_*, MUSICBRAINZ_USER_AGENT,
+              # RA_USER_AGENT and PUBLIC_BASE_URL are ignored).
+              APP_BASE_URL: "https://bookman.${SECRET_DOMAIN}"
               # The password-less `dev` provider must never be reachable in
               # production; the first admin comes from the Vault secret
               # (BOOKMAN_BOOTSTRAP_ADMIN_EMAIL/_PASSWORD).
@@ -50,17 +54,8 @@ spec:
 
               MEILI_URL: http://bookman-meilisearch.default.svc.cluster.local:7700
 
-              # Mail is only actually sent when SMTP_URL is set (Vault) *and*
-              # MAIL_DRY_RUN is false.
-              MAIL_DRY_RUN: "false"
-              MAIL_FROM: "BookMan <no-reply@${SECRET_DOMAIN}>"
-
               BUILD_DIR: /var/lib/bookman/build
               BOOKMAN_PROVIDER_MODE: live
-              # MusicBrainz blocks default user agents; both must carry a real
-              # contact.
-              MUSICBRAINZ_USER_AGENT: "BookMan/0.1.0 (+https://bookman.${SECRET_DOMAIN})"
-              RA_USER_AGENT: "BookMan/0.1.0 (+https://bookman.${SECRET_DOMAIN})"
 
             envFrom:
               - secretRef:
