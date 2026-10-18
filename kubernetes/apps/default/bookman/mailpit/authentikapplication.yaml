@@ -29,4 +29,4 @@ spec:
   access:
     rules:
       - group:
-          name: Hoohoot Users
+          name: Hoohoot Developers
