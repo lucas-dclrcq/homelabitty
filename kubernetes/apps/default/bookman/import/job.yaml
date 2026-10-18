@@ -39,10 +39,6 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: bookman-import
-        egress.home.arpa/kubedns: allow
-        # The snapshot download, the BAN/Nominatim geocoders and the Mistral
-        # embedder all call out to the internet.
-        egress.home.arpa/world: allow
     spec:
       automountServiceAccountToken: false
       enableServiceLinks: false
