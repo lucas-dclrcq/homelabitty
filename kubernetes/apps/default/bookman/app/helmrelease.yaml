@@ -23,10 +23,12 @@ spec:
               # Built by the bookman repository's Forgejo CI (`.forgejo/workflows`):
               # every push to main publishes `:latest`, a release publishes the
               # SemVer tag. The Harbor project is public, so no pull secret.
-              # renovate: ignore
+              # The tag keeps the moving `latest` label so the commit reads
+              # naturally, but the image is pinned by digest: Renovate bumps the
+              # digest and the kubelet then defaults to `IfNotPresent`, so no
+              # `pullPolicy` is needed.
               repository: docker.hoohoot.org/bookman/bookman
-              tag: latest
-              pullPolicy: Always
+              tag: latest@sha256:54ec0d8440517389d15035fab6b6134927f79118f7e54553a33d3bd747bf1158
 
             env:
               TZ: Europe/Paris
