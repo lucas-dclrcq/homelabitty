@@ -29,6 +29,9 @@ spec:
               MEILI_ENV: production
               MEILI_HTTP_ADDR: 0.0.0.0:7700
               MEILI_NO_ANALYTICS: "true"
+              # Meilisearch refuses to start when the on-disk DB version does not
+              # match the engine version; auto-migrate it on startup.
+              MEILI_UPGRADE_DB: "true"
 
             envFrom:
               - secretRef:
