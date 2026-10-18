@@ -113,13 +113,13 @@ spec:
               # `BUILD_DIR` (that variable only configures the API). The flag is
               # repeated rather than held in a shell variable, because Flux's
               # postBuild substitution rewrites dollar-prefixed names.
-              bookman-ingest --build-dir /var/lib/bookman/build sources
-              bookman-ingest --build-dir /var/lib/bookman/build run prospectacles
-              bookman-ingest --build-dir /var/lib/bookman/build run ecotour
-              bookman-ingest --build-dir /var/lib/bookman/build geocode
-              bookman-ingest --build-dir /var/lib/bookman/build merge
-              bookman-ingest --build-dir /var/lib/bookman/build index
-              bookman-ingest --build-dir /var/lib/bookman/build settings
+              /app/bookman-ingest --build-dir /var/lib/bookman/build sources
+              /app/bookman-ingest --build-dir /var/lib/bookman/build run prospectacles
+              /app/bookman-ingest --build-dir /var/lib/bookman/build run ecotour
+              /app/bookman-ingest --build-dir /var/lib/bookman/build geocode
+              /app/bookman-ingest --build-dir /var/lib/bookman/build merge
+              /app/bookman-ingest --build-dir /var/lib/bookman/build index
+              /app/bookman-ingest --build-dir /var/lib/bookman/build settings
           env:
             - name: MEILI_URL
               value: http://bookman-meilisearch.default.svc.cluster.local:7700
