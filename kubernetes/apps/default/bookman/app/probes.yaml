@@ -12,7 +12,7 @@ spec:
   targets:
     staticConfig:
       static:
-        - "https://bookman.${SECRET_DOMAIN}/readyz"
+        - "https://bookman.hoohoot.org/readyz"
   metricRelabelings:
     - targetLabel: service
       replacement: app-endpoint

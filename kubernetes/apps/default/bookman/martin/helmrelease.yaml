@@ -116,7 +116,7 @@ spec:
     route:
       app:
         hostnames:
-          - "bookman-tiles.${SECRET_DOMAIN}"
+          - "bookman-tiles.hoohoot.org"
         parentRefs:
           - name: external
             namespace: network
