@@ -76,7 +76,7 @@ spec:
 # A throwaway mail sink for this test deployment: BookMan sends campaign mail
 # here (set the SMTP URL runtime setting to
 # `smtp://bookman-mailpit.default.svc.cluster.local:1025`) so nothing reaches a
-# real relay. The web UI is on the internal gateway only.
+# real relay. The web UI is public, behind Authentik forward-auth.
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
@@ -87,6 +87,8 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  components:
+    - ../../../../components/security-policy/forward-auth
   dependsOn:
     - name: envoy-gateway
       namespace: network

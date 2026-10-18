@@ -102,12 +102,18 @@ spec:
 
     route:
       app:
-        # Internal gateway: the UI has no authentication and the mail it holds
-        # is test data. BookMan reaches SMTP over the cluster service instead.
+        # External gateway: the UI is public, so it is gated by Authentik
+        # forward-auth (see the `security-policy/forward-auth` component in
+        # `ks.yaml`). BookMan reaches SMTP over the cluster service instead.
+        annotations:
+          homelab-manager.hoohoot.org/enabled: "true"
+          homelab-manager.hoohoot.org/category: "Misc"
+          homelab-manager.hoohoot.org/description: "BookMan's test mail inbox"
+          homelab-manager.hoohoot.org/logo-url: "https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/mailpit.png"
         hostnames:
-          - "bookman-mail.hoohoot.xyz"
+          - "bookman-mail.hoohoot.org"
         parentRefs:
-          - name: internal
+          - name: external
             namespace: network
         rules:
           - backendRefs:
