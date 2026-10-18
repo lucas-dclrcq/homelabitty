@@ -16,11 +16,6 @@ spec:
 
     controllers:
       bookman-mailpit:
-        pod:
-          labels:
-            # The admin reads caught mail from a browser; the UI is exposed on
-            # the internal gateway only (no auth, and nothing here is secret).
-            ingress.home.arpa/gateway-internal: allow
         containers:
           app:
             image:

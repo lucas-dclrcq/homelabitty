@@ -17,13 +17,6 @@ spec:
       bookman-meilisearch:
         annotations:
           reloader.stakater.com/auto: "true"
-        pod:
-          labels:
-            # The SPA queries Meilisearch straight from the browser, so it needs
-            # its own public origin (the Meilisearch JS client only accepts an
-            # absolute base URL at a host root). Meilisearch answers with
-            # permissive CORS, so the cross-origin call from the app works.
-            ingress.home.arpa/gateway-external: allow
         containers:
           app:
             image:
@@ -119,6 +112,10 @@ spec:
 
     route:
       app:
+        # The SPA queries Meilisearch straight from the browser, so it needs
+        # its own public origin (the Meilisearch JS client only accepts an
+        # absolute base URL at a host root). Meilisearch answers with
+        # permissive CORS, so the cross-origin call from the app works.
         hostnames:
           - "bookman-meili.hoohoot.org"
         parentRefs:

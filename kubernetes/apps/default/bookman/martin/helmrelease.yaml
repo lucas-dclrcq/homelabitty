@@ -17,12 +17,6 @@ spec:
       bookman-martin:
         # ReadWriteOnce claim, and a single writer is never desirable anyway.
         strategy: Recreate
-        pod:
-          labels:
-            # The SPA loads the MapLibre style straight from the browser, so the
-            # tiles have their own public origin (the style uses root-relative
-            # paths, which a path prefix on the app's host could not carry).
-            ingress.home.arpa/gateway-external: allow
         containers:
           app:
             image:
@@ -115,6 +109,9 @@ spec:
 
     route:
       app:
+        # The SPA loads the MapLibre style straight from the browser, so the
+        # tiles have their own public origin (the style uses root-relative
+        # paths, which a path prefix on the app's host could not carry).
         hostnames:
           - "bookman-tiles.hoohoot.org"
         parentRefs:
