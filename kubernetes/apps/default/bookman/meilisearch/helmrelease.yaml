@@ -120,7 +120,7 @@ spec:
     route:
       app:
         hostnames:
-          - "bookman-meili.${SECRET_DOMAIN}"
+          - "bookman-meili.hoohoot.org"
         parentRefs:
           - name: external
             namespace: network

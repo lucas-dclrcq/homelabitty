@@ -46,7 +46,7 @@ spec:
               # user agents and keys, contact enrichment and mail. Those are no
               # longer environment variables (MAIL_*, MUSICBRAINZ_USER_AGENT,
               # RA_USER_AGENT and PUBLIC_BASE_URL are ignored).
-              APP_BASE_URL: "https://bookman.${SECRET_DOMAIN}"
+              APP_BASE_URL: "https://bookman.hoohoot.org"
               # The password-less `dev` provider must never be reachable in
               # production; the first admin comes from the Vault secret
               # (BOOKMAN_BOOTSTRAP_ADMIN_EMAIL/_PASSWORD).
@@ -148,7 +148,7 @@ spec:
           homelab-manager.hoohoot.org/description: "Booking as a service pour artistes"
           homelab-manager.hoohoot.org/logo-url: "https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/musicbrainz.png"
         hostnames:
-          - "{{ .Release.Name }}.${SECRET_DOMAIN}"
+          - "{{ .Release.Name }}.hoohoot.org"
         parentRefs:
           - name: external
             namespace: network
