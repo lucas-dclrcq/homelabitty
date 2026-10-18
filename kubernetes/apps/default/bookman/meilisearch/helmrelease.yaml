@@ -29,6 +29,7 @@ spec:
               MEILI_ENV: production
               MEILI_HTTP_ADDR: 0.0.0.0:7700
               MEILI_NO_ANALYTICS: "true"
+              MEILI_EXPERIMENTAL_LOGS_MODE: json
 
             envFrom:
               - secretRef:
