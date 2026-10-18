@@ -1,4 +1,3 @@
----
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
@@ -32,10 +31,11 @@ spec:
   postBuild:
     substitute:
       APP: *app
-      # Raw provider payloads (for replay) and the geocode cache, see BUILD_DIR.
+      # Raw provider payloads (for replay) and geocode cache, see BUILD_DIR.
       KOPIUR_CAPACITY: 5Gi
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+# Meilisearch serves the directory index. It waits for readiness so the API and
+# the import Job do not race it.
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
@@ -59,54 +59,15 @@ spec:
     kind: GitRepository
     name: home-kubernetes
     namespace: flux-system
-  # `bookman` and the one-shot `bookman-import` depend on this Kustomization.
-  # With `wait: false` it reports Ready as soon as its resources are applied, so
-  # a dependent can start before Meilisearch actually serves requests; wait for
-  # the HelmRelease instead.
   wait: true
-  timeout: 10m
   interval: 1h
   postBuild:
     substitute:
       APP: *app
-      # The directory index carries the Mistral embeddings.
       KOPIUR_CAPACITY: 10Gi
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
-# A throwaway mail sink for this test deployment: BookMan sends campaign mail
-# here (set the SMTP URL runtime setting to
-# `smtp://bookman-mailpit.default.svc.cluster.local:1025`) so nothing reaches a
-# real relay. The web UI is on the internal gateway only.
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: &app bookman-mailpit
-  namespace: &namespace default
-spec:
-  targetNamespace: *namespace
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *app
-  dependsOn:
-    - name: envoy-gateway
-      namespace: network
-  path: ./kubernetes/apps/default/bookman/mailpit
-  prune: true
-  sourceRef:
-    kind: GitRepository
-    name: home-kubernetes
-    namespace: flux-system
-  wait: false
-  interval: 1h
-  postBuild:
-    substitute:
-      APP: *app
----
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
-# Owns the tiles claim and the one-shot Job that fills it. `wait: true` makes
-# Flux wait for the Job to complete, and `bookman-martin` depends on this
-# Kustomization, so the tile server only starts once the basemap exists (the
-# claim is ReadWriteOnce, so the two must never run at the same time).
+# Fetches the multi-gigabyte France extract with a one-shot Job and waits for it
+# to finish so the ReadWriteOnce tiles claim is never mounted by two pods.
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
@@ -125,8 +86,6 @@ spec:
     kind: GitRepository
     name: home-kubernetes
     namespace: flux-system
-  # The France extract is a multi-gigabyte download; give it room to finish.
-  timeout: 30m
   wait: true
   interval: 1h
   postBuild:
@@ -134,7 +93,6 @@ spec:
       APP: *app
       KOPIUR_CAPACITY: 20Gi
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
@@ -162,18 +120,10 @@ spec:
     substitute:
       APP: *app
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
-# One-shot first load of the directory index. Runs after the API (which owns the
-# ExternalSecret for `bookman-secret`) and Meilisearch; the Job itself is
-# idempotent, so deleting it re-imports. The two source snapshots are fetched
-# into a temporary claim by the Job's init container — they are not part of the
-# image.
-#
-# This Kustomization is disposable: once `kubectl -n default get job
-# bookman-import` reports `Complete`, delete the Job and remove this entry plus
-# `kubernetes/apps/default/bookman/import/` from Git. Flux then prunes both
-# claims; the directory index lives in Meilisearch, so nothing else is
-# affected.
+# One-shot first-load of the directory index. The Job is idempotent and can be
+# deleted to re-import. Its spec.template is immutable, so a template change
+# (e.g. bumping the pinned snapshot commits) must recreate the Job rather than
+# patch it in place.
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
@@ -193,12 +143,38 @@ spec:
       namespace: default
   path: ./kubernetes/apps/default/bookman/import
   prune: true
+  # The Job's spec.template is immutable: recreate it on template changes.
+  force: true
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
     namespace: flux-system
-  # The bulk chain geocodes upstream at ~1 request/second, so it can run for a
-  # while; Flux must not block on it.
+  wait: false
+  interval: 1h
+  postBuild:
+    substitute:
+      APP: *app
+---
+# Test mail sink (mailpit) for the API's SMTP settings.
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &app bookman-mailpit
+  namespace: &namespace default
+spec:
+  targetNamespace: *namespace
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
+  dependsOn:
+    - name: envoy-gateway
+      namespace: network
+  path: ./kubernetes/apps/default/bookman/mailpit
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+    namespace: flux-system
   wait: false
   interval: 1h
   postBuild:
