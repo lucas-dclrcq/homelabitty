@@ -29,7 +29,7 @@ spec:
               pullPolicy: Always
 
             env:
-              TZ: ${TIMEZONE}
+              TZ: Europe/Paris
               # The API serves the SPA itself (`STATIC_DIR` is baked into the
               # image) and owns `/api`, so the browser only talks to one origin:
               # the session cookie stays first-party and CORS is not involved.

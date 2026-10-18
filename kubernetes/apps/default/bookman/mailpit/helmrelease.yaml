@@ -23,7 +23,7 @@ spec:
               # Keep aligned with bookman's docker-compose.yml.
               tag: v1.31.5
             env:
-              TZ: ${TIMEZONE}
+              TZ: Europe/Paris
               # A sink only: never relay, forward or auto-send. Mailpit relays
               # nothing unless a relay is explicitly configured, and none is.
               MP_DISABLE_VERSION_CHECK: "true"
@@ -105,7 +105,7 @@ spec:
         # Internal gateway: the UI has no authentication and the mail it holds
         # is test data. BookMan reaches SMTP over the cluster service instead.
         hostnames:
-          - "bookman-mail.${LIMITED_DOMAIN}"
+          - "bookman-mail.hoohoot.xyz"
         parentRefs:
           - name: internal
             namespace: network
