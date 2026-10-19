@@ -241,6 +241,11 @@ spec:
         - "bookman"
       password:
         type: AlphaNumeric
+    - name: "endurain"
+      databases:
+        - "endurain"
+      password:
+        type: AlphaNumeric
   backups:
     pgbackrest:
       configuration:

@@ -1,0 +1,106 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app endurain
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  values:
+    controllers:
+      endurain:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        pod:
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            fsGroup: 1000
+            fsGroupChangePolicy: OnRootMismatch
+        containers:
+          app:
+            image:
+              repository: ghcr.io/endurain-project/endurain
+              tag: v0.19.4@sha256:eafbafb1793ca04cb73a8f9b22841ca194b404699aab3cfeaf34fa8949961044
+            # The upstream entrypoint regenerates env.js and rewrites the CSP in
+            # index.html under /app/frontend/dist, which fails under
+            # readOnlyRootFilesystem, so start uvicorn directly and supply
+            # env.js from the configMap below.
+            command:
+              - uvicorn
+              - main:app
+              - --host
+              - 0.0.0.0
+              - --port
+              - "8080"
+              - --proxy-headers
+              - --forwarded-allow-ips=*
+            env:
+              TZ: Europe/Paris
+              ENDURAIN_HOST: https://endurain.hoohoot.org
+              BEHIND_PROXY: "true"
+              DB_TYPE: postgres
+            envFrom:
+              - secretRef:
+                  name: endurain-secret
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 60
+                  periodSeconds: 5
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+            resources:
+              requests:
+                cpu: 25m
+                memory: 128Mi
+              limits:
+                memory: 512Mi
+    service:
+      app:
+        ports:
+          http:
+            port: 8080
+    route:
+      app:
+        annotations:
+          homelab-manager.hoohoot.org/enabled: "true"
+          homelab-manager.hoohoot.org/category: "Misc"
+          homelab-manager.hoohoot.org/description: "Fitness tracking"
+          homelab-manager.hoohoot.org/logo-url: "https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/endurain.png"
+        hostnames:
+          - endurain.hoohoot.org
+        parentRefs:
+          - name: external
+            namespace: network
+    persistence:
+      config:
+        type: configMap
+        name: endurain-config
+        globalMounts:
+          - path: /app/frontend/dist/env.js
+            subPath: env.js
+            readOnly: true
+      data:
+        existingClaim: *app
+        globalMounts:
+          - path: /app/backend/data
+      logs:
+        type: emptyDir
+        globalMounts:
+          - path: /app/backend/logs
+      tmp:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp

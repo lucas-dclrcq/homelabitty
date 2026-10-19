@@ -26,3 +26,4 @@ resources:
   - ./kalimba/ks.yaml
   - ./trilium/ks.yaml
   - ./bookman/ks.yaml
+  - ./endurain/ks.yaml

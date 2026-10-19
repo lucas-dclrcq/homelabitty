@@ -40,8 +40,8 @@ spec:
     drop_params: true
 
   callbacks:
-    success: [prometheus]
-    failure: [prometheus]
+    success: [prometheus, otel]
+    failure: [prometheus, otel]
 
   env:
     - name: LITELLM_MODE
@@ -54,6 +54,16 @@ spec:
       value: "True"
     - name: PROXY_BASE_URL
       value: https://litellm.hoohoot.xyz
+    # Traces - OpenTelemetry OTLP/HTTP to VictoriaTraces (vtsingle from the
+    # victoria-metrics-k8s-stack). Read by the `otel` callback.
+    - name: OTEL_EXPORTER
+      value: otlp_http
+    - name: OTEL_ENDPOINT
+      value: http://vtsingle-vmks.observability.svc.cluster.local:10428/insert/opentelemetry/v1/traces
+    - name: OTEL_SERVICE_NAME
+      value: litellm
+    - name: USE_OTEL_LITELLM_REQUEST_SPAN
+      value: "true"
     # SSO (Authentik generic OIDC) - client id/secret come from litellm-secret
     - name: GENERIC_AUTHORIZATION_ENDPOINT
       value: https://sso.hoohoot.org/application/o/authorize/
