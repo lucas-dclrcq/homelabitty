@@ -1,4 +1,3 @@
----
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
@@ -42,6 +41,16 @@ spec:
         anonymous:
           enabled: true
           user: kopiur-ui-anonymous
+    # The mutating admission webhook is fail-closed (failurePolicy: Fail) and
+    # single-replica by default, so a chart rollout briefly leaves it
+    # unreachable and every kopiur CR write (e.g. the zigbee2mqtt Kustomization
+    # dry-run) fails. Two replicas with a PDB keep it serving through rollouts
+    # and voluntary disruptions.
+    webhook:
+      replicaCount: 2
+      podDisruptionBudget:
+        enabled: true
+        minAvailable: 1
     resources:
       requests:
         cpu: 100m
