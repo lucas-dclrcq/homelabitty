@@ -1,4 +1,3 @@
----
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
@@ -47,3 +46,12 @@ spec:
         cpu: 100m
       limits:
         memory: 2Gi
+    webhook:
+      # The webhook is fail-closed (failurePolicy: Fail), so run >=2 replicas
+      # plus a PDB: a rollout or node drain must never leave zero endpoints,
+      # which blocks every kopiur CR write (e.g. Restore dry-runs) with
+      # "connection refused" and fails Flux Kustomization reconciliations.
+      replicaCount: 2
+      podDisruptionBudget:
+        enabled: true
+        minAvailable: 1
