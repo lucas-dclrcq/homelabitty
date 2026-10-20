@@ -9,7 +9,7 @@ spec:
   alias: grafana
   transport: http
   workload:
-    image: grafana/mcp-grafana:2.0.2
+    image: grafana/mcp-grafana:2.1.1
     args:
       - --transport=streamable-http
       - --allowed-hosts=localhost:8000,127.0.0.1:8000,grafana-mcp.ai.svc.cluster.local:8000,grafana-mcp.ai:8000,grafana-mcp:8000
