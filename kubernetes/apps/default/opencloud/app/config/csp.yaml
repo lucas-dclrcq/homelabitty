@@ -19,12 +19,14 @@ directives:
     - "blob:"
     - "https://embed.diagrams.net/"
     - "https://onlyoffice.hoohoot.org/"
+    - "https://sso.hoohoot.org/"
   img-src:
     - "'self'"
     - "data:"
     - "blob:"
     - "https://raw.githubusercontent.com/opencloud-eu/awesome-apps/"
     - "https://onlyoffice.hoohoot.org/"
+    - "https://sso.hoohoot.org/"
   manifest-src:
     - "'self'"
   media-src:
