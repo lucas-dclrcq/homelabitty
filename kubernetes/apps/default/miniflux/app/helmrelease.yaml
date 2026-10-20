@@ -35,7 +35,7 @@ spec:
           main:
             image:
               repository: ghcr.io/miniflux/miniflux
-              tag: 2.3.3
+              tag: 2.3.4
             env:
               BASE_URL: "https://miniflux.hoohoot.org"
               CREATE_ADMIN: "0"
