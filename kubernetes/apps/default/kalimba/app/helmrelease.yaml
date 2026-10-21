@@ -104,6 +104,7 @@ spec:
         ingress.home.arpa/gateway-internal: allow
         egress.home.arpa/postgres: allow
         egress.home.arpa/gateway-external: allow
+        egress.home.arpa/internet-https: allow
         # Temporal frontend (development namespace): ./ciliumnetworkpolicy below
       automountServiceAccountToken: false
       enableServiceLinks: false

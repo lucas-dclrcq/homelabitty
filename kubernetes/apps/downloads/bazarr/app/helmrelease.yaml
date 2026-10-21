@@ -87,6 +87,7 @@ spec:
         egress.home.arpa/internet: allow
         egress.home.arpa/sonarr: allow
         egress.home.arpa/radarr: allow
+        egress.home.arpa/homelab-manager: allow
       securityContext:
         runAsNonRoot: true
         runAsUser: 1026

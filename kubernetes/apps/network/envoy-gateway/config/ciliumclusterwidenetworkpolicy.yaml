@@ -112,10 +112,11 @@ spec:
         - ports:
             - port: "8081"
               protocol: TCP
-    - toEndpoints:
-        - matchLabels:
-            app: rook-ceph-mgr
-            io.kubernetes.pod.namespace: rook-ceph
+    # the Ceph mgr runs with hostNetwork, so the dashboard is a node address
+    # (host/remote-node entity), never a pod identity
+    - toEntities:
+        - host
+        - remote-node
       toPorts:
         - ports:
             - port: "7000"

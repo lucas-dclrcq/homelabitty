@@ -21,6 +21,7 @@ resources:
   - ./allow-egress-internet.yaml
   - ./allow-egress-internet-https.yaml
   - ./allow-egress-iot.yaml
+  - ./allow-egress-kopiur-mover.yaml
   - ./allow-egress-kubedns.yaml
   - ./allow-egress-lan.yaml
   - ./allow-egress-mqtt.yaml
@@ -30,7 +31,9 @@ resources:
   - ./allow-egress-smtp.yaml
   - ./allow-egress-vault.yaml
   - ./allow-egress-world.yaml
-  # downloads stack: paired egress/ingress per service
+  # downloads stack and its notification targets: paired egress/ingress per service
+  - ./allow-homelab-manager.yaml
+  - ./allow-jellyfin.yaml
   - ./allow-lidarr.yaml
   - ./allow-prowlarr.yaml
   - ./allow-qbittorrent.yaml

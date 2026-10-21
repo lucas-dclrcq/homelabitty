@@ -80,6 +80,12 @@ happens to select them.
 | `egress.home.arpa/qbittorrent`      | qBittorrent WebUI API :8080                                                                                                                                     |
 | `egress.home.arpa/sabnzbd`          | SABnzbd API :80                                                                                                                                                 |
 | `egress.home.arpa/slskd`            | slskd API :80                                                                                                                                                   |
+| `egress.home.arpa/jellyfin`         | Jellyfin :8096 (the *arr apps' library refresh)                                                                                                                 |
+| `egress.home.arpa/homelab-manager`  | homelab-manager API :8080 (the *arr apps' webhook notifications)                                                                                                |
+
+kopiur mover Jobs (`<app>-<timestamp>`) are not labelled by us:
+`allow-egress-kopiur-mover.yaml` selects them on `app.kubernetes.io/managed-by: kopiur`
+and opens the API server.
 
 Most of these are **paired**: one clusterwide policy opens the consumer's
 egress, a second one opens the service's ingress from pods carrying that same
