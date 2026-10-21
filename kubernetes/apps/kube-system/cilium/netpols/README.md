@@ -1,5 +1,7 @@
 # Network policy architecture
 
+Staged improvement backlog: [`TASKS.md`](./TASKS.md).
+
 Cilium network policies, default-deny everywhere, **nothing implicit**. A pod
 reaches a peer only if some policy names that flow. There is no "same
 namespace" shortcut and no cluster-wide escape hatch.
