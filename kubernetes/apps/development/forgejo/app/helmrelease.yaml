@@ -9,6 +9,31 @@ spec:
   chartRef:
     kind: OCIRepository
     name: *app
+  # The chart's only pod-label knob (deployment.labels) is also rendered into the
+  # immutable Deployment spec.selector.matchLabels, which would break upgrades of
+  # the existing Deployment; patch the pod template labels only instead.
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: Deployment
+              name: forgejo
+            patch: |-
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: forgejo
+              spec:
+                template:
+                  metadata:
+                    labels:
+                      ingress.home.arpa/gateway-external: allow
+                      ingress.home.arpa/world: allow
+                      ingress.home.arpa/prometheus: allow
+                      egress.home.arpa/postgres: allow
+                      egress.home.arpa/smtp: allow
+                      egress.home.arpa/gateway-external: allow
+                      egress.home.arpa/world: allow
   values:
     image:
       rootless: true

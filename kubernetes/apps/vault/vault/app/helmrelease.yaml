@@ -18,6 +18,10 @@ spec:
     server:
       extraLabels:
         configmap.reloader.stakater.com/reload: vault-config
+        ingress.home.arpa/gateway-internal: allow
+        ingress.home.arpa/prometheus: allow
+        # service_registration "kubernetes" + TokenReview for the kubernetes auth method
+        egress.home.arpa/apiserver: allow
 
       dataStorage:
         enabled: true

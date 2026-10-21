@@ -16,6 +16,9 @@ spec:
     port: 8000
     path: /mcp
     automountServiceAccountToken: false
+    podLabels:
+      egress.home.arpa/kubedns: allow
+      egress.home.arpa/cluster: allow
     env:
       - name: GRAFANA_URL
         value: http://grafana-service.observability.svc.cluster.local:3000
@@ -41,9 +44,9 @@ spec:
     securityContext:
       allowPrivilegeEscalation: false
       readOnlyRootFilesystem: true
-      capabilities: {drop: ["ALL"]}
+      capabilities: { drop: ["ALL"] }
     podSecurityContext:
       runAsNonRoot: true
       runAsUser: 1000
       runAsGroup: 1000
-      seccompProfile: {type: RuntimeDefault}
+      seccompProfile: { type: RuntimeDefault }

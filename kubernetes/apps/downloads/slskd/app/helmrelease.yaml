@@ -78,6 +78,10 @@ spec:
                 memory: 4Gi
 
     defaultPodOptions:
+      labels:
+        ingress.home.arpa/gateway-external: allow
+        ingress.home.arpa/prometheus: allow
+        egress.home.arpa/world: allow
       annotations:
         k8s.v1.cni.cncf.io/networks: |-
           [{

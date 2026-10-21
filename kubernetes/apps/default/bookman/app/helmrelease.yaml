@@ -105,6 +105,12 @@ spec:
                   - "ALL"
 
     defaultPodOptions:
+      labels:
+        ingress.home.arpa/gateway-external: allow
+        egress.home.arpa/postgres: allow
+        egress.home.arpa/smtp: allow
+        egress.home.arpa/gateway-external: allow
+        egress.home.arpa/world: allow
       automountServiceAccountToken: false
       enableServiceLinks: false
       securityContext:

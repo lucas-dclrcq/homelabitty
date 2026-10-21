@@ -12,6 +12,9 @@ spec:
   values:
     fullnameOverride: *app
 
+    podLabels:
+      ingress.home.arpa/prometheus: allow
+
     image:
       registry: quay.io
 

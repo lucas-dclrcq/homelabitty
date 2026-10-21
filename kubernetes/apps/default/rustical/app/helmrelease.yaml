@@ -10,6 +10,9 @@ spec:
     name: *app
   values:
     defaultPodOptions:
+      labels:
+        ingress.home.arpa/gateway-external: allow
+        egress.home.arpa/gateway-external: allow
       securityContext:
         runAsUser: 1026
         runAsGroup: 1500

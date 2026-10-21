@@ -20,6 +20,7 @@ spec:
     automountServiceAccountToken: false
     podLabels:
       egress.home.arpa/kubedns: allow
+      egress.home.arpa/vault: allow
     env:
       - name: TRANSPORT_MODE
         value: http
@@ -49,9 +50,9 @@ spec:
     securityContext:
       allowPrivilegeEscalation: false
       readOnlyRootFilesystem: true
-      capabilities: {drop: ["ALL"]}
+      capabilities: { drop: ["ALL"] }
     podSecurityContext:
       runAsNonRoot: true
       runAsUser: 65532
       runAsGroup: 65532
-      seccompProfile: {type: RuntimeDefault}
+      seccompProfile: { type: RuntimeDefault }

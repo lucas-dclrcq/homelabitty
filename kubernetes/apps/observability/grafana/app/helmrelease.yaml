@@ -10,6 +10,8 @@ spec:
     name: grafana-operator
   interval: 1h
   values:
+    podLabels:
+      egress.home.arpa/apiserver: allow
     dashboard:
       enabled: true
     serviceMonitor:

@@ -54,6 +54,12 @@ spec:
                 memory: 500Mi
 
     defaultPodOptions:
+      labels:
+        ingress.home.arpa/gateway-external: allow
+        ingress.home.arpa/prometheus: allow
+        egress.home.arpa/postgres: allow
+        egress.home.arpa/smtp: allow
+        egress.home.arpa/gateway-external: allow
       securityContext:
         runAsNonRoot: true
         runAsUser: 1026

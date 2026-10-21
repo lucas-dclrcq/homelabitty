@@ -10,6 +10,11 @@ spec:
     kind: OCIRepository
     name: *app
   values:
+    defaultPodOptions:
+      labels:
+        ingress.home.arpa/gateway-external: allow
+        egress.home.arpa/gateway-external: allow
+
     controllers:
       opencloud:
         annotations:

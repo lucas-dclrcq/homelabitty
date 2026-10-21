@@ -75,6 +75,9 @@ spec:
                 memory: 1Gi
 
     defaultPodOptions:
+      labels:
+        ingress.home.arpa/gateway-internal: allow
+        egress.home.arpa/mqtt: allow
       nodeSelector:
         zigbee.feature.node.kubernetes.io/adapter: "true"
 

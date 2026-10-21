@@ -14,6 +14,8 @@ spec:
       createDefaultServiceAccount: false
 
     defaultPodOptions:
+      labels:
+        ingress.home.arpa/gateway-external: allow
       automountServiceAccountToken: false
       enableServiceLinks: false
       securityContext:

@@ -35,6 +35,9 @@ spec:
               limits:
                 memory: 1Gi
     defaultPodOptions:
+      labels:
+        ingress.home.arpa/gateway-internal: allow
+        egress.home.arpa/world: allow
       securityContext:
         runAsNonRoot: true
         runAsUser: 1000

@@ -10,6 +10,10 @@ spec:
     kind: OCIRepository
     name: *app
   values:
+    defaultPodOptions:
+      labels:
+        ingress.home.arpa/gateway-external: allow
+        egress.home.arpa/world: allow
     controllers:
       pacman:
         annotations:
@@ -43,6 +47,10 @@ spec:
           successfulJobsHistory: 5
           failedJobsHistory: 5
           backoffLimit: 0
+        pod:
+          labels:
+            # pushes sync metrics to prometheus-pushgateway.observability (cross-namespace)
+            egress.home.arpa/cluster: allow
         containers:
           rsync:
             image:

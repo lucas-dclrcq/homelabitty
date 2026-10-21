@@ -17,6 +17,9 @@ spec:
     port: 8080
     path: /mcp
     automountServiceAccountToken: false
+    podLabels:
+      egress.home.arpa/kubedns: allow
+      egress.home.arpa/world: allow
     env:
       - name: TRUENAS_MCP_TARGET
         value: "truenas.lulice.lan:443"

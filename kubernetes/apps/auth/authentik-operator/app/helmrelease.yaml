@@ -15,5 +15,14 @@ spec:
       url: https://sso.hoohoot.org
       token:
         secretName: authentik-operator-token
+    manager:
+      pod:
+        labels:
+          # gateway-external: the operator reaches authentik via its public URL
+          # (authentik.url above); prometheus: a ServiceMonitor scrapes the
+          # manager metrics endpoint (prometheus.enabled below).
+          ingress.home.arpa/prometheus: allow
+          egress.home.arpa/apiserver: allow
+          egress.home.arpa/gateway-external: allow
     prometheus:
       enabled: true

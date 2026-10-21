@@ -11,6 +11,10 @@ spec:
   dependsOn: []
   interval: 15m
   values:
+    podLabels:
+      egress.home.arpa/apiserver: allow
+      # reaches Dragonfly instances in app namespaces for replication management
+      egress.home.arpa/cluster: allow
     manager:
       image:
         repository: ghcr.io/dragonflydb/operator

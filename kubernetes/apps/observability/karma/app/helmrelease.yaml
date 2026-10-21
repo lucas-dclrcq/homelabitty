@@ -31,6 +31,9 @@ spec:
                 memory: 500Mi
 
     defaultPodOptions:
+      labels:
+        ingress.home.arpa/gateway-internal: allow
+        ingress.home.arpa/prometheus: allow
       securityContext:
         runAsNonRoot: true
         runAsUser: 1026

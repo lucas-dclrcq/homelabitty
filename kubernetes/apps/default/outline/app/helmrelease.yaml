@@ -11,6 +11,11 @@ spec:
     name: *app
   values:
     defaultPodOptions:
+      labels:
+        ingress.home.arpa/gateway-external: allow
+        egress.home.arpa/postgres: allow
+        egress.home.arpa/smtp: allow
+        egress.home.arpa/gateway-external: allow
       securityContext:
         runAsNonRoot: true
         runAsUser: 1001

@@ -1,0 +1,14 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: allow-ingress-cluster
+spec:
+  description: "Escape hatch: pods labeled ingress.home.arpa/cluster=allow accept traffic from anything inside the cluster (pushgateway, victoria-logs, vmsingle)"
+  endpointSelector:
+    matchLabels:
+      ingress.home.arpa/cluster: allow
+  ingress:
+    - fromEntities:
+        - cluster

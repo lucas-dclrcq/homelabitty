@@ -50,6 +50,9 @@ spec:
               limits:
                 memory: 64Mi
     defaultPodOptions:
+      labels:
+        ingress.home.arpa/prometheus: allow
+        ingress.home.arpa/cluster: allow
       securityContext:
         runAsNonRoot: true
         runAsUser: 65534

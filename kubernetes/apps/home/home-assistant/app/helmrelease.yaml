@@ -37,6 +37,10 @@ spec:
               limits:
                 memory: 2Gi
     defaultPodOptions:
+      labels:
+        ingress.home.arpa/gateway-external: allow
+        egress.home.arpa/mqtt: allow
+        egress.home.arpa/world: allow
       securityContext:
         runAsNonRoot: true
         runAsUser: 1026

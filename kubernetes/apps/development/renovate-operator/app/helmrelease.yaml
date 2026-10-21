@@ -10,6 +10,19 @@ spec:
     kind: OCIRepository
     name: *app
   values:
+    deployment:
+      podLabels:
+        ingress.home.arpa/gateway-internal: allow
+        ingress.home.arpa/prometheus: allow
+        egress.home.arpa/apiserver: allow
+        # OIDC code exchange against the public authentik hostname (sso.hoohoot.org)
+        egress.home.arpa/gateway-external: allow
+    config:
+      # applied by the operator to every Renovate discovery/executor Job pod
+      podLabelTemplates:
+        egress.home.arpa/world: allow
+        egress.home.arpa/gateway-external: allow
+        egress.home.arpa/apiserver: allow
     route:
       enabled: true
       hostnames:

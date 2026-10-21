@@ -58,6 +58,9 @@ spec:
                 memory: 128Mi
 
     defaultPodOptions:
+      labels:
+        ingress.home.arpa/prometheus: allow
+        egress.home.arpa/mqtt: allow
       automountServiceAccountToken: false
       enableServiceLinks: false
       securityContext:

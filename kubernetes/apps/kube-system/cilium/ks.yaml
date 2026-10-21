@@ -23,7 +23,8 @@ metadata:
   name: &app cilium-netpols
   namespace: flux-system
 spec:
-  targetNamespace: kube-system
+  # no targetNamespace: baseline.yaml carries namespaced CNPs with explicit
+  # namespaces; everything else in netpols/ is cluster-scoped
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app

@@ -21,6 +21,13 @@ spec:
   uninstall:
     keepHistory: false
   values:
+    defaultPodOptions:
+      labels:
+        ingress.home.arpa/gateway-external: allow
+        egress.home.arpa/postgres: allow
+        egress.home.arpa/gateway-external: allow
+        egress.home.arpa/world: allow
+
     controllers:
       mautrix-discord:
         type: statefulset

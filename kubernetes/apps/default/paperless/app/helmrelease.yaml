@@ -41,6 +41,11 @@ spec:
                 memory: 4Gi
 
     defaultPodOptions:
+      labels:
+        ingress.home.arpa/gateway-external: allow
+        ingress.home.arpa/gateway-internal: allow
+        egress.home.arpa/postgres: allow
+        egress.home.arpa/gateway-external: allow
       securityContext:
         runAsNonRoot: false
         runAsUser: 0

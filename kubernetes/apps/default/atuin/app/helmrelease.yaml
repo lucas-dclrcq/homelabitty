@@ -64,6 +64,9 @@ spec:
                 memory: 100Mi
 
     defaultPodOptions:
+      labels:
+        ingress.home.arpa/gateway-external: allow
+        egress.home.arpa/postgres: allow
       securityContext:
         runAsNonRoot: true
         runAsUser: 65534

@@ -2,11 +2,26 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
+  - ./baseline.yaml
+  - ./allow-ingress-apiserver.yaml
+  - ./allow-ingress-cluster.yaml
+  - ./allow-ingress-dragonfly-operator.yaml
   - ./allow-ingress-gateway-external.yaml
   - ./allow-ingress-gateway-internal.yaml
+  - ./allow-ingress-mqtt.yaml
+  - ./allow-ingress-postgres.yaml
   - ./allow-ingress-prometheus.yaml
+  - ./allow-ingress-smtp.yaml
+  - ./allow-ingress-vault.yaml
   - ./allow-ingress-vmagent-dragonfly.yaml
+  - ./allow-ingress-world.yaml
+  - ./allow-egress-apiserver.yaml
+  - ./allow-egress-cluster.yaml
   - ./allow-egress-gateway-external.yaml
+  - ./allow-egress-gateway-internal.yaml
   - ./allow-egress-kubedns.yaml
+  - ./allow-egress-mqtt.yaml
   - ./allow-egress-postgres.yaml
+  - ./allow-egress-smtp.yaml
+  - ./allow-egress-vault.yaml
   - ./allow-egress-world.yaml
