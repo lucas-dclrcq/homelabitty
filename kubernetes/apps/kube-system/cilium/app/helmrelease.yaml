@@ -19,16 +19,16 @@ spec:
   values:
     autoDirectNodeRoutes: true
     # https://docs.cilium.io/en/stable/network/kubernetes/bandwidth-manager/
-#    bandwidthManager:
-#      enabled: true
-#      bbr: true
+    #    bandwidthManager:
+    #      enabled: true
+    #      bbr: true
     bpf:
-#      datapathMode: netkit
+      #      datapathMode: netkit
       masquerade: true
-#      preallocateMaps: true
-#      tproxy: true
+    #      preallocateMaps: true
+    #      tproxy: true
     # https://docs.cilium.io/en/stable/operations/performance/tuning/#ebpf-clock-probe
-#    bpfClockProbe: true
+    #    bpfClockProbe: true
     bgpControlPlane:
       enabled: true
     cgroup:
@@ -41,7 +41,7 @@ spec:
       enabled: true
     # NOTE: devices might need to be set if you have more than one active NIC on your hosts
     # devices: eno+ eth+
-#    enableIPv4BIGTCP: true
+    #    enableIPv4BIGTCP: true
     cluster:
       id: 1
       name: "hoohoot"
@@ -56,12 +56,15 @@ spec:
       metrics:
         enabled:
           - dns:query
-          - drop:sourceContext=namespace|workload-name|pod;destinationContext=namespace|workload-name|pod;labelsContext=source_namespace,destination_namespace
+          - drop:sourceContext=workload-name|pod|reserved-identity;destinationContext=workload-name|pod|reserved-identity;labelsContext=source_namespace,source_workload,destination_namespace,destination_workload,traffic_direction
           - tcp
           - flow:sourceContext=namespace|workload-name;destinationContext=namespace|workload-name;labelsContext=source_namespace,destination_namespace
           - port-distribution
           - icmp
           - http
+          # policy verdict events: action="audit" = flows that WOULD be denied
+          # while policyAuditMode is on (see cilium-policy-audit dashboard)
+          - policy:sourceContext=workload-name|pod|reserved-identity;destinationContext=workload-name|pod|reserved-identity;labelsContext=source_namespace,source_workload,destination_namespace,destination_workload,traffic_direction
         serviceMonitor:
           enabled: true
         dashboards:
@@ -94,6 +97,11 @@ spec:
       algorithm: maglev
       mode: snat # dsr ?
     localRedirectPolicy: true
+    # SAFETY NET while rolling out network policies: verdicts are computed and
+    # exported (hubble_policy_verdicts_total{action="audit"}) but traffic that
+    # would be denied is still FORWARDED. Flip to false once the
+    # cilium-policy-audit Grafana dashboard stays clean.
+    policyAuditMode: true
     operator:
       dashboards:
         enabled: true
@@ -103,8 +111,8 @@ spec:
           enabled: true
       replicas: 2
       rollOutPods: true
-#    pmtuDiscovery:
-#      enabled: true
+    #    pmtuDiscovery:
+    #      enabled: true
     prometheus:
       enabled: true
       serviceMonitor:

@@ -151,12 +151,12 @@ spec:
           "targets": [
             {
               "datasource": { "type": "prometheus", "uid": "$datasource" },
-              "expr": "count(count by (destination_port) (hubble_drop_total{reason=\"POLICY_DENIED\", destination_port!=\"\"}))",
-              "legendFormat": "Ports",
+              "expr": "count(count by (destination_namespace, destination_workload) (hubble_drop_total{reason=\"POLICY_DENIED\"}))",
+              "legendFormat": "Workloads",
               "refId": "A"
             }
           ],
-          "title": "Blocked Destination Ports",
+          "title": "Affected Destination Workloads",
           "type": "stat"
         },
         {
@@ -186,10 +186,6 @@ spec:
                 ]
               },
               {
-                "matcher": { "id": "byName", "options": "Dest Port" },
-                "properties": [{ "id": "custom.width", "value": 80 }]
-              },
-              {
                 "matcher": { "id": "byName", "options": "Protocol" },
                 "properties": [{ "id": "custom.width", "value": 80 }]
               }
@@ -206,7 +202,7 @@ spec:
           "targets": [
             {
               "datasource": { "type": "prometheus", "uid": "$datasource" },
-              "expr": "topk(50, sum by (source_namespace, source_workload, destination_namespace, destination_workload, destination_port, protocol) (increase(hubble_drop_total{reason=\"POLICY_DENIED\", traffic_direction=\"INGRESS\", source_namespace=~\"$src_namespace\", destination_namespace=~\"$dst_namespace\"}[$__range])))",
+              "expr": "topk(50, sum by (source_namespace, source_workload, destination_namespace, destination_workload, protocol) (increase(hubble_drop_total{reason=\"POLICY_DENIED\", traffic_direction=\"INGRESS\", source_namespace=~\"$src_namespace\", destination_namespace=~\"$dst_namespace\"}[$__range])))",
               "format": "table",
               "instant": true,
               "refId": "A"
@@ -221,16 +217,14 @@ spec:
                 "indexByName": {
                   "destination_namespace": 2,
                   "destination_workload": 3,
-                  "destination_port": 4,
-                  "protocol": 5,
+                  "protocol": 4,
                   "source_namespace": 0,
                   "source_workload": 1,
-                  "Value": 6
+                  "Value": 5
                 },
                 "renameByName": {
                   "destination_namespace": "Dest NS",
                   "destination_workload": "Dest Workload",
-                  "destination_port": "Dest Port",
                   "protocol": "Protocol",
                   "source_namespace": "Source NS",
                   "source_workload": "Source Workload",
@@ -268,10 +262,6 @@ spec:
                 ]
               },
               {
-                "matcher": { "id": "byName", "options": "Dest Port" },
-                "properties": [{ "id": "custom.width", "value": 80 }]
-              },
-              {
                 "matcher": { "id": "byName", "options": "Protocol" },
                 "properties": [{ "id": "custom.width", "value": 80 }]
               }
@@ -288,7 +278,7 @@ spec:
           "targets": [
             {
               "datasource": { "type": "prometheus", "uid": "$datasource" },
-              "expr": "topk(50, sum by (source_namespace, source_workload, destination_namespace, destination_workload, destination_port, protocol) (increase(hubble_drop_total{reason=\"POLICY_DENIED\", traffic_direction=\"EGRESS\", source_namespace=~\"$src_namespace\", destination_namespace=~\"$dst_namespace\"}[$__range])))",
+              "expr": "topk(50, sum by (source_namespace, source_workload, destination_namespace, destination_workload, protocol) (increase(hubble_drop_total{reason=\"POLICY_DENIED\", traffic_direction=\"EGRESS\", source_namespace=~\"$src_namespace\", destination_namespace=~\"$dst_namespace\"}[$__range])))",
               "format": "table",
               "instant": true,
               "refId": "A"
@@ -303,16 +293,14 @@ spec:
                 "indexByName": {
                   "destination_namespace": 2,
                   "destination_workload": 3,
-                  "destination_port": 4,
-                  "protocol": 5,
+                  "protocol": 4,
                   "source_namespace": 0,
                   "source_workload": 1,
-                  "Value": 6
+                  "Value": 5
                 },
                 "renameByName": {
                   "destination_namespace": "Dest NS",
                   "destination_workload": "Dest Workload",
-                  "destination_port": "Dest Port",
                   "protocol": "Protocol",
                   "source_namespace": "Source NS",
                   "source_workload": "Source Workload",
@@ -452,12 +440,12 @@ spec:
           "targets": [
             {
               "datasource": { "type": "prometheus", "uid": "$datasource" },
-              "expr": "topk(10, sum by (destination_port) (increase(hubble_drop_total{reason=\"POLICY_DENIED\", destination_port!=\"\"}[$__range])))",
-              "legendFormat": "{{ destination_port }}",
+              "expr": "topk(10, sum by (destination_workload) (increase(hubble_drop_total{reason=\"POLICY_DENIED\", destination_workload!=\"\"}[$__range])))",
+              "legendFormat": "{{ destination_workload }}",
               "refId": "A"
             }
           ],
-          "title": "Top Blocked Destination Ports",
+          "title": "Top Blocked Destination Workloads",
           "type": "piechart"
         },
         {

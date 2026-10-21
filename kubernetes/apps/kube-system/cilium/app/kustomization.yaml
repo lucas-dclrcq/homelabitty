@@ -8,4 +8,5 @@ resources:
   - ./networking.yaml
   - ./grafanadashboard.yaml
   - ./grafanadashboard-dropped-flows.yaml
+  - ./grafanadashboard-policy-audit.yaml
   - ./probes.yaml
