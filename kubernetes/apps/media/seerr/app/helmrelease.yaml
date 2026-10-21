@@ -28,7 +28,7 @@ spec:
           apiVersion: cilium.io/v2
           kind: CiliumNetworkPolicy
           spec:
-            description: "Seerr reads the Jellyfin library and hands approved requests to the *arr apps in the downloads namespace"
+            description: "Seerr reads the Jellyfin library (the *arr apps are opened by the egress.home.arpa/{sonarr,radarr} labels)"
             endpointSelector:
               matchLabels:
                 app.kubernetes.io/name: seerr
@@ -39,17 +39,6 @@ spec:
                 toPorts:
                   - ports:
                       - port: "8096"
-                        protocol: TCP
-              - toEndpoints:
-                  - matchExpressions:
-                      - key: app.kubernetes.io/name
-                        operator: In
-                        values: ["sonarr", "sonarr-anime", "radarr"]
-                    matchLabels:
-                      io.kubernetes.pod.namespace: downloads
-                toPorts:
-                  - ports:
-                      - port: "80"
                         protocol: TCP
 
     controllers:
@@ -98,7 +87,10 @@ spec:
         ingress.home.arpa/gateway-external: allow
         egress.home.arpa/postgres: allow
         egress.home.arpa/world: allow
-        # Jellyfin + the *arr apps: see rawResources.netpol above
+        # approved requests go to the *arr apps in the downloads namespace
+        egress.home.arpa/sonarr: allow
+        egress.home.arpa/radarr: allow
+        # Jellyfin is same-namespace: see rawResources.netpol above
       securityContext:
         runAsNonRoot: true
         runAsUser: 1000

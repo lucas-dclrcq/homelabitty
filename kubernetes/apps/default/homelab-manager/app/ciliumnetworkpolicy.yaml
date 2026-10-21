@@ -5,7 +5,7 @@ kind: CiliumNetworkPolicy
 metadata:
   name: homelab-manager
 spec:
-  description: "Aggregates the *arr/Jellyfin/Matrix/authentik APIs and ships OTLP traces; every target is addressed by its in-cluster Service (see ./externalsecret.yaml)"
+  description: "Aggregates the Jellyfin/Matrix/authentik APIs and ships OTLP traces; every target is addressed by its in-cluster Service (see ./externalsecret.yaml). The *arr apps are opened by the egress.home.arpa/{sonarr,radarr,lidarr} labels."
   endpointSelector:
     matchLabels:
       app: homelab-manager
@@ -24,25 +24,6 @@ spec:
             - port: "8080"
               protocol: TCP
   egress:
-    - toEndpoints:
-        - matchLabels:
-            app.kubernetes.io/name: sonarr
-            io.kubernetes.pod.namespace: downloads
-        - matchLabels:
-            app.kubernetes.io/name: radarr
-            io.kubernetes.pod.namespace: downloads
-      toPorts:
-        - ports:
-            - port: "80"
-              protocol: TCP
-    - toEndpoints:
-        - matchLabels:
-            app.kubernetes.io/name: lidarr
-            io.kubernetes.pod.namespace: downloads
-      toPorts:
-        - ports:
-            - port: "8686"
-              protocol: TCP
     - toEndpoints:
         - matchLabels:
             app.kubernetes.io/name: jellyfin

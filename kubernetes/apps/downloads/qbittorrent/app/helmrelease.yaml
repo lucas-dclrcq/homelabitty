@@ -10,27 +10,6 @@ spec:
     kind: OCIRepository
     name: *app
   values:
-    rawResources:
-      netpol:
-        manifest:
-          apiVersion: cilium.io/v2
-          kind: CiliumNetworkPolicy
-          spec:
-            description: "Torrent client: the *arr apps queue and poll downloads over the WebUI API"
-            endpointSelector:
-              matchLabels:
-                app.kubernetes.io/name: qbittorrent
-            ingress:
-              - fromEndpoints:
-                  - matchExpressions:
-                      - key: app.kubernetes.io/name
-                        operator: In
-                        values: ["sonarr", "sonarr-anime", "radarr", "lidarr"]
-                toPorts:
-                  - ports:
-                      - port: "8080"
-                        protocol: TCP
-
     controllers:
       qbittorrent:
         annotations:

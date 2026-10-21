@@ -65,10 +65,25 @@ happens to select them.
 | `egress.home.arpa/apiserver`        | kube-apiserver (operators, patroni, controllers)                                                                                                                |
 | `egress.home.arpa/gateway-external` | external envoy pods — needed for **OIDC hairpin** (app calls `auth.<domain>` which resolves to the gateway LB) and any call to a public hostname of the cluster |
 | `egress.home.arpa/gateway-internal` | internal envoy pods — calls to internal hostnames (blackbox probes of `*.hoohoot.xyz`)                                                                          |
+| `egress.home.arpa/sonarr`           | the Sonarr instances (`sonarr` + `sonarr-anime`) :80                                                                                                            |
+| `egress.home.arpa/radarr`           | Radarr :80                                                                                                                                                      |
+| `egress.home.arpa/lidarr`           | Lidarr :8686                                                                                                                                                    |
+| `egress.home.arpa/prowlarr`         | Prowlarr :80                                                                                                                                                    |
+| `egress.home.arpa/qbittorrent`      | qBittorrent WebUI API :8080                                                                                                                                     |
+| `egress.home.arpa/sabnzbd`          | SABnzbd API :80                                                                                                                                                 |
+| `egress.home.arpa/slskd`            | slskd API :80                                                                                                                                                   |
 
-The `postgres`/`mqtt`/`smtp`/`vault` labels are **paired**: one clusterwide
-policy opens the consumer's egress, a second one opens the service's ingress
-from pods carrying that same label. Labeling the consumer is enough.
+Most of these are **paired**: one clusterwide policy opens the consumer's
+egress, a second one opens the service's ingress from pods carrying that same
+label, so labelling the consumer is enough. That covers
+`postgres`/`mqtt`/`smtp`/`vault` and the whole downloads stack
+(`sonarr`/`radarr`/`lidarr`/`prowlarr`/`qbittorrent`/`sabnzbd`/`slskd`, one
+`allow-<service>.yaml` per service holding both halves).
+
+The downloads labels work from any namespace — `media/seerr` and
+`default/homelab-manager` use the same ones the *arr apps use between
+themselves. `egress.home.arpa/sonarr` deliberately covers both Sonarr instances:
+every consumer drives `sonarr` and `sonarr-anime` together.
 
 ### Ingress labels (put on the _receiving_ pod)
 
@@ -92,10 +107,14 @@ since both ends are default-deny:
 
 - same-namespace components — `ai/litellm` ↔ its MCP servers, `development/harbor`
   and `development/temporal` meshes, `matrix` (HAProxy/Synapse/MAS/Valkey),
-  `downloads` (*arr ↔ Prowlarr/qBittorrent/SABnzbd), `vault` raft peers,
-  `infrastructure` (crunchy replication/pgBackRest), the `observability` stack
-- one-off cross-namespace calls — `default/kalimba` → Temporal, `media/seerr` →
-  the *arr apps, `development/pacman` → the Pushgateway
+  `vault` raft peers, `infrastructure` (crunchy replication/pgBackRest), the
+  `observability` stack
+- one-off cross-namespace calls — `default/kalimba` → Temporal,
+  `development/pacman` → the Pushgateway, `downloads/droppedneedle` → Navidrome
+
+When a service has several consumers, prefer a label pair over a bespoke policy:
+that is what the downloads stack does, and it is why none of the *arr apps ship
+a policy of their own.
 
 Dragonfly is handled by the component that creates it:
 `kubernetes/components/dragonfly/ciliumnetworkpolicy.yaml` ships the instance's

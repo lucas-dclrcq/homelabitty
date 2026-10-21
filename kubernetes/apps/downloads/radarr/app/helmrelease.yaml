@@ -21,53 +21,6 @@ spec:
     - name: rook-ceph-cluster
       namespace: rook-ceph
   values:
-    rawResources:
-      netpol:
-        manifest:
-          apiVersion: cilium.io/v2
-          kind: CiliumNetworkPolicy
-          spec:
-            description: "Radarr: indexers through Prowlarr, grabs to qBittorrent/SABnzbd, driven by Bazarr/Recyclarr/Seerr/homelab-manager"
-            endpointSelector:
-              matchLabels:
-                app.kubernetes.io/name: radarr
-            ingress:
-              # indexer sync from Prowlarr, subtitle/quality-profile tooling,
-              # the request manager and the homelab-manager dashboard
-              - fromEndpoints:
-                  - matchExpressions:
-                      - key: app.kubernetes.io/name
-                        operator: In
-                        values: ["prowlarr", "bazarr", "recyclarr"]
-                  - matchLabels:
-                      app.kubernetes.io/name: seerr
-                      io.kubernetes.pod.namespace: media
-                  - matchLabels:
-                      app: homelab-manager
-                      io.kubernetes.pod.namespace: default
-                toPorts:
-                  - ports:
-                      - port: "80"
-                        protocol: TCP
-            egress:
-              # indexer search through Prowlarr, grabs handed to the download clients
-              - toEndpoints:
-                  - matchLabels:
-                      app.kubernetes.io/name: prowlarr
-                  - matchLabels:
-                      app.kubernetes.io/name: sabnzbd
-                toPorts:
-                  - ports:
-                      - port: "80"
-                        protocol: TCP
-              - toEndpoints:
-                  - matchLabels:
-                      app.kubernetes.io/name: qbittorrent
-                toPorts:
-                  - ports:
-                      - port: "8080"
-                        protocol: TCP
-
     controllers:
       radarr:
         annotations:
@@ -126,6 +79,10 @@ spec:
         ingress.home.arpa/gateway-internal: allow
         egress.home.arpa/postgres: allow
         egress.home.arpa/world: allow
+        # indexer search through Prowlarr, grabs to the download clients
+        egress.home.arpa/prowlarr: allow
+        egress.home.arpa/qbittorrent: allow
+        egress.home.arpa/sabnzbd: allow
       securityContext:
         runAsNonRoot: true
         runAsUser: 1026
