@@ -89,7 +89,7 @@ spec:
   targets:
     staticConfig:
       static:
-        - "https://mrtc.hoohoot.org/healthz"
+        - "https://mrtc.hoohoot.org/"
   metricRelabelings:
     - targetLabel: service
       replacement: app-endpoint
