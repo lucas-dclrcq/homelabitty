@@ -56,6 +56,10 @@ spec:
         ingress.home.arpa/apiserver: allow
         ingress.home.arpa/prometheus: allow
         egress.home.arpa/apiserver: allow
+      operator:
+        # Set ownerReferences on VM objects converted from Prometheus CRs, so
+        # deleting a Probe/ServiceMonitor garbage-collects its VMProbe/VMServiceScrape
+        enable_converter_ownership: true
 
     vmsingle:
       enabled: true
