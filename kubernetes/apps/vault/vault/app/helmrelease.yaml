@@ -22,6 +22,9 @@ spec:
         ingress.home.arpa/prometheus: allow
         # service_registration "kubernetes" + TokenReview for the kubernetes auth method
         egress.home.arpa/apiserver: allow
+        # database secrets engine against the crunchy cluster
+        egress.home.arpa/postgres: allow
+        # raft peers, unsealer and the snapshot CronJob: ./ciliumnetworkpolicy.yaml
 
       dataStorage:
         enabled: true

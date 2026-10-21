@@ -9,6 +9,25 @@ spec:
     kind: OCIRepository
     name: *app
   values:
+    rawResources:
+      netpol:
+        manifest:
+          apiVersion: cilium.io/v2
+          kind: CiliumNetworkPolicy
+          spec:
+            description: "paperless-ai drives the paperless-ngx REST API (PAPERLESS_API_URL in ./externalsecret.yaml)"
+            endpointSelector:
+              matchLabels:
+                app.kubernetes.io/name: paperless-ai
+            egress:
+              - toEndpoints:
+                  - matchLabels:
+                      app.kubernetes.io/name: paperless
+                toPorts:
+                  - ports:
+                      - port: "8000"
+                        protocol: TCP
+
     controllers:
       paperless-ai:
         annotations:

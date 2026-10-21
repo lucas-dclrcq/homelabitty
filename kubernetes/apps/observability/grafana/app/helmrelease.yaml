@@ -11,6 +11,7 @@ spec:
   interval: 1h
   values:
     podLabels:
+      ingress.home.arpa/prometheus: allow
       egress.home.arpa/apiserver: allow
     dashboard:
       enabled: true

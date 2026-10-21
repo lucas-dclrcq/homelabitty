@@ -1,0 +1,27 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: keda-metrics-service
+spec:
+  description: "The metrics adapter fetches scaler values from the operator's gRPC metrics service"
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/part-of: keda-operator
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/part-of: keda-operator
+      toPorts:
+        - ports:
+            - port: "9666"
+              protocol: TCP
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/part-of: keda-operator
+      toPorts:
+        - ports:
+            - port: "9666"
+              protocol: TCP

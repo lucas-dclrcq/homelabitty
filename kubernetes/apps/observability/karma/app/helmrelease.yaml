@@ -10,6 +10,25 @@ spec:
     kind: OCIRepository
     name: *app
   values:
+    rawResources:
+      netpol:
+        manifest:
+          apiVersion: cilium.io/v2
+          kind: CiliumNetworkPolicy
+          spec:
+            description: "karma reads the Alertmanager API (config/config.yaml)"
+            endpointSelector:
+              matchLabels:
+                app.kubernetes.io/name: karma
+            egress:
+              - toEndpoints:
+                  - matchLabels:
+                      app.kubernetes.io/name: vmalertmanager
+                toPorts:
+                  - ports:
+                      - port: "9093"
+                        protocol: TCP
+
     controllers:
       karma:
         replicas: 2

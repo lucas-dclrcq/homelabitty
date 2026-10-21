@@ -24,3 +24,6 @@ spec:
               - op: add
                 path: /spec/template/metadata/labels/egress.home.arpa~1apiserver
                 value: allow
+              - op: add
+                path: /spec/template/metadata/labels/ingress.home.arpa~1prometheus
+                value: allow

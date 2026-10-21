@@ -21,6 +21,27 @@ spec:
     - name: rook-ceph-cluster
       namespace: rook-ceph
   values:
+    rawResources:
+      netpol:
+        manifest:
+          apiVersion: cilium.io/v2
+          kind: CiliumNetworkPolicy
+          spec:
+            description: "Usenet client: the *arr apps queue and poll downloads over the API"
+            endpointSelector:
+              matchLabels:
+                app.kubernetes.io/name: sabnzbd
+            ingress:
+              - fromEndpoints:
+                  - matchExpressions:
+                      - key: app.kubernetes.io/name
+                        operator: In
+                        values: ["sonarr", "sonarr-anime", "radarr", "lidarr", "droppedneedle"]
+                toPorts:
+                  - ports:
+                      - port: "80"
+                        protocol: TCP
+
     controllers:
       sabnzbd:
         annotations:

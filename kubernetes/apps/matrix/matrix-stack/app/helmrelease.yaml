@@ -42,8 +42,8 @@ spec:
       labels:
         egress.home.arpa/apiserver: allow
 
-    # In-namespace cache (synapse/MAS reach it via the namespace baseline); the
-    # label only opens the metrics scrape.
+    # In-namespace cache; synapse/MAS reach it through the matrix-stack-internal
+    # policy in ./ciliumnetworkpolicy.yaml, the label only opens the metrics scrape.
     valkey:
       labels:
         ingress.home.arpa/prometheus: allow

@@ -21,6 +21,33 @@ spec:
   uninstall:
     keepHistory: false
   values:
+    rawResources:
+      netpol:
+        manifest:
+          apiVersion: cilium.io/v2
+          kind: CiliumNetworkPolicy
+          spec:
+            description: "droppedneedle reads the Navidrome library (media namespace) and queues grabs on SABnzbd"
+            endpointSelector:
+              matchLabels:
+                app.kubernetes.io/name: droppedneedle
+            egress:
+              - toEndpoints:
+                  - matchLabels:
+                      app.kubernetes.io/name: navidrome
+                      io.kubernetes.pod.namespace: media
+                toPorts:
+                  - ports:
+                      - port: "8080"
+                        protocol: TCP
+              - toEndpoints:
+                  - matchLabels:
+                      app.kubernetes.io/name: sabnzbd
+                toPorts:
+                  - ports:
+                      - port: "80"
+                        protocol: TCP
+
     defaultPodOptions:
       labels:
         ingress.home.arpa/gateway-external: allow

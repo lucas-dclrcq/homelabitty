@@ -8,6 +8,7 @@ resources:
   - ./litellmvirtualkey.yaml
   - ./helmrepository.yaml
   - ./helmrelease.yaml
+  - ./ciliumnetworkpolicy.yaml
 configMapGenerator:
   # Custom Robusta playbook package, imported by the runner via PYTHONPATH
   - name: robusta-holmes-remediation

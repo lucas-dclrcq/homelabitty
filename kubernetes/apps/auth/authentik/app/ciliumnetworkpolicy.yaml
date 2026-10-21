@@ -1,0 +1,54 @@
+---
+# Outpost pods are created by authentik itself through its Kubernetes
+# integration, so there is no chart value to hang pod labels on: they get a
+# policy of their own instead, keyed on the label authentik stamps on them.
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: authentik-outposts
+spec:
+  description: "authentik outposts (proxy + LDAP): talk back to authentik over its public URL, serve LAN LDAP clients and the external gateway"
+  endpointSelector:
+    matchLabels:
+      app: authentik-outpost
+  ingress:
+    # proxy outpost backs SecurityPolicy ext-auth on the external gateway
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: envoy
+            gateway.envoyproxy.io/owning-gateway-name: external
+            io.kubernetes.pod.namespace: network
+      toPorts:
+        - ports:
+            - port: "9000"
+              protocol: TCP
+            - port: "9443"
+              protocol: TCP
+    # LDAP outpost is a LoadBalancer reached straight from the LAN
+    # (remote-node covers the externalTrafficPolicy=Cluster hop)
+    - fromEntities:
+        - world
+        - remote-node
+      toPorts:
+        - ports:
+            - port: "3389"
+              protocol: TCP
+            - port: "6636"
+              protocol: TCP
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: vmagent
+            io.kubernetes.pod.namespace: observability
+      toPorts:
+        - ports:
+            - port: "9300"
+              protocol: TCP
+  egress:
+    # outposts dial authentik on AUTHENTIK_HOST, which is the public hostname:
+    # the request hairpins through the external gateway
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: envoy
+            gateway.envoyproxy.io/owning-gateway-name: external
+            io.kubernetes.pod.namespace: network

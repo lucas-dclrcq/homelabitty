@@ -9,5 +9,6 @@ resources:
   - ./externalsecret.yaml
   - ./persistentvolume.yaml
   - ./helmrelease.yaml
+  - ./ciliumnetworkpolicy.yaml
   - ./httproute.yaml
   - ./probes.yaml

@@ -54,6 +54,7 @@ spec:
       # Watches CRs via the API; its validating webhook is called by kube-apiserver
       podLabels:
         ingress.home.arpa/apiserver: allow
+        ingress.home.arpa/prometheus: allow
         egress.home.arpa/apiserver: allow
 
     vmsingle:
@@ -61,7 +62,9 @@ spec:
       spec:
         podMetadata:
           labels:
-            ingress.home.arpa/cluster: allow
+            # route on the internal gateway (victoriametrics.hoohoot.xyz)
+            ingress.home.arpa/gateway-internal: allow
+            ingress.home.arpa/prometheus: allow
         retentionPeriod: 30d
         useStrictSecurity: true
         extraArgs:
@@ -94,7 +97,9 @@ spec:
       spec:
         podMetadata:
           labels:
-            egress.home.arpa/cluster: allow
+            ingress.home.arpa/prometheus: allow
+            # scrape targets are whitelisted in
+            # ./ciliumclusterwidenetworkpolicy.yaml
         extraArgs:
           promscrape.streamParse: "true"
           # apiserver /metrics exceeds the 16MiB default
@@ -109,15 +114,22 @@ spec:
 
     vmalert:
       enabled: true
+      spec:
+        podMetadata:
+          labels:
+            ingress.home.arpa/prometheus: allow
 
     alertmanager:
       enabled: true
       spec:
         podMetadata:
           labels:
-            # pushover/heartbeat receivers -> internet; robusta webhook -> ai namespace
+            # route on the internal gateway (alertmanager.hoohoot.xyz)
+            ingress.home.arpa/gateway-internal: allow
+            ingress.home.arpa/prometheus: allow
+            # pushover/heartbeat receivers -> internet; the Robusta webhook and
+            # the gossip mesh are in ./ciliumnetworkpolicy.yaml
             egress.home.arpa/world: allow
-            egress.home.arpa/cluster: allow
         externalURL: https://alertmanager.hoohoot.xyz
         disableNamespaceMatcher: true
       config:
@@ -136,6 +148,9 @@ spec:
     vtsingle:
       enabled: true
       spec:
+        podMetadata:
+          labels:
+            ingress.home.arpa/prometheus: allow
         retentionPeriod: "24h"
         grpcSpec:
           listenPort: 4317
@@ -179,6 +194,7 @@ spec:
       fullnameOverride: kube-state-metrics
       # Watches every object kind via the Kubernetes API
       podLabels:
+        ingress.home.arpa/prometheus: allow
         egress.home.arpa/apiserver: allow
       metricLabelsAllowlist:
         - pods=[*]

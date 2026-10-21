@@ -21,6 +21,27 @@ spec:
     - name: rook-ceph-cluster
       namespace: rook-ceph
   values:
+    rawResources:
+      netpol:
+        manifest:
+          apiVersion: cilium.io/v2
+          kind: CiliumNetworkPolicy
+          spec:
+            description: "Bazarr follows the Sonarr/Radarr libraries to fetch subtitles"
+            endpointSelector:
+              matchLabels:
+                app.kubernetes.io/name: bazarr
+            egress:
+              - toEndpoints:
+                  - matchExpressions:
+                      - key: app.kubernetes.io/name
+                        operator: In
+                        values: ["sonarr", "sonarr-anime", "radarr"]
+                toPorts:
+                  - ports:
+                      - port: "80"
+                        protocol: TCP
+
     controllers:
       bazarr:
         annotations:

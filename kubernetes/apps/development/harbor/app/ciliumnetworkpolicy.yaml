@@ -1,0 +1,39 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: harbor-internal
+spec:
+  description: "Harbor's components only talk to each other: nginx/core/jobservice/exporter over HTTP (8080, metrics 8001), the registry (5000) and the bundled redis (6379)"
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/part-of: harbor
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/part-of: harbor
+      toPorts:
+        - ports:
+            - port: "5000"
+              protocol: TCP
+            - port: "6379"
+              protocol: TCP
+            - port: "8001"
+              protocol: TCP
+            - port: "8080"
+              protocol: TCP
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/part-of: harbor
+      toPorts:
+        - ports:
+            - port: "5000"
+              protocol: TCP
+            - port: "6379"
+              protocol: TCP
+            - port: "8001"
+              protocol: TCP
+            - port: "8080"
+              protocol: TCP

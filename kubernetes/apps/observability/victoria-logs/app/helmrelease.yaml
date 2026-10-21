@@ -27,7 +27,7 @@ spec:
       podLabels:
         ingress.home.arpa/gateway-internal: allow
         ingress.home.arpa/prometheus: allow
-        ingress.home.arpa/cluster: allow
+        # log shippers and Grafana: ./ciliumnetworkpolicy.yaml
       retentionPeriod: 7d
       persistentVolume:
         enabled: true

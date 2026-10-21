@@ -13,6 +13,27 @@ spec:
     global:
       createDefaultServiceAccount: false
 
+    rawResources:
+      netpol:
+        manifest:
+          apiVersion: cilium.io/v2
+          kind: CiliumNetworkPolicy
+          spec:
+            description: "kalimba runs its workflows against the Temporal frontend in the development namespace"
+            endpointSelector:
+              matchLabels:
+                app.kubernetes.io/name: kalimba
+            egress:
+              - toEndpoints:
+                  - matchLabels:
+                      app.kubernetes.io/name: temporal
+                      app.kubernetes.io/component: frontend
+                      io.kubernetes.pod.namespace: development
+                toPorts:
+                  - ports:
+                      - port: "7233"
+                        protocol: TCP
+
     controllers:
       kalimba:
         annotations:
@@ -83,10 +104,7 @@ spec:
         ingress.home.arpa/gateway-internal: allow
         egress.home.arpa/postgres: allow
         egress.home.arpa/gateway-external: allow
-        # Temporal frontend lives in the development namespace (cross-namespace
-        # gRPC to temporal-frontend.development.svc:7233), not covered by any
-        # dedicated policy label yet.
-        egress.home.arpa/cluster: allow
+        # Temporal frontend (development namespace): ./ciliumnetworkpolicy below
       automountServiceAccountToken: false
       enableServiceLinks: false
       imagePullSecrets:

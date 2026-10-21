@@ -8,6 +8,7 @@ resources:
   - ./ocirepository.yaml
   - ./externalsecret.yaml
   - ./helmrelease.yaml
+  - ./ciliumnetworkpolicy.yaml
   - ./podmonitor.yaml
   - ./grafanadashboard.yaml
   - ./probes.yaml

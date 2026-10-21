@@ -1,0 +1,169 @@
+---
+# Intra-namespace wiring of the VictoriaMetrics stack. vmagent's scrape egress
+# is clusterwide and lives in ./ciliumclusterwidenetworkpolicy.yaml.
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: vmsingle
+spec:
+  description: "Metric readers: vmagent remote-write, vmalert, Grafana, kromgo, Robusta/Holmes (ai) and the Ceph mgr module"
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: vmsingle
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: vmagent
+        - matchLabels:
+            app.kubernetes.io/name: vmalert
+        - matchLabels:
+            app: grafana
+        - matchLabels:
+            app.kubernetes.io/name: kromgo
+        - matchLabels:
+            app: robusta-runner
+            io.kubernetes.pod.namespace: ai
+        - matchLabels:
+            app: holmes
+            io.kubernetes.pod.namespace: ai
+        - matchLabels:
+            app: rook-ceph-mgr
+            io.kubernetes.pod.namespace: rook-ceph
+      toPorts:
+        - ports:
+            - port: "8428"
+              protocol: TCP
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: vtsingle
+spec:
+  description: "VictoriaTraces receives OTLP from the instrumented apps (litellm, homelab-manager) and is read by Grafana"
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: vtsingle
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: litellm
+            io.kubernetes.pod.namespace: ai
+        - matchLabels:
+            app: grafana
+      toPorts:
+        - ports:
+            - port: "10428"
+              protocol: TCP
+    - fromEndpoints:
+        - matchLabels:
+            app: homelab-manager
+            io.kubernetes.pod.namespace: default
+      toPorts:
+        - ports:
+            - port: "4317"
+              protocol: TCP
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: vmalert
+spec:
+  description: "vmalert evaluates rules against vmsingle and fires to Alertmanager"
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: vmalert
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: vmsingle
+      toPorts:
+        - ports:
+            - port: "8428"
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: vmalertmanager
+      toPorts:
+        - ports:
+            - port: "9093"
+              protocol: TCP
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: vmalertmanager
+spec:
+  description: "Alertmanager: gossip between replicas, alerts in from vmalert/Flux notifications, webhook out to the Robusta runner (alertmanagerconfig.yaml)"
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: vmalertmanager
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: vmalertmanager
+        - matchLabels:
+            app.kubernetes.io/name: vmalert
+        - matchLabels:
+            app.kubernetes.io/name: karma
+        - matchLabels:
+            app: grafana
+        - matchLabels:
+            app.kubernetes.io/name: silence-operator
+        - matchLabels:
+            app: robusta-runner
+            io.kubernetes.pod.namespace: ai
+        - matchLabels:
+            app: holmes
+            io.kubernetes.pod.namespace: ai
+        # Flux Alert providers in the app namespaces post to /api/v2/alerts
+        - matchLabels:
+            app: notification-controller
+            io.kubernetes.pod.namespace: flux-system
+      toPorts:
+        - ports:
+            - port: "9093"
+              protocol: TCP
+            - port: "9094"
+              protocol: TCP
+            - port: "9094"
+              protocol: UDP
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: vmalertmanager
+      toPorts:
+        - ports:
+            - port: "9094"
+              protocol: TCP
+            - port: "9094"
+              protocol: UDP
+    - toEndpoints:
+        - matchLabels:
+            app: robusta-runner
+            io.kubernetes.pod.namespace: ai
+      toPorts:
+        - ports:
+            - port: "5000"
+              protocol: TCP
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: victoria-metrics-operator
+spec:
+  description: "The operator reconciles the VM CRs through the API server and is called back by the API server for its webhook"
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: victoria-metrics-operator
+  egress:
+    - toEndpoints:
+        - matchExpressions:
+            - key: app.kubernetes.io/name
+              operator: In
+              values: ["vmagent", "vmalert", "vmalertmanager", "vmsingle", "vtsingle"]

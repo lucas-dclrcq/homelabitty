@@ -1,0 +1,21 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: victoria-logs
+spec:
+  description: "Log ingestion comes from the node collector; queries arrive through the internal gateway and Grafana"
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: victoria-logs-single
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: victoria-logs-collector
+        - matchLabels:
+            app: grafana
+      toPorts:
+        - ports:
+            - port: "9428"
+              protocol: TCP

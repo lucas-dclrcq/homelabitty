@@ -13,8 +13,8 @@ spec:
   values:
     podLabels:
       egress.home.arpa/apiserver: allow
-      # reaches Dragonfly instances in app namespaces for replication management
-      egress.home.arpa/cluster: allow
+      # egress to the managed Dragonfly instances is clusterwide (they live in the
+      # app namespaces): netpols/allow-egress-dragonfly-operator.yaml
     manager:
       image:
         repository: ghcr.io/dragonflydb/operator

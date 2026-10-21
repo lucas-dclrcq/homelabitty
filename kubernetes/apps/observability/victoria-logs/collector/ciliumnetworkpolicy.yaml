@@ -1,0 +1,19 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: victoria-logs-collector
+spec:
+  description: "The node collector ships every pod log to victoria-logs (remoteWrite in ./helmrelease.yaml)"
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: victoria-logs-collector
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: victoria-logs-single
+      toPorts:
+        - ports:
+            - port: "9428"
+              protocol: TCP

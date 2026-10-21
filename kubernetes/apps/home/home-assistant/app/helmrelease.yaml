@@ -10,6 +10,29 @@ spec:
     name: home-assistant
   interval: 1h
   values:
+    rawResources:
+      netpol:
+        manifest:
+          apiVersion: cilium.io/v2
+          kind: CiliumNetworkPolicy
+          spec:
+            description: "In-cluster API clients: bambuddy (default) posts printer state, litellm (ai) exposes the Home Assistant MCP server"
+            endpointSelector:
+              matchLabels:
+                app.kubernetes.io/name: home-assistant
+            ingress:
+              - fromEndpoints:
+                  - matchLabels:
+                      app.kubernetes.io/name: bambuddy
+                      io.kubernetes.pod.namespace: default
+                  - matchLabels:
+                      app.kubernetes.io/name: litellm
+                      io.kubernetes.pod.namespace: ai
+                toPorts:
+                  - ports:
+                      - port: "8123"
+                        protocol: TCP
+
     controllers:
       home-assistant:
         annotations:

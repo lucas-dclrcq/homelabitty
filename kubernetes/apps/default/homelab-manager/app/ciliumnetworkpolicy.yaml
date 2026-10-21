@@ -1,0 +1,101 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: homelab-manager
+spec:
+  description: "Aggregates the *arr/Jellyfin/Matrix/authentik APIs and ships OTLP traces; every target is addressed by its in-cluster Service (see ./externalsecret.yaml)"
+  endpointSelector:
+    matchLabels:
+      app: homelab-manager
+  ingress:
+    # nana posts notifications to /api/notifications/nana, the operator syncs
+    # the app's catalogue from its CRs
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: nana
+            io.kubernetes.pod.namespace: media
+        - matchLabels:
+            app.kubernetes.io/name: homelab-manager
+            app.kubernetes.io/component: operator
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: sonarr
+            io.kubernetes.pod.namespace: downloads
+        - matchLabels:
+            app.kubernetes.io/name: radarr
+            io.kubernetes.pod.namespace: downloads
+      toPorts:
+        - ports:
+            - port: "80"
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: lidarr
+            io.kubernetes.pod.namespace: downloads
+      toPorts:
+        - ports:
+            - port: "8686"
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: jellyfin
+            io.kubernetes.pod.namespace: media
+      toPorts:
+        - ports:
+            - port: "8096"
+              protocol: TCP
+    # MATRIX_BASE_URL: the Service in front of the matrix-stack HAProxy
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: haproxy
+            io.kubernetes.pod.namespace: matrix
+      toPorts:
+        - ports:
+            - port: "8008"
+              protocol: TCP
+    # AUTHENTIK_BASE_URL uses the in-cluster Service, not the public hostname
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: authentik
+            app.kubernetes.io/component: server
+            io.kubernetes.pod.namespace: auth
+      toPorts:
+        - ports:
+            - port: "9000"
+              protocol: TCP
+    # QUARKUS_OTEL_EXPORTER_OTLP_ENDPOINT
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: vtsingle
+            io.kubernetes.pod.namespace: observability
+      toPorts:
+        - ports:
+            - port: "4317"
+              protocol: TCP
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: homelab-manager-operator
+spec:
+  description: "The operator reconciles its CRs into the app through the app's HTTP API"
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: homelab-manager
+      app.kubernetes.io/component: operator
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            app: homelab-manager
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP

@@ -22,6 +22,36 @@ spec:
     - name: rook-ceph-cluster
       namespace: rook-ceph
   values:
+    rawResources:
+      netpol:
+        manifest:
+          apiVersion: cilium.io/v2
+          kind: CiliumNetworkPolicy
+          spec:
+            description: "Seerr reads the Jellyfin library and hands approved requests to the *arr apps in the downloads namespace"
+            endpointSelector:
+              matchLabels:
+                app.kubernetes.io/name: seerr
+            egress:
+              - toEndpoints:
+                  - matchLabels:
+                      app.kubernetes.io/name: jellyfin
+                toPorts:
+                  - ports:
+                      - port: "8096"
+                        protocol: TCP
+              - toEndpoints:
+                  - matchExpressions:
+                      - key: app.kubernetes.io/name
+                        operator: In
+                        values: ["sonarr", "sonarr-anime", "radarr"]
+                    matchLabels:
+                      io.kubernetes.pod.namespace: downloads
+                toPorts:
+                  - ports:
+                      - port: "80"
+                        protocol: TCP
+
     controllers:
       seerr:
         annotations:
@@ -68,7 +98,7 @@ spec:
         ingress.home.arpa/gateway-external: allow
         egress.home.arpa/postgres: allow
         egress.home.arpa/world: allow
-        egress.home.arpa/cluster: allow
+        # Jellyfin + the *arr apps: see rawResources.netpol above
       securityContext:
         runAsNonRoot: true
         runAsUser: 1000
