@@ -90,9 +90,8 @@ spec:
               retention: 7d
 
       frontend:
-        # kalimba (default ns) dials temporal-frontend.development.svc:7233
-        podLabels:
-          ingress.home.arpa/cluster: allow
+        # Ring membership and the kalimba client are whitelisted explicitly in
+        # ./ciliumnetworkpolicy.yaml
         containerSecurityContext: &containerSecurityContext
           allowPrivilegeEscalation: false
           readOnlyRootFilesystem: true

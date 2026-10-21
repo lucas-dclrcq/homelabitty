@@ -13,6 +13,25 @@ spec:
     global:
       createDefaultServiceAccount: false
 
+    rawResources:
+      netpol:
+        manifest:
+          apiVersion: cilium.io/v2
+          kind: CiliumNetworkPolicy
+          spec:
+            description: "Search index is only queried by BookMan"
+            endpointSelector:
+              matchLabels:
+                app.kubernetes.io/name: bookman-meilisearch
+            ingress:
+              - fromEndpoints:
+                  - matchLabels:
+                      app.kubernetes.io/name: bookman
+                toPorts:
+                  - ports:
+                      - port: "7700"
+                        protocol: TCP
+
     controllers:
       bookman-meilisearch:
         annotations:

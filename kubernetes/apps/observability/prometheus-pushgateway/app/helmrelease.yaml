@@ -10,6 +10,26 @@ spec:
     kind: OCIRepository
     name: *app
   values:
+    rawResources:
+      netpol:
+        manifest:
+          apiVersion: cilium.io/v2
+          kind: CiliumNetworkPolicy
+          spec:
+            description: "Batch jobs push their run metrics here; today that is the pacman-sync CronJob in the development namespace"
+            endpointSelector:
+              matchLabels:
+                app.kubernetes.io/name: prometheus-pushgateway
+            ingress:
+              - fromEndpoints:
+                  - matchLabels:
+                      app.kubernetes.io/name: pacman
+                      io.kubernetes.pod.namespace: development
+                toPorts:
+                  - ports:
+                      - port: "9091"
+                        protocol: TCP
+
     controllers:
       pushgateway:
         annotations:
@@ -52,7 +72,7 @@ spec:
     defaultPodOptions:
       labels:
         ingress.home.arpa/prometheus: allow
-        ingress.home.arpa/cluster: allow
+        # pushers are whitelisted in rawResources.netpol above
       securityContext:
         runAsNonRoot: true
         runAsUser: 65534

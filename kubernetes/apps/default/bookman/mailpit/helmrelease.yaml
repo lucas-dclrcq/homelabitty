@@ -14,6 +14,25 @@ spec:
     global:
       createDefaultServiceAccount: false
 
+    rawResources:
+      netpol:
+        manifest:
+          apiVersion: cilium.io/v2
+          kind: CiliumNetworkPolicy
+          spec:
+            description: "Mail sink: only BookMan submits to the SMTP listener (the 8025 web UI comes in through the external gateway)"
+            endpointSelector:
+              matchLabels:
+                app.kubernetes.io/name: bookman-mailpit
+            ingress:
+              - fromEndpoints:
+                  - matchLabels:
+                      app.kubernetes.io/name: bookman
+                toPorts:
+                  - ports:
+                      - port: "1025"
+                        protocol: TCP
+
     controllers:
       bookman-mailpit:
         containers:

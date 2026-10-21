@@ -74,12 +74,10 @@ spec:
     runner:
       labels:
         ingress.home.arpa/prometheus: allow
-        # receives alert webhooks from Alertmanager (observability)
-        ingress.home.arpa/cluster: allow
         egress.home.arpa/apiserver: allow
         egress.home.arpa/world: allow
-        # queries vmsingle + alertmanager in observability
-        egress.home.arpa/cluster: allow
+        # Alertmanager webhooks in, vmsingle/alertmanager/holmes/litellm out:
+        # see ./ciliumnetworkpolicy.yaml
       sendAdditionalTelemetry: false
       additional_env_vars:
         - name: PYTHONPATH
@@ -107,12 +105,10 @@ spec:
     enableHolmesGPT: true
     holmes:
       # No egress.home.arpa/world on purpose: the internet toolset is disabled to
-      # limit exfiltration, so Holmes only needs the kube API (plus same-namespace
-      # litellm, covered by the namespace baseline).
+      # limit exfiltration, so Holmes only needs the kube API plus the explicit
+      # peers in ./ciliumnetworkpolicy.yaml (litellm, vmsingle).
       commonLabels:
         egress.home.arpa/apiserver: allow
-        # queries vmsingle in observability (no world: internet toolset stays disabled)
-        egress.home.arpa/cluster: allow
       sentryDSN: ""
       enableTelemetry: false
       extraEnvVarsSecrets:

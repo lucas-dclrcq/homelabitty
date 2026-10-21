@@ -21,6 +21,27 @@ spec:
     - name: rook-ceph-cluster
       namespace: rook-ceph
   values:
+    rawResources:
+      netpol:
+        manifest:
+          apiVersion: cilium.io/v2
+          kind: CiliumNetworkPolicy
+          spec:
+            description: "Recyclarr syncs quality profiles into the instances listed in recyclarr.yml"
+            endpointSelector:
+              matchLabels:
+                app.kubernetes.io/name: recyclarr
+            egress:
+              - toEndpoints:
+                  - matchExpressions:
+                      - key: app.kubernetes.io/name
+                        operator: In
+                        values: ["sonarr", "sonarr-anime", "radarr"]
+                toPorts:
+                  - ports:
+                      - port: "80"
+                        protocol: TCP
+
     controllers:
       recyclarr:
         type: cronjob

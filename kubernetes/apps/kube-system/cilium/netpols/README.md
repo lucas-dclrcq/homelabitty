@@ -1,9 +1,20 @@
 # Network policy architecture
 
-Label-driven Cilium network policies. Apps open the flows they need by putting
-labels on their **pods** (`defaultPodOptions.labels` for app-template charts,
-`podLabels`/pod metadata for everything else) — no per-app policy files for the
-common cases.
+Cilium network policies, default-deny everywhere, **nothing implicit**. A pod
+reaches a peer only if some policy names that flow. There is no "same
+namespace" shortcut and no cluster-wide escape hatch.
+
+Flows are opened in one of two ways:
+
+- **Shared vocabulary** — a pod label matched by one of the
+  CiliumClusterwideNetworkPolicies in this directory. Use it for the handful of
+  things half the cluster talks to (the gateways, Postgres, MQTT, Vault, SMTP,
+  the API server, the internet).
+- **A policy shipped with the app** — a CiliumNetworkPolicy that names the
+  peers directly. Use it for everything else: same-namespace components, and
+  one-off cross-namespace calls. It lives next to the app (`rawResources` in
+  the HelmRelease values for app-template charts, a `ciliumnetworkpolicy.yaml`
+  in the app directory otherwise) so it is pruned together with the app.
 
 ## Current state: AUDIT MODE
 
@@ -14,8 +25,9 @@ denied are forwarded and recorded as `verdict=AUDIT`.
 Workflow to reach enforcement:
 
 1. Watch the **Cilium Policy Audit** Grafana dashboard (`cilium-policy-audit`).
-2. For each audited flow, add the right label to the right pod (the two tables
-   on the dashboard tell you which side needs a label).
+2. For each audited flow, open it: add a vocabulary label if one fits, or add
+   the peer to the app's own policy (the two tables on the dashboard tell you
+   which side is missing a rule).
 3. For details beyond the metric (exact ports, DNS names):
    `cilium hubble observe --verdict AUDIT -f` (or hubble UI).
 4. When the dashboard stays clean, flip `policyAuditMode` to `false`.
@@ -24,16 +36,19 @@ Workflow to reach enforcement:
 
 `baseline.yaml` stamps a `baseline` CiliumNetworkPolicy into every enrolled
 namespace (ai, auth, default, development, downloads, home, infrastructure,
-matrix, media, network, observability, vault). It selects **all pods**, which
-flips them into default-deny for both directions, and re-allows with no labels:
+matrix, media, network, observability, vault). It selects **all pods** with
+`enableDefaultDeny` on both directions and re-opens exactly one thing:
 
-- **same-namespace traffic** (app ↔ dragonfly, sidecars, co-located services)
 - **DNS** to kube-dns
-- kubelet health probes are always allowed by Cilium (host entity)
+
+Everything else — **traffic between two pods of the same namespace included** —
+has to be named by another policy. kubelet health probes come from the host
+entity, which Cilium always allows, so they are unaffected.
 
 System namespaces (kube-system, flux-system, rook-ceph, cert-manager,
 external-secrets, kopiur-system, openebs-system, system-upgrade) are **not**
-enrolled on purpose.
+enrolled on purpose: pods there are unconstrained unless a clusterwide policy
+happens to select them.
 
 ## Layer 2 — label vocabulary (clusterwide policies)
 
@@ -50,7 +65,6 @@ enrolled on purpose.
 | `egress.home.arpa/apiserver`        | kube-apiserver (operators, patroni, controllers)                                                                                                                |
 | `egress.home.arpa/gateway-external` | external envoy pods — needed for **OIDC hairpin** (app calls `auth.<domain>` which resolves to the gateway LB) and any call to a public hostname of the cluster |
 | `egress.home.arpa/gateway-internal` | internal envoy pods — calls to internal hostnames (blackbox probes of `*.hoohoot.xyz`)                                                                          |
-| `egress.home.arpa/cluster`          | anything in-cluster (escape hatch: vmagent, envoy, cross-namespace API consumers)                                                                               |
 
 The `postgres`/`mqtt`/`smtp`/`vault` labels are **paired**: one clusterwide
 policy opens the consumer's egress, a second one opens the service's ingress
@@ -65,14 +79,31 @@ from pods carrying that same label. Labeling the consumer is enough.
 | `ingress.home.arpa/prometheus`       | vmagent (ServiceMonitor/PodMonitor scraping)                                                      |
 | `ingress.home.arpa/apiserver`        | kube-apiserver (admission webhooks)                                                               |
 | `ingress.home.arpa/world`            | outside the cluster (LoadBalancer services used from the LAN: mosquitto, smtp-relay, forgejo ssh) |
-| `ingress.home.arpa/cluster`          | anything in-cluster (escape hatch: pushgateway, victoria-logs)                                    |
 
-## Layer 3 — per-app CiliumNetworkPolicy
+The gateway labels are the **single source of truth for the data plane**: the
+envoy pods' own egress is `toEndpoints: ingress.home.arpa/gateway-<name>`
+(`apps/network/envoy-gateway/config/ciliumclusterwidenetworkpolicy.yaml`), so a
+backend that is not labelled is simply unreachable through its route.
 
-Only for flows the vocabulary can't express (odd ports, specific peers).
-Examples: `default/atuin`, `default/bambuddy`, `home/mqtt2prometheus`.
+## Layer 3 — the app's own policy
 
-## Cheat sheet: labeling a new app
+Everything the vocabulary does not cover. Both sides of a flow need a rule,
+since both ends are default-deny:
+
+- same-namespace components — `ai/litellm` ↔ its MCP servers, `development/harbor`
+  and `development/temporal` meshes, `matrix` (HAProxy/Synapse/MAS/Valkey),
+  `downloads` (*arr ↔ Prowlarr/qBittorrent/SABnzbd), `vault` raft peers,
+  `infrastructure` (crunchy replication/pgBackRest), the `observability` stack
+- one-off cross-namespace calls — `default/kalimba` → Temporal, `media/seerr` →
+  the *arr apps, `development/pacman` → the Pushgateway
+
+Dragonfly is handled by the component that creates it:
+`kubernetes/components/dragonfly/ciliumnetworkpolicy.yaml` ships the instance's
+policy and the matching client rule for `app.kubernetes.io/name: ${APP}`.
+
+## Cheat sheet: a new app
+
+1. Labels for the shared peers:
 
 ```yaml
 defaultPodOptions:
@@ -84,7 +115,31 @@ defaultPodOptions:
         egress.home.arpa/world: allow # it calls the internet
 ```
 
-Intra-namespace (dragonfly, sidecars) and DNS need no labels.
+2. A policy for anything else it talks to, including its own sidecars and
+   co-located services. For an app-template chart:
+
+```yaml
+rawResources:
+    netpol:
+        manifest:
+            apiVersion: cilium.io/v2
+            kind: CiliumNetworkPolicy
+            spec:
+                description: "<what this opens and why>"
+                endpointSelector:
+                    matchLabels:
+                        app.kubernetes.io/name: myapp
+                egress:
+                    - toEndpoints:
+                          - matchLabels:
+                                app.kubernetes.io/name: mysidecar
+                      toPorts:
+                          - ports:
+                                - port: "8080"
+                                  protocol: TCP
+```
+
+and the mirror `ingress` rule on the peer. DNS needs no rule.
 
 ## Flipping to enforcement
 

@@ -9,6 +9,25 @@ spec:
     kind: OCIRepository
     name: *app
   values:
+    rawResources:
+      netpol:
+        manifest:
+          apiVersion: cilium.io/v2
+          kind: CiliumNetworkPolicy
+          spec:
+            description: "paperless-ai (same namespace) consumes the REST API; browser traffic arrives through the gateways"
+            endpointSelector:
+              matchLabels:
+                app.kubernetes.io/name: paperless
+            ingress:
+              - fromEndpoints:
+                  - matchLabels:
+                      app.kubernetes.io/name: paperless-ai
+                toPorts:
+                  - ports:
+                      - port: "8000"
+                        protocol: TCP
+
     controllers:
       paperless:
         annotations:

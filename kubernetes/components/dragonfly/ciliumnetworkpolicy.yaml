@@ -1,0 +1,62 @@
+---
+# Network policy for the Dragonfly instance this component creates, shipped with
+# the instance itself so it lives and dies with it.
+#
+# The namespace baseline is default-deny in both directions and does not allow
+# same-namespace traffic, so both sides of every flow have to be opened:
+#   - replica <-> master replication (6379) and the operator's admin port (9999)
+#   - the owning app (app.kubernetes.io/name: ${APP}) -> 6379
+#
+# vmagent scraping and the dragonfly-operator are handled cluster-wide by
+# allow-ingress-vmagent-dragonfly / allow-ingress-dragonfly-operator.
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: ${APP}-dragonfly
+spec:
+  description: "${APP}-dragonfly: replication between instances + the owning app as client"
+  endpointSelector:
+    matchLabels:
+      app: ${APP}-dragonfly
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app: ${APP}-dragonfly
+        - matchLabels:
+            app.kubernetes.io/name: ${APP}
+      toPorts:
+        - ports:
+            - port: "6379"
+              protocol: TCP
+            - port: "9999"
+              protocol: TCP
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            app: ${APP}-dragonfly
+      toPorts:
+        - ports:
+            - port: "6379"
+              protocol: TCP
+            - port: "9999"
+              protocol: TCP
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: ${APP}-dragonfly-client
+spec:
+  description: "${APP} pods may reach their own Dragonfly instance on 6379"
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: ${APP}
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            app: ${APP}-dragonfly
+      toPorts:
+        - ports:
+            - port: "6379"
+              protocol: TCP

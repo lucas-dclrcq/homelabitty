@@ -8,6 +8,7 @@ resources:
   - ./externalsecret.yaml
   - ./ocirepository.yaml
   - ./helmrelease.yaml
+  - ./ciliumnetworkpolicy.yaml
   - ./httproute.yaml
   - ./prometheusrule.yaml
   - ./grafanadashboard.yaml

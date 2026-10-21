@@ -11,6 +11,54 @@ spec:
     name: app-template
     namespace: flux-system
   values:
+    rawResources:
+      netpol-app:
+        manifest:
+          apiVersion: cilium.io/v2
+          kind: CiliumNetworkPolicy
+          spec:
+            description: "nana solves Cloudflare challenges through its FlareSolverr sidecar controller and posts notifications to homelab-manager"
+            endpointSelector:
+              matchLabels:
+                app.kubernetes.io/name: nana
+                app.kubernetes.io/controller: nana
+            egress:
+              - toEndpoints:
+                  - matchLabels:
+                      app.kubernetes.io/name: nana
+                      app.kubernetes.io/controller: flaresolverr
+                toPorts:
+                  - ports:
+                      - port: "8191"
+                        protocol: TCP
+              - toEndpoints:
+                  - matchLabels:
+                      app: homelab-manager
+                      io.kubernetes.pod.namespace: default
+                toPorts:
+                  - ports:
+                      - port: "8080"
+                        protocol: TCP
+      netpol-flaresolverr:
+        manifest:
+          apiVersion: cilium.io/v2
+          kind: CiliumNetworkPolicy
+          spec:
+            description: "FlareSolverr is only called by nana itself"
+            endpointSelector:
+              matchLabels:
+                app.kubernetes.io/name: nana
+                app.kubernetes.io/controller: flaresolverr
+            ingress:
+              - fromEndpoints:
+                  - matchLabels:
+                      app.kubernetes.io/name: nana
+                      app.kubernetes.io/controller: nana
+                toPorts:
+                  - ports:
+                      - port: "8191"
+                        protocol: TCP
+
     controllers:
       nana:
         annotations:

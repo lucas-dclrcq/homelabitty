@@ -10,6 +10,46 @@ spec:
     kind: OCIRepository
     name: *app
   values:
+    rawResources:
+      netpol-server:
+        manifest:
+          apiVersion: cilium.io/v2
+          kind: CiliumNetworkPolicy
+          spec:
+            description: "immich-server runs inference requests against the machine-learning controller (IMMICH_MACHINE_LEARNING_URL)"
+            endpointSelector:
+              matchLabels:
+                app.kubernetes.io/name: immich
+                app.kubernetes.io/controller: server
+            egress:
+              - toEndpoints:
+                  - matchLabels:
+                      app.kubernetes.io/name: immich
+                      app.kubernetes.io/controller: machine-learning
+                toPorts:
+                  - ports:
+                      - port: "3003"
+                        protocol: TCP
+      netpol-machine-learning:
+        manifest:
+          apiVersion: cilium.io/v2
+          kind: CiliumNetworkPolicy
+          spec:
+            description: "The ML service is only ever called by immich-server"
+            endpointSelector:
+              matchLabels:
+                app.kubernetes.io/name: immich
+                app.kubernetes.io/controller: machine-learning
+            ingress:
+              - fromEndpoints:
+                  - matchLabels:
+                      app.kubernetes.io/name: immich
+                      app.kubernetes.io/controller: server
+                toPorts:
+                  - ports:
+                      - port: "3003"
+                        protocol: TCP
+
     defaultPodOptions:
       labels:
         ingress.home.arpa/gateway-external: allow

@@ -18,7 +18,7 @@ spec:
     automountServiceAccountToken: false
     podLabels:
       egress.home.arpa/kubedns: allow
-      egress.home.arpa/cluster: allow
+      # egress to the Grafana API: ../ciliumnetworkpolicy.yaml
     env:
       - name: GRAFANA_URL
         value: http://grafana-service.observability.svc.cluster.local:3000

@@ -21,6 +21,35 @@ spec:
   uninstall:
     keepHistory: false
   values:
+    rawResources:
+      netpol:
+        manifest:
+          apiVersion: cilium.io/v2
+          kind: CiliumNetworkPolicy
+          spec:
+            description: "Appservice bridge: Synapse pushes transactions in on 29319, the bridge calls the client-server API back through matrix-synapse.matrix.svc:8008 (HAProxy)"
+            endpointSelector:
+              matchLabels:
+                app.kubernetes.io/name: mautrix-facebook
+            ingress:
+              - fromEndpoints:
+                  - matchLabels:
+                      app.kubernetes.io/part-of: matrix-stack
+                      app.kubernetes.io/component: matrix-server
+                toPorts:
+                  - ports:
+                      - port: "29319"
+                        protocol: TCP
+            egress:
+              - toEndpoints:
+                  - matchLabels:
+                      app.kubernetes.io/part-of: matrix-stack
+                      app.kubernetes.io/component: matrix-stack-ingress
+                toPorts:
+                  - ports:
+                      - port: "8008"
+                        protocol: TCP
+
     controllers:
       mautrix-facebook:
         type: statefulset

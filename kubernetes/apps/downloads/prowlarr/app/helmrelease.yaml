@@ -18,6 +18,44 @@ spec:
       strategy: rollback
       retries: 3
   values:
+    rawResources:
+      netpol:
+        manifest:
+          apiVersion: cilium.io/v2
+          kind: CiliumNetworkPolicy
+          spec:
+            description: "Prowlarr pushes indexer definitions into the *arr apps and answers their searches"
+            endpointSelector:
+              matchLabels:
+                app.kubernetes.io/name: prowlarr
+            ingress:
+              - fromEndpoints:
+                  - matchExpressions:
+                      - key: app.kubernetes.io/name
+                        operator: In
+                        values: ["sonarr", "sonarr-anime", "radarr", "lidarr"]
+                toPorts:
+                  - ports:
+                      - port: "80"
+                        protocol: TCP
+            egress:
+              - toEndpoints:
+                  - matchExpressions:
+                      - key: app.kubernetes.io/name
+                        operator: In
+                        values: ["sonarr", "sonarr-anime", "radarr"]
+                toPorts:
+                  - ports:
+                      - port: "80"
+                        protocol: TCP
+              - toEndpoints:
+                  - matchLabels:
+                      app.kubernetes.io/name: lidarr
+                toPorts:
+                  - ports:
+                      - port: "8686"
+                        protocol: TCP
+
     controllers:
       prowlarr:
         annotations:

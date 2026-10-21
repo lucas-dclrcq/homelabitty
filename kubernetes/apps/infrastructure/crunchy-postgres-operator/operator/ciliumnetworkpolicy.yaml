@@ -1,0 +1,74 @@
+---
+# Intra-cluster plumbing for every PostgresCluster the operator manages (the
+# `postgres-16` and `postgres-16-vector` clusters live in this namespace).
+# Application traffic from other namespaces is handled by the shared
+# egress.home.arpa/postgres label pair, not here.
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: crunchy-postgres-internal
+spec:
+  description: "PGO-managed pods talk to each other: streaming replication and pgBouncer on 5432, the Patroni REST API on 8008, pgBackRest on 8432 and 2022"
+  endpointSelector:
+    matchExpressions:
+      - key: postgres-operator.crunchydata.com/cluster
+        operator: Exists
+  ingress:
+    - fromEndpoints:
+        - matchExpressions:
+            - key: postgres-operator.crunchydata.com/cluster
+              operator: Exists
+      toPorts:
+        - ports:
+            - port: "5432"
+              protocol: TCP
+            - port: "8008"
+              protocol: TCP
+            - port: "8432"
+              protocol: TCP
+            - port: "2022"
+              protocol: TCP
+    # crunchy-users reconciles roles and databases over SQL
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: crunchy-users
+      toPorts:
+        - ports:
+            - port: "5432"
+              protocol: TCP
+  egress:
+    - toEndpoints:
+        - matchExpressions:
+            - key: postgres-operator.crunchydata.com/cluster
+              operator: Exists
+      toPorts:
+        - ports:
+            - port: "5432"
+              protocol: TCP
+            - port: "8008"
+              protocol: TCP
+            - port: "8432"
+              protocol: TCP
+            - port: "2022"
+              protocol: TCP
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: crunchy-users
+spec:
+  description: "crunchy-users creates the per-app roles and databases on the managed clusters"
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: crunchy-users
+  egress:
+    - toEndpoints:
+        - matchExpressions:
+            - key: postgres-operator.crunchydata.com/cluster
+              operator: Exists
+      toPorts:
+        - ports:
+            - port: "5432"
+              protocol: TCP

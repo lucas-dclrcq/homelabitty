@@ -5,6 +5,7 @@ resources:
   - ./authentikapplication.yaml
   - ./ocirepository.yaml
   - ./helmrelease.yaml
+  - ./ciliumnetworkpolicy.yaml
   - ./httproute.yaml
   - ./grafanadashboard.yaml
   - ./servicemonitor.yaml

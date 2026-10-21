@@ -22,6 +22,26 @@ spec:
   uninstall:
     keepHistory: false
   values:
+    rawResources:
+      netpol:
+        manifest:
+          apiVersion: cilium.io/v2
+          kind: CiliumNetworkPolicy
+          spec:
+            description: "droppedneedle (downloads namespace) reads the Navidrome library over the Subsonic API"
+            endpointSelector:
+              matchLabels:
+                app.kubernetes.io/name: navidrome
+            ingress:
+              - fromEndpoints:
+                  - matchLabels:
+                      app.kubernetes.io/name: droppedneedle
+                      io.kubernetes.pod.namespace: downloads
+                toPorts:
+                  - ports:
+                      - port: "8080"
+                        protocol: TCP
+
     controllers:
       main:
         annotations:

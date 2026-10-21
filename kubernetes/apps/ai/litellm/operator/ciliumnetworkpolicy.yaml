@@ -1,0 +1,33 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: litellm-operator
+spec:
+  description: "LiteLLM operator: watches the kube API, serves a conversion/validating webhook and pushes the proxy config over the LiteLLM API"
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: litellm-operator
+  ingress:
+    # webhook (9443) called by kube-apiserver, metrics (8081) scraped by vmagent
+    - fromEntities:
+        - kube-apiserver
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: vmagent
+            io.kubernetes.pod.namespace: observability
+      toPorts:
+        - ports:
+            - port: "8081"
+              protocol: TCP
+  egress:
+    - toEntities:
+        - kube-apiserver
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: litellm
+      toPorts:
+        - ports:
+            - port: "4000"
+              protocol: TCP

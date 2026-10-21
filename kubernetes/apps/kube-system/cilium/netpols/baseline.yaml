@@ -1,13 +1,17 @@
 ---
 # Baseline policy stamped into every enrolled app namespace.
 #
-# Selecting every pod (endpointSelector: {}) flips the whole namespace into
-# default-deny for BOTH directions. The rules below then re-open the flows
-# every workload needs with zero labels:
-#   - intra-namespace traffic (app <-> dragonfly/sidecars/co-located services)
-#   - DNS to kube-dns
-# Everything else must be opened by pod labels matched by the
-# CiliumClusterwideNetworkPolicies in this directory (see README.md).
+# endpointSelector: {} selects every pod in the namespace and enableDefaultDeny
+# flips it into default-deny for BOTH directions. The only flow this policy
+# re-opens is DNS to kube-dns.
+#
+# Everything else is denied until it is explicitly whitelisted, *including
+# traffic between two pods of the same namespace*. Whitelists come from either:
+#   - a pod label matched by one of the CiliumClusterwideNetworkPolicies in this
+#     directory (the shared vocabulary: gateways, postgres, mqtt, vault, ...), or
+#   - a CiliumNetworkPolicy shipped with the app itself, for flows that are
+#     specific to that app (same-namespace peers, one-off cross-namespace calls).
+# See README.md.
 #
 # NOTE: kubelet health probes come from the host entity which Cilium always
 # allows, so they are unaffected.
@@ -19,14 +23,12 @@ metadata:
   name: baseline
   namespace: ai
 spec:
-  description: "Default-deny; allow same-namespace + DNS. Open other flows via pod labels."
+  description: "Default-deny both directions; only kube-dns is open. Every other flow, same-namespace included, must be whitelisted."
   endpointSelector: {}
-  ingress:
-    - fromEndpoints:
-        - {}
+  enableDefaultDeny:
+    ingress: true
+    egress: true
   egress:
-    - toEndpoints:
-        - {}
     - toEndpoints:
         - matchLabels:
             io.kubernetes.pod.namespace: kube-system
@@ -45,14 +47,12 @@ metadata:
   name: baseline
   namespace: auth
 spec:
-  description: "Default-deny; allow same-namespace + DNS. Open other flows via pod labels."
+  description: "Default-deny both directions; only kube-dns is open. Every other flow, same-namespace included, must be whitelisted."
   endpointSelector: {}
-  ingress:
-    - fromEndpoints:
-        - {}
+  enableDefaultDeny:
+    ingress: true
+    egress: true
   egress:
-    - toEndpoints:
-        - {}
     - toEndpoints:
         - matchLabels:
             io.kubernetes.pod.namespace: kube-system
@@ -71,14 +71,12 @@ metadata:
   name: baseline
   namespace: default
 spec:
-  description: "Default-deny; allow same-namespace + DNS. Open other flows via pod labels."
+  description: "Default-deny both directions; only kube-dns is open. Every other flow, same-namespace included, must be whitelisted."
   endpointSelector: {}
-  ingress:
-    - fromEndpoints:
-        - {}
+  enableDefaultDeny:
+    ingress: true
+    egress: true
   egress:
-    - toEndpoints:
-        - {}
     - toEndpoints:
         - matchLabels:
             io.kubernetes.pod.namespace: kube-system
@@ -97,14 +95,12 @@ metadata:
   name: baseline
   namespace: development
 spec:
-  description: "Default-deny; allow same-namespace + DNS. Open other flows via pod labels."
+  description: "Default-deny both directions; only kube-dns is open. Every other flow, same-namespace included, must be whitelisted."
   endpointSelector: {}
-  ingress:
-    - fromEndpoints:
-        - {}
+  enableDefaultDeny:
+    ingress: true
+    egress: true
   egress:
-    - toEndpoints:
-        - {}
     - toEndpoints:
         - matchLabels:
             io.kubernetes.pod.namespace: kube-system
@@ -123,14 +119,12 @@ metadata:
   name: baseline
   namespace: downloads
 spec:
-  description: "Default-deny; allow same-namespace + DNS. Open other flows via pod labels."
+  description: "Default-deny both directions; only kube-dns is open. Every other flow, same-namespace included, must be whitelisted."
   endpointSelector: {}
-  ingress:
-    - fromEndpoints:
-        - {}
+  enableDefaultDeny:
+    ingress: true
+    egress: true
   egress:
-    - toEndpoints:
-        - {}
     - toEndpoints:
         - matchLabels:
             io.kubernetes.pod.namespace: kube-system
@@ -149,14 +143,12 @@ metadata:
   name: baseline
   namespace: home
 spec:
-  description: "Default-deny; allow same-namespace + DNS. Open other flows via pod labels."
+  description: "Default-deny both directions; only kube-dns is open. Every other flow, same-namespace included, must be whitelisted."
   endpointSelector: {}
-  ingress:
-    - fromEndpoints:
-        - {}
+  enableDefaultDeny:
+    ingress: true
+    egress: true
   egress:
-    - toEndpoints:
-        - {}
     - toEndpoints:
         - matchLabels:
             io.kubernetes.pod.namespace: kube-system
@@ -175,14 +167,12 @@ metadata:
   name: baseline
   namespace: infrastructure
 spec:
-  description: "Default-deny; allow same-namespace + DNS. Open other flows via pod labels."
+  description: "Default-deny both directions; only kube-dns is open. Every other flow, same-namespace included, must be whitelisted."
   endpointSelector: {}
-  ingress:
-    - fromEndpoints:
-        - {}
+  enableDefaultDeny:
+    ingress: true
+    egress: true
   egress:
-    - toEndpoints:
-        - {}
     - toEndpoints:
         - matchLabels:
             io.kubernetes.pod.namespace: kube-system
@@ -201,14 +191,12 @@ metadata:
   name: baseline
   namespace: matrix
 spec:
-  description: "Default-deny; allow same-namespace + DNS. Open other flows via pod labels."
+  description: "Default-deny both directions; only kube-dns is open. Every other flow, same-namespace included, must be whitelisted."
   endpointSelector: {}
-  ingress:
-    - fromEndpoints:
-        - {}
+  enableDefaultDeny:
+    ingress: true
+    egress: true
   egress:
-    - toEndpoints:
-        - {}
     - toEndpoints:
         - matchLabels:
             io.kubernetes.pod.namespace: kube-system
@@ -227,14 +215,12 @@ metadata:
   name: baseline
   namespace: media
 spec:
-  description: "Default-deny; allow same-namespace + DNS. Open other flows via pod labels."
+  description: "Default-deny both directions; only kube-dns is open. Every other flow, same-namespace included, must be whitelisted."
   endpointSelector: {}
-  ingress:
-    - fromEndpoints:
-        - {}
+  enableDefaultDeny:
+    ingress: true
+    egress: true
   egress:
-    - toEndpoints:
-        - {}
     - toEndpoints:
         - matchLabels:
             io.kubernetes.pod.namespace: kube-system
@@ -253,14 +239,12 @@ metadata:
   name: baseline
   namespace: network
 spec:
-  description: "Default-deny; allow same-namespace + DNS. Open other flows via pod labels."
+  description: "Default-deny both directions; only kube-dns is open. Every other flow, same-namespace included, must be whitelisted."
   endpointSelector: {}
-  ingress:
-    - fromEndpoints:
-        - {}
+  enableDefaultDeny:
+    ingress: true
+    egress: true
   egress:
-    - toEndpoints:
-        - {}
     - toEndpoints:
         - matchLabels:
             io.kubernetes.pod.namespace: kube-system
@@ -279,14 +263,12 @@ metadata:
   name: baseline
   namespace: observability
 spec:
-  description: "Default-deny; allow same-namespace + DNS. Open other flows via pod labels."
+  description: "Default-deny both directions; only kube-dns is open. Every other flow, same-namespace included, must be whitelisted."
   endpointSelector: {}
-  ingress:
-    - fromEndpoints:
-        - {}
+  enableDefaultDeny:
+    ingress: true
+    egress: true
   egress:
-    - toEndpoints:
-        - {}
     - toEndpoints:
         - matchLabels:
             io.kubernetes.pod.namespace: kube-system
@@ -305,14 +287,12 @@ metadata:
   name: baseline
   namespace: vault
 spec:
-  description: "Default-deny; allow same-namespace + DNS. Open other flows via pod labels."
+  description: "Default-deny both directions; only kube-dns is open. Every other flow, same-namespace included, must be whitelisted."
   endpointSelector: {}
-  ingress:
-    - fromEndpoints:
-        - {}
+  enableDefaultDeny:
+    ingress: true
+    egress: true
   egress:
-    - toEndpoints:
-        - {}
     - toEndpoints:
         - matchLabels:
             io.kubernetes.pod.namespace: kube-system

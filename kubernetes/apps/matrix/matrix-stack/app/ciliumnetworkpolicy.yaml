@@ -1,0 +1,101 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: matrix-stack-internal
+spec:
+  description: "ESS components wired together: HAProxy in front of Synapse (8008/8080), Synapse <-> matrix-authentication-service (8080/8081), Synapse replication (9093) and the shared Valkey (6379)"
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/part-of: matrix-stack
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/part-of: matrix-stack
+      toPorts:
+        - ports:
+            - port: "6379"
+              protocol: TCP
+            - port: "8008"
+              protocol: TCP
+            - port: "8009"
+              protocol: TCP
+            - port: "8010"
+              protocol: TCP
+            - port: "8080"
+              protocol: TCP
+            - port: "8081"
+              protocol: TCP
+            - port: "9093"
+              protocol: TCP
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/part-of: matrix-stack
+      toPorts:
+        - ports:
+            - port: "6379"
+              protocol: TCP
+            - port: "8008"
+              protocol: TCP
+            - port: "8009"
+              protocol: TCP
+            - port: "8010"
+              protocol: TCP
+            - port: "8080"
+              protocol: TCP
+            - port: "8081"
+              protocol: TCP
+            - port: "9093"
+              protocol: TCP
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: matrix-synapse-appservices
+spec:
+  description: "Synapse pushes transactions to the mautrix bridges on their appservice ports (resources/registration.yaml of each bridge)"
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/part-of: matrix-stack
+      app.kubernetes.io/component: matrix-server
+  egress:
+    - toEndpoints:
+        - matchExpressions:
+            - key: app.kubernetes.io/name
+              operator: In
+              values:
+                ["mautrix-discord", "mautrix-facebook", "mautrix-instagram", "mautrix-whatsapp"]
+      toPorts:
+        - ports:
+            - port: "29318"
+              protocol: TCP
+            - port: "29319"
+              protocol: TCP
+            - port: "29334"
+              protocol: TCP
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: matrix-haproxy-bridge-clients
+spec:
+  description: "The bridges talk back to Synapse through matrix-synapse.matrix.svc:8008, which is the HAProxy front"
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/part-of: matrix-stack
+      app.kubernetes.io/component: matrix-stack-ingress
+  ingress:
+    - fromEndpoints:
+        - matchExpressions:
+            - key: app.kubernetes.io/name
+              operator: In
+              values:
+                ["mautrix-discord", "mautrix-facebook", "mautrix-instagram", "mautrix-whatsapp"]
+      toPorts:
+        - ports:
+            - port: "8008"
+              protocol: TCP

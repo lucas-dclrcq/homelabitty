@@ -1,0 +1,76 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: temporal-cluster
+spec:
+  description: "Temporal services form a ring: Ringpop membership (6933-6939) plus the gRPC handlers (7233-7239) between frontend/history/matching/worker, and the web UI dialling the frontend"
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/part-of: temporal
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/part-of: temporal
+      toPorts:
+        - ports:
+            - port: "6933"
+              protocol: TCP
+            - port: "6934"
+              protocol: TCP
+            - port: "6935"
+              protocol: TCP
+            - port: "6939"
+              protocol: TCP
+            - port: "7233"
+              protocol: TCP
+            - port: "7234"
+              protocol: TCP
+            - port: "7235"
+              protocol: TCP
+            - port: "7239"
+              protocol: TCP
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/part-of: temporal
+      toPorts:
+        - ports:
+            - port: "6933"
+              protocol: TCP
+            - port: "6934"
+              protocol: TCP
+            - port: "6935"
+              protocol: TCP
+            - port: "6939"
+              protocol: TCP
+            - port: "7233"
+              protocol: TCP
+            - port: "7234"
+              protocol: TCP
+            - port: "7235"
+              protocol: TCP
+            - port: "7239"
+              protocol: TCP
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: temporal-frontend-clients
+spec:
+  description: "Workflow clients outside the namespace: kalimba (default) dials temporal-frontend.development.svc:7233"
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/part-of: temporal
+      app.kubernetes.io/component: frontend
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: kalimba
+            io.kubernetes.pod.namespace: default
+      toPorts:
+        - ports:
+            - port: "7233"
+              protocol: TCP

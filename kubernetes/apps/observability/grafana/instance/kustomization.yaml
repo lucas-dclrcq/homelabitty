@@ -7,6 +7,7 @@ resources:
   - ./oidc-externalsecret.yaml
   - ./grafanadatasource.yaml
   - ./grafana.yaml
+  - ./ciliumnetworkpolicy.yaml
   - ./httproute.yaml
   - ./servicemonitor.yaml
   - ./externalsecret.yaml

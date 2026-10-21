@@ -25,3 +25,13 @@ spec:
         - ports:
             - port: "8000"
               protocol: TCP
+  egress:
+    # printer state is published to Home Assistant's REST API
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: home-assistant
+            io.kubernetes.pod.namespace: home
+      toPorts:
+        - ports:
+            - port: "8123"
+              protocol: TCP

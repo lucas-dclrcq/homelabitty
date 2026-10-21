@@ -1,0 +1,117 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: robusta-runner
+spec:
+  description: "Runner: alerts in from kubewatch and Alertmanager, queries out to vmsingle/Alertmanager, LLM calls to LiteLLM and investigations to Holmes"
+  endpointSelector:
+    matchLabels:
+      app: robusta-runner
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app: robusta-forwarder
+        - matchLabels:
+            app.kubernetes.io/name: vmalertmanager
+            io.kubernetes.pod.namespace: observability
+      toPorts:
+        - ports:
+            - port: "5000"
+              protocol: TCP
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            app: holmes
+      toPorts:
+        - ports:
+            - port: "5050"
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: litellm
+      toPorts:
+        - ports:
+            - port: "4000"
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: vmsingle
+            io.kubernetes.pod.namespace: observability
+      toPorts:
+        - ports:
+            - port: "8428"
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: vmalertmanager
+            io.kubernetes.pod.namespace: observability
+      toPorts:
+        - ports:
+            - port: "9093"
+              protocol: TCP
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: robusta-forwarder
+spec:
+  description: "kubewatch forwards API events to the runner"
+  endpointSelector:
+    matchLabels:
+      app: robusta-forwarder
+  ingress:
+    # metrics scrape (the chart's own ServiceMonitor)
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: vmagent
+            io.kubernetes.pod.namespace: observability
+      toPorts:
+        - ports:
+            - port: "2112"
+              protocol: TCP
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            app: robusta-runner
+      toPorts:
+        - ports:
+            - port: "5000"
+              protocol: TCP
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: robusta-holmes
+spec:
+  description: "Holmes answers the runner; LLM calls go through LiteLLM, metric lookups to vmsingle"
+  endpointSelector:
+    matchLabels:
+      app: holmes
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app: robusta-runner
+      toPorts:
+        - ports:
+            - port: "5050"
+              protocol: TCP
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: litellm
+      toPorts:
+        - ports:
+            - port: "4000"
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: vmsingle
+            io.kubernetes.pod.namespace: observability
+      toPorts:
+        - ports:
+            - port: "8428"
+              protocol: TCP

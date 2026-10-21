@@ -13,6 +13,32 @@ spec:
     global:
       createDefaultServiceAccount: false
 
+    rawResources:
+      netpol:
+        manifest:
+          apiVersion: cilium.io/v2
+          kind: CiliumNetworkPolicy
+          spec:
+            description: "BookMan's in-namespace backing services: Meilisearch (MEILI_URL) and the Mailpit sink it sends campaign mail to"
+            endpointSelector:
+              matchLabels:
+                app.kubernetes.io/name: bookman
+            egress:
+              - toEndpoints:
+                  - matchLabels:
+                      app.kubernetes.io/name: bookman-meilisearch
+                toPorts:
+                  - ports:
+                      - port: "7700"
+                        protocol: TCP
+              - toEndpoints:
+                  - matchLabels:
+                      app.kubernetes.io/name: bookman-mailpit
+                toPorts:
+                  - ports:
+                      - port: "1025"
+                        protocol: TCP
+
     controllers:
       bookman:
         annotations:

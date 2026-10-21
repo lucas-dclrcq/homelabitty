@@ -8,5 +8,6 @@ resources:
   - ./oidc-externalsecret.yaml
   - ./externalsecret.yaml
   - ./litellmproxy.yaml
+  - ./ciliumnetworkpolicy.yaml
   - ./models
   - ./mcps

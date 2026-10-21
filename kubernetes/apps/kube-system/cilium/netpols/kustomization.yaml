@@ -4,7 +4,6 @@ kind: Kustomization
 resources:
   - ./baseline.yaml
   - ./allow-ingress-apiserver.yaml
-  - ./allow-ingress-cluster.yaml
   - ./allow-ingress-dragonfly-operator.yaml
   - ./allow-ingress-gateway-external.yaml
   - ./allow-ingress-gateway-internal.yaml
@@ -16,7 +15,7 @@ resources:
   - ./allow-ingress-vmagent-dragonfly.yaml
   - ./allow-ingress-world.yaml
   - ./allow-egress-apiserver.yaml
-  - ./allow-egress-cluster.yaml
+  - ./allow-egress-dragonfly-operator.yaml
   - ./allow-egress-gateway-external.yaml
   - ./allow-egress-gateway-internal.yaml
   - ./allow-egress-kubedns.yaml

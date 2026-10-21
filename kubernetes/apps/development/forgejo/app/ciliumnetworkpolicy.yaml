@@ -1,0 +1,19 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: forgejo
+spec:
+  description: "The Actions runner registers and polls jobs against forgejo-http.development.svc:3000"
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: forgejo
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: forgejo-runner
+      toPorts:
+        - ports:
+            - port: "3000"
+              protocol: TCP
