@@ -136,6 +136,11 @@ spec:
               - name: docker-certs
                 emptyDir: {}
             restartPolicy: Never
+    defaultPodOptions:
+      labels:
+        egress.home.arpa/apiserver: allow
+        egress.home.arpa/gateway-external: allow
+        egress.home.arpa/world: allow
     controllers:
       forgejo-runner:
         type: deployment

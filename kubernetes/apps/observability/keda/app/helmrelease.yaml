@@ -11,3 +11,12 @@ spec:
     name: *app
   values:
     enableServiceLinks: false
+    podLabels:
+      keda:
+        egress.home.arpa/apiserver: allow
+      metricsAdapter:
+        ingress.home.arpa/apiserver: allow
+        egress.home.arpa/apiserver: allow
+      webhooks:
+        ingress.home.arpa/apiserver: allow
+        egress.home.arpa/apiserver: allow

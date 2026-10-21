@@ -11,6 +11,14 @@ spec:
     name: app-template
     namespace: flux-system
   values:
+    defaultPodOptions:
+      labels:
+        ingress.home.arpa/gateway-external: allow
+        ingress.home.arpa/prometheus: allow
+        egress.home.arpa/postgres: allow
+        egress.home.arpa/gateway-external: allow
+        egress.home.arpa/world: allow
+
     controllers:
       the-elder-scrobz:
         annotations:

@@ -79,6 +79,14 @@ spec:
                 memory: 1536Mi # never set limits.cpu
 
     defaultPodOptions:
+      labels:
+        ingress.home.arpa/gateway-internal: allow
+        egress.home.arpa/postgres: allow
+        egress.home.arpa/gateway-external: allow
+        # Temporal frontend lives in the development namespace (cross-namespace
+        # gRPC to temporal-frontend.development.svc:7233), not covered by any
+        # dedicated policy label yet.
+        egress.home.arpa/cluster: allow
       automountServiceAccountToken: false
       enableServiceLinks: false
       imagePullSecrets:

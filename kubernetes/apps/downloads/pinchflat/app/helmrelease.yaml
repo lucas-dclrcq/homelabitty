@@ -56,6 +56,11 @@ spec:
                 memory: 8Gi
 
     defaultPodOptions:
+      labels:
+        ingress.home.arpa/gateway-external: allow
+        ingress.home.arpa/prometheus: allow
+        egress.home.arpa/gateway-external: allow
+        egress.home.arpa/world: allow
       securityContext:
         runAsNonRoot: true
         runAsUser: 1026

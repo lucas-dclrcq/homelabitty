@@ -11,6 +11,11 @@ spec:
   dependsOn: []
   interval: 15m
   values:
+    defaultPodOptions:
+      labels:
+        ingress.home.arpa/gateway-external: allow
+        egress.home.arpa/world: allow
+
     controllers:
       searxng:
         strategy: RollingUpdate

@@ -10,6 +10,8 @@ spec:
     kind: OCIRepository
     name: *app
   values:
+    podLabels:
+      ingress.home.arpa/gateway-external: allow
     config:
       prometheus: http://vmsingle-vmks.{{ .Release.Namespace }}.svc.cluster.local:8428
       badges:

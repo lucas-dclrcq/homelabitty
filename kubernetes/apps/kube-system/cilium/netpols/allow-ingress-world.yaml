@@ -1,0 +1,15 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: allow-ingress-world
+spec:
+  description: "Pods labeled ingress.home.arpa/world=allow accept traffic from outside the cluster (LoadBalancer services reached by LAN clients: mosquitto, smtp-relay, forgejo ssh). remote-node covers externalTrafficPolicy=Cluster services whose traffic is SNATed by the ingressing node."
+  endpointSelector:
+    matchLabels:
+      ingress.home.arpa/world: allow
+  ingress:
+    - fromEntities:
+        - world
+        - remote-node

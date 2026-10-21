@@ -53,6 +53,10 @@ spec:
               capabilities: { drop: ["ALL"] }
 
     defaultPodOptions:
+      labels:
+        ingress.home.arpa/gateway-external: allow
+        egress.home.arpa/postgres: allow
+        egress.home.arpa/world: allow
       securityContext:
         runAsGroup: 1500
         runAsUser: 1026

@@ -34,6 +34,14 @@ spec:
       podAnnotations:
         reloader.stakater.com/auto: "true"
 
+      podLabels:
+        ingress.home.arpa/gateway-external: allow
+        ingress.home.arpa/prometheus: allow
+        egress.home.arpa/postgres: allow
+        egress.home.arpa/smtp: allow
+        egress.home.arpa/gateway-external: allow
+        egress.home.arpa/world: allow
+
       envFrom:
         - secretRef:
             name: authentik-secret

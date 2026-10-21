@@ -18,6 +18,10 @@ spec:
         reloader.stakater.com/auto: "true"
       podLabels:
         app: *app
+        ingress.home.arpa/gateway-external: allow
+        ingress.home.arpa/prometheus: allow
+        egress.home.arpa/postgres: allow
+        egress.home.arpa/gateway-external: allow
       envFrom:
         - secretRef:
             name: homelab-manager-secret
@@ -40,6 +44,9 @@ spec:
     operator:
       enabled: true
       replicaCount: 1
+      podLabels:
+        ingress.home.arpa/prometheus: allow
+        egress.home.arpa/apiserver: allow
       envFrom:
         - secretRef:
             name: homelab-manager-secret

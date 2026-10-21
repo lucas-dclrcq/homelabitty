@@ -12,6 +12,11 @@ spec:
   values:
     global:
       imageRegistry: mirror.gcr.io
+    certgen:
+      job:
+        pod:
+          labels:
+            egress.home.arpa/apiserver: allow
     config:
       envoyGateway:
         provider:
@@ -19,3 +24,12 @@ spec:
           kubernetes:
             deploy:
               type: GatewayNamespace
+    deployment:
+      pod:
+        labels:
+          # kube-apiserver calls the topology-injector mutating webhook served
+          # by the controller; the controller itself watches the kube API and
+          # is scraped by vmagent via the envoy-gateway ServiceMonitor
+          ingress.home.arpa/apiserver: allow
+          ingress.home.arpa/prometheus: allow
+          egress.home.arpa/apiserver: allow

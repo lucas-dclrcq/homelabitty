@@ -32,8 +32,42 @@ spec:
     postgres:
       enabled: false
 
+    # init-secrets and deployment-markers are hook Jobs that talk to the kube
+    # API to create/update Secrets and ConfigMaps.
+    initSecrets:
+      labels:
+        egress.home.arpa/apiserver: allow
+
+    deploymentMarkers:
+      labels:
+        egress.home.arpa/apiserver: allow
+
+    # In-namespace cache (synapse/MAS reach it via the namespace baseline); the
+    # label only opens the metrics scrape.
+    valkey:
+      labels:
+        ingress.home.arpa/prometheus: allow
+
+    # The matrix-synapse (8008) and matrix-well-known (8010) Services select the
+    # chart's HAProxy pods, which then proxy to synapse in-namespace: the
+    # gateway ingress labels must sit on HAProxy for client/federation/well-known
+    # traffic to arrive.
+    haproxy:
+      labels:
+        ingress.home.arpa/gateway-external: allow
+        ingress.home.arpa/gateway-internal: allow
+        ingress.home.arpa/prometheus: allow
+
     synapse:
       enabled: true
+      labels:
+        ingress.home.arpa/gateway-external: allow
+        ingress.home.arpa/gateway-internal: allow
+        ingress.home.arpa/prometheus: allow
+        egress.home.arpa/postgres: allow
+        egress.home.arpa/smtp: allow
+        egress.home.arpa/gateway-external: allow
+        egress.home.arpa/world: allow
       # The chart copies extraInitContainers into the pre-install check-config
       # hook Job, which has no `media` volume: the Job is rejected and the
       # install loops forever. Re-enable together with removing media-migrate.
@@ -108,6 +142,13 @@ spec:
 
     matrixAuthenticationService:
       enabled: true
+      labels:
+        ingress.home.arpa/gateway-external: allow
+        ingress.home.arpa/prometheus: allow
+        egress.home.arpa/postgres: allow
+        # MAS sends account emails through smtp-relay (additional.0-email below)
+        egress.home.arpa/smtp: allow
+        egress.home.arpa/gateway-external: allow
       # Pinned ahead of the chart: ESS 26.10.0 ships MAS 1.26.0, but the
       # cluster already runs 1.27. The downgrade would be schema-safe (no
       # migrations between 1.24 and 1.27) but is still a needless regression.
@@ -175,6 +216,8 @@ spec:
 
     elementWeb:
       enabled: true
+      labels:
+        ingress.home.arpa/gateway-external: allow
       ingress:
         host: "element.hoohoot.org"
       additional:
@@ -216,6 +259,8 @@ spec:
 
     elementAdmin:
       enabled: true
+      labels:
+        ingress.home.arpa/gateway-internal: allow
       ingress:
         # Internal-only like the old synapse-admin: hoohoot.xyz is what the
         # internal gateway listeners accept.
@@ -223,9 +268,21 @@ spec:
 
     matrixRTC:
       enabled: true
+      # These land on the lk-jwt authorisation-service pods; it calls back the
+      # SFU Twirp API on LIVEKIT_URL (the public mrtc hostname), hence the
+      # gateway-external egress.
+      labels:
+        ingress.home.arpa/gateway-external: allow
+        egress.home.arpa/gateway-external: allow
       ingress:
         host: "mrtc.hoohoot.org"
       sfu:
+        # SFU pods: WebSocket/Twirp via the external gateway + direct RTC media
+        # from LAN/WAN through the LoadBalancer below.
+        labels:
+          ingress.home.arpa/gateway-external: allow
+          ingress.home.arpa/world: allow
+          ingress.home.arpa/prometheus: allow
         exposedServices:
           rtcTcp:
             portType: LoadBalancer

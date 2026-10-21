@@ -70,5 +70,9 @@ spec:
       - "hoohoot.org"
     serviceMonitor:
       enabled: true
+    podLabels:
+      ingress.home.arpa/prometheus: allow
+      egress.home.arpa/apiserver: allow
+      egress.home.arpa/world: allow
     podAnnotations:
       secret.reloader.stakater.com/reload: *secret

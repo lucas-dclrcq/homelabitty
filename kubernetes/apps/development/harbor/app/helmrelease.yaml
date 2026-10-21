@@ -19,6 +19,16 @@ spec:
       clusterIP:
         name: harbor
 
+    # nginx is the unified entrypoint the HTTPRoute targets; every component gets
+    # the same network-policy label union since the chart only offers per-component
+    # podLabels.
+    nginx:
+      podLabels: &netpolLabels
+        ingress.home.arpa/gateway-external: allow
+        egress.home.arpa/postgres: allow
+        egress.home.arpa/gateway-external: allow
+        egress.home.arpa/world: allow
+
     externalURL: "https://docker.hoohoot.org"
 
     existingSecretAdminPassword: harbor-secret
@@ -59,9 +69,11 @@ spec:
 
     redis:
       type: internal
+      podLabels: *netpolLabels
 
     trivy:
       enabled: true
+      podLabels: *netpolLabels
 
     notary:
       enabled: false
@@ -69,11 +81,16 @@ spec:
     metrics:
       enabled: true
 
+    exporter:
+      podLabels: *netpolLabels
+
     portal:
       replicas: 1
+      podLabels: *netpolLabels
 
     core:
       replicas: 1
+      podLabels: *netpolLabels
       extraEnvVars:
         - name: CONFIG_OVERWRITE_JSON
           valueFrom:
@@ -83,9 +100,11 @@ spec:
 
     jobservice:
       replicas: 1
+      podLabels: *netpolLabels
 
     registry:
       replicas: 1
+      podLabels: *netpolLabels
 
     updateStrategy:
       type: Recreate

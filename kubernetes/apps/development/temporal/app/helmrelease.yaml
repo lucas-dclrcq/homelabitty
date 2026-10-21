@@ -17,6 +17,9 @@ spec:
     # immutable Job instead of Flux trying to patch a completed one.
     schema:
       useHelmHooks: false
+      # schema setup/update Jobs run migrations directly against Postgres
+      podLabels:
+        egress.home.arpa/postgres: allow
       resources: &jobResources
         requests:
           cpu: 10m
@@ -26,6 +29,10 @@ spec:
 
     server:
       replicaCount: 1
+
+      # applied to all server service pods (frontend/history/matching/worker)
+      podLabels:
+        egress.home.arpa/postgres: allow
 
       securityContext:
         runAsNonRoot: true
@@ -83,6 +90,9 @@ spec:
               retention: 7d
 
       frontend:
+        # kalimba (default ns) dials temporal-frontend.development.svc:7233
+        podLabels:
+          ingress.home.arpa/cluster: allow
         containerSecurityContext: &containerSecurityContext
           allowPrivilegeEscalation: false
           readOnlyRootFilesystem: true
@@ -104,6 +114,8 @@ spec:
     web:
       enabled: true
       replicaCount: 1
+      podLabels:
+        ingress.home.arpa/gateway-internal: allow
       securityContext:
         runAsNonRoot: true
         runAsUser: 1000

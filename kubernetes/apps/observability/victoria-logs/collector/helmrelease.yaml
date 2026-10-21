@@ -18,6 +18,9 @@ spec:
       retries: 3
   values:
     fullnameOverride: victoria-logs-collector
+    # Collector watches the Kubernetes API for pod metadata enrichment
+    podLabels:
+      egress.home.arpa/apiserver: allow
     global:
       image:
         registry: quay.io

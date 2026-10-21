@@ -15,7 +15,7 @@ spec:
         strategy: RollingUpdate
         pod:
           labels:
-            ingress.home.arpa/envoy-external: allow
+            ingress.home.arpa/gateway-external: allow
             ingress.home.arpa/prometheus: allow
         containers:
           app:

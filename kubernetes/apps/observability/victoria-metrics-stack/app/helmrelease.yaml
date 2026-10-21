@@ -51,10 +51,17 @@ spec:
 
     victoria-metrics-operator:
       enabled: true
+      # Watches CRs via the API; its validating webhook is called by kube-apiserver
+      podLabels:
+        ingress.home.arpa/apiserver: allow
+        egress.home.arpa/apiserver: allow
 
     vmsingle:
       enabled: true
       spec:
+        podMetadata:
+          labels:
+            ingress.home.arpa/cluster: allow
         retentionPeriod: 30d
         useStrictSecurity: true
         extraArgs:
@@ -85,6 +92,9 @@ spec:
     vmagent:
       enabled: true
       spec:
+        podMetadata:
+          labels:
+            egress.home.arpa/cluster: allow
         extraArgs:
           promscrape.streamParse: "true"
           # apiserver /metrics exceeds the 16MiB default
@@ -103,6 +113,11 @@ spec:
     alertmanager:
       enabled: true
       spec:
+        podMetadata:
+          labels:
+            # pushover/heartbeat receivers -> internet; robusta webhook -> ai namespace
+            egress.home.arpa/world: allow
+            egress.home.arpa/cluster: allow
         externalURL: https://alertmanager.hoohoot.xyz
         disableNamespaceMatcher: true
       config:
@@ -162,6 +177,9 @@ spec:
 
     kube-state-metrics:
       fullnameOverride: kube-state-metrics
+      # Watches every object kind via the Kubernetes API
+      podLabels:
+        egress.home.arpa/apiserver: allow
       metricLabelsAllowlist:
         - pods=[*]
         - deployments=[*]

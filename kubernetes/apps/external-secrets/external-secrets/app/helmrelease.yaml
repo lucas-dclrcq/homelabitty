@@ -22,6 +22,12 @@ spec:
       namespace: vault
   values:
     installCRDs: true
+    # Labeling opts these pods into egress default-deny (ns has no baseline CNP),
+    # so apiserver + kubedns must be opened alongside vault.
+    podLabels:
+      egress.home.arpa/vault: allow
+      egress.home.arpa/apiserver: allow
+      egress.home.arpa/kubedns: allow
     serviceMonitor:
       enabled: true
       interval: 1m

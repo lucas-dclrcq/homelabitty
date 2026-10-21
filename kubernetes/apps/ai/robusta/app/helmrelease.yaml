@@ -62,6 +62,8 @@ spec:
     enableServiceMonitors: true
 
     kubewatch:
+      labels:
+        egress.home.arpa/apiserver: allow
       resources:
         requests:
           cpu: 10m
@@ -70,6 +72,14 @@ spec:
           memory: 256Mi
 
     runner:
+      labels:
+        ingress.home.arpa/prometheus: allow
+        # receives alert webhooks from Alertmanager (observability)
+        ingress.home.arpa/cluster: allow
+        egress.home.arpa/apiserver: allow
+        egress.home.arpa/world: allow
+        # queries vmsingle + alertmanager in observability
+        egress.home.arpa/cluster: allow
       sendAdditionalTelemetry: false
       additional_env_vars:
         - name: PYTHONPATH
@@ -96,6 +106,13 @@ spec:
 
     enableHolmesGPT: true
     holmes:
+      # No egress.home.arpa/world on purpose: the internet toolset is disabled to
+      # limit exfiltration, so Holmes only needs the kube API (plus same-namespace
+      # litellm, covered by the namespace baseline).
+      commonLabels:
+        egress.home.arpa/apiserver: allow
+        # queries vmsingle in observability (no world: internet toolset stays disabled)
+        egress.home.arpa/cluster: allow
       sentryDSN: ""
       enableTelemetry: false
       extraEnvVarsSecrets:

@@ -17,6 +17,9 @@ spec:
     path: /mcp
     serviceAccountName: kubernetes-mcp
     automountServiceAccountToken: true
+    podLabels:
+      egress.home.arpa/kubedns: allow
+      egress.home.arpa/apiserver: allow
     volumes:
       - name: config
         configMap:
@@ -38,7 +41,7 @@ spec:
     securityContext:
       allowPrivilegeEscalation: false
       readOnlyRootFilesystem: true
-      capabilities: {drop: ["ALL"]}
+      capabilities: { drop: ["ALL"] }
     podSecurityContext:
       runAsNonRoot: true
-      seccompProfile: {type: RuntimeDefault}
+      seccompProfile: { type: RuntimeDefault }

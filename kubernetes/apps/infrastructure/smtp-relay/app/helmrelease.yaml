@@ -24,6 +24,11 @@ spec:
   uninstall:
     keepHistory: false
   values:
+    defaultPodOptions:
+      labels:
+        ingress.home.arpa/world: allow
+        ingress.home.arpa/prometheus: allow
+        egress.home.arpa/world: allow
     controllers:
       smtp-relay:
         strategy: RollingUpdate

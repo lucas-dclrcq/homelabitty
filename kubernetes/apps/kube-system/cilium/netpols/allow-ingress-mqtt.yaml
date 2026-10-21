@@ -1,0 +1,20 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: allow-ingress-mqtt
+spec:
+  description: "Service side of egress.home.arpa/mqtt: mosquitto accepts 1883 from consumers carrying the label"
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: mosquitto
+      io.kubernetes.pod.namespace: infrastructure
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            egress.home.arpa/mqtt: allow
+      toPorts:
+        - ports:
+            - port: "1883"
+              protocol: TCP

@@ -7,6 +7,16 @@ spec:
   image: ghcr.io/berriai/litellm:v1.107.0
   replicas: 1
 
+  podLabels:
+    ingress.home.arpa/gateway-internal: allow
+    ingress.home.arpa/prometheus: allow
+    egress.home.arpa/postgres: allow
+    egress.home.arpa/world: allow
+    # OTEL -> victoria (observability), URL-mode MCPs (home-assistant, konflate)
+    egress.home.arpa/cluster: allow
+    # OIDC hairpin to sso.hoohoot.org + trilium.hoohoot.org MCP
+    egress.home.arpa/gateway-external: allow
+
   applyMode: api
   apiAccess:
     masterKeyRef:

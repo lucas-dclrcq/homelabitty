@@ -11,6 +11,13 @@ metadata:
 spec:
   postgresVersion: 16
 
+  metadata:
+    labels:
+      ingress.home.arpa/prometheus: allow
+      # LoadBalancer service is reached directly from the LAN
+      ingress.home.arpa/world: allow
+      egress.home.arpa/apiserver: allow
+
   service:
     type: LoadBalancer
     metadata:

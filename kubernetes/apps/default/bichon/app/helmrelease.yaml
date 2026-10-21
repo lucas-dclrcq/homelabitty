@@ -10,6 +10,11 @@ spec:
     name: *app
   interval: 30m
   values:
+    defaultPodOptions:
+      labels:
+        ingress.home.arpa/gateway-internal: allow
+        egress.home.arpa/world: allow
+
     controllers:
       bichon:
         annotations:

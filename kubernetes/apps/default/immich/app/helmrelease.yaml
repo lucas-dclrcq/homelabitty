@@ -10,6 +10,12 @@ spec:
     kind: OCIRepository
     name: *app
   values:
+    defaultPodOptions:
+      labels:
+        ingress.home.arpa/gateway-external: allow
+        egress.home.arpa/postgres: allow
+        egress.home.arpa/world: allow
+
     controllers:
       server:
         strategy: RollingUpdate

@@ -53,6 +53,9 @@ spec:
               limits:
                 memory: 8192Mi
     defaultPodOptions:
+      labels:
+        ingress.home.arpa/gateway-internal: allow
+        egress.home.arpa/world: allow
       annotations:
         k8s.v1.cni.cncf.io/networks: |-
           [{

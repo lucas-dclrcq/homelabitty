@@ -13,3 +13,14 @@ spec:
     alertmanagerAddress: http://vmalertmanager-vmks:9093
     networkPolicy:
       enabled: false
+  # The chart exposes no podLabels value; patch the pod template instead.
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: Deployment
+              name: silence-operator
+            patch: |-
+              - op: add
+                path: /spec/template/metadata/labels/egress.home.arpa~1apiserver
+                value: allow

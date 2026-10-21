@@ -47,6 +47,11 @@ spec:
       strategy:
         type: Recreate
       template:
+        metadata:
+          labels:
+            ingress.home.arpa/gateway-external: allow
+            egress.home.arpa/gateway-external: allow
+            egress.home.arpa/world: allow
         spec:
           containers:
             - name: grafana
