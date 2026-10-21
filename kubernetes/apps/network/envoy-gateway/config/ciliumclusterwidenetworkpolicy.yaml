@@ -36,6 +36,19 @@ spec:
         - ports:
             - port: "8080"
               protocol: TCP
+    # SecurityPolicy ext-auth (components/security-policy/forward-auth): the
+    # authentik proxy outpost is created by authentik and carries no label of
+    # ours, so it is named here (mirrors the outposts' own ingress rule)
+    - toEndpoints:
+        - matchLabels:
+            app: authentik-outpost
+            io.kubernetes.pod.namespace: auth
+      toPorts:
+        - ports:
+            - port: "9000"
+              protocol: TCP
+            - port: "9443"
+              protocol: TCP
     # flux webhook-receiver
     - toEndpoints:
         - matchLabels:

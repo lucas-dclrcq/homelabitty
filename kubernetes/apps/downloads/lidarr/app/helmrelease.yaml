@@ -30,6 +30,7 @@ spec:
         egress.home.arpa/prowlarr: allow
         egress.home.arpa/qbittorrent: allow
         egress.home.arpa/sabnzbd: allow
+        egress.home.arpa/slskd: allow
 
     controllers:
       lidarr:

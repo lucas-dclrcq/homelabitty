@@ -84,7 +84,8 @@ happens to select them.
 Most of these are **paired**: one clusterwide policy opens the consumer's
 egress, a second one opens the service's ingress from pods carrying that same
 label, so labelling the consumer is enough. That covers
-`postgres`/`mqtt`/`smtp`/`vault` and the whole downloads stack
+`postgres`/`mqtt`/`smtp`/`vault`, `gateway-external`/`gateway-internal` (the
+envoy pods accept hairpin calls from pods carrying the label) and the whole downloads stack
 (`sonarr`/`radarr`/`lidarr`/`prowlarr`/`qbittorrent`/`sabnzbd`/`slskd`, one
 `allow-<service>.yaml` per service holding both halves).
 

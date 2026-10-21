@@ -35,6 +35,15 @@ spec:
         - ports:
             - port: "8428"
               protocol: TCP
+  egress:
+    # -vmalert.proxyURL: vmsingle proxies /vmalert/* (alerts and rules UI) to vmalert
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: vmalert
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
 apiVersion: cilium.io/v2
@@ -76,6 +85,14 @@ spec:
   endpointSelector:
     matchLabels:
       app.kubernetes.io/name: vmalert
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: vmsingle
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP
   egress:
     - toEndpoints:
         - matchLabels:

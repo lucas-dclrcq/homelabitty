@@ -36,6 +36,7 @@ spec:
         ingress.home.arpa/gateway-internal: allow
         ingress.home.arpa/prometheus: allow
         egress.home.arpa/gateway-external: allow
+        egress.home.arpa/mqtt: allow
         # the Bambu printer is on the IoT VLAN (MQTT 8883)
         egress.home.arpa/iot: allow
       securityContext:

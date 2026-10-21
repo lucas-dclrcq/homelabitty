@@ -62,6 +62,7 @@ spec:
     defaultPodOptions:
       labels:
         ingress.home.arpa/gateway-external: allow
+        egress.home.arpa/gateway-external: allow
         egress.home.arpa/mqtt: allow
         egress.home.arpa/internet: allow
         egress.home.arpa/iot: allow

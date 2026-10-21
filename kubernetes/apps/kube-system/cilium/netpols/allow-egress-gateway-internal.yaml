@@ -15,3 +15,21 @@ spec:
             app.kubernetes.io/name: envoy
             gateway.envoyproxy.io/owning-gateway-name: internal
             io.kubernetes.pod.namespace: network
+---
+# Paired ingress on the envoy pods, see allow-egress-gateway-external.yaml.
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: allow-ingress-gateway-internal-from-cluster
+spec:
+  description: "The internal envoy pods accept in-cluster callers labeled egress.home.arpa/gateway-internal=allow"
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: envoy
+      gateway.envoyproxy.io/owning-gateway-name: internal
+      io.kubernetes.pod.namespace: network
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            egress.home.arpa/gateway-internal: allow
