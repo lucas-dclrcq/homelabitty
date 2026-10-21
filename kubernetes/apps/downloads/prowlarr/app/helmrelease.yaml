@@ -71,8 +71,7 @@ spec:
       labels:
         ingress.home.arpa/gateway-internal: allow
         egress.home.arpa/postgres: allow
-        egress.home.arpa/world: allow
-        # pushes indexer definitions into the *arr apps
+        egress.home.arpa/internet: allow
         egress.home.arpa/sonarr: allow
         egress.home.arpa/radarr: allow
         egress.home.arpa/lidarr: allow

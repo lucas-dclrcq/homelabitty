@@ -14,7 +14,7 @@ spec:
     defaultPodOptions:
       labels:
         ingress.home.arpa/gateway-external: allow
-        egress.home.arpa/world: allow
+        egress.home.arpa/internet: allow
 
     controllers:
       searxng:

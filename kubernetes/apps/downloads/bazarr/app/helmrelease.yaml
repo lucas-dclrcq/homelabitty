@@ -84,8 +84,7 @@ spec:
         ingress.home.arpa/gateway-internal: allow
         egress.home.arpa/postgres: allow
         egress.home.arpa/gateway-external: allow
-        egress.home.arpa/world: allow
-        # follows the Sonarr/Radarr libraries to fetch subtitles
+        egress.home.arpa/internet: allow
         egress.home.arpa/sonarr: allow
         egress.home.arpa/radarr: allow
       securityContext:

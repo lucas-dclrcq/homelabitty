@@ -75,7 +75,7 @@ spec:
       labels:
         ingress.home.arpa/prometheus: allow
         egress.home.arpa/apiserver: allow
-        egress.home.arpa/world: allow
+        egress.home.arpa/internet-https: allow
         # Alertmanager webhooks in, vmsingle/alertmanager/holmes/litellm out:
         # see ./ciliumnetworkpolicy.yaml
       sendAdditionalTelemetry: false
@@ -104,7 +104,7 @@ spec:
 
     enableHolmesGPT: true
     holmes:
-      # No egress.home.arpa/world on purpose: the internet toolset is disabled to
+      # No egress.home.arpa/internet* on purpose: the internet toolset is disabled to
       # limit exfiltration, so Holmes only needs the kube API plus the explicit
       # peers in ./ciliumnetworkpolicy.yaml (litellm, vmsingle).
       commonLabels:

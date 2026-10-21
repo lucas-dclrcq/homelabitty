@@ -86,11 +86,9 @@ spec:
       labels:
         ingress.home.arpa/gateway-external: allow
         egress.home.arpa/postgres: allow
-        egress.home.arpa/world: allow
-        # approved requests go to the *arr apps in the downloads namespace
+        egress.home.arpa/internet: allow
         egress.home.arpa/sonarr: allow
         egress.home.arpa/radarr: allow
-        # Jellyfin is same-namespace: see rawResources.netpol above
       securityContext:
         runAsNonRoot: true
         runAsUser: 1000

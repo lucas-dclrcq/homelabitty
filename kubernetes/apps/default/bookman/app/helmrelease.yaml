@@ -136,7 +136,7 @@ spec:
         egress.home.arpa/postgres: allow
         egress.home.arpa/smtp: allow
         egress.home.arpa/gateway-external: allow
-        egress.home.arpa/world: allow
+        egress.home.arpa/internet: allow
       automountServiceAccountToken: false
       enableServiceLinks: false
       securityContext:

@@ -1,10 +1,29 @@
 ---
+# Last resort. `world` is every IP outside the cluster: the internet, the whole
+# LAN and every VLAN at once. Phase 2 of TASKS.md split it into labels that say
+# what a pod actually reaches:
+#
+#   egress.home.arpa/internet        the world except the house network
+#   egress.home.arpa/internet-https  the same, 443 only
+#   egress.home.arpa/lan             192.168.1.0/24
+#   egress.home.arpa/nas             192.168.1.70 (TrueNAS)
+#   egress.home.arpa/router          192.168.1.1:443 (UniFi gateway)
+#   egress.home.arpa/iot             192.168.30.0/24
+#
+# They compose, so a pod that needs the internet and one segment carries both.
+# Reach for `world` only when a pod genuinely has no bounded destination set,
+# and say why in a comment where you put it. No app carries it today.
+#
+# It also stays the escape hatch while the dashboard is still being read: if a
+# phase 2 reclassification turns out to be wrong, putting `world` back restores
+# the previous behaviour in one line.
 # yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
 apiVersion: cilium.io/v2
 kind: CiliumClusterwideNetworkPolicy
 metadata:
   name: allow-egress-world
 spec:
+  description: "Pods labeled egress.home.arpa/world=allow may reach anything outside the cluster: internet, LAN and every VLAN. Prefer the narrower egress.home.arpa/{internet,internet-https,lan,nas,router,iot} labels."
   endpointSelector:
     matchLabels:
       egress.home.arpa/world: allow

@@ -18,9 +18,15 @@ resources:
   - ./allow-egress-dragonfly-operator.yaml
   - ./allow-egress-gateway-external.yaml
   - ./allow-egress-gateway-internal.yaml
+  - ./allow-egress-internet.yaml
+  - ./allow-egress-internet-https.yaml
+  - ./allow-egress-iot.yaml
   - ./allow-egress-kubedns.yaml
+  - ./allow-egress-lan.yaml
   - ./allow-egress-mqtt.yaml
+  - ./allow-egress-nas.yaml
   - ./allow-egress-postgres.yaml
+  - ./allow-egress-router.yaml
   - ./allow-egress-smtp.yaml
   - ./allow-egress-vault.yaml
   - ./allow-egress-world.yaml

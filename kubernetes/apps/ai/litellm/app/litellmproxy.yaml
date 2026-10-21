@@ -11,11 +11,8 @@ spec:
     ingress.home.arpa/gateway-internal: allow
     ingress.home.arpa/prometheus: allow
     egress.home.arpa/postgres: allow
-    egress.home.arpa/world: allow
-    # OIDC hairpin to sso.hoohoot.org + trilium.hoohoot.org MCP
+    egress.home.arpa/internet-https: allow
     egress.home.arpa/gateway-external: allow
-    # in-namespace MCP servers + headroom, OTEL traces and the URL-mode MCPs:
-    # see ./ciliumnetworkpolicy.yaml
 
   applyMode: api
   apiAccess:

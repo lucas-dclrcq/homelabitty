@@ -14,6 +14,8 @@
 #     carry no ingress labels
 #   - host/remote-node for the host-network exporters (node-exporter, smartctl,
 #     kubelet) and the API server
+#   - the two LAN hosts that are not cluster nodes and run the same exporters,
+#     on those ports only (see ./scrapeconfig.yaml)
 # An unlabelled application pod stays unreachable.
 # yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
 apiVersion: cilium.io/v2
@@ -58,6 +60,23 @@ spec:
         - host
         - remote-node
         - kube-apiserver
+    # LAN hosts that are not cluster nodes, from ./scrapeconfig.yaml:
+    # truenas.lulice.lan (node-exporter 9100, smartctl 9633) and
+    # ntp.lulice.lan (the same two, plus chrony 9123 and gpsd 9015).
+    # Hardcoded because a CIDR rule cannot follow a hostname.
+    - toCIDR:
+        - "192.168.1.70/32"
+        - "192.168.1.118/32"
+      toPorts:
+        - ports:
+            - port: "9015"
+              protocol: TCP
+            - port: "9100"
+              protocol: TCP
+            - port: "9123"
+              protocol: TCP
+            - port: "9633"
+              protocol: TCP
     # remote write
     - toEndpoints:
         - matchLabels:

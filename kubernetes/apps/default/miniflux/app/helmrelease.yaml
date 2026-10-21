@@ -29,7 +29,7 @@ spec:
             ingress.home.arpa/prometheus: allow
             egress.home.arpa/kubedns: allow
             egress.home.arpa/postgres: allow
-            egress.home.arpa/world: allow
+            egress.home.arpa/internet: allow
             egress.home.arpa/gateway-external: allow
         containers:
           main:

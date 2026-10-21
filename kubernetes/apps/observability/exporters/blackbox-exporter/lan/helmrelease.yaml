@@ -14,10 +14,10 @@ spec:
     pod:
       labels:
         ingress.home.arpa/prometheus: allow
-        # LAN/internet probes + probes of the cluster's public URLs (app-endpoint Probes)
-        egress.home.arpa/world: allow
+        egress.home.arpa/internet: allow
+        egress.home.arpa/iot: allow
+        egress.home.arpa/lan: allow
         egress.home.arpa/gateway-external: allow
-        # probes of internal hostnames (*.hoohoot.xyz via the internal gateway)
         egress.home.arpa/gateway-internal: allow
     securityContext:
       readOnlyRootFilesystem: true

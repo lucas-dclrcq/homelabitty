@@ -57,8 +57,7 @@ spec:
                 memory: 128Mi
     defaultPodOptions:
       labels:
-        egress.home.arpa/world: allow
-        # syncs quality profiles into the instances listed in recyclarr.yml
+        egress.home.arpa/internet: allow
         egress.home.arpa/sonarr: allow
         egress.home.arpa/radarr: allow
       securityContext:

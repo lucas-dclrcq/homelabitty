@@ -5,6 +5,7 @@ kind: Kustomization
 resources:
   - ./ocirepository.yaml
   - ./helmrelease.yaml
+  - ./ciliumnetworkpolicy.yaml
   - ./probes.yaml
   - ./grafanadashboard.yaml
   - ./grafanadashboard-probes.yaml

@@ -14,7 +14,8 @@ spec:
       labels:
         ingress.home.arpa/gateway-internal: allow
         egress.home.arpa/postgres: allow
-        egress.home.arpa/world: allow
+        egress.home.arpa/internet: allow
+        egress.home.arpa/lan: allow
     controllers:
       semaphore:
         annotations:

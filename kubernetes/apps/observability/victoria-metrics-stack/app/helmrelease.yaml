@@ -129,7 +129,7 @@ spec:
             ingress.home.arpa/prometheus: allow
             # pushover/heartbeat receivers -> internet; the Robusta webhook and
             # the gossip mesh are in ./ciliumnetworkpolicy.yaml
-            egress.home.arpa/world: allow
+            egress.home.arpa/internet-https: allow
         externalURL: https://alertmanager.hoohoot.xyz
         disableNamespaceMatcher: true
       config:

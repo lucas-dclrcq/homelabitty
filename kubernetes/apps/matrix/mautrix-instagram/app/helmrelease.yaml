@@ -101,7 +101,7 @@ spec:
         ingress.home.arpa/gateway-external: allow
         egress.home.arpa/postgres: allow
         egress.home.arpa/gateway-external: allow
-        egress.home.arpa/world: allow
+        egress.home.arpa/internet-https: allow
       securityContext:
         runAsNonRoot: true
         runAsUser: 1026

@@ -159,7 +159,7 @@ spec:
       labels:
         egress.home.arpa/apiserver: allow
         egress.home.arpa/gateway-external: allow
-        egress.home.arpa/world: allow
+        egress.home.arpa/internet: allow
     controllers:
       forgejo-runner:
         type: deployment

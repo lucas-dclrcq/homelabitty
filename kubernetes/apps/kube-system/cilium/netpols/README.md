@@ -58,7 +58,13 @@ happens to select them.
 
 | Pod label (`=allow`)                | Opens egress to                                                                                                                                                 |
 | ----------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `egress.home.arpa/world`            | everything outside the cluster (internet + LAN)                                                                                                                 |
+| `egress.home.arpa/internet`         | the internet — `0.0.0.0/0` minus RFC1918, CGNAT and link-local, any port                                                                                        |
+| `egress.home.arpa/internet-https`   | the same destinations, 443 only                                                                                                                                 |
+| `egress.home.arpa/lan`              | the trusted LAN segment `192.168.1.0/24` (TrueNAS, UPS, NTP Pi, router), any port                                                                               |
+| `egress.home.arpa/nas`              | TrueNAS alone, `192.168.1.70`, any port                                                                                                                         |
+| `egress.home.arpa/router`           | the UniFi gateway alone, `192.168.1.1:443`                                                                                                                      |
+| `egress.home.arpa/iot`              | the IoT VLAN `192.168.30.0/24` (appliances, Bambu printer, robot vacuum)                                                                                        |
+| `egress.home.arpa/world`            | **last resort** — everything outside the cluster at once (internet + LAN + every VLAN). No app carries it                                                       |
 | `egress.home.arpa/kubedns`          | kube-dns:53 (already in baseline; for pods in non-enrolled namespaces)                                                                                          |
 | `egress.home.arpa/postgres`         | crunchy pods (instances + pgbouncer) :5432                                                                                                                      |
 | `egress.home.arpa/mqtt`             | mosquitto :1883 (+ matching ingress on mosquitto)                                                                                                               |
@@ -87,6 +93,37 @@ The downloads labels work from any namespace — `media/seerr` and
 themselves. `egress.home.arpa/sonarr` deliberately covers both Sonarr instances:
 every consumer drives `sonarr` and `sonarr-anime` together.
 
+#### Outside the cluster: pick a destination, not "everything"
+
+The first six labels above carve up what used to be a single
+`egress.home.arpa/world`. They are plain CIDR rules, and they **compose** —
+home-assistant carries `internet` _and_ `iot`, blackbox-exporter-lan carries
+`internet`, `lan` _and_ `iot`:
+
+| Label            | CIDR                                                                            | Ports |
+| ---------------- | ------------------------------------------------------------------------------- | ----- |
+| `internet`       | `0.0.0.0/0` except `10/8`, `172.16/12`, `192.168/16`, `100.64/10`, `169.254/16` | any   |
+| `internet-https` | the same                                                                        | 443   |
+| `lan`            | `192.168.1.0/24`                                                                | any   |
+| `nas`            | `192.168.1.70/32` (TrueNAS)                                                     | any   |
+| `router`         | `192.168.1.1/32` (UniFi gateway)                                                | 443   |
+| `iot`            | `192.168.30.0/24`                                                               | any   |
+
+Three things to know about CIDR rules in Cilium:
+
+- **They never match in-cluster peers.** Pods keep their own security identity
+  and nodes are the `host`/`remote-node` entities, so the private ranges in
+  `internet`'s `except` list cost nothing in-cluster: they only carve the house
+  network out of `0.0.0.0/0`. Conversely a `lan` label does **not** let a pod
+  reach a node by its `192.168.1.1x` address — that needs the entities, which
+  no vocabulary label exposes yet (TASKS.md phase 5).
+- **The IPs are hardcoded**, like every other non-secret value in this repo
+  (see `AGENTS.md`); they are not Flux substitutions.
+- **The VPN and IoT NetworkAttachmentDefinitions bypass all of this.** A pod
+  with a macvlan/ipvlan interface on `vpn0`/`iot0` (qbittorrent, slskd,
+  blackbox-exporter-vpn) sends that traffic outside its Cilium endpoint. Its
+  `eth0` egress still needs a label.
+
 ### Ingress labels (put on the _receiving_ pod)
 
 | Pod label (`=allow`)                 | Accepts ingress from                                                                              |
@@ -113,6 +150,11 @@ since both ends are default-deny:
   `observability` stack
 - one-off cross-namespace calls — `default/kalimba` → Temporal,
   `development/pacman` → the Pushgateway, `downloads/droppedneedle` → Navidrome
+- **anything addressed by entity rather than by pod or CIDR** — no vocabulary
+  label exposes `host`/`remote-node`/`kube-apiserver`, so a pod that talks to a
+  node by address names the entity in its own policy: `allow-egress-vmagent`
+  (host-network exporters) and `blackbox-exporter-lan` (ICMP probes of the six
+  nodes)
 
 When a service has several consumers, prefer a label pair over a bespoke policy:
 that is what the downloads stack does, and it is why none of the *arr apps ship
@@ -133,7 +175,7 @@ defaultPodOptions:
         ingress.home.arpa/prometheus: allow # it has a ServiceMonitor
         egress.home.arpa/postgres: allow # it uses the crunchy cluster
         egress.home.arpa/gateway-external: allow # it does OIDC against authentik
-        egress.home.arpa/world: allow # it calls the internet
+        egress.home.arpa/internet: allow # it calls the internet
 ```
 
 2. A policy for anything else it talks to, including its own sidecars and

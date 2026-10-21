@@ -94,36 +94,101 @@ sooner) says flip right after phase 0. To be arbitrated.
       Mind the Alpine/musl `Refused` + resolv.conf `search` trap (documented
       upstream) if we ever move to a restrictive `matchPattern` instead of `*`.
 
-## Phase 2 — split `egress.home.arpa/world`
+## Phase 2 — split `egress.home.arpa/world` — **DONE (2026-10-21)**
 
-`world` = internet **+ the whole LAN + every VLAN**, and **63 apps** carry it.
-This is the biggest actual security gain of the lot.
+`world` was internet **+ the whole LAN + every VLAN**, and 62 pod templates
+carried it. It now has **no carrier at all**: `allow-egress-world.yaml` stays
+only as the documented escape hatch for a bad reclassification.
 
-- [ ] **`egress.home.arpa/internet`** — "the world except home":
+- [x] **`egress.home.arpa/internet`** — "the world except home"
+      (`allow-egress-internet.yaml`). `except` ended up wider than RFC1918:
+      `100.64.0.0/10` (CGNAT, also Tailscale) and `169.254.0.0/16` (link-local,
+      which includes the `169.254.169.254` metadata address) are excluded too.
+      No `::/0` twin — the cluster runs `enable-ipv6=false`.
 
-      ```yaml
-      egress:
-        - toCIDRSet:
-            - cidr: "0.0.0.0/0"
-              except: ["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"]
-      ```
+      Multicast and broadcast are deliberately **not** excluded, so SSDP
+      discovery (home-assistant, sabnzbd → `239.255.255.250:1900` and
+      `255.255.255.255:1900`) keeps working until phase 5 adds `/ssdp`.
 
-      CIDR selectors don't match in-cluster endpoints by default, so the RFC1918
-      `except` is safe (and already covers the 10.69/16 pod CIDR and the
-      192.168.1/24 LAN). Mind the IPv6 twin if needed, and note that
-      `100.64.0.0/10` (CGNAT/Tailscale) is not excluded by that list.
+- [x] **Per-segment labels** — `/lan` (`192.168.1.0/24`), `/nas`
+      (`192.168.1.70`, TrueNAS), `/router` (`192.168.1.1:443`, the UniFi
+      gateway), `/iot` (`192.168.30.0/24`).
 
-- [ ] **Per-segment labels**, parameterised through Flux substitution the way
-      they do it (`${IP_*}`): `/lan`, `/nfs` (truenas), `/iot` or `/hass`,
-      `/router`. Biohazard goes as far as a single IP
-      (`${IP_HUAWEI_E3372}/32`) for one device.
+      **Deviation from the Biohazard model**: the IPs are hardcoded, not Flux
+      `${IP_*}` substitutions. `AGENTS.md` reserves substitution for secrets —
+      "domains and other non-secret values (timezone, UID/GID, load balancer
+      IPs, hostnames) are hardcoded directly in manifests" — and a netpol whose
+      CIDRs only exist in a cluster Secret cannot be reviewed in the diff.
 
-- [ ] **Port-scoped variants** for apps that only speak HTTPS:
-      `internet-https` / `world-https` (443), `world-ntp` (123).
+      `192.168.20.0/24` (client VLAN) and `192.168.70.0/24` (VPN) got no label:
+      nothing egresses to the first, and the second is only reached through the
+      multus `vpn` attachment, which bypasses Cilium entirely.
 
-- [ ] **Migrate the 63 carriers** of `world` to the right label (additive, then
-      removal — see the migration rule). Keep `world` for whatever genuinely
-      needs both the internet **and** the LAN.
+- [x] **Port-scoped variant** — `/internet-https` (443), on the thirteen pods
+      whose whole external surface is an HTTPS API: external-dns-cloudflare,
+      renovate-operator, robusta, litellm + its github/kubesearch MCPs,
+      paperless-ai, the four mautrix bridges, headroom, alertmanager.
+
+      `world-https` and `world-ntp` were **not** built. The first is now
+      `internet-https` + `lan`, which composes; the second has no carrier (NTP
+      is a Talos node concern, no pod speaks 123).
+
+- [x] **Migrated all 62 carriers.** Done as a straight swap, not the two-step
+      additive migration: `policyAuditMode` is still on, so a misclassification
+      shows up as `verdict=AUDIT` instead of biting, and the additive step
+      would have produced no dashboard signal at all (new label ∪ `world` =
+      `world`). That is the corollary above, used on purpose.
+
+      Classification evidence: `hubble observe --to-identity 2` over the live
+      ring buffer, cross-checked against each app's config. The non-obvious
+      ones:
+
+      | Pod | Label(s) | Why |
+      | --- | -------- | --- |
+      | home-assistant | `internet` + `iot` | appliances on `192.168.30.{9,18}` (MQTT 8883, 9999) |
+      | hcpy | `iot` | Home Connect appliance on `192.168.30.91:443`, nothing else |
+      | bambuddy | `iot` | the Bambu printer is `192.168.30.18:8883` |
+      | envoy (both gateways) | `nas` + `iot` | the nas-services FQDN EndpointSlices: truenas `:80`, robovac `192.168.30.142:80` |
+      | blackbox-exporter-lan | `internet` + `lan` + `iot` | 1.1.1.1/8.8.8.8/9.9.9.9, truenas + ups, robovac |
+      | snmp-exporter | `lan` | the UPS, `192.168.1.182:161` |
+      | semaphore | `internet` + `lan` | runs `ansible/` over SSH against `ntp.lulice.lan` |
+      | external-dns-unifi, unifi-mcp | `router` | `https://192.168.1.1` only |
+      | truenas-mcp | `nas` | `truenas.lulice.lan:443` only |
+
+### Fallout found while doing it (not fixed here)
+
+- [x] **vmagent scrapes two LAN hosts and no policy covered it**:
+      `192.168.1.70` (node-exporter 9100, smartctl 9633) and `192.168.1.118`
+      (the same two plus chrony 9123 and gpsd 9015), from `./scrapeconfig.yaml`.
+      vmagent never carried `world`, so this predated phase 2.
+
+      Fixed as a port-scoped `toCIDR` rule inside `allow-egress-vmagent`
+      (`apps/observability/victoria-metrics-stack/app/ciliumclusterwidenetworkpolicy.yaml`)
+      rather than by hanging `egress.home.arpa/lan` on the pod: these two hosts
+      are vmagent's own scrape targets, not shared vocabulary, and `/lan` would
+      have opened all 65535 ports of `192.168.1.0/24` to it. That policy's
+      header promises it "is still a whitelist, not an escape hatch".
+
+- [x] **blackbox-exporter-lan probes the six nodes by address**
+      (`bee.lulice.lan` … → `192.168.1.11-16`). Those are the `host`/
+      `remote-node` entities, which neither `world` nor a CIDR label matches
+      (`policy-cidr-match-mode` is unset), so no vocabulary label can ever
+      cover them. Also predated phase 2.
+
+      Fixed with a CiliumNetworkPolicy next to the app
+      (`apps/observability/exporters/blackbox-exporter/lan/ciliumnetworkpolicy.yaml`),
+      scoped to ICMP echo-request via `icmps.fields` — the entities are not
+      opened for TCP. Selector is `app.kubernetes.io/instance`, since the chart
+      gives this deployment and blackbox-exporter-vpn the same
+      `app.kubernetes.io/name`.
+
+      This makes the phase 5 `/host` label less urgent: two apps need entities
+      and both now name them in their own policy, which is what `README.md`
+      prescribes for anything the vocabulary does not cover.
+
+- [ ] **The EnvoyProxy pod template is shared** by both gateways, so the
+      external one now carries `/nas` + `/iot` it does not need. Splitting it
+      means a second `EnvoyProxy` CR referenced from the external `Gateway`.
 
 ## Phase 3 — FQDN labels _(depends on phase 1)_
 

@@ -20,7 +20,7 @@ spec:
     automountServiceAccountToken: false
     podLabels:
       egress.home.arpa/kubedns: allow
-      egress.home.arpa/world: allow
+      egress.home.arpa/internet-https: allow
     resources:
       requests:
         cpu: 10m

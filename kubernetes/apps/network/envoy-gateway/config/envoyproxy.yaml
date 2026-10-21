@@ -16,14 +16,18 @@ spec:
         pod:
           labels:
             # gateway data-plane: accepts WAN/LAN clients on the LB IPs and is
-            # scraped by vmagent (envoy-proxy PodMonitor); world egress for LAN
-            # backends (nas-services FQDN EndpointSlices -> truenas/robovac).
+            # scraped by vmagent (envoy-proxy PodMonitor). The egress labels
+            # are for the nas-services FQDN EndpointSlices the *internal*
+            # gateway proxies to (truenas 192.168.1.70:80, robovac
+            # 192.168.30.142:80); this EnvoyProxy template is shared with the
+            # external gateway, which does not need them.
             # Egress to in-cluster backends is per-gateway and mirrors the
             # ingress.home.arpa/gateway-* labels: see
             # ./ciliumclusterwidenetworkpolicy.yaml
             ingress.home.arpa/world: allow
             ingress.home.arpa/prometheus: allow
-            egress.home.arpa/world: allow
+            egress.home.arpa/iot: allow
+            egress.home.arpa/nas: allow
         container:
           image: mirror.gcr.io/envoyproxy/envoy:v1.40.0
           resources:

@@ -63,7 +63,7 @@ spec:
     defaultPodOptions:
       labels:
         egress.home.arpa/mqtt: allow
-        egress.home.arpa/world: allow
+        egress.home.arpa/iot: allow
       automountServiceAccountToken: false
       enableServiceLinks: false
       securityContext:

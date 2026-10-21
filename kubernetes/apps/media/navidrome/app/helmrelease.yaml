@@ -94,7 +94,7 @@ spec:
         ingress.home.arpa/gateway-external: allow
         ingress.home.arpa/prometheus: allow
         egress.home.arpa/gateway-external: allow
-        egress.home.arpa/world: allow
+        egress.home.arpa/internet: allow
       securityContext:
         runAsNonRoot: true
         runAsUser: 1026

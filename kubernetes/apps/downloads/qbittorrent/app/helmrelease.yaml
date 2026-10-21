@@ -55,7 +55,7 @@ spec:
     defaultPodOptions:
       labels:
         ingress.home.arpa/gateway-internal: allow
-        egress.home.arpa/world: allow
+        egress.home.arpa/internet: allow
       annotations:
         k8s.v1.cni.cncf.io/networks: |-
           [{

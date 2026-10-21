@@ -244,7 +244,7 @@ spec:
         },
         {
           "datasource": { "type": "prometheus", "uid": "$datasource" },
-          "description": "The SOURCE pod's policies do not allow this destination. Fix by labeling the source (egress.home.arpa/world, postgres, mqtt, smtp, vault, apiserver, gateway-external, cluster) or with a dedicated CiliumNetworkPolicy. destination=world means outside the cluster.",
+          "description": "The SOURCE pod's policies do not allow this destination. Fix by labeling the source (egress.home.arpa/internet, lan, nas, router, iot, postgres, mqtt, smtp, vault, apiserver, gateway-external) or with a dedicated CiliumNetworkPolicy. destination=world means outside the cluster.",
           "fieldConfig": {
             "defaults": {
               "color": { "mode": "thresholds" },
@@ -444,7 +444,7 @@ spec:
         },
         {
           "datasource": { "type": "prometheus", "uid": "$datasource" },
-          "description": "Where audited traffic was going. 'world' = outside the cluster (missing egress.home.arpa/world), workload names = missing in-cluster allow.",
+          "description": "Where audited traffic was going. 'world' = outside the cluster (missing egress.home.arpa/internet or one of the LAN-segment labels), workload names = missing in-cluster allow.",
           "fieldConfig": {
             "defaults": {
               "color": { "mode": "palette-classic" },

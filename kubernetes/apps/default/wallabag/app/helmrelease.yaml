@@ -26,7 +26,7 @@ spec:
             egress.home.arpa/kubedns: allow
             egress.home.arpa/postgres: allow
             egress.home.arpa/smtp: allow
-            egress.home.arpa/world: allow
+            egress.home.arpa/internet: allow
 
         containers:
           app:

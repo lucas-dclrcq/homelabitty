@@ -6,8 +6,9 @@
 # must, or the route would not work) is reachable, and nothing else is. The
 # second rule of each policy covers the handful of backends that live in
 # namespaces without a baseline policy, so they carry no label of their own.
-# LAN backends reached through FQDN EndpointSlices (truenas, robovac) are
-# covered by egress.home.arpa/world on the EnvoyProxy pod template.
+# LAN backends reached through FQDN EndpointSlices are covered by
+# egress.home.arpa/nas (truenas) and egress.home.arpa/iot (robovac) on the
+# EnvoyProxy pod template.
 # yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
 apiVersion: cilium.io/v2
 kind: CiliumClusterwideNetworkPolicy

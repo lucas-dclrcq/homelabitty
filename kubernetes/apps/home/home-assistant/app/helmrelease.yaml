@@ -63,7 +63,8 @@ spec:
       labels:
         ingress.home.arpa/gateway-external: allow
         egress.home.arpa/mqtt: allow
-        egress.home.arpa/world: allow
+        egress.home.arpa/internet: allow
+        egress.home.arpa/iot: allow
       securityContext:
         runAsNonRoot: true
         runAsUser: 1026

@@ -28,7 +28,7 @@ spec:
       labels:
         ingress.home.arpa/world: allow
         ingress.home.arpa/prometheus: allow
-        egress.home.arpa/world: allow
+        egress.home.arpa/internet: allow
     controllers:
       smtp-relay:
         strategy: RollingUpdate

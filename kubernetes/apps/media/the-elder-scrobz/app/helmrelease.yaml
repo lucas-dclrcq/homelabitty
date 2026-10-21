@@ -17,7 +17,7 @@ spec:
         ingress.home.arpa/prometheus: allow
         egress.home.arpa/postgres: allow
         egress.home.arpa/gateway-external: allow
-        egress.home.arpa/world: allow
+        egress.home.arpa/internet: allow
 
     controllers:
       the-elder-scrobz:

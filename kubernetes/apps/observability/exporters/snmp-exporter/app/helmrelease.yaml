@@ -13,8 +13,7 @@ spec:
     fullnameOverride: *app
     podLabels:
       ingress.home.arpa/prometheus: allow
-      # SNMP queries to the UPS on the LAN
-      egress.home.arpa/world: allow
+      egress.home.arpa/lan: allow
     serviceMonitor:
       enabled: true
       params:

@@ -78,8 +78,7 @@ spec:
       labels:
         ingress.home.arpa/gateway-internal: allow
         egress.home.arpa/postgres: allow
-        egress.home.arpa/world: allow
-        # indexer search through Prowlarr, grabs to the download clients
+        egress.home.arpa/internet: allow
         egress.home.arpa/prowlarr: allow
         egress.home.arpa/qbittorrent: allow
         egress.home.arpa/sabnzbd: allow

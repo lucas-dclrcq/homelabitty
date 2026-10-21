@@ -99,7 +99,7 @@ spec:
       labels:
         ingress.home.arpa/gateway-external: allow
         ingress.home.arpa/prometheus: allow
-        egress.home.arpa/world: allow
+        egress.home.arpa/internet: allow
       securityContext:
         runAsUser: 1026
         runAsGroup: 1500

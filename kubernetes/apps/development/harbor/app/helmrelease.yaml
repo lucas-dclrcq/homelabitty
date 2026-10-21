@@ -27,7 +27,7 @@ spec:
         ingress.home.arpa/gateway-external: allow
         egress.home.arpa/postgres: allow
         egress.home.arpa/gateway-external: allow
-        egress.home.arpa/world: allow
+        egress.home.arpa/internet: allow
 
     externalURL: "https://docker.hoohoot.org"
 
