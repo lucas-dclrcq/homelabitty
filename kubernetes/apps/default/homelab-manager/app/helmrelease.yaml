@@ -22,6 +22,10 @@ spec:
         ingress.home.arpa/prometheus: allow
         egress.home.arpa/postgres: allow
         egress.home.arpa/gateway-external: allow
+        # *arr dashboards (SONARR/RADARR/LIDARR_BASE_URL in ./externalsecret.yaml)
+        egress.home.arpa/sonarr: allow
+        egress.home.arpa/radarr: allow
+        egress.home.arpa/lidarr: allow
       envFrom:
         - secretRef:
             name: homelab-manager-secret

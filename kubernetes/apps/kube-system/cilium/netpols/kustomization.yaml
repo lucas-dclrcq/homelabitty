@@ -24,3 +24,11 @@ resources:
   - ./allow-egress-smtp.yaml
   - ./allow-egress-vault.yaml
   - ./allow-egress-world.yaml
+  # downloads stack: paired egress/ingress per service
+  - ./allow-lidarr.yaml
+  - ./allow-prowlarr.yaml
+  - ./allow-qbittorrent.yaml
+  - ./allow-radarr.yaml
+  - ./allow-sabnzbd.yaml
+  - ./allow-slskd.yaml
+  - ./allow-sonarr.yaml
