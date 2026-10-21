@@ -25,7 +25,7 @@ spec:
           app:
             image:
               repository: ghcr.io/endurain-project/endurain
-              tag: v0.19.4@sha256:eafbafb1793ca04cb73a8f9b22841ca194b404699aab3cfeaf34fa8949961044
+              tag: v0.20.0@sha256:c518a2ffb8b438648b76f5bb663835d0197804c84e67dbe244b6995e7bb495ff
             # The upstream entrypoint regenerates env.js and rewrites the CSP in
             # index.html under /app/frontend/dist, which fails under
             # readOnlyRootFilesystem, so start uvicorn directly and supply
