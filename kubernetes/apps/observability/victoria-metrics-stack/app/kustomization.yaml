@@ -16,4 +16,6 @@ resources:
   - ./grafanadashboard.yaml
   - ./grafanadashboard-app-overview.yaml
   - ./grafanadashboard-ntp-node.yaml
+  - ./grafanadashboard-victoriametrics.yaml
+  - ./grafanadashboard-victoriatraces.yaml
   - ./probes.yaml
