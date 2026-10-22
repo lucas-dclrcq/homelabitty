@@ -1,0 +1,111 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app home2reterminal
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  values:
+    global:
+      createDefaultServiceAccount: false
+
+    controllers:
+      home2reterminal:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              # Built by the home2reterminal repository's Forgejo CI: every push
+              # to main publishes `:latest`. The Harbor `homelab` project is
+              # public, so no pull secret is needed.
+              repository: docker.hoohoot.org/homelab/home2reterminal
+              tag: latest
+
+            env:
+              TZ: Europe/Paris
+              MQTT_HOST: mosquitto.infrastructure.svc.cluster.local
+              MQTT_PORT: "1883"
+              MQTT_SSL: "false"
+
+            envFrom:
+              - secretRef:
+                  name: home2reterminal-secret
+
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: &port 8080
+                  initialDelaySeconds: 30
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 5
+              readiness: *probes
+
+            resources:
+              requests:
+                cpu: 25m
+                memory: 256Mi
+              limits:
+                memory: 768Mi # never set limits.cpu
+
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - "ALL"
+
+    defaultPodOptions:
+      labels:
+        ingress.home.arpa/gateway-internal: allow
+        egress.home.arpa/kubedns: allow
+        egress.home.arpa/postgres: allow
+        egress.home.arpa/mqtt: allow
+        # rustical (CalDAV) is served by the external gateway.
+        egress.home.arpa/gateway-external: allow
+        # OpenWeather API.
+        egress.home.arpa/internet-https: allow
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      securityContext:
+        runAsNonRoot: true
+        # ubi9/openjdk-21-runtime: COPY --chown=185 / USER 185.
+        runAsUser: 185
+        runAsGroup: 0
+        fsGroup: 185
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile:
+          type: RuntimeDefault
+
+    persistence:
+      tmp:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
+
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: *port
+
+    route:
+      app:
+        hostnames:
+          - "{{ .Release.Name }}.hoohoot.xyz"
+        parentRefs:
+          - name: internal
+            namespace: network
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port

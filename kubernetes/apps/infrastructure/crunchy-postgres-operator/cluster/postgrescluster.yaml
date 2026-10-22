@@ -253,6 +253,11 @@ spec:
         - "endurain"
       password:
         type: AlphaNumeric
+    - name: "home2reterminal"
+      databases:
+        - "home2reterminal"
+      password:
+        type: AlphaNumeric
   backups:
     pgbackrest:
       configuration:
