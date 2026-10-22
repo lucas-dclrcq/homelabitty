@@ -37,7 +37,7 @@ spec:
             fsGroup: 1500
           containers:
             - name: snapshot
-              image: docker.io/hashicorp/vault:2.2.0
+              image: docker.io/hashicorp/vault:2.2.1
               env:
                 - name: VAULT_ADDR
                   value: http://vault-active.vault.svc.cluster.local:8200
