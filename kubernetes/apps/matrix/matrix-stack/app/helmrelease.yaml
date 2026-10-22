@@ -158,7 +158,7 @@ spec:
       # resolve on its own.
       image:
         # renovate: datasource=docker depName=oci.element.io/matrix-authentication-service
-        tag: "1.27.0"
+        tag: "1.27.1"
       ingress:
         # Must never change: MAS public_base/issuer identity is derived from it.
         host: "mas.hoohoot.org"
