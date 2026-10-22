@@ -3,8 +3,6 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  # Release name "matrix" prefixes every chart resource (matrix-synapse,
-  # matrix-mas, ...).
   name: matrix
 spec:
   interval: 30m
@@ -23,17 +21,12 @@ spec:
   values:
     serverName: "hoohoot.org"
 
-    # No ingress controller runs in this cluster: the chart-generated Ingress
-    # objects are inert. Real routing is done by the HTTPRoutes in
-    # httproute.yaml pointing at the chart Services.
     ingress:
       tlsEnabled: false
 
     postgres:
       enabled: false
 
-    # init-secrets and deployment-markers are hook Jobs that talk to the kube
-    # API to create/update Secrets and ConfigMaps.
     initSecrets:
       labels:
         egress.home.arpa/apiserver: allow
@@ -42,16 +35,10 @@ spec:
       labels:
         egress.home.arpa/apiserver: allow
 
-    # In-namespace cache; synapse/MAS reach it through the matrix-stack-internal
-    # policy in ./ciliumnetworkpolicy.yaml, the label only opens the metrics scrape.
     valkey:
       labels:
         ingress.home.arpa/prometheus: allow
 
-    # The matrix-synapse (8008) and matrix-well-known (8010) Services select the
-    # chart's HAProxy pods, which then proxy to synapse in-namespace: the
-    # gateway ingress labels must sit on HAProxy for client/federation/well-known
-    # traffic to arrive.
     haproxy:
       labels:
         ingress.home.arpa/gateway-external: allow
@@ -68,11 +55,8 @@ spec:
         egress.home.arpa/smtp: allow
         egress.home.arpa/gateway-external: allow
         egress.home.arpa/internet: allow
-      # The chart copies extraInitContainers into the pre-install check-config
-      # hook Job, which has no `media` volume: the Job is rejected and the
-      # install loops forever. Re-enable together with removing media-migrate.
       checkConfigHook:
-        enabled: false
+        enabled: true
       ingress:
         host: "matrix.hoohoot.org"
       postgres:
@@ -119,18 +103,6 @@ spec:
               - "127.0.0.0/8"
               - "10.0.0.0/8"
               - "192.168.0.0/16"
-      # One-time migration: the ananace chart stored media at <pvc>/media,
-      # ESS expects <pvc>/media_store. Remove after the first successful start.
-      extraInitContainers:
-        - name: media-migrate
-          image: docker.io/library/busybox:1.37
-          command:
-            - sh
-            - -c
-            - if [ -d /media/media ] && [ ! -d /media/media_store ]; then mv /media/media /media/media_store; fi
-          volumeMounts:
-            - name: media
-              mountPath: /media
       podSecurityContext:
         fsGroupChangePolicy: OnRootMismatch
       resources:
@@ -146,21 +118,9 @@ spec:
         ingress.home.arpa/gateway-external: allow
         ingress.home.arpa/prometheus: allow
         egress.home.arpa/postgres: allow
-        # MAS sends account emails through smtp-relay (additional.0-email below)
         egress.home.arpa/smtp: allow
         egress.home.arpa/gateway-external: allow
-      # Pinned ahead of the chart: ESS 26.10.0 ships MAS 1.26.0, but the
-      # cluster already runs 1.27. The downgrade would be schema-safe (no
-      # migrations between 1.24 and 1.27) but is still a needless regression.
-      # Remove this override once an ESS release ships 1.27+, so the image
-      # tracks the chart again. The annotation is required because ESS splits
-      # registry/repository, which renovate's helm-values manager cannot
-      # resolve on its own.
-      image:
-        # renovate: datasource=docker depName=oci.element.io/matrix-authentication-service
-        tag: "1.27.0"
       ingress:
-        # Must never change: MAS public_base/issuer identity is derived from it.
         host: "mas.hoohoot.org"
       postgres:
         host: postgres-16-primary.infrastructure.svc.cluster.local
@@ -262,23 +222,16 @@ spec:
       labels:
         ingress.home.arpa/gateway-internal: allow
       ingress:
-        # Internal-only like the old synapse-admin: hoohoot.xyz is what the
-        # internal gateway listeners accept.
         host: "admin.hoohoot.xyz"
 
     matrixRTC:
       enabled: true
-      # These land on the lk-jwt authorisation-service pods; it calls back the
-      # SFU Twirp API on LIVEKIT_URL (the public mrtc hostname), hence the
-      # gateway-external egress.
       labels:
         ingress.home.arpa/gateway-external: allow
         egress.home.arpa/gateway-external: allow
       ingress:
         host: "mrtc.hoohoot.org"
       sfu:
-        # SFU pods: WebSocket/Twirp via the external gateway + direct RTC media
-        # from LAN/WAN through the LoadBalancer below.
         labels:
           ingress.home.arpa/gateway-external: allow
           ingress.home.arpa/world: allow
