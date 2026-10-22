@@ -395,6 +395,25 @@ and therefore nothing was audited. Six endpoints were in that state
       not a policy gap — but it will start failing loudly rather than quietly
       once DNS is the only thing stopping it.
 
+#### Found afterwards, pushing the VictoriaMetrics dashboards
+
+- [x] **grafana-operator → the internet** (8 flows, one per new dashboard).
+      The _operator_, not Grafana, fetches every `GrafanaDashboard` that has a
+      `url:` and caches the JSON in the CR status — 45 of ours do. It carried
+      only `apiserver` + a CNP for `grafana:3000`, so under enforcement no
+      url-backed dashboard would ever load again.
+
+      The 6 h sweep could not have caught this: a fetch happens when a CR is
+      created or its cache is invalidated, and the 45 existing ones were all
+      cached long ago. It only surfaced because pushing eight new dashboards
+      forced eight fresh fetches, to `raw.githubusercontent.com` and
+      `grafana.com`, both 443 — hence `internet-https`.
+
+      The general shape is worth remembering: **a cached fetch is invisible
+      until the cache misses**. Anything that pulls remote content once and
+      stores it (operators resolving URLs, init containers, first-run
+      migrations) can pass an audit window and still break at enforcement.
+
 #### Not fixed, on purpose
 
 `temporal-*` (4 765) and `matrix-haproxy` (24) are stale-IP retries. Denying

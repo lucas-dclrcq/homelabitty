@@ -13,6 +13,10 @@ spec:
     podLabels:
       ingress.home.arpa/prometheus: allow
       egress.home.arpa/apiserver: allow
+      # The operator -- not Grafana -- fetches every GrafanaDashboard that has
+      # a `url:` and caches the JSON in the CR status. 45 of ours do, over
+      # raw.githubusercontent.com and grafana.com, both 443 only.
+      egress.home.arpa/internet-https: allow
     dashboard:
       enabled: true
     serviceMonitor:
