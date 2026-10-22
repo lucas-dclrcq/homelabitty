@@ -24,7 +24,7 @@ kind: CiliumClusterwideNetworkPolicy
 metadata:
   name: allow-ingress-gateway-external-from-cluster
 spec:
-  description: "The external envoy pods accept in-cluster callers labeled egress.home.arpa/gateway-external=allow (OIDC hairpin, public hostnames), plus Flux source-controller (non-enrolled namespace, fetches sources by public hostname)"
+  description: "The external envoy pods accept in-cluster callers labeled egress.home.arpa/gateway-external=allow (OIDC hairpin, public hostnames), plus Flux source-controller and the authentik outposts, which no chart value can label"
   endpointSelector:
     matchLabels:
       app.kubernetes.io/name: envoy
@@ -37,3 +37,6 @@ spec:
         - matchLabels:
             app: source-controller
             io.kubernetes.pod.namespace: flux-system
+        - matchLabels:
+            app: authentik-outpost
+            io.kubernetes.pod.namespace: auth

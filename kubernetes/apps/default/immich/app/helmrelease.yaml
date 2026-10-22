@@ -55,6 +55,7 @@ spec:
         ingress.home.arpa/gateway-external: allow
         egress.home.arpa/postgres: allow
         egress.home.arpa/internet: allow
+        egress.home.arpa/gateway-external: allow
 
     controllers:
       server:

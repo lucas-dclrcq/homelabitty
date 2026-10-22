@@ -246,7 +246,51 @@ broad label — and the only protection against a mislabelled pod.
 
 ## Phase 6 — enforcement
 
+### Audit sweep, 2026-10-22
+
+Third pass over `hubble_policy_verdicts_total{action="audit"}`, measured over
+the 10 h that followed the previous two fix commits. Total 7 978 flows, of
+which **7 794 are not policy gaps at all** — see "stale pod IPs" below. The
+184 real ones were:
+
+- [x] **authentik outposts → the external gateway** (156). The outposts' egress
+      half already existed (`authentik-outposts` CNP, keyed on the `app:
+  authentik-outpost` label authentik stamps on them), but
+      `allow-ingress-gateway-external-from-cluster` only accepts pods carrying
+      `egress.home.arpa/gateway-external`, which an operator-made Deployment
+      cannot. Added as a second named exception next to Flux source-controller.
+- [x] **immich-server → the external gateway** (4). Missing
+      `egress.home.arpa/gateway-external`; it does OIDC against
+      `sso.hoohoot.org`.
+- [x] **homelab-manager → authentik-server :9000** (2). `AUTHENTIK_BASE_URL` is
+      the in-cluster Service, and homelab-manager's own CNP had the egress
+      half, but nothing opened authentik-server's ingress — a half-paired flow
+      that only the audit log could reveal. Added `authentik-server-api-clients`.
+
+**Stale pod IPs are the dominant signal and must not be "fixed".** Two
+workloads keep dialling addresses whose pods are long gone:
+
+- `temporal-{worker,history,matching,frontend}` → 7 724 flows to four dead pod
+  IPs on the ringpop ports (6933/6934/6935/6939). Temporal's
+  `cluster_membership` table still lists them; the live mesh is fully covered
+  by the `temporal-cluster` CNP.
+- `vmagent` → 70 flows to dead authentik pod IPs on :9300.
+
+Cilium labels those destinations `cidr:10.0.0.0/8` + `reserved:world`, so on
+the dashboard they masquerade as "missing internet egress". They are
+**correctly denied** — opening them would mean allowing the pod CIDR as
+`world`, which is precisely what phase 2 removed. The flows stop when the
+membership row expires or the workload restarts; the fix, if one is wanted, is
+pruning `cluster_membership`, not a netpol.
+
+Left open, too rare to attribute (1–10 flows per 10 h, destination not
+observable in a 20 s ring buffer): `kalimba`, `grafana-mcp`, `zigbee2mqtt`,
+`bambuddy` → world; `dragonfly-operator` → remote-node; `echo-server` → host.
+Re-check before flipping enforcement.
+
 - [ ] `cilium-policy-audit` dashboard at 0 for a few days (see `README.md`).
+      Read it with the stale-IP caveat above: filter out `source=~"temporal-.*"`
+      and vmagent before judging it clean.
 - [ ] `policyAuditMode: false` in `../app/helmrelease.yaml`.
 - [ ] Watch `cilium-policy-denied`; instant per-node rollback with
       `cilium config PolicyAuditMode=true`.
