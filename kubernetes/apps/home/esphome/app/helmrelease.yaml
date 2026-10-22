@@ -59,6 +59,10 @@ spec:
       labels:
         ingress.home.arpa/gateway-internal: allow
         egress.home.arpa/internet: allow
+        # eth0 leg onto the IoT VLAN: mDNS (device discovery, and unicast
+        # replies to the gateway's own queries) and the ESPHome API. The
+        # macvlan attachment below bypasses Cilium, this does not.
+        egress.home.arpa/iot: allow
       annotations:
         k8s.v1.cni.cncf.io/networks: |-
           [{

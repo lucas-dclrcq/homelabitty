@@ -31,7 +31,7 @@ resources:
   - ./allow-egress-smtp.yaml
   - ./allow-egress-vault.yaml
   - ./allow-egress-world.yaml
-  # downloads stack and its notification targets: paired egress/ingress per service
+  - ./allow-ldap.yaml
   - ./allow-homelab-manager.yaml
   - ./allow-jellyfin.yaml
   - ./allow-lidarr.yaml

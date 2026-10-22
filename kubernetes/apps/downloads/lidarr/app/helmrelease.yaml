@@ -31,6 +31,7 @@ spec:
         egress.home.arpa/qbittorrent: allow
         egress.home.arpa/sabnzbd: allow
         egress.home.arpa/slskd: allow
+        egress.home.arpa/homelab-manager: allow
 
     controllers:
       lidarr:

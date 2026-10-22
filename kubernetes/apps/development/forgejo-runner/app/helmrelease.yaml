@@ -16,11 +16,49 @@ spec:
           apiVersion: cilium.io/v2
           kind: CiliumNetworkPolicy
           spec:
-            description: "The runner registers and long-polls jobs against forgejo-http.development.svc:3000"
+            description: "The runner registers and long-polls jobs against forgejo-http.development.svc:3000, and serves its Actions cache proxy to the job pods it spawns"
             endpointSelector:
               matchLabels:
                 app.kubernetes.io/name: forgejo-runner
+            ingress:
+              # Job pods fetch from the cache proxy at ACTIONS_CACHE_URL, which
+              # is this pod's IP on cache.proxy_port (pinned in runner.yaml).
+              - fromEndpoints:
+                  - matchLabels:
+                      app.kubernetes.io/name: forgejo-runner-instance
+                toPorts:
+                  - ports:
+                      - port: "45001"
+                        protocol: TCP
             egress:
+              - toEndpoints:
+                  - matchLabels:
+                      app.kubernetes.io/name: forgejo
+                toPorts:
+                  - ports:
+                      - port: "3000"
+                        protocol: TCP
+      # The k8s plugin spawns one Job pod per CI job, labelled from
+      # plugins.k8s.options.labels below. The vocabulary labels there cover the
+      # internet and the external gateway; these two peers are in-cluster and
+      # need naming. Audit sweep 2026-10-22: 1 557 AUDIT flows.
+      netpol-task:
+        manifest:
+          apiVersion: cilium.io/v2
+          kind: CiliumNetworkPolicy
+          spec:
+            description: "CI job pods reach the runner's Actions cache proxy and clone/call the Forgejo API over forgejo-http.development.svc:3000"
+            endpointSelector:
+              matchLabels:
+                app.kubernetes.io/name: forgejo-runner-instance
+            egress:
+              - toEndpoints:
+                  - matchLabels:
+                      app.kubernetes.io/name: forgejo-runner
+                toPorts:
+                  - ports:
+                      - port: "45001"
+                        protocol: TCP
               - toEndpoints:
                   - matchLabels:
                       app.kubernetes.io/name: forgejo
@@ -37,6 +75,12 @@ spec:
             cache:
               enabled: true
               dir: /data/cache
+              # Both default to 0 (a fresh random port on every runner restart),
+              # which a network policy cannot name. proxy_port is the one job
+              # pods dial through ACTIONS_CACHE_URL; see the forgejo-runner-task
+              # policy in rawResources above.
+              port: 45000
+              proxy_port: 45001
             container:
               docker_host: "-"
               workdir_parent: shared/workdir
@@ -50,7 +94,7 @@ spec:
                 options:
                   namespace: development
                   poll_timeout: 10m
-                  labels: "app.kubernetes.io/name=forgejo-runner-instance,app.kubernetes.io/instance=forgejo-runner,egress.home.arpa/custom-egress=true"
+                  labels: "app.kubernetes.io/name=forgejo-runner-instance,app.kubernetes.io/instance=forgejo-runner,egress.home.arpa/internet=allow,egress.home.arpa/gateway-external=allow"
             runner:
               capacity: 2
               file: /persistent/.runner
@@ -155,11 +199,6 @@ spec:
               - name: docker-certs
                 emptyDir: {}
             restartPolicy: Never
-    defaultPodOptions:
-      labels:
-        egress.home.arpa/apiserver: allow
-        egress.home.arpa/gateway-external: allow
-        egress.home.arpa/internet: allow
     controllers:
       forgejo-runner:
         type: deployment
@@ -168,8 +207,14 @@ spec:
           reloader.stakater.com/auto: "true"
         pod:
           automountServiceAccountToken: true
+          # These live here and not under defaultPodOptions: in app-template a
+          # controller's pod.labels REPLACES defaultPodOptions.labels outright,
+          # so splitting them silently drops every netpol label.
           labels:
             app.kubernetes.io/component: forgejo-runner
+            egress.home.arpa/apiserver: allow
+            egress.home.arpa/gateway-external: allow
+            egress.home.arpa/internet: allow
           securityContext:
             fsGroup: 1000
             fsGroupChangePolicy: OnRootMismatch

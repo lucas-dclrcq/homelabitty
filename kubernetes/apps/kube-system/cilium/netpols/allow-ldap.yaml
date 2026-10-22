@@ -1,0 +1,59 @@
+---
+# Paired vocabulary, same shape as allow-jellyfin.yaml: the first policy opens
+# the consumer's egress, the second opens the service's ingress from pods
+# carrying that same label. Consumers: apps that authenticate against authentik
+# through its LDAP outpost rather than OIDC (jellyfin today).
+#
+# The ports are the outpost's **container** ports, 3389/6636, not the 389/636
+# the Service publishes: Cilium policy is evaluated after service translation.
+#
+# The outpost Deployment is created by authentik's Kubernetes integration, so
+# there is no chart value to hang labels on -- the selector uses the labels
+# authentik stamps on it. Its other flows (LAN clients on the LoadBalancer,
+# the call back to authentik) live in
+# apps/auth/authentik/app/ciliumnetworkpolicy.yaml.
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: allow-egress-ldap
+spec:
+  description: "Pods labeled egress.home.arpa/ldap=allow may reach the authentik LDAP outpost on 3389/6636"
+  endpointSelector:
+    matchLabels:
+      egress.home.arpa/ldap: allow
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            app: authentik-outpost
+            goauthentik.io/outpost-type: ldap
+            io.kubernetes.pod.namespace: auth
+      toPorts:
+        - ports:
+            - port: "3389"
+              protocol: TCP
+            - port: "6636"
+              protocol: TCP
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: allow-ingress-ldap
+spec:
+  description: "Service side of egress.home.arpa/ldap: the authentik LDAP outpost accepts 3389/6636 from consumers carrying the label"
+  endpointSelector:
+    matchLabels:
+      app: authentik-outpost
+      goauthentik.io/outpost-type: ldap
+      io.kubernetes.pod.namespace: auth
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            egress.home.arpa/ldap: allow
+      toPorts:
+        - ports:
+            - port: "3389"
+              protocol: TCP
+            - port: "6636"
+              protocol: TCP

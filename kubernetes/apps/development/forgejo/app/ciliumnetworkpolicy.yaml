@@ -5,14 +5,16 @@ kind: CiliumNetworkPolicy
 metadata:
   name: forgejo
 spec:
-  description: "The Actions runner registers and polls jobs against forgejo-http.development.svc:3000"
+  description: "The Actions runner registers and polls jobs against forgejo-http.development.svc:3000, and so do the job pods it spawns (checkout, API calls)"
   endpointSelector:
     matchLabels:
       app.kubernetes.io/name: forgejo
   ingress:
     - fromEndpoints:
-        - matchLabels:
-            app.kubernetes.io/name: forgejo-runner
+        - matchExpressions:
+            - key: app.kubernetes.io/name
+              operator: In
+              values: ["forgejo-runner", "forgejo-runner-instance"]
       toPorts:
         - ports:
             - port: "3000"

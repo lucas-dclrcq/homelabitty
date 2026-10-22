@@ -246,7 +246,7 @@ broad label — and the only protection against a mislabelled pod.
 
 ## Phase 6 — enforcement
 
-### Audit sweep, 2026-10-22
+### Audit sweep, 2026-10-22 (afternoon)
 
 Third pass over `hubble_policy_verdicts_total{action="audit"}`, measured over
 the 10 h that followed the previous two fix commits. Total 7 978 flows, of
@@ -255,7 +255,7 @@ which **7 794 are not policy gaps at all** — see "stale pod IPs" below. The
 
 - [x] **authentik outposts → the external gateway** (156). The outposts' egress
       half already existed (`authentik-outposts` CNP, keyed on the `app:
-  authentik-outpost` label authentik stamps on them), but
+authentik-outpost` label authentik stamps on them), but
       `allow-ingress-gateway-external-from-cluster` only accepts pods carrying
       `egress.home.arpa/gateway-external`, which an operator-made Deployment
       cannot. Added as a second named exception next to Flux source-controller.
@@ -288,9 +288,165 @@ observable in a 20 s ring buffer): `kalimba`, `grafana-mcp`, `zigbee2mqtt`,
 `bambuddy` → world; `dragonfly-operator` → remote-node; `echo-server` → host.
 Re-check before flipping enforcement.
 
+### Audit sweep, 2026-10-22 (evening)
+
+Fourth pass, over the 6 h window on the evening of the same day. 11 204 flows,
+of which 4 765 are the temporal stale-IP noise described above and ~30 are the
+matrix rollout 17 min earlier (`matrix-haproxy` keeps dialling the previous
+Synapse pod IP for as long as `hold obsolete`). The rest were real and are
+fixed below.
+
+New evidence for the stale-IP story: those dead ringpop addresses have since
+been **recycled onto a live pod** — `matrix/synapse-20261022184400-48s7n`, a
+kopiur mover — which temporal is now dialling on 6933-6939. Still not a policy
+gap, and a good argument for pruning `cluster_membership` rather than letting
+it point at whatever lands on the address next.
+
+#### The baseline was never enforcing ingress
+
+The headline finding, and it produces **no audit signal at all**. Cilium:
+
+> If any rule selects an Endpoint and the rule has an ingress section, the
+> endpoint goes into default deny-mode for ingress.
+
+`enableDefaultDeny` can only switch that _off_. `baseline.yaml` had
+`enableDefaultDeny.ingress: true` but no `ingress:` section, so any pod that no
+_other_ policy happened to select for ingress kept an `Allow Ingress ANY` entry
+in its policy map and stayed wide open — silently, because nothing was denied
+and therefore nothing was audited. Six endpoints were in that state
+(`cilium-dbg endpoint list` → `policy-enabled: audit-egress` instead of
+`audit-both`):
+
+| Namespace      | Pod                                    |
+| -------------- | -------------------------------------- |
+| development    | forgejo-runner                         |
+| home           | hcpy                                   |
+| infrastructure | crunchy-users, dragonfly-operator, pgo |
+| vault          | (serviceaccount `default`)             |
+
+- [x] **Fixed**: `baseline.yaml` now carries an `ingress: [{fromEntities: [host]}]`
+      section in all twelve namespaces. `reserved:host` is allowed
+      unconditionally by Cilium anyway, so the rule grants nothing — its
+      presence is the entire point.
+- [ ] **Soak before flipping.** This turns ingress enforcement _on_ for those
+      six pods for the first time, so expect new AUDIT flows that the dashboard
+      could not previously show. Judge the dashboard only after it has run for
+      a full day with this in place.
+
+#### Real gaps fixed in this pass
+
+- [x] **forgejo-runner → kube-apiserver and the internet** (4 358 flows, 39 %
+      of the window). The HelmRelease declared `apiserver` / `internet` /
+      `gateway-external` under `defaultPodOptions.labels`, but the pod carried
+      none of them: **in app-template a controller's `pod.labels` REPLACES
+      `defaultPodOptions.labels` outright** rather than merging, and this
+      release set `app.kubernetes.io/component` there. Confirmed with
+      `helm template` on 5.3.0: the controller with `pod.labels` loses the
+      netpol labels, a sibling controller without it keeps them. The deployment
+      had not rolled since 2026-10-11, so the 2026-10-21 label commit rendered
+      identically and nothing looked wrong.
+
+      Fixed by moving all four labels onto the controller. forgejo-runner was
+      the only release in the repo with both keys set; a check for that is
+      cheap and worth keeping in mind when labelling a chart that already has
+      a `pod.labels`.
+
+- [x] **forgejo-runner-task → everything** (1 557 flows). The k8s plugin
+      stamped `egress.home.arpa/custom-egress=true` on every CI job pod, a
+      label **no policy selects**. Replaced with `internet` +
+      `gateway-external` (`internet`, not `internet-https`: CI pulls over 80,
+      git and ssh too, and six hours of 443-only traffic does not prove
+      otherwise), plus a `forgejo-runner-netpol-task` CNP for the two
+      in-cluster peers:
+
+      - `forgejo-http:3000` — checkout and API. The ingress half in
+        `apps/development/forgejo/app/ciliumnetworkpolicy.yaml` named
+        `forgejo-runner` only and now takes both names via `matchExpressions`.
+      - the runner's Actions cache proxy. Its port is **random on every runner
+        restart** (`cache.port` / `cache.proxy_port` both default to 0), which
+        no policy can name, so both are now pinned — 45000 and 45001 — and the
+        policy names 45001, the one `ACTIONS_CACHE_URL` points at.
+
+- [x] **esphome → IoT VLAN** (406 flows). `10.69.5.12:5353 → 192.168.30.1:<eph>`,
+      i.e. unicast mDNS replies to the UniFi gateway's own queries, plus ICMP.
+      It carried `internet`, whose `except` list excludes `192.168.0.0/16`.
+      Added `egress.home.arpa/iot`. This is the pod's `eth0` leg; the macvlan
+      attachment it also has bypasses Cilium entirely.
+
+- [x] **jellyfin → the authentik LDAP outpost** (3 + 3, audited at both ends).
+      `LDAP-Auth.xml` points at `ak-outpost-ldap.auth.svc:389`, which targets
+      **container port 3389** — policy is evaluated after service translation,
+      so the published port is the wrong one to write down. Made a vocabulary
+      pair (`allow-ldap.yaml`, `egress.home.arpa/ldap`) rather than a bespoke
+      policy: LDAP is a multi-consumer service and the README prefers a pair
+      for those. Service side keys on the labels authentik stamps on the
+      outpost, as `authentik-outposts` already does.
+
+- [x] **radarr and lidarr → homelab-manager:8080**. Only radarr showed up in
+      the window (1 flow — these are import webhooks, so a 6 h window proves
+      nothing). Read the notification lists out of each *arr's API instead:
+      radarr and lidarr both have the Homelab Manager webhook and lacked
+      `egress.home.arpa/homelab-manager`; sonarr and bazarr already had it;
+      **sonarr-anime has no notifications configured at all**, so its missing
+      `homelab-manager` and `jellyfin` labels are correct, not an oversight.
+
+      Incidentally: sonarr still has an **Autobrr** webhook pointing at
+      `autobrr.downloads.svc`, and that Service no longer exists. Dead config,
+      not a policy gap — but it will start failing loudly rather than quietly
+      once DNS is the only thing stopping it.
+
+#### Not fixed, on purpose
+
+`temporal-*` (4 765) and `matrix-haproxy` (24) are stale-IP retries. Denying
+them is the correct outcome.
+
+The `renovate-operator-…-crd-install` Helm hook hits the API server once per
+chart upgrade (1 flow). Chart-managed pod, no values hook for labels; left
+alone rather than adding a CNP for one packet per release.
+
+#### Still unattributed
+
+A 45 min live follow caught **none** of them, which turned out to be the useful
+result: reading each counter's shape over three hours says more than trying to
+catch a packet. These flows are episodic, not steady, so `hubble observe -f`
+has to run for hours, not minutes.
+
+| Source                         | Shape over 3 h                                                                   | Reading                                                                                                                                                                                                      |
+| ------------------------------ | -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `vmagent-vmks` → world         | +1/+2 every ~10 min until 20:30, then **flat for 45 min** with no change from us | self-healing, i.e. the stale-IP/connection-pool signature again. Supports the previous sweep's ":9300 dead authentik pods" story even though `up == 0` is empty and every live socket to 9300 is established |
+| `matrix-haproxy` → world (+24) | one step at the 20:00 rollout, flat before and after                             | rollout artifact, `hold obsolete`                                                                                                                                                                            |
+| `matrix-rtc-sfu` → world (+6)  | same single step at 20:00                                                        | rollout artifact                                                                                                                                                                                             |
+| `bambuddy` → world             | flat for 3 h                                                                     | episodic; nothing to catch right now                                                                                                                                                                         |
+| `grafana-mcp` → world          | +1 in 3 h                                                                        | episodic                                                                                                                                                                                                     |
+| `kalimba` → world              | +3 in 3 h, as three separate single steps                                        | **the most recently active of the six**, but episodic too — flat for the last 25 min                                                                                                                         |
+
+So the list is really one item. kalimba carries `internet-https`, so whatever
+it is, it is either non-443 on the internet or a private address;
+`kalimba-secret` holds the external endpoints and is the place to look next.
+A 25 min follow scoped to it still caught nothing, so budget hours.
+
+- [ ] Attribute `kalimba` → world. Needs a follow left running for a long
+      while, not a ring-buffer dip:
+
+      ```
+      hubble observe --verdict AUDIT --from-pod default/kalimba -f
+      ```
+
+- [ ] Re-check the other five right before flipping; a counter that is flat for
+      days is not the same as one that is explained.
+
 - [ ] `cilium-policy-audit` dashboard at 0 for a few days (see `README.md`).
       Read it with the stale-IP caveat above: filter out `source=~"temporal-.*"`
-      and vmagent before judging it clean.
+      and vmagent before judging it clean, and do not judge it at all until the
+      baseline ingress fix has soaked for a day.
+- [ ] Re-run the enforcement-state check — every endpoint in an enrolled
+      namespace must read `audit-both`, never `audit-egress`:
+
+      ```
+      cilium-dbg endpoint list -o json | \
+        jq -r '.[] | select(.status.policy.realized["policy-enabled"]=="audit-egress")'
+      ```
+
 - [ ] `policyAuditMode: false` in `../app/helmrelease.yaml`.
 - [ ] Watch `cilium-policy-denied`; instant per-node rollback with
       `cilium config PolicyAuditMode=true`.

@@ -39,13 +39,26 @@ Workflow to reach enforcement:
 `baseline.yaml` stamps a `baseline` CiliumNetworkPolicy into every enrolled
 namespace (ai, auth, default, development, downloads, home, infrastructure,
 matrix, media, network, observability, vault). It selects **all pods** with
-`enableDefaultDeny` on both directions and re-opens exactly one thing:
+`enableDefaultDeny` on both directions and re-opens exactly two things:
 
-- **DNS** to kube-dns
+- **DNS** to kube-dns (egress)
+- **the host entity** (ingress)
 
 Everything else — **traffic between two pods of the same namespace included** —
-has to be named by another policy. kubelet health probes come from the host
-entity, which Cilium always allows, so they are unaffected.
+has to be named by another policy.
+
+The host rule is not a grant, it is the switch. Cilium enters default-deny for
+a direction only when a rule that selects the endpoint **has a section for that
+direction**; `enableDefaultDeny` can turn that off but never on. An egress-only
+baseline therefore leaves ingress wide open (`Allow Ingress ANY` in the
+endpoint's policy map) on every pod that no _other_ policy happens to select —
+and since nothing is denied, audit mode shows nothing at all. `reserved:host`
+is the harmless choice of section content: Cilium allows it unconditionally
+anyway, which is also why kubelet health probes are unaffected.
+
+Check it per endpoint with
+`cilium-dbg endpoint list` — enrolled pods must read `audit-both` (or `both`
+once enforced), never `audit-egress`.
 
 System namespaces (kube-system, flux-system, rook-ceph, cert-manager,
 external-secrets, kopiur-system, openebs-system, system-upgrade) are **not**
@@ -70,6 +83,7 @@ happens to select them.
 | `egress.home.arpa/mqtt`             | mosquitto :1883 (+ matching ingress on mosquitto)                                                                                                               |
 | `egress.home.arpa/smtp`             | smtp-relay :2525 (+ matching ingress)                                                                                                                           |
 | `egress.home.arpa/vault`            | vault :8200 (+ matching ingress)                                                                                                                                |
+| `egress.home.arpa/ldap`             | authentik's LDAP outpost :3389/:6636 (apps authenticating over LDAP rather than OIDC)                                                                           |
 | `egress.home.arpa/apiserver`        | kube-apiserver (operators, patroni, controllers)                                                                                                                |
 | `egress.home.arpa/gateway-external` | external envoy pods — needed for **OIDC hairpin** (app calls `auth.<domain>` which resolves to the gateway LB) and any call to a public hostname of the cluster |
 | `egress.home.arpa/gateway-internal` | internal envoy pods — calls to internal hostnames (blackbox probes of `*.hoohoot.xyz`)                                                                          |
@@ -90,8 +104,8 @@ and opens the API server.
 Most of these are **paired**: one clusterwide policy opens the consumer's
 egress, a second one opens the service's ingress from pods carrying that same
 label, so labelling the consumer is enough. That covers
-`postgres`/`mqtt`/`smtp`/`vault`, `gateway-external`/`gateway-internal` (the
-envoy pods accept hairpin calls from pods carrying the label) and the whole downloads stack
+`postgres`/`mqtt`/`smtp`/`vault`/`ldap`, `gateway-external`/`gateway-internal`
+(the envoy pods accept hairpin calls from pods carrying the label) and the whole downloads stack
 (`sonarr`/`radarr`/`lidarr`/`prowlarr`/`qbittorrent`/`sabnzbd`/`slskd`, one
 `allow-<service>.yaml` per service holding both halves).
 

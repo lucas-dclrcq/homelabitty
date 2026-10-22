@@ -83,6 +83,7 @@ spec:
         egress.home.arpa/qbittorrent: allow
         egress.home.arpa/sabnzbd: allow
         egress.home.arpa/jellyfin: allow
+        egress.home.arpa/homelab-manager: allow
       securityContext:
         runAsNonRoot: true
         runAsUser: 1026
