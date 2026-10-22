@@ -1,9 +1,17 @@
 ---
 # Baseline policy stamped into every enrolled app namespace.
 #
-# endpointSelector: {} selects every pod in the namespace and enableDefaultDeny
-# flips it into default-deny for BOTH directions. The only flow this policy
-# re-opens is DNS to kube-dns.
+# endpointSelector: {} selects every pod in the namespace and the two rule
+# sections below flip it into default-deny for BOTH directions. The only flows
+# this policy re-opens are DNS to kube-dns and ingress from the host entity,
+# which Cilium allows unconditionally anyway.
+#
+# Both sections must exist. Cilium enters default-deny for a direction only
+# when a rule that selects the endpoint *has a section for that direction*;
+# `enableDefaultDeny` can disable that, never enable it. An egress-only
+# baseline therefore leaves ingress wide open on every pod that no other policy
+# happens to select -- and because nothing is denied, audit mode reports
+# nothing. See the ingress rule's own comment.
 #
 # Everything else is denied until it is explicitly whitelisted, *including
 # traffic between two pods of the same namespace*. Whitelists come from either:
@@ -28,6 +36,15 @@ spec:
   enableDefaultDeny:
     ingress: true
     egress: true
+  ingress:
+    # Load-bearing: Cilium only puts an endpoint into ingress default-deny when
+    # a rule that selects it *has an ingress section* -- `enableDefaultDeny`
+    # can only switch that off, never on. Without these two lines a pod that no
+    # other policy selects for ingress keeps an `Allow Ingress ANY` entry and
+    # stays wide open. reserved:host is allowed unconditionally anyway (kubelet
+    # probes), so the rule grants nothing; its presence is the whole point.
+    - fromEntities:
+        - host
   egress:
     - toEndpoints:
         - matchLabels:
@@ -52,6 +69,15 @@ spec:
   enableDefaultDeny:
     ingress: true
     egress: true
+  ingress:
+    # Load-bearing: Cilium only puts an endpoint into ingress default-deny when
+    # a rule that selects it *has an ingress section* -- `enableDefaultDeny`
+    # can only switch that off, never on. Without these two lines a pod that no
+    # other policy selects for ingress keeps an `Allow Ingress ANY` entry and
+    # stays wide open. reserved:host is allowed unconditionally anyway (kubelet
+    # probes), so the rule grants nothing; its presence is the whole point.
+    - fromEntities:
+        - host
   egress:
     - toEndpoints:
         - matchLabels:
@@ -76,6 +102,15 @@ spec:
   enableDefaultDeny:
     ingress: true
     egress: true
+  ingress:
+    # Load-bearing: Cilium only puts an endpoint into ingress default-deny when
+    # a rule that selects it *has an ingress section* -- `enableDefaultDeny`
+    # can only switch that off, never on. Without these two lines a pod that no
+    # other policy selects for ingress keeps an `Allow Ingress ANY` entry and
+    # stays wide open. reserved:host is allowed unconditionally anyway (kubelet
+    # probes), so the rule grants nothing; its presence is the whole point.
+    - fromEntities:
+        - host
   egress:
     - toEndpoints:
         - matchLabels:
@@ -100,6 +135,15 @@ spec:
   enableDefaultDeny:
     ingress: true
     egress: true
+  ingress:
+    # Load-bearing: Cilium only puts an endpoint into ingress default-deny when
+    # a rule that selects it *has an ingress section* -- `enableDefaultDeny`
+    # can only switch that off, never on. Without these two lines a pod that no
+    # other policy selects for ingress keeps an `Allow Ingress ANY` entry and
+    # stays wide open. reserved:host is allowed unconditionally anyway (kubelet
+    # probes), so the rule grants nothing; its presence is the whole point.
+    - fromEntities:
+        - host
   egress:
     - toEndpoints:
         - matchLabels:
@@ -124,6 +168,15 @@ spec:
   enableDefaultDeny:
     ingress: true
     egress: true
+  ingress:
+    # Load-bearing: Cilium only puts an endpoint into ingress default-deny when
+    # a rule that selects it *has an ingress section* -- `enableDefaultDeny`
+    # can only switch that off, never on. Without these two lines a pod that no
+    # other policy selects for ingress keeps an `Allow Ingress ANY` entry and
+    # stays wide open. reserved:host is allowed unconditionally anyway (kubelet
+    # probes), so the rule grants nothing; its presence is the whole point.
+    - fromEntities:
+        - host
   egress:
     - toEndpoints:
         - matchLabels:
@@ -148,6 +201,15 @@ spec:
   enableDefaultDeny:
     ingress: true
     egress: true
+  ingress:
+    # Load-bearing: Cilium only puts an endpoint into ingress default-deny when
+    # a rule that selects it *has an ingress section* -- `enableDefaultDeny`
+    # can only switch that off, never on. Without these two lines a pod that no
+    # other policy selects for ingress keeps an `Allow Ingress ANY` entry and
+    # stays wide open. reserved:host is allowed unconditionally anyway (kubelet
+    # probes), so the rule grants nothing; its presence is the whole point.
+    - fromEntities:
+        - host
   egress:
     - toEndpoints:
         - matchLabels:
@@ -172,6 +234,15 @@ spec:
   enableDefaultDeny:
     ingress: true
     egress: true
+  ingress:
+    # Load-bearing: Cilium only puts an endpoint into ingress default-deny when
+    # a rule that selects it *has an ingress section* -- `enableDefaultDeny`
+    # can only switch that off, never on. Without these two lines a pod that no
+    # other policy selects for ingress keeps an `Allow Ingress ANY` entry and
+    # stays wide open. reserved:host is allowed unconditionally anyway (kubelet
+    # probes), so the rule grants nothing; its presence is the whole point.
+    - fromEntities:
+        - host
   egress:
     - toEndpoints:
         - matchLabels:
@@ -196,6 +267,15 @@ spec:
   enableDefaultDeny:
     ingress: true
     egress: true
+  ingress:
+    # Load-bearing: Cilium only puts an endpoint into ingress default-deny when
+    # a rule that selects it *has an ingress section* -- `enableDefaultDeny`
+    # can only switch that off, never on. Without these two lines a pod that no
+    # other policy selects for ingress keeps an `Allow Ingress ANY` entry and
+    # stays wide open. reserved:host is allowed unconditionally anyway (kubelet
+    # probes), so the rule grants nothing; its presence is the whole point.
+    - fromEntities:
+        - host
   egress:
     - toEndpoints:
         - matchLabels:
@@ -220,6 +300,15 @@ spec:
   enableDefaultDeny:
     ingress: true
     egress: true
+  ingress:
+    # Load-bearing: Cilium only puts an endpoint into ingress default-deny when
+    # a rule that selects it *has an ingress section* -- `enableDefaultDeny`
+    # can only switch that off, never on. Without these two lines a pod that no
+    # other policy selects for ingress keeps an `Allow Ingress ANY` entry and
+    # stays wide open. reserved:host is allowed unconditionally anyway (kubelet
+    # probes), so the rule grants nothing; its presence is the whole point.
+    - fromEntities:
+        - host
   egress:
     - toEndpoints:
         - matchLabels:
@@ -244,6 +333,15 @@ spec:
   enableDefaultDeny:
     ingress: true
     egress: true
+  ingress:
+    # Load-bearing: Cilium only puts an endpoint into ingress default-deny when
+    # a rule that selects it *has an ingress section* -- `enableDefaultDeny`
+    # can only switch that off, never on. Without these two lines a pod that no
+    # other policy selects for ingress keeps an `Allow Ingress ANY` entry and
+    # stays wide open. reserved:host is allowed unconditionally anyway (kubelet
+    # probes), so the rule grants nothing; its presence is the whole point.
+    - fromEntities:
+        - host
   egress:
     - toEndpoints:
         - matchLabels:
@@ -268,6 +366,15 @@ spec:
   enableDefaultDeny:
     ingress: true
     egress: true
+  ingress:
+    # Load-bearing: Cilium only puts an endpoint into ingress default-deny when
+    # a rule that selects it *has an ingress section* -- `enableDefaultDeny`
+    # can only switch that off, never on. Without these two lines a pod that no
+    # other policy selects for ingress keeps an `Allow Ingress ANY` entry and
+    # stays wide open. reserved:host is allowed unconditionally anyway (kubelet
+    # probes), so the rule grants nothing; its presence is the whole point.
+    - fromEntities:
+        - host
   egress:
     - toEndpoints:
         - matchLabels:
@@ -292,6 +399,15 @@ spec:
   enableDefaultDeny:
     ingress: true
     egress: true
+  ingress:
+    # Load-bearing: Cilium only puts an endpoint into ingress default-deny when
+    # a rule that selects it *has an ingress section* -- `enableDefaultDeny`
+    # can only switch that off, never on. Without these two lines a pod that no
+    # other policy selects for ingress keeps an `Allow Ingress ANY` entry and
+    # stays wide open. reserved:host is allowed unconditionally anyway (kubelet
+    # probes), so the rule grants nothing; its presence is the whole point.
+    - fromEntities:
+        - host
   egress:
     - toEndpoints:
         - matchLabels:
