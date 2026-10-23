@@ -17,7 +17,7 @@ spec:
     - name: external-secrets-stores
       namespace: external-secrets
   path: ./kubernetes/apps/downloads/sonarr/app
-  prune: true
+  prune: false # temporarily disabled for namespace migration
   sourceRef:
     kind: GitRepository
     name: home-kubernetes

@@ -14,7 +14,7 @@ spec:
     - ../../../../components/kopiur
     - ../../../../components/security-policy/forward-auth
   path: ./kubernetes/apps/downloads/pinchflat/app
-  prune: true
+  prune: false # temporarily disabled for namespace migration
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
