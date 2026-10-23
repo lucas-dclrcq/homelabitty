@@ -1,9 +1,0 @@
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: downloads
-  annotations:
-    kopiur.home-operations.com/privileged-movers: "true"
-  labels:
-    kustomize.toolkit.fluxcd.io/prune: disabled
