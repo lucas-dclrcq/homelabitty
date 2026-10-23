@@ -39,7 +39,7 @@ spec:
     - name: rook-ceph
       namespace: *namespace
     - name: snapshot-controller
-      namespace: flux-system
+      namespace: kube-system
   path: ./kubernetes/apps/rook-ceph/rook-ceph/cluster
   prune: false # never should be deleted
   sourceRef:
