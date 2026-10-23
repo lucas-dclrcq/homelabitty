@@ -31,7 +31,7 @@ sooner) says flip right after phase 0. To be arbitrated.
       UDP+TCP. Pods outside enrolled namespaces carrying
       `egress.home.arpa/kubedns: allow` therefore have no TCP fallback
       (truncated responses > 512 B, EDNS). → add `protocol: TCP`.
-      _File_: `platform/kubedns.yaml`
+      _File_: `kube-system/coredns/app/ciliumclusterwidenetworkpolicy.yaml`
 
 - [ ] **kopiur movers**: they carry `app.kubernetes.io/managed-by: kopiur`, run
       in enrolled namespaces (`default`, `media`, …) and are selected by **no**
@@ -86,7 +86,8 @@ sooner) says flip right after phase 0. To be arbitrated.
       ```
 
       _Files_: `components/netpol-baseline/ciliumnetworkpolicy.yaml` (or a dedicated
-      CCNP replacing the baseline's DNS rule), `platform/kubedns.yaml`
+      CCNP replacing the baseline's DNS rule),
+      `kube-system/coredns/app/ciliumclusterwidenetworkpolicy.yaml`
 
 - [ ] **Validate on a single app** before going further:
       `cilium-dbg policy get` must show the DNS parser on the endpoint,
