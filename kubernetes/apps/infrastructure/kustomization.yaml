@@ -5,6 +5,7 @@ kind: Kustomization
 namespace: infrastructure
 components:
   - ../../components/common
+  - ../../components/netpol-baseline
 resources:
   - ./crunchy-postgres-operator/ks.yaml
   - ./mosquitto/ks.yaml

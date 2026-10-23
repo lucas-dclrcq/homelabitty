@@ -1,43 +1,43 @@
 ---
-# Paired vocabulary, same shape as allow-radarr.yaml: the first policy opens the
+# Paired vocabulary, same shape as ./radarr.yaml: the first policy opens the
 # consumer's egress, the second opens the service's ingress from pods carrying
-# that same label. Consumers: the *arr apps' webhook notifications.
+# that same label. Labelling the consumer is enough, from any namespace.
 # yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
 apiVersion: cilium.io/v2
 kind: CiliumClusterwideNetworkPolicy
 metadata:
-  name: allow-egress-homelab-manager
+  name: allow-egress-vault
 spec:
-  description: "Pods labeled egress.home.arpa/homelab-manager=allow may reach homelab-manager on 8080"
+  description: "Pods labeled egress.home.arpa/vault=allow may reach Vault (external-secrets operator, MCP servers)"
   endpointSelector:
     matchLabels:
-      egress.home.arpa/homelab-manager: allow
+      egress.home.arpa/vault: allow
   egress:
     - toEndpoints:
         - matchLabels:
-            app: homelab-manager
-            io.kubernetes.pod.namespace: default
+            app.kubernetes.io/name: vault
+            io.kubernetes.pod.namespace: vault
       toPorts:
         - ports:
-            - port: "8080"
+            - port: "8200"
               protocol: TCP
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
 apiVersion: cilium.io/v2
 kind: CiliumClusterwideNetworkPolicy
 metadata:
-  name: allow-ingress-homelab-manager
+  name: allow-ingress-vault
 spec:
-  description: "Service side of egress.home.arpa/homelab-manager: homelab-manager accepts 8080 from consumers carrying the label"
+  description: "Service side of egress.home.arpa/vault: vault accepts 8200 from consumers carrying the label"
   endpointSelector:
     matchLabels:
-      app: homelab-manager
-      io.kubernetes.pod.namespace: default
+      app.kubernetes.io/name: vault
+      io.kubernetes.pod.namespace: vault
   ingress:
     - fromEndpoints:
         - matchLabels:
-            egress.home.arpa/homelab-manager: allow
+            egress.home.arpa/vault: allow
       toPorts:
         - ports:
-            - port: "8080"
+            - port: "8200"
               protocol: TCP

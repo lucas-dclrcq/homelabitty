@@ -5,6 +5,7 @@ kind: Kustomization
 namespace: media
 components:
   - ../../components/common
+  - ../../components/netpol-baseline
 resources:
   - ./navidrome/ks.yaml
   - ./seerr/ks.yaml

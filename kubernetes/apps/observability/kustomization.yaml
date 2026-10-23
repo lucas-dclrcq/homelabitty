@@ -4,6 +4,7 @@ kind: Kustomization
 namespace: observability
 components:
   - ../../components/common
+  - ../../components/netpol-baseline
 resources:
   - ./exporters
   - ./prometheus-crds/ks.yaml

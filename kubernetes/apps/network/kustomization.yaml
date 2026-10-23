@@ -5,6 +5,7 @@ kind: Kustomization
 namespace: network
 components:
   - ../../components/common
+  - ../../components/netpol-baseline
 resources:
   - ./envoy-gateway/ks.yaml
   - ./external-dns/ks.yaml

@@ -1,0 +1,15 @@
+---
+# Egress to CIDRs outside the cluster. Filename = the egress.home.arpa/<name>
+# label that opens it. These compose: a pod carries one label per segment it
+# actually reaches (internet + iot, internet-https + lan, ...).
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ./internet.yaml
+  - ./internet-https.yaml
+  - ./lan.yaml
+  - ./nas.yaml
+  - ./router.yaml
+  - ./iot.yaml
+  - ./world.yaml

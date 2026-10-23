@@ -4,6 +4,7 @@ kind: Kustomization
 namespace: default
 components:
   - ../../components/common
+  - ../../components/netpol-baseline
 resources:
   - ./echo-server/ks.yaml
   - ./miniflux/ks.yaml

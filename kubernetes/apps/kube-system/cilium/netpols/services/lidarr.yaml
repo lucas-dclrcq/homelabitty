@@ -1,8 +1,4 @@
 ---
-# Paired vocabulary for the downloads stack, same shape as postgres/mqtt/smtp:
-# the first policy opens the consumer's egress, the second opens the service's
-# ingress from pods carrying that same label. Labelling the consumer is enough,
-# and it works from any namespace (seerr in media, homelab-manager in default).
 # yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
 apiVersion: cilium.io/v2
 kind: CiliumClusterwideNetworkPolicy

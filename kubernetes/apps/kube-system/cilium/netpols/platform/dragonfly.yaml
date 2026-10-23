@@ -1,0 +1,56 @@
+---
+# App-specific rather than part of the label vocabulary: it names the Dragonfly
+# operator directly. It lives here, next to its mirror rule
+# (allow-ingress-dragonfly-operator), because the instances it manages are in the
+# app namespaces, which makes it cluster-scoped.
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: allow-egress-dragonfly-operator
+spec:
+  description: "The Dragonfly operator drives replication/failover on the instances it manages, wherever they run"
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: dragonfly-operator
+      io.kubernetes.pod.namespace: infrastructure
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/part-of: dragonfly
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: allow-ingress-dragonfly-operator
+spec:
+  description: "Dragonfly instances (any namespace) accept the operator managing replication/failover"
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/part-of: dragonfly
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: dragonfly-operator
+            io.kubernetes.pod.namespace: infrastructure
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: allow-ingress-vmagent-dragonfly
+spec:
+  # Dragonfly operator NetworkPolicies only allow same-namespace traffic on 6379
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/part-of: dragonfly
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: vmagent
+            k8s:io.kubernetes.pod.namespace: observability
+      toPorts:
+        - ports:
+            - port: "6379"
+              protocol: TCP

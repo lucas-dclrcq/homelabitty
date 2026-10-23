@@ -1,17 +1,4 @@
 ---
-# Paired vocabulary, same shape as allow-jellyfin.yaml: the first policy opens
-# the consumer's egress, the second opens the service's ingress from pods
-# carrying that same label. Consumers: apps that authenticate against authentik
-# through its LDAP outpost rather than OIDC (jellyfin today).
-#
-# The ports are the outpost's **container** ports, 3389/6636, not the 389/636
-# the Service publishes: Cilium policy is evaluated after service translation.
-#
-# The outpost Deployment is created by authentik's Kubernetes integration, so
-# there is no chart value to hang labels on -- the selector uses the labels
-# authentik stamps on it. Its other flows (LAN clients on the LoadBalancer,
-# the call back to authentik) live in
-# apps/auth/authentik/app/ciliumnetworkpolicy.yaml.
 # yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
 apiVersion: cilium.io/v2
 kind: CiliumClusterwideNetworkPolicy

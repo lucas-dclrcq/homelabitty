@@ -1,7 +1,4 @@
 ---
-# Paired vocabulary, same shape as allow-radarr.yaml: the first policy opens the
-# consumer's egress, the second opens the service's ingress from pods carrying
-# that same label. Consumers: the *arr apps' Jellyfin connection (library refresh on import).
 # yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
 apiVersion: cilium.io/v2
 kind: CiliumClusterwideNetworkPolicy

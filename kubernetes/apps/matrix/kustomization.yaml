@@ -4,6 +4,7 @@ kind: Kustomization
 namespace: matrix
 components:
   - ../../components/common
+  - ../../components/netpol-baseline
 resources:
   - ./matrix-stack/ks.yaml
   - ./mautrix-discord/ks.yaml
