@@ -85,18 +85,21 @@ unconstrained unless a clusterwide policy happens to select them.
 A policy sits next to the thing that owns it, so it is pruned with it and
 reviewed in the same diff:
 
-| Policy                               | Lives in                                                                             |
-| ------------------------------------ | ------------------------------------------------------------------------------------ |
-| per-namespace default-deny baseline  | `kubernetes/components/netpol-baseline` (a component each ns includes)               |
-| a service's label pair (both halves) | the owning app, `kubernetes/apps/<ns>/<app>/app/ciliumclusterwidenetworkpolicy.yaml` |
-| external destinations (CIDR labels)  | `netpols/destinations/` — no owning app                                              |
-| control-plane / cross-cutting        | `netpols/platform/` — no owning app                                                  |
-| an app's own peers                   | the app (`rawResources` in the HelmRelease, or `ciliumnetworkpolicy.yaml`)           |
+| Policy                                  | Lives in                                                                             |
+| --------------------------------------- | ------------------------------------------------------------------------------------ |
+| per-namespace default-deny baseline     | `kubernetes/components/netpol-baseline` (a component each ns includes)               |
+| a service's label pair (both halves)    | the owning app, `kubernetes/apps/<ns>/<app>/app/ciliumclusterwidenetworkpolicy.yaml` |
+| external destinations (CIDR labels)     | `netpols/destinations/` — no owning app                                              |
+| entity-backed labels (apiserver, world) | `netpols/platform/` — no owning app                                                  |
+| an app's own peers                      | the app (`rawResources` in the HelmRelease, or `ciliumnetworkpolicy.yaml`)           |
 
-So this catalog holds only what **no single app owns**: the CIDR destinations,
-the apiserver/kube-dns labels, the gateway data plane, prometheus scraping,
-ingress from outside, and the operator-managed pods that cannot carry our
-labels. Everything a named app serves ships with that app.
+So this catalog holds only what **no single app owns**: the CIDR destinations
+and the two entity-backed labels (the API server, and `world`/`remote-node` for
+LoadBalancer services reached from the LAN). Everything else ships with the app
+that owns it — kube-dns with `coredns`, the gateway data plane with
+`envoy-gateway`, prometheus scraping with `victoria-metrics-stack`, and the
+operator-managed pods that cannot carry our labels with their operator
+(`dragonfly`, `kopiur`).
 
 ## Layer 2 — label vocabulary (clusterwide policies)
 
@@ -130,9 +133,9 @@ labels. Everything a named app serves ships with that app.
 | `egress.home.arpa/jellyfin`         | Jellyfin :8096 (the *arr apps' library refresh)                                                                                                                 |
 | `egress.home.arpa/homelab-manager`  | homelab-manager API :8080 (the *arr apps' webhook notifications)                                                                                                |
 
-kopiur mover Jobs (`<app>-<timestamp>`) are not labelled by us:
-`platform/kopiur-mover.yaml` selects them on `app.kubernetes.io/managed-by: kopiur`
-and opens the API server.
+kopiur mover Jobs (`<app>-<timestamp>`) are not labelled by us: the policy
+shipped by `kopiur-system/kopiur/app` selects them on
+`app.kubernetes.io/managed-by: kopiur` and opens the API server.
 
 Most of these are **paired**: one clusterwide policy opens the consumer's
 egress, a second one opens the service's ingress from pods carrying that same

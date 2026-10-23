@@ -1,17 +1,13 @@
 ---
-# Control-plane and cross-cutting policies: the kube-apiserver and kube-dns
-# labels, the gateway data plane, prometheus scraping, ingress from outside the
-# cluster, and the operator-managed pods that cannot carry labels of ours
-# (dragonfly instances, kopiur movers). Label files are named after the label.
+# The two vocabulary labels backed by a Cilium *entity* rather than by pods or
+# CIDRs: the API server (webhooks both ways) and `world`/`remote-node` for
+# LoadBalancer services reached from the LAN. Nothing selects a named app, so
+# there is no app directory these could live in. Everything else that used to
+# sit here moved next to its owner (coredns, dragonfly, kopiur, vmagent, the
+# envoy gateways).
 # yaml-language-server: $schema=https://json.schemastore.org/kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - ./apiserver.yaml
-  - ./kubedns.yaml
-  - ./prometheus.yaml
-  - ./gateway-external.yaml
-  - ./gateway-internal.yaml
   - ./world-ingress.yaml
-  - ./dragonfly.yaml
-  - ./kopiur-mover.yaml

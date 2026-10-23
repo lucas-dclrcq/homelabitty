@@ -142,3 +142,115 @@ spec:
               protocol: TCP
             - port: "18002"
               protocol: TCP
+---
+# The egress.home.arpa/gateway-external vocabulary: who may call the external
+# gateway, the gateway's matching ingress, and the backends that accept it.
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: allow-egress-gateway-external
+spec:
+  endpointSelector:
+    matchLabels:
+      egress.home.arpa/gateway-external: allow
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: envoy
+            gateway.envoyproxy.io/owning-gateway-name: external
+            io.kubernetes.pod.namespace: network
+---
+# Paired ingress on the envoy pods: the hairpin call lands on the gateway pod,
+# which is default-deny like any other pod in `network`. Without this half the
+# consumer's egress label is useless once policies are enforced.
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: allow-ingress-gateway-external-from-cluster
+spec:
+  description: "The external envoy pods accept in-cluster callers labeled egress.home.arpa/gateway-external=allow (OIDC hairpin, public hostnames), plus Flux source-controller and the authentik outposts, which no chart value can label"
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: envoy
+      gateway.envoyproxy.io/owning-gateway-name: external
+      io.kubernetes.pod.namespace: network
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            egress.home.arpa/gateway-external: allow
+        - matchLabels:
+            app: source-controller
+            io.kubernetes.pod.namespace: flux-system
+        - matchLabels:
+            app: authentik-outpost
+            io.kubernetes.pod.namespace: auth
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: ingress-allow-external
+spec:
+  endpointSelector:
+    matchLabels:
+      ingress.home.arpa/gateway-external: allow
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: envoy
+            gateway.envoyproxy.io/owning-gateway-name: external
+            io.kubernetes.pod.namespace: network
+---
+# Same three for the internal gateway.
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: allow-egress-gateway-internal
+spec:
+  description: "Pods labeled egress.home.arpa/gateway-internal=allow may reach the internal envoy gateway (calls to internal hostnames, blackbox probes)"
+  endpointSelector:
+    matchLabels:
+      egress.home.arpa/gateway-internal: allow
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: envoy
+            gateway.envoyproxy.io/owning-gateway-name: internal
+            io.kubernetes.pod.namespace: network
+---
+# Paired ingress on the envoy pods, see ./gateway-external.yaml.
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: allow-ingress-gateway-internal-from-cluster
+spec:
+  description: "The internal envoy pods accept in-cluster callers labeled egress.home.arpa/gateway-internal=allow"
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: envoy
+      gateway.envoyproxy.io/owning-gateway-name: internal
+      io.kubernetes.pod.namespace: network
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            egress.home.arpa/gateway-internal: allow
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: ingress-allow-internal
+spec:
+  endpointSelector:
+    matchLabels:
+      ingress.home.arpa/gateway-internal: allow
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: envoy
+            gateway.envoyproxy.io/owning-gateway-name: internal
+            io.kubernetes.pod.namespace: network
