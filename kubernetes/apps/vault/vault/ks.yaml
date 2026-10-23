@@ -13,7 +13,7 @@ spec:
   path: ./kubernetes/apps/vault/vault/app
   dependsOn:
     - name: rook-ceph-cluster
-  prune: true
+  prune: false # temporarily disabled for namespace migration
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
