@@ -11,7 +11,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   path: ./kubernetes/apps/infrastructure/crunchy-postgres-operator/operator
-  prune: true
+  prune: false # temporarily disabled for namespace migration
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
@@ -30,7 +30,7 @@ spec:
     labels:
       app.kubernetes.io/name: *appname
   path: ./kubernetes/apps/infrastructure/crunchy-postgres-operator/cluster
-  prune: true
+  prune: false # temporarily disabled for namespace migration
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
@@ -51,7 +51,7 @@ spec:
     labels:
       app.kubernetes.io/name: *appname
   path: ./kubernetes/apps/infrastructure/crunchy-postgres-operator/vector-cluster
-  prune: true
+  prune: false # temporarily disabled for namespace migration
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
@@ -72,7 +72,7 @@ spec:
     labels:
       app.kubernetes.io/name: *appname
   path: ./kubernetes/apps/infrastructure/crunchy-postgres-operator/crunchy-users
-  prune: true
+  prune: false # temporarily disabled for namespace migration
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
@@ -93,7 +93,7 @@ spec:
     labels:
       app.kubernetes.io/name: *appname
   path: ./kubernetes/apps/infrastructure/crunchy-postgres-operator/cluster-secret-store
-  prune: true
+  prune: false # temporarily disabled for namespace migration
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
