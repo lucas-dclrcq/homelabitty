@@ -18,7 +18,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   path: ./kubernetes/apps/kube-system/multus/app
-  prune: true
+  prune: false # temporarily disabled for namespace migration
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
@@ -36,7 +36,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   path: ./kubernetes/apps/kube-system/multus/vpn-interface
-  prune: true
+  prune: false # temporarily disabled for namespace migration
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
@@ -57,7 +57,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   path: ./kubernetes/apps/kube-system/multus/networks
-  prune: true
+  prune: false # temporarily disabled for namespace migration
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
