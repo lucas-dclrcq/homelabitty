@@ -8,6 +8,23 @@ metadata:
     crunchy-users.henrywhitaker3.github.com/watch: "true"
   annotations:
     crunchy-users.henrywhitaker3.github.com/superuser: "postgres"
+    # Silo's migrations run CREATE EXTENSION IF NOT EXISTS for these; create them
+    # up front as superuser so the app role never needs the privilege.
+    crunchy-users.henrywhitaker3.github.com/extensions: |
+      [
+        {
+          "database": "silo",
+          "extension": "vector"
+        },
+        {
+          "database": "silo",
+          "extension": "citext"
+        },
+        {
+          "database": "silo",
+          "extension": "pg_trgm"
+        }
+      ]
 spec:
   postgresVersion: 16
 
@@ -256,6 +273,11 @@ spec:
     - name: "home2reterminal"
       databases:
         - "home2reterminal"
+      password:
+        type: AlphaNumeric
+    - name: "silo"
+      databases:
+        - "silo"
       password:
         type: AlphaNumeric
   backups:

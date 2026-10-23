@@ -14,3 +14,4 @@ resources:
   - ./bookorbit/ks.yaml
   - ./the-elder-scrobz/ks.yaml
   - ./nana/ks.yaml
+  - ./silo/ks.yaml

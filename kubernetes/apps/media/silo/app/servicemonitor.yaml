@@ -1,0 +1,22 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/monitoring.coreos.com/servicemonitor_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: silo
+spec:
+  endpoints:
+    - interval: 1m
+      path: /metrics
+      port: metrics
+      scheme: http
+      scrapeTimeout: 10s
+  jobLabel: app.kubernetes.io/name
+  namespaceSelector:
+    matchNames:
+      - media
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: silo
+      app.kubernetes.io/name: silo
+      app.kubernetes.io/service: silo
