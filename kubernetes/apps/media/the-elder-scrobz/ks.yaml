@@ -16,7 +16,7 @@ spec:
     - name: external-secrets-stores
       namespace: external-secrets
   path: ./kubernetes/apps/media/the-elder-scrobz/app
-  prune: true
+  prune: false # temporarily disabled for namespace migration
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
