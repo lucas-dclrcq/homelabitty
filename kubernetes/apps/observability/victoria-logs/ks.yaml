@@ -4,17 +4,18 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app victoria-logs
-  namespace: flux-system
+  namespace: &namespace observability
 spec:
-  targetNamespace: observability
+  targetNamespace: *namespace
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
   path: ./kubernetes/apps/observability/victoria-logs/app
-  prune: false # temporarily disabled for namespace migration
+  prune: true
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
+    namespace: flux-system
   wait: false
   interval: 1h
 ---
@@ -23,18 +24,19 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: victoria-logs-collector
-  namespace: flux-system
+  namespace: &namespace observability
 spec:
-  targetNamespace: observability
+  targetNamespace: *namespace
   commonMetadata:
     labels:
       app.kubernetes.io/name: victoria-logs-collector
   dependsOn:
     - name: victoria-logs
   path: ./kubernetes/apps/observability/victoria-logs/collector
-  prune: false # temporarily disabled for namespace migration
+  prune: true
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
+    namespace: flux-system
   wait: false
   interval: 1h
