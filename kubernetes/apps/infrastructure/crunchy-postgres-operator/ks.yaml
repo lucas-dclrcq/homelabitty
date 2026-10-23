@@ -4,17 +4,18 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app crunchy-postgres-operator
-  namespace: flux-system
+  namespace: &namespace infrastructure
 spec:
-  targetNamespace: infrastructure
+  targetNamespace: *namespace
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
   path: ./kubernetes/apps/infrastructure/crunchy-postgres-operator/operator
-  prune: false # temporarily disabled for namespace migration
+  prune: true
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
+    namespace: flux-system
   wait: false
   interval: 1h
 ---
@@ -23,17 +24,18 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &appname crunchy-postgres-operator-cluster
-  namespace: flux-system
+  namespace: &namespace infrastructure
 spec:
-  targetNamespace: infrastructure
+  targetNamespace: *namespace
   commonMetadata:
     labels:
       app.kubernetes.io/name: *appname
   path: ./kubernetes/apps/infrastructure/crunchy-postgres-operator/cluster
-  prune: false # temporarily disabled for namespace migration
+  prune: true
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
+    namespace: flux-system
   wait: false
   interval: 1h
   dependsOn:
@@ -44,17 +46,18 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &appname crunchy-cluster-vector
-  namespace: flux-system
+  namespace: &namespace infrastructure
 spec:
-  targetNamespace: infrastructure
+  targetNamespace: *namespace
   commonMetadata:
     labels:
       app.kubernetes.io/name: *appname
   path: ./kubernetes/apps/infrastructure/crunchy-postgres-operator/vector-cluster
-  prune: false # temporarily disabled for namespace migration
+  prune: true
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
+    namespace: flux-system
   wait: false
   interval: 1h
   dependsOn:
@@ -65,17 +68,18 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &appname crunchy-users
-  namespace: flux-system
+  namespace: &namespace infrastructure
 spec:
-  targetNamespace: infrastructure
+  targetNamespace: *namespace
   commonMetadata:
     labels:
       app.kubernetes.io/name: *appname
   path: ./kubernetes/apps/infrastructure/crunchy-postgres-operator/crunchy-users
-  prune: false # temporarily disabled for namespace migration
+  prune: true
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
+    namespace: flux-system
   wait: false
   interval: 1h
   dependsOn:
@@ -86,17 +90,18 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &appname crunchy-postgres-secret-store
-  namespace: flux-system
+  namespace: &namespace infrastructure
 spec:
-  targetNamespace: infrastructure
+  targetNamespace: *namespace
   commonMetadata:
     labels:
       app.kubernetes.io/name: *appname
   path: ./kubernetes/apps/infrastructure/crunchy-postgres-operator/cluster-secret-store
-  prune: false # temporarily disabled for namespace migration
+  prune: true
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
+    namespace: flux-system
   wait: false
   interval: 1h
   dependsOn:

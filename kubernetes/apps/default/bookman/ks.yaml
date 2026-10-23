@@ -16,7 +16,7 @@ spec:
     - name: external-secrets-stores
       namespace: external-secrets
     - name: crunchy-postgres-operator
-      namespace: flux-system
+      namespace: infrastructure
     - name: envoy-gateway
       namespace: network
     - name: bookman-meilisearch

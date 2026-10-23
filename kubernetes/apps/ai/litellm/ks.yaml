@@ -38,9 +38,9 @@ spec:
     - name: external-secrets-stores
       namespace: external-secrets
     - name: dragonfly
-      namespace: flux-system
+      namespace: infrastructure
     - name: crunchy-postgres-operator-cluster
-      namespace: flux-system
+      namespace: infrastructure
   path: ./kubernetes/apps/ai/litellm/app
   prune: true
   sourceRef:
