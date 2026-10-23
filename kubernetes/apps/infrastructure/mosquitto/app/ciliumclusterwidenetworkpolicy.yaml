@@ -1,43 +1,44 @@
 ---
-# Paired vocabulary, same shape as ./radarr.yaml: the first policy opens the
-# consumer's egress, the second opens the service's ingress from pods carrying
-# that same label. Labelling the consumer is enough, from any namespace.
+# Paired vocabulary for egress.home.arpa/mqtt, owned by mosquitto: the first
+# policy opens the consumer's egress, the second opens mosquitto's ingress
+# from pods carrying that label. Labelling the consumer is enough, from any
+# namespace.
 # yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
 apiVersion: cilium.io/v2
 kind: CiliumClusterwideNetworkPolicy
 metadata:
-  name: allow-egress-smtp
+  name: allow-egress-mqtt
 spec:
-  description: "Pods labeled egress.home.arpa/smtp=allow may reach the smtp-relay"
+  description: "Pods labeled egress.home.arpa/mqtt=allow may reach mosquitto"
   endpointSelector:
     matchLabels:
-      egress.home.arpa/smtp: allow
+      egress.home.arpa/mqtt: allow
   egress:
     - toEndpoints:
         - matchLabels:
-            app.kubernetes.io/name: smtp-relay
+            app.kubernetes.io/name: mosquitto
             io.kubernetes.pod.namespace: infrastructure
       toPorts:
         - ports:
-            - port: "2525"
+            - port: "1883"
               protocol: TCP
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
 apiVersion: cilium.io/v2
 kind: CiliumClusterwideNetworkPolicy
 metadata:
-  name: allow-ingress-smtp
+  name: allow-ingress-mqtt
 spec:
-  description: "Service side of egress.home.arpa/smtp: smtp-relay accepts 2525 from consumers carrying the label"
+  description: "Service side of egress.home.arpa/mqtt: mosquitto accepts 1883 from consumers carrying the label"
   endpointSelector:
     matchLabels:
-      app.kubernetes.io/name: smtp-relay
+      app.kubernetes.io/name: mosquitto
       io.kubernetes.pod.namespace: infrastructure
   ingress:
     - fromEndpoints:
         - matchLabels:
-            egress.home.arpa/smtp: allow
+            egress.home.arpa/mqtt: allow
       toPorts:
         - ports:
-            - port: "2525"
+            - port: "1883"
               protocol: TCP

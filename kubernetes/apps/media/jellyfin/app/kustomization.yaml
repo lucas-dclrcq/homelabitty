@@ -10,3 +10,4 @@ resources:
   - ./httproutefilter.yaml
   - ./servicemonitor.yaml
   - ./grafanadashboard.yaml
+  - ./ciliumclusterwidenetworkpolicy.yaml

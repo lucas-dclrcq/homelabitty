@@ -12,3 +12,4 @@ resources:
   - ./blueprint-brand.yaml
   - ./grafanadashboard.yaml
   - ./probes.yaml
+  - ./ciliumclusterwidenetworkpolicy.yaml

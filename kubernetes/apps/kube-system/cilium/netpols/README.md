@@ -8,10 +8,12 @@ namespace" shortcut and no cluster-wide escape hatch.
 
 Flows are opened in one of two ways:
 
-- **Shared vocabulary** — a pod label matched by one of the
-  CiliumClusterwideNetworkPolicies in this catalog. Use it for the handful of
-  things half the cluster talks to (the gateways, Postgres, MQTT, Vault, SMTP,
-  the API server, the internet).
+- **Shared vocabulary** — a pod label matched by a
+  CiliumClusterwideNetworkPolicy. Use it for the handful of things half the
+  cluster talks to (the gateways, Postgres, MQTT, Vault, SMTP, the API server,
+  the internet). The label pair of a service lives **next to the app that owns
+  it**; only the vocabulary with no owning app stays in this catalog — see
+  [Where the policies live](#where-the-policies-live).
 - **A policy shipped with the app** — a CiliumNetworkPolicy that names the
   peers directly. Use it for everything else: same-namespace components, and
   one-off cross-namespace calls. It lives next to the app (`rawResources` in
@@ -78,6 +80,24 @@ external-secrets, kopiur-system, openebs-system, system-upgrade) are **not**
 enrolled on purpose — they do not include the component: pods there are
 unconstrained unless a clusterwide policy happens to select them.
 
+## Where the policies live
+
+A policy sits next to the thing that owns it, so it is pruned with it and
+reviewed in the same diff:
+
+| Policy                               | Lives in                                                                             |
+| ------------------------------------ | ------------------------------------------------------------------------------------ |
+| per-namespace default-deny baseline  | `kubernetes/components/netpol-baseline` (a component each ns includes)               |
+| a service's label pair (both halves) | the owning app, `kubernetes/apps/<ns>/<app>/app/ciliumclusterwidenetworkpolicy.yaml` |
+| external destinations (CIDR labels)  | `netpols/destinations/` — no owning app                                              |
+| control-plane / cross-cutting        | `netpols/platform/` — no owning app                                                  |
+| an app's own peers                   | the app (`rawResources` in the HelmRelease, or `ciliumnetworkpolicy.yaml`)           |
+
+So this catalog holds only what **no single app owns**: the CIDR destinations,
+the apiserver/kube-dns labels, the gateway data plane, prometheus scraping,
+ingress from outside, and the operator-managed pods that cannot carry our
+labels. Everything a named app serves ships with that app.
+
 ## Layer 2 — label vocabulary (clusterwide policies)
 
 ### Egress labels (put on the _consumer_ pod)
@@ -118,9 +138,14 @@ Most of these are **paired**: one clusterwide policy opens the consumer's
 egress, a second one opens the service's ingress from pods carrying that same
 label, so labelling the consumer is enough. That covers
 `postgres`/`mqtt`/`smtp`/`vault`/`ldap`, `gateway-external`/`gateway-internal`
-(the envoy pods accept hairpin calls from pods carrying the label) and the whole downloads stack
-(`sonarr`/`radarr`/`lidarr`/`prowlarr`/`qbittorrent`/`sabnzbd`/`slskd`, one
-`services/<name>.yaml` per service holding both halves).
+(the envoy pods accept hairpin calls from pods carrying the label) and the whole
+downloads stack
+(`sonarr`/`radarr`/`lidarr`/`prowlarr`/`qbittorrent`/`sabnzbd`/`slskd`).
+
+Both halves of a pair live in **one file, in the owning app's directory**:
+`kubernetes/apps/downloads/sonarr/app/ciliumclusterwidenetworkpolicy.yaml`
+holds the egress that consumers get from `egress.home.arpa/sonarr` and the
+ingress Sonarr accepts from them. Grepping the label name finds the pair.
 
 The downloads labels work from any namespace — `media/seerr` and
 `default/homelab-manager` use the same ones the *arr apps use between
@@ -190,9 +215,10 @@ since both ends are default-deny:
   (host-network exporters) and `blackbox-exporter-lan` (ICMP probes of the six
   nodes)
 
-When a service has several consumers, prefer a label pair over a bespoke policy:
-that is what the downloads stack does, and it is why none of the *arr apps ship
-a policy of their own.
+When a service has several consumers, prefer a label pair over a bespoke
+policy: that is what the downloads stack does. The pair is still shipped by the
+service's own directory — it is a clusterwide policy keyed on a label, not a
+CiliumNetworkPolicy naming each consumer, so consumers stay decoupled.
 
 Dragonfly is handled by the component that creates it:
 `kubernetes/components/dragonfly/ciliumnetworkpolicy.yaml` ships the instance's

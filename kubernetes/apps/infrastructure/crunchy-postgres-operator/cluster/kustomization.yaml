@@ -8,3 +8,4 @@ resources:
   - ./postgrescluster.yaml
   - ./podmonitor.yaml
   - ./pgupgrade.yaml
+  - ./ciliumclusterwidenetworkpolicy.yaml
