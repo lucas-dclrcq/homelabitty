@@ -20,7 +20,7 @@ spec:
           app:
             image:
               repository: ghcr.io/lucas-dclrcq/homelab-docs
-              tag: sha-3ebf218
+              tag: sha-a58eeae
               pullPolicy: Always
             env:
               TZ: Europe/Paris
