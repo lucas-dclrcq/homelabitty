@@ -19,7 +19,7 @@ spec:
   path: ./kubernetes/apps/matrix/matrix-stack/app
   dependsOn:
     - name: rook-ceph-cluster
-      namespace: flux-system
+      namespace: rook-ceph
     - name: external-secrets-stores
       namespace: external-secrets
     - name: envoy-gateway
