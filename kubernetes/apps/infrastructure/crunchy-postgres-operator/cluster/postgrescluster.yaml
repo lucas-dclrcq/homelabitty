@@ -8,6 +8,8 @@ metadata:
     crunchy-users.henrywhitaker3.github.com/watch: "true"
   annotations:
     crunchy-users.henrywhitaker3.github.com/superuser: "postgres"
+    # Major upgrade 16 -> 18 in progress, see pgupgrade.yaml.
+    postgres-operator.crunchydata.com/allow-upgrade: postgres-16
     # Silo's migrations run CREATE EXTENSION IF NOT EXISTS for these; create them
     # up front as superuser so the app role never needs the privilege.
     crunchy-users.henrywhitaker3.github.com/extensions: |
@@ -27,6 +29,7 @@ metadata:
       ]
 spec:
   postgresVersion: 16
+  shutdown: true
 
   metadata:
     labels:
