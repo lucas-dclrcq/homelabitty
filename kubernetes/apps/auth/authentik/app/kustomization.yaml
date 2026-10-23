@@ -10,6 +10,5 @@ resources:
   - ./oidc-cors.yaml
   - ./brand-configmap.yaml
   - ./blueprint-brand.yaml
-  - ./grafanadashboard.yaml
   - ./probes.yaml
   - ./ciliumclusterwidenetworkpolicy.yaml

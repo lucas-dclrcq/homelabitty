@@ -36,7 +36,6 @@ spec:
 
       podLabels:
         ingress.home.arpa/gateway-external: allow
-        ingress.home.arpa/prometheus: allow
         egress.home.arpa/postgres: allow
         egress.home.arpa/smtp: allow
         egress.home.arpa/gateway-external: allow
@@ -78,10 +77,12 @@ spec:
       startupProbe:
         timeoutSeconds: 10
 
-      metrics:
-        enabled: true
-        serviceMonitor:
-          enabled: true
+      # No metrics Service/ServiceMonitor: nothing consumed the scrape, and the
+      # chart's bundled recording rules (prometheus.rules) reference metric
+      # names django-prometheus renamed long ago -- doubled `_total` suffixes,
+      # histograms queried as counters -- so 25 of their 37 rules recorded
+      # nothing and only produced vmalert "no data" alerts (goauthentik/helm#491).
+      # Both knobs are left at the chart default (false).
 
       route:
         main:
@@ -117,7 +118,3 @@ spec:
         timeoutSeconds: 10
       startupProbe:
         timeoutSeconds: 10
-
-    prometheus:
-      rules:
-        enabled: true
