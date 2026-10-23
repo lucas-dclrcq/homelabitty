@@ -7,6 +7,7 @@ resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
   - ./probes.yaml
+  - ./ciliumclusterwidenetworkpolicy.yaml
 configMapGenerator:
   - name: radarr-loki-rules
     files:

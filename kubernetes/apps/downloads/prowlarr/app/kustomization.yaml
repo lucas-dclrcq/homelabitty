@@ -6,6 +6,7 @@ resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
   - ./probes.yaml
+  - ./ciliumclusterwidenetworkpolicy.yaml
 configMapGenerator:
   - name: ygg-custom-definition
     files:

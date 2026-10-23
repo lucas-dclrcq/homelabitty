@@ -1,4 +1,8 @@
 ---
+# Paired vocabulary for egress.home.arpa/postgres, owned by the crunchy
+# cluster: the first policy opens the consumer's egress, the second opens the
+# ingress of every crunchy pod (instances AND pgbouncer) from pods carrying
+# that label. Labelling the consumer is enough, from any namespace.
 # yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
 apiVersion: cilium.io/v2
 kind: CiliumClusterwideNetworkPolicy

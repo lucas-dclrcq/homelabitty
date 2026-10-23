@@ -12,3 +12,4 @@ resources:
   - ./podmonitor.yaml
   - ./grafanadashboard.yaml
   - ./probes.yaml
+  - ./ciliumclusterwidenetworkpolicy.yaml

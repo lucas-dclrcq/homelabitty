@@ -233,7 +233,7 @@ broad label — and the only protection against a mislabelled pod.
 - [ ] **Valued labels for per-instance granularity.** They use
       `db.home.arpa/pg: pg-<name>` (the value carries the target) rather than
       `=allow`, with the policy pair templated through `${PG_APP_NAME}`. Here
-      that would collapse the **7 near-identical `services/<arr>.yaml` files** into
+      that would collapse the *_7 near-identical per-*arr policy files*_ into
       one templated pair, and make the vocabulary multi-instance-safe the day a
       second PG cluster shows up.
 - [ ] **`toServices`** (`k8sService` / `k8sServiceSelector`) to name a Service
@@ -378,7 +378,7 @@ and therefore nothing was audited. Six endpoints were in that state
       `LDAP-Auth.xml` points at `ak-outpost-ldap.auth.svc:389`, which targets
       **container port 3389** — policy is evaluated after service translation,
       so the published port is the wrong one to write down. Made a vocabulary
-      pair (`services/ldap.yaml`, `egress.home.arpa/ldap`) rather than a bespoke
+      pair (`auth/authentik/app`, `egress.home.arpa/ldap`) rather than a bespoke
       policy: LDAP is a multi-consumer service and the README prefers a pair
       for those. Service side keys on the labels authentik stamps on the
       outpost, as `authentik-outposts` already does.

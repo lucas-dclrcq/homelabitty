@@ -6,6 +6,7 @@ resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
   - ./grafanadashboard.yaml
+  - ./ciliumclusterwidenetworkpolicy.yaml
 configMapGenerator:
   - name: smtp-relay-configmap
     files:

@@ -14,3 +14,4 @@ resources:
   - ./probes.yaml
   - ./unsealer-secret.sops.yaml
   - ./unsealer.yaml
+  - ./ciliumclusterwidenetworkpolicy.yaml

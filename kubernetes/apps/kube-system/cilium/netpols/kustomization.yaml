@@ -1,12 +1,14 @@
 ---
 # The cluster-wide network policy catalog (see README.md).
-# One file = one vocabulary label (or one platform concern); the per-namespace
-# default-deny baseline is NOT here — it is a Kustomize component
-# (kubernetes/components/netpol-baseline) included by each enrolled namespace.
+# One file = one vocabulary label (or one platform concern). What is NOT here:
+#   - the per-namespace default-deny baseline, a Kustomize component
+#     (kubernetes/components/netpol-baseline) included by each enrolled namespace
+#   - the per-service label pairs, which live next to the app that owns them
+#     (kubernetes/apps/<ns>/<app>/app/ciliumclusterwidenetworkpolicy.yaml)
+# Only the vocabulary with no single owning app remains here.
 # yaml-language-server: $schema=https://json.schemastore.org/kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - ./destinations
-  - ./services
   - ./platform

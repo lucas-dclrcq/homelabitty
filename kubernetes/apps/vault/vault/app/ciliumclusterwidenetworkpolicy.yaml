@@ -1,5 +1,5 @@
 ---
-# Paired vocabulary, same shape as ./radarr.yaml: the first policy opens the
+# Paired vocabulary, same shape as the other service pairs: the first policy opens the
 # consumer's egress, the second opens the service's ingress from pods carrying
 # that same label. Labelling the consumer is enough, from any namespace.
 # yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
