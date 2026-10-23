@@ -16,7 +16,7 @@ spec:
     - name: prometheus-crds
       namespace: flux-system
   path: ./kubernetes/apps/observability/victoria-metrics-stack/app
-  prune: true
+  prune: false # temporarily disabled for namespace migration
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
