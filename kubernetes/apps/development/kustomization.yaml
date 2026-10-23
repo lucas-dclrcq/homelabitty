@@ -5,6 +5,7 @@ kind: Kustomization
 namespace: development
 components:
   - ../../components/common
+  - ../../components/netpol-baseline
 resources:
   - ./forgejo/ks.yaml
   - ./forgejo-runner/ks.yaml

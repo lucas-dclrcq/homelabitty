@@ -4,6 +4,7 @@ kind: Kustomization
 namespace: home
 components:
   - ../../components/common
+  - ../../components/netpol-baseline
 resources:
   - ./esphome/ks.yaml
   - ./zigbee2mqtt/ks.yaml

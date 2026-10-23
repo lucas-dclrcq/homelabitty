@@ -23,9 +23,15 @@ kind: Kustomization
 metadata:
   name: &app cilium-netpols
   namespace: kube-system
+  labels:
+    # The catalog's CIDRs/IPs are hardcoded on purpose (AGENTS.md reserves
+    # substitution for secrets); without this label an accidental ${VAR} in a
+    # policy would be silently replaced by an empty string.
+    substitution.flux.home.arpa/disabled: "true"
 spec:
-  # no targetNamespace: baseline.yaml carries namespaced CNPs with explicit
-  # namespaces; everything else in netpols/ is cluster-scoped
+  # no targetNamespace: everything in netpols/ is cluster-scoped (the
+  # per-namespace baseline lives in components/netpol-baseline, included by
+  # each enrolled namespace's kustomization)
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app

@@ -1,0 +1,13 @@
+---
+# Per-namespace default-deny baseline. Including this component from a
+# namespace's kustomization.yaml (next to ../../components/common) is what
+# "enrolling" that namespace means: the `namespace:` transformer already set
+# there stamps the CNP into the right namespace. The system namespaces
+# (kube-system, flux-system, rook-ceph, cert-manager, external-secrets,
+# kopiur-system, openebs-system, system-upgrade) deliberately do not include
+# it. See kubernetes/apps/kube-system/cilium/netpols/README.md.
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1alpha1
+kind: Component
+resources:
+  - ./ciliumnetworkpolicy.yaml

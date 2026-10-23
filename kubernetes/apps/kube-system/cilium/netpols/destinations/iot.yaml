@@ -1,0 +1,14 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: allow-egress-iot
+spec:
+  description: "Pods labeled egress.home.arpa/iot=allow may reach the IoT VLAN 192.168.30.0/24, any port"
+  endpointSelector:
+    matchLabels:
+      egress.home.arpa/iot: allow
+  egress:
+    - toCIDR:
+        - "192.168.30.0/24"

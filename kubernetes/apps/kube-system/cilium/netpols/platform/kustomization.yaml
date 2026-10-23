@@ -1,0 +1,17 @@
+---
+# Control-plane and cross-cutting policies: the kube-apiserver and kube-dns
+# labels, the gateway data plane, prometheus scraping, ingress from outside the
+# cluster, and the operator-managed pods that cannot carry labels of ours
+# (dragonfly instances, kopiur movers). Label files are named after the label.
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ./apiserver.yaml
+  - ./kubedns.yaml
+  - ./prometheus.yaml
+  - ./gateway-external.yaml
+  - ./gateway-internal.yaml
+  - ./world-ingress.yaml
+  - ./dragonfly.yaml
+  - ./kopiur-mover.yaml

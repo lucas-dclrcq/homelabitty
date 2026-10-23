@@ -3,18 +3,16 @@
 apiVersion: cilium.io/v2
 kind: CiliumClusterwideNetworkPolicy
 metadata:
-  name: allow-egress-smtp
+  name: allow-egress-router
 spec:
-  description: "Pods labeled egress.home.arpa/smtp=allow may reach the smtp-relay"
+  description: "Pods labeled egress.home.arpa/router=allow may reach the UniFi gateway (192.168.1.1) on 443"
   endpointSelector:
     matchLabels:
-      egress.home.arpa/smtp: allow
+      egress.home.arpa/router: allow
   egress:
-    - toEndpoints:
-        - matchLabels:
-            app.kubernetes.io/name: smtp-relay
-            io.kubernetes.pod.namespace: infrastructure
+    - toCIDR:
+        - "192.168.1.1/32"
       toPorts:
         - ports:
-            - port: "2525"
+            - port: "443"
               protocol: TCP

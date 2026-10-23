@@ -4,5 +4,6 @@ kind: Kustomization
 namespace: vault
 components:
   - ../../components/common
+  - ../../components/netpol-baseline
 resources:
   - ./vault/ks.yaml

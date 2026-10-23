@@ -9,7 +9,7 @@ namespace" shortcut and no cluster-wide escape hatch.
 Flows are opened in one of two ways:
 
 - **Shared vocabulary** — a pod label matched by one of the
-  CiliumClusterwideNetworkPolicies in this directory. Use it for the handful of
+  CiliumClusterwideNetworkPolicies in this catalog. Use it for the handful of
   things half the cluster talks to (the gateways, Postgres, MQTT, Vault, SMTP,
   the API server, the internet).
 - **A policy shipped with the app** — a CiliumNetworkPolicy that names the
@@ -36,9 +36,22 @@ Workflow to reach enforcement:
 
 ## Layer 1 — baseline (per-namespace default deny)
 
-`baseline.yaml` stamps a `baseline` CiliumNetworkPolicy into every enrolled
-namespace (ai, auth, default, development, downloads, home, infrastructure,
-matrix, media, network, observability, vault). It selects **all pods** with
+The `netpol-baseline` component (`kubernetes/components/netpol-baseline`)
+stamps a `baseline` CiliumNetworkPolicy into every enrolled namespace (ai,
+auth, default, development, downloads, home, infrastructure, matrix, media,
+network, observability, vault). **Enrolling a namespace means including the
+component** from `kubernetes/apps/<ns>/kustomization.yaml`:
+
+```yaml
+components:
+    - ../../components/common
+    - ../../components/netpol-baseline
+```
+
+The directory's `namespace:` transformer stamps the CNP's namespace, so the
+component itself ships the policy without one.
+
+The baseline selects **all pods** with
 `enableDefaultDeny` on both directions and re-opens exactly two things:
 
 - **DNS** to kube-dns (egress)
@@ -62,8 +75,8 @@ once enforced), never `audit-egress`.
 
 System namespaces (kube-system, flux-system, rook-ceph, cert-manager,
 external-secrets, kopiur-system, openebs-system, system-upgrade) are **not**
-enrolled on purpose: pods there are unconstrained unless a clusterwide policy
-happens to select them.
+enrolled on purpose — they do not include the component: pods there are
+unconstrained unless a clusterwide policy happens to select them.
 
 ## Layer 2 — label vocabulary (clusterwide policies)
 
@@ -98,7 +111,7 @@ happens to select them.
 | `egress.home.arpa/homelab-manager`  | homelab-manager API :8080 (the *arr apps' webhook notifications)                                                                                                |
 
 kopiur mover Jobs (`<app>-<timestamp>`) are not labelled by us:
-`allow-egress-kopiur-mover.yaml` selects them on `app.kubernetes.io/managed-by: kopiur`
+`platform/kopiur-mover.yaml` selects them on `app.kubernetes.io/managed-by: kopiur`
 and opens the API server.
 
 Most of these are **paired**: one clusterwide policy opens the consumer's
@@ -107,7 +120,7 @@ label, so labelling the consumer is enough. That covers
 `postgres`/`mqtt`/`smtp`/`vault`/`ldap`, `gateway-external`/`gateway-internal`
 (the envoy pods accept hairpin calls from pods carrying the label) and the whole downloads stack
 (`sonarr`/`radarr`/`lidarr`/`prowlarr`/`qbittorrent`/`sabnzbd`/`slskd`, one
-`allow-<service>.yaml` per service holding both halves).
+`services/<name>.yaml` per service holding both halves).
 
 The downloads labels work from any namespace — `media/seerr` and
 `default/homelab-manager` use the same ones the *arr apps use between

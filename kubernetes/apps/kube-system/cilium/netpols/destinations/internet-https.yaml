@@ -1,11 +1,4 @@
 ---
-# Port-scoped variant of egress.home.arpa/internet, for apps whose whole
-# external surface is an HTTPS API (LLM providers, the Cloudflare API, the
-# matrix bridges, registries...). Same destination set as
-# ./allow-egress-internet.yaml, restricted to 443/TCP.
-#
-# The two labels are additive, not exclusive: a pod carrying both gets the
-# union, which is just /internet. Carry exactly one.
 # yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
 apiVersion: cilium.io/v2
 kind: CiliumClusterwideNetworkPolicy

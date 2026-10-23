@@ -5,6 +5,7 @@ kind: Kustomization
 namespace: downloads
 components:
   - ../../components/common
+  - ../../components/netpol-baseline
 resources:
   - ./sabnzbd/ks.yaml
   - ./qbittorrent/ks.yaml

@@ -27,11 +27,11 @@ sooner) says flip right after phase 0. To be arbitrated.
 
 ## Phase 0 — hygiene, before anything else
 
-- [ ] **`allow-egress-kubedns` only opens UDP/53** while `baseline.yaml` opens
+- [ ] **`allow-egress-kubedns` only opens UDP/53** while the baseline opens
       UDP+TCP. Pods outside enrolled namespaces carrying
       `egress.home.arpa/kubedns: allow` therefore have no TCP fallback
       (truncated responses > 512 B, EDNS). → add `protocol: TCP`.
-      _File_: `allow-egress-kubedns.yaml`
+      _File_: `platform/kubedns.yaml`
 
 - [ ] **kopiur movers**: they carry `app.kubernetes.io/managed-by: kopiur`, run
       in enrolled namespaces (`default`, `media`, …) and are selected by **no**
@@ -55,7 +55,8 @@ sooner) says flip right after phase 0. To be arbitrated.
 
 - [ ] **Split the baseline DNS rule into mutually exclusive L4 / L7 halves.**
 
-      Today `baseline.yaml` opens port 53 to kube-dns as a **plain L4 rule** for
+      Today the baseline (`components/netpol-baseline`) opens port 53 to
+      kube-dns as a **plain L4 rule** for
       every pod in every enrolled namespace. The Cilium docs are explicit:
       > _"If a layer 4 rule is specified in the policy, and a similar layer 4
       > rule with layer 7 rules is also specified, then the layer 7 portions of
@@ -84,8 +85,8 @@ sooner) says flip right after phase 0. To be arbitrated.
           - { key: dns.home.arpa/l7, operator: In, values: ["true"] }
       ```
 
-      _Files_: `baseline.yaml` (or a dedicated CCNP replacing the baseline's DNS
-      rule), `allow-egress-kubedns.yaml`
+      _Files_: `components/netpol-baseline/ciliumnetworkpolicy.yaml` (or a dedicated
+      CCNP replacing the baseline's DNS rule), `platform/kubedns.yaml`
 
 - [ ] **Validate on a single app** before going further:
       `cilium-dbg policy get` must show the DNS parser on the endpoint,
@@ -97,11 +98,11 @@ sooner) says flip right after phase 0. To be arbitrated.
 ## Phase 2 — split `egress.home.arpa/world` — **DONE (2026-10-21)**
 
 `world` was internet **+ the whole LAN + every VLAN**, and 62 pod templates
-carried it. It now has **no carrier at all**: `allow-egress-world.yaml` stays
+carried it. It now has **no carrier at all**: `destinations/world.yaml` stays
 only as the documented escape hatch for a bad reclassification.
 
 - [x] **`egress.home.arpa/internet`** — "the world except home"
-      (`allow-egress-internet.yaml`). `except` ended up wider than RFC1918:
+      (`destinations/internet.yaml`). `except` ended up wider than RFC1918:
       `100.64.0.0/10` (CGNAT, also Tailscale) and `169.254.0.0/16` (link-local,
       which includes the `169.254.169.254` metadata address) are excluded too.
       No `::/0` twin — the cluster runs `enable-ipv6=false`.
@@ -232,7 +233,7 @@ broad label — and the only protection against a mislabelled pod.
 - [ ] **Valued labels for per-instance granularity.** They use
       `db.home.arpa/pg: pg-<name>` (the value carries the target) rather than
       `=allow`, with the policy pair templated through `${PG_APP_NAME}`. Here
-      that would collapse the **7 near-identical `allow-<arr>.yaml` files** into
+      that would collapse the **7 near-identical `services/<arr>.yaml` files** into
       one templated pair, and make the vocabulary multi-instance-safe the day a
       second PG cluster shows up.
 - [ ] **`toServices`** (`k8sService` / `k8sServiceSelector`) to name a Service
@@ -324,7 +325,7 @@ and therefore nothing was audited. Six endpoints were in that state
 | infrastructure | crunchy-users, dragonfly-operator, pgo |
 | vault          | (serviceaccount `default`)             |
 
-- [x] **Fixed**: `baseline.yaml` now carries an `ingress: [{fromEntities: [host]}]`
+- [x] **Fixed**: the baseline now carries an `ingress: [{fromEntities: [host]}]`
       section in all twelve namespaces. `reserved:host` is allowed
       unconditionally by Cilium anyway, so the rule grants nothing — its
       presence is the entire point.
@@ -377,7 +378,7 @@ and therefore nothing was audited. Six endpoints were in that state
       `LDAP-Auth.xml` points at `ak-outpost-ldap.auth.svc:389`, which targets
       **container port 3389** — policy is evaluated after service translation,
       so the published port is the wrong one to write down. Made a vocabulary
-      pair (`allow-ldap.yaml`, `egress.home.arpa/ldap`) rather than a bespoke
+      pair (`services/ldap.yaml`, `egress.home.arpa/ldap`) rather than a bespoke
       policy: LDAP is a multi-consumer service and the README prefers a pair
       for those. Service side keys on the labels authentik stamps on the
       outpost, as `authentik-outposts` already does.
