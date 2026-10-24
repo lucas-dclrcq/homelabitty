@@ -16,7 +16,6 @@ resources:
   - ./homelab-manager/ks.yaml
   - ./outline/ks.yaml
   - ./vikunja/ks.yaml
-  - ./paperless/ks.yaml
   - ./rustical/ks.yaml
   - ./bichon/ks.yaml
   - ./the-recipe-db/ks.yaml
