@@ -8,7 +8,5 @@ resources:
   - ./helmrelease.yaml
   - ./ciliumnetworkpolicy.yaml
   - ./oidc-cors.yaml
-  - ./brand-configmap.yaml
-  - ./blueprint-brand.yaml
   - ./probes.yaml
   - ./ciliumclusterwidenetworkpolicy.yaml

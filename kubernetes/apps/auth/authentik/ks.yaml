@@ -13,8 +13,6 @@ spec:
     - name: external-secrets-stores
       namespace: external-secrets
   path: ./kubernetes/apps/auth/authentik/app
-  #  components:
-  #    - ../../../../components/kopiur
   prune: true
   sourceRef:
     kind: GitRepository
