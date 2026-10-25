@@ -8,6 +8,7 @@ resources:
   - ./helmrelease.yaml
   - ./httproutefilter.yaml
   - ./probes.yaml
+  - ./ciliumnetworkpolicy.yaml
 configMapGenerator:
   - name: searxng-configmap
     files:

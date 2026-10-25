@@ -1,0 +1,15 @@
+---
+apiVersion: litellm.home-operations.com/v1alpha1
+kind: LiteLLMVirtualKey
+metadata:
+  name: hermes
+spec:
+  proxyRef: litellm
+  proxyNamespace: ai
+  keyAlias: hermes
+  teamID: hermes
+  secretName: hermes-litellm
+  secretKey: key
+  models:
+    - deepseek-v4-pro
+    - deepseek-flash

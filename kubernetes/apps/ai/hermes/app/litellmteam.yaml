@@ -1,0 +1,22 @@
+---
+apiVersion: litellm.home-operations.com/v1alpha1
+kind: LiteLLMTeam
+metadata:
+  name: hermes
+spec:
+  proxyRef: litellm
+  proxyNamespace: ai
+  teamID: hermes
+  models:
+    - deepseek-v4-pro
+    - deepseek-flash
+  mcpServers:
+    - github
+    - grafana
+    - homeassistant
+    - kubernetes
+    - kubesearch
+    - trilium
+    - truenas
+    - unifi
+    - vault

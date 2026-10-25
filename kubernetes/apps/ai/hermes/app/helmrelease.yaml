@@ -1,0 +1,295 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app hermes
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  values:
+    controllers:
+      hermes:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        pod:
+          labels:
+            ingress.home.arpa/gateway-internal: allow
+          hostAliases:
+            - ip: 82.66.210.4
+              hostnames:
+                - sso.hoohoot.org
+          securityContext:
+            fsGroup: 10000
+            fsGroupChangePolicy: OnRootMismatch
+            runAsGroup: 10000
+            runAsNonRoot: true
+            runAsUser: 10000
+            seccompProfile:
+              type: RuntimeDefault
+          terminationGracePeriodSeconds: 60
+        strategy: Recreate
+        initContainers:
+          profile-seed:
+            image: &image
+              repository: docker.io/nousresearch/hermes-agent
+              tag: v2026.9.24@sha256:fca358f12efd65bfaaca05884166f15c0e2788375ca30d77061ac1ebc96452b7
+            command:
+              - /bin/bash
+              - /seed/seed.sh
+            env:
+              LITELLM_API_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: hermes-litellm
+                    key: key
+              SEARXNG_URL: &searxng http://searxng.ai.svc.cluster.local:8080
+            envFrom:
+              - secretRef:
+                  name: hermes
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 512Mi
+            securityContext: &securityContext
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+          # Run the image's config migration before s6 starts. Its own boot hook calls it through
+          # `s6-setuidgid hermes`, which needs CAP_SETGID and fails as non-root. Skipped on first
+          # boot only when no profile config was seeded.
+          config-migrate:
+            image: *image
+            command:
+              - /bin/sh
+              - -c
+              - >-
+                [ ! -f /opt/data/config.yaml ] ||
+                exec /opt/hermes/.venv/bin/python /opt/hermes/scripts/docker_config_migrate.py
+            env:
+              HOME: /opt/data
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 512Mi
+            securityContext: *securityContext
+        containers:
+          app:
+            image: *image
+            args:
+              - "sleep"
+              - "infinity"
+            env:
+              TZ: Europe/Paris
+              BASH_ENV: /opt/data/.hermes-terminal-env.sh
+              S6_YES_I_WANT_A_WORLD_WRITABLE_RUN_BECAUSE_KUBERNETES: "1"
+              # Hermes settings
+              HERMES_DISABLE_LAZY_INSTALLS: "true"
+              HERMES_HOME: /opt/data
+              HERMES_WRITE_SAFE_ROOT: /opt/data
+              HOME: /opt/data
+              LITELLM_BASE_URL: "http://litellm.ai.svc.cluster.local:4000/v1"
+              LITELLM_API_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: hermes-litellm
+                    key: key
+              # Terminal HOME moves into each named profile; mise stays on the shared PVC.
+              MISE_CACHE_DIR: /opt/data/.cache/mise
+              MISE_CONFIG_DIR: /opt/data/.config/mise
+              MISE_DATA_DIR: /opt/data/.local/share/mise
+              MISE_STATE_DIR: /opt/data/.local/state/mise
+              SEARXNG_URL: *searxng
+            envFrom:
+              - secretRef:
+                  name: hermes
+            probes:
+              # A fresh cron ticker heartbeat (written every 60s by the gateway) is required.
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command: &healthcheck
+                      - /bin/sh
+                      - -c
+                      - >-
+                        hb=$(cut -d. -f1 /opt/data/cron/ticker_heartbeat) &&
+                        [ $(( $(date +%s) - hb )) -lt 300 ]
+                  failureThreshold: 3
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  failureThreshold: 3
+                  exec:
+                    command: *healthcheck
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command: *healthcheck
+                  failureThreshold: 30
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 1Gi
+            securityContext: *securityContext
+          webui:
+            image:
+              repository: ghcr.io/nesquena/hermes-webui
+              tag: 0.52.555@sha256:d0bbb1c5371b1f4b0a28e4cffa5f403780eb81601b66a6d6843f6fc338f08523
+            env:
+              TZ: Europe/Paris
+              HERMES_API_URL: http://127.0.0.1:8642
+              HERMES_HOME: /home/hermeswebui/.hermes
+              HERMES_WEBUI_CHAT_BACKEND: gateway
+              HERMES_WEBUI_DEFAULT_WORKSPACE: /home/hermeswebui/.hermes/workspace
+              HERMES_WEBUI_GATEWAY_API_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: hermes
+                    key: API_SERVER_KEY
+              HERMES_WEBUI_GATEWAY_BASE_URL: http://127.0.0.1:8642
+              HERMES_WEBUI_GATEWAY_USE_RUNS_API: "true"
+              HERMES_WEBUI_HOST: 0.0.0.0
+              # Access is restricted by the AuthentikApplication group binding
+              HERMES_WEBUI_OIDC_CLIENT_ID:
+                valueFrom:
+                  secretKeyRef:
+                    name: hermes-oidc
+                    key: client-id
+              HERMES_WEBUI_OIDC_CLIENT_SECRET:
+                valueFrom:
+                  secretKeyRef:
+                    name: hermes-oidc
+                    key: client-secret
+              HERMES_WEBUI_OIDC_ISSUER: https://sso.hoohoot.org/application/o/hermes/
+              HERMES_WEBUI_OIDC_REDIRECT_URI: https://hermes.hoohoot.xyz/api/auth/oidc/callback
+              HERMES_WEBUI_PORT: &port 8787
+              HERMES_WEBUI_STATE_DIR: /home/hermeswebui/.hermes/webui
+              HOME: /home/hermeswebui
+              OPENAI_API_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: hermes-litellm
+                    key: key
+              UV_CACHE_DIR: /uv_cache
+              WANTED_GID: "10000"
+              WANTED_UID: "10000"
+            probes:
+              liveness: &webuiProbes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health
+                    port: *port
+              readiness: *webuiProbes
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  failureThreshold: 90
+                  httpGet:
+                    path: /health
+                    port: *port
+                  periodSeconds: 10
+            resources:
+              requests:
+                cpu: 100m
+              limits:
+                memory: 4Gi
+            securityContext: *securityContext
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: *port
+    route:
+      app:
+        hostnames:
+          - "{{ .Release.Name }}.hoohoot.xyz"
+        parentRefs:
+          - name: internal
+            namespace: network
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
+    persistence:
+      data:
+        existingClaim: "{{ .Release.Name }}"
+        advancedMounts:
+          hermes:
+            app:
+              - path: /opt/data
+            config-migrate:
+              - path: /opt/data
+            profile-seed:
+              - path: /opt/data
+            webui:
+              - path: /home/hermeswebui/.hermes
+      agent-source:
+        type: image
+        image: *image
+        advancedMounts:
+          hermes:
+            webui:
+              - path: /home/hermeswebui/.hermes/hermes-agent
+                subPath: opt/hermes
+                readOnly: true
+      app:
+        type: emptyDir
+        advancedMounts:
+          hermes:
+            webui:
+              - path: /app
+      profile-seed:
+        type: configMap
+        name: hermes-profile-seed
+        advancedMounts:
+          hermes:
+            profile-seed:
+              - path: /seed
+                readOnly: true
+      mise:
+        type: image
+        image: ghcr.io/jdx/mise:2026.10.19
+        advancedMounts:
+          hermes:
+            app:
+              - path: /opt/mise
+                subPath: usr/local/bin
+                readOnly: true
+            profile-seed:
+              - path: /opt/mise
+                subPath: usr/local/bin
+                readOnly: true
+      run:
+        type: emptyDir
+        globalMounts:
+          - path: /run
+      tmpfs:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
+      uv-cache:
+        type: emptyDir
+        advancedMounts:
+          hermes:
+            webui:
+              - path: /uv_cache
