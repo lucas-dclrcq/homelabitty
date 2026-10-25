@@ -3,14 +3,14 @@
 # therefore cannot reach the ClusterIP: today the NTP Pi, which ships its
 # journal with systemd-journal-upload (ansible/roles/journal_upload).
 #
-# It deliberately does NOT go through the internal gateway. The gateway VIP
-# (192.168.1.47) is announced both over BGP and over L2, and its Service is
-# externalTrafficPolicy: Local - so a host sitting in 192.168.1.0/24 ARPs for
-# the VIP on-link and lands on whichever node won the L2 lease, which is
-# usually a node with no envoy pod, and the connection is refused. Only
-# clients on another VLAN (routed, hence BGP, hence a node that advertises a
-# backend) get through. Cluster policy below sidesteps the whole trap: every
-# node can forward to the single victoria-logs pod.
+# It predates the move of LoadBalancer IPs to the routed "Kubernetes Services"
+# VLAN (192.168.42.0/24). Back then the internal gateway VIP sat in
+# 192.168.1.0/24 and was announced over L2 as well as BGP; with
+# externalTrafficPolicy: Local, a LAN host ARPed for it on-link and landed on
+# whichever node held the L2 lease, usually one without an envoy pod. Every LB
+# IP is now reached through the router (BGP only), so that trap is gone, but
+# this plain-http endpoint is kept: Cluster policy lets every node forward to
+# the single victoria-logs pod, and the client needs no certificate handling.
 # yaml-language-server: $schema=https://json.schemastore.org/kubernetes-definitions.json
 apiVersion: v1
 kind: Service
@@ -18,7 +18,7 @@ metadata:
   name: victoria-logs-ingest
   annotations:
     external-dns.kubernetes.io/hostname: "vlogs-ingest.hoohoot.xyz"
-    io.cilium/lb-ipam-ips: "192.168.1.49"
+    io.cilium/lb-ipam-ips: "192.168.42.49"
 spec:
   type: LoadBalancer
   externalTrafficPolicy: Cluster

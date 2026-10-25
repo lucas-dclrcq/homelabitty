@@ -63,7 +63,7 @@ spec:
         type: LoadBalancer
         annotations:
           external-dns.kubernetes.io/hostname: "smtp.hoohoot.xyz"
-          io.cilium/lb-ipam-ips: "192.168.1.46"
+          io.cilium/lb-ipam-ips: "192.168.42.46"
         externalTrafficPolicy: Local
         ports:
           http:

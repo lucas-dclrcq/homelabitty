@@ -81,7 +81,7 @@ Each namespace directory has a `kustomization.yaml` that includes the `common` c
 
 ### Networking
 
-- **Envoy Gateway**: internal (`192.168.1.47`) and external (`192.168.1.48`) gateways in `network` namespace.
+- **Envoy Gateway**: internal (`192.168.42.47`) and external (`192.168.42.48`) gateways in `network` namespace. LoadBalancer IPs live in the "Kubernetes Services" VLAN (`192.168.42.0/24`) and are announced to the router over BGP only.
 - **Routes**: apps define `route` in HelmRelease values with `parentRefs` pointing to `internal` or `external` gateway.
 - **Pod labels** like `ingress.home.arpa/envoy-external: allow` control network policy access.
 
