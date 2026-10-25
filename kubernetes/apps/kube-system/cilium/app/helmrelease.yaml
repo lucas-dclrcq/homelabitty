@@ -39,8 +39,9 @@ spec:
       exclusive: false
     dashboards:
       enabled: true
-    # NOTE: devices might need to be set if you have more than one active NIC on your hosts
-    # devices: eno+ eth+
+    # Only the bond carries node traffic; the multus vpn0/iot0 VLANs hang off the
+    # physical NIC and must never be picked up by auto-detection
+    devices: bond+
     #    enableIPv4BIGTCP: true
     cluster:
       id: 1
