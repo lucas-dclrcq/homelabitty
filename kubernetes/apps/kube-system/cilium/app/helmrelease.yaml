@@ -96,6 +96,7 @@ spec:
     loadBalancer:
       algorithm: maglev
       mode: snat # dsr ?
+      serviceTopology: true # spegel relies on trafficDistribution: PreferSameNode
     localRedirectPolicies:
       enabled: true
     # SAFETY NET while rolling out network policies: verdicts are computed and
