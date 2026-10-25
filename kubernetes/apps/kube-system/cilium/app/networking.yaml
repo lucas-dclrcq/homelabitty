@@ -7,9 +7,11 @@ metadata:
 spec:
   allowFirstLastIPs: "Yes"
   blocks:
-    - # Controller VIP: 192.168.1.42
-      start: 192.168.1.30
-      stop: 192.168.1.50
+    # "Kubernetes Services" VLAN. Its addresses are not on any node interface:
+    # each LoadBalancer IP is advertised to the router as a /32 over BGP (see
+    # l3-bgp below), so L2 announcements are not needed. .1 is the VLAN gateway.
+    - start: 192.168.42.2
+      stop: 192.168.42.254
 ---
 # BGP control plane v2 (BGPv1 CiliumBGPPeeringPolicy is removed in Cilium 1.19)
 # https://docs.cilium.io/en/stable/network/bgp-control-plane/bgp-control-plane-v2/
