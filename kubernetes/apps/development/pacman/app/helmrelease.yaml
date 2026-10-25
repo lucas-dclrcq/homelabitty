@@ -159,7 +159,7 @@ spec:
       repo:
         type: persistentVolumeClaim
         accessMode: ReadWriteMany
-        size: 150Gi
+        size: 200Gi
         storageClass: ceph-filesystem
         advancedMounts:
           pacman:
