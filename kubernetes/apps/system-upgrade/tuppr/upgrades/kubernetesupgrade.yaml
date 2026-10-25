@@ -10,8 +10,13 @@ spec:
     version: v1.35.9
   healthChecks:
     # No kopiur backup in flight (Snapshot only: standing populator Restores
-    # sit Reconciling=True by design and would block forever)
+    # sit Reconciling=True by design and would block forever).
+    # Gate on phase, not conditions: discovered snapshots carry a status with
+    # no conditions key at all, so a status.conditions.* expression throws
+    # "no such key: conditions" and the gate can never pass.
     - apiVersion: kopiur.home-operations.com/v1alpha1
       kind: Snapshot
       expr: |-
-        status.conditions.filter(c, c.type == "Reconciling").all(c, c.status == "False")
+        !has(status.phase) || !(status.phase in ["Pending", "Running"])
+      # Longest observed backup is ~10m (synapse), so 10m is too tight
+      timeout: 20m
