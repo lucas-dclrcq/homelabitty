@@ -16,6 +16,9 @@
     - role: prometheus.prometheus.smartctl_exporter
       vars:
         smartctl_exporter_version: 0.14.0
+    # Metrics are pulled by vmagent (observability/victoria-metrics-stack);
+    # logs have to be pushed, hence an uploader on the node itself.
+    - journal_upload
 
 - name: Configure Music player
   hosts: music

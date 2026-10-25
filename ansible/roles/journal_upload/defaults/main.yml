@@ -1,0 +1,17 @@
+---
+# VictoriaLogs ingests the journald export format natively on /insert/journald,
+# so systemd-journal-upload is the whole shipper - no vector/promtail needed.
+#
+# The target is victoria-logs-ingest, a LoadBalancer dedicated to LAN clients
+# (kubernetes/apps/observability/victoria-logs/app/service-ingest.yaml), not
+# the internal gateway: the gateway VIP is unreachable from 192.168.1.0/24,
+# see the comment in that file. Plain http, so no certificate handling here.
+#
+# The URL already carries a path, so systemd uses it verbatim; given a bare
+# host it would append /upload instead.
+#
+# _stream_fields picks the journald fields promoted to VictoriaLogs log
+# streams. Keep it low-cardinality - never _PID, that is one stream per
+# process.
+journal_upload_url: >-
+  http://vlogs-ingest.hoohoot.xyz:9428/insert/journald?_stream_fields=_HOSTNAME,_SYSTEMD_UNIT

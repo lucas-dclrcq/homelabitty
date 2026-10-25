@@ -1,0 +1,6 @@
+---
+- name: Restart systemd-journal-upload
+  ansible.builtin.systemd_service:
+    name: systemd-journal-upload.service
+    state: restarted
+    daemon_reload: true

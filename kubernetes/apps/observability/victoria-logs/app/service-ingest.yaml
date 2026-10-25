@@ -1,0 +1,33 @@
+---
+# LAN-facing ingestion endpoint, used by hosts that are not in the cluster and
+# therefore cannot reach the ClusterIP: today the NTP Pi, which ships its
+# journal with systemd-journal-upload (ansible/roles/journal_upload).
+#
+# It deliberately does NOT go through the internal gateway. The gateway VIP
+# (192.168.1.47) is announced both over BGP and over L2, and its Service is
+# externalTrafficPolicy: Local - so a host sitting in 192.168.1.0/24 ARPs for
+# the VIP on-link and lands on whichever node won the L2 lease, which is
+# usually a node with no envoy pod, and the connection is refused. Only
+# clients on another VLAN (routed, hence BGP, hence a node that advertises a
+# backend) get through. Cluster policy below sidesteps the whole trap: every
+# node can forward to the single victoria-logs pod.
+# yaml-language-server: $schema=https://json.schemastore.org/kubernetes-definitions.json
+apiVersion: v1
+kind: Service
+metadata:
+  name: victoria-logs-ingest
+  annotations:
+    external-dns.kubernetes.io/hostname: "vlogs-ingest.hoohoot.xyz"
+    io.cilium/lb-ipam-ips: "192.168.1.49"
+spec:
+  type: LoadBalancer
+  externalTrafficPolicy: Cluster
+  selector:
+    app: server
+    app.kubernetes.io/instance: victoria-logs
+    app.kubernetes.io/name: victoria-logs-single
+  ports:
+    - name: http
+      port: 9428
+      targetPort: http
+      protocol: TCP

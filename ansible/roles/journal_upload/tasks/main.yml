@@ -1,0 +1,48 @@
+---
+- name: Install systemd-journal-upload
+  ansible.builtin.package:
+    name: systemd-journal-remote # ships systemd-journal-upload
+    state: present
+
+- name: Configure journal upload to VictoriaLogs
+  ansible.builtin.copy:
+    dest: /etc/systemd/journal-upload.conf
+    content: |
+      # Managed by Ansible (journal_upload role)
+      [Upload]
+      URL={{ journal_upload_url }}
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart systemd-journal-upload
+
+- name: Create systemd-journal-upload drop-in directory
+  ansible.builtin.file:
+    path: /etc/systemd/system/systemd-journal-upload.service.d
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Keep journal upload retrying when VictoriaLogs is unreachable
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/systemd-journal-upload.service.d/override.conf
+    content: |
+      # Managed by Ansible (journal_upload role)
+      #
+      # The uploader exits when the remote end is down (cluster reboot, Flux
+      # rollout). Restart it, but slowly enough not to hammer the endpoint.
+      [Service]
+      Restart=always
+      RestartSec=30
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart systemd-journal-upload
+
+- name: Enable and start systemd-journal-upload
+  ansible.builtin.systemd_service:
+    name: systemd-journal-upload.service
+    enabled: true
+    state: started
+    daemon_reload: true
