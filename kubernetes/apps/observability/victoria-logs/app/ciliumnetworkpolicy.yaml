@@ -20,7 +20,8 @@ spec:
             - port: "9428"
               protocol: TCP
     # victoria-logs-ingest is a LoadBalancer reached straight from the LAN
-    # (remote-node covers the externalTrafficPolicy=Cluster hop). Today that
+    # (remote-node covered the SNATed externalTrafficPolicy=Cluster hop; kept
+    # until the audit dashboard confirms DSR made it unused). Today that
     # is the NTP Pi pushing its journal, see ./service-ingest.yaml
     - fromEntities:
         - world

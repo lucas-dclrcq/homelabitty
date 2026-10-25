@@ -96,7 +96,7 @@ spec:
     kubeProxyReplacementHealthzBindAddr: 0.0.0.0:10256
     loadBalancer:
       algorithm: maglev
-      mode: snat # dsr ?
+      mode: dsr # backends reply straight to the client, which keeps its real source IP
       serviceTopology: true # spegel relies on trafficDistribution: PreferSameNode
     localRedirectPolicies:
       enabled: true

@@ -5,7 +5,7 @@ kind: CiliumClusterwideNetworkPolicy
 metadata:
   name: allow-ingress-world
 spec:
-  description: "Pods labeled ingress.home.arpa/world=allow accept traffic from outside the cluster (LoadBalancer services reached by LAN clients: mosquitto, smtp-relay, forgejo ssh). remote-node covers externalTrafficPolicy=Cluster services whose traffic is SNATed by the ingressing node."
+  description: "Pods labeled ingress.home.arpa/world=allow accept traffic from outside the cluster (LoadBalancer services reached by LAN clients: mosquitto, smtp-relay, forgejo ssh). remote-node covered the SNATed externalTrafficPolicy=Cluster hop; with DSR the client keeps its world identity, so it stays only until the audit dashboard confirms it is unused."
   endpointSelector:
     matchLabels:
       ingress.home.arpa/world: allow
