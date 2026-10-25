@@ -39,6 +39,17 @@ kind: CiliumBGPPeerConfig
 metadata:
   name: l3-bgp-peer
 spec:
+  # Detect a dead node within 9s (default hold time is 90s) so the router
+  # stops sending LoadBalancer traffic to it quickly.
+  timers:
+    holdTimeSeconds: 9
+    keepAliveTimeSeconds: 3
+  # With a 9s hold time, a plain cilium-agent restart would also drop the
+  # session and withdraw routes while the datapath keeps forwarding; graceful
+  # restart lets the router keep them for the duration of the restart.
+  gracefulRestart:
+    enabled: true
+    restartTimeSeconds: 120
   families:
     - afi: ipv4
       safi: unicast
