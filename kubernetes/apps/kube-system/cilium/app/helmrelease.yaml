@@ -28,7 +28,7 @@ spec:
     #      preallocateMaps: true
     #      tproxy: true
     # https://docs.cilium.io/en/stable/operations/performance/tuning/#ebpf-clock-probe
-    #    bpfClockProbe: true
+    bpfClockProbe: true
     bgpControlPlane:
       enabled: true
     cgroup:
