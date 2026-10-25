@@ -24,6 +24,12 @@ spec:
       enabled: true
     server:
       fullnameOverride: victoria-logs
+      extraArgs:
+        # journald ingestion (the NTP Pi, see ./service-ingest.yaml) takes no
+        # query arguments: systemd-journal-upload appends /upload to whatever
+        # URL it is given unless it already ends with it, which would land
+        # inside the query string. Stream fields are therefore set here.
+        journald.streamFields: _HOSTNAME,_SYSTEMD_UNIT
       podLabels:
         ingress.home.arpa/gateway-internal: allow
         ingress.home.arpa/prometheus: allow

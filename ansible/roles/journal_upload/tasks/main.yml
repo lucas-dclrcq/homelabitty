@@ -1,7 +1,8 @@
 ---
+# systemd-journal-upload ships inside the systemd-journal-remote package
 - name: Install systemd-journal-upload
   ansible.builtin.package:
-    name: systemd-journal-remote # ships systemd-journal-upload
+    name: systemd-journal-remote
     state: present
 
 - name: Configure journal upload to VictoriaLogs
