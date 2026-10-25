@@ -96,7 +96,8 @@ spec:
     loadBalancer:
       algorithm: maglev
       mode: snat # dsr ?
-    localRedirectPolicy: true
+    localRedirectPolicies:
+      enabled: true
     # SAFETY NET while rolling out network policies: verdicts are computed and
     # exported (hubble_policy_verdicts_total{action="audit"}) but traffic that
     # would be denied is still FORWARDED. Flip to false once the
