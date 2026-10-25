@@ -165,7 +165,11 @@ spec:
               HERMES_WEBUI_GATEWAY_BASE_URL: http://127.0.0.1:8642
               HERMES_WEBUI_GATEWAY_USE_RUNS_API: "true"
               HERMES_WEBUI_HOST: 0.0.0.0
-              # Access is restricted by the AuthentikApplication group binding
+              # OIDC stays disabled (and the UI open) unless all four OIDC fields are set.
+              # Authentik's profile scope emits group names in the `groups` claim; this
+              # duplicates the AuthentikApplication group binding on the WebUI side.
+              HERMES_WEBUI_OIDC_ALLOW_CLAIM: groups
+              HERMES_WEBUI_OIDC_ALLOW_VALUES: Hoohoot Developers
               HERMES_WEBUI_OIDC_CLIENT_ID:
                 valueFrom:
                   secretKeyRef:
