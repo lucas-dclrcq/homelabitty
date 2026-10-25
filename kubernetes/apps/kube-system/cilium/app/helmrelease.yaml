@@ -82,7 +82,9 @@ spec:
         auto:
           # Rotate hubble certs via certgen CronJob (helm-generated certs expired)
           method: cronJob
-          certValidityDuration: 1095
+          # Must stay below the remaining lifetime of the reused cilium-ca
+          # (3 years): since 1.20 certgen refuses leaves outliving the CA.
+          certValidityDuration: 365
           schedule: "0 0 1 */4 *"
     ipam:
       mode: kubernetes
