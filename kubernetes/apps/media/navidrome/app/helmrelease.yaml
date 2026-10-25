@@ -90,6 +90,8 @@ spec:
                 enabled: false
 
     defaultPodOptions:
+      annotations:
+        fluentbit.io/parser: level_logfmt
       labels:
         ingress.home.arpa/gateway-external: allow
         ingress.home.arpa/prometheus: allow

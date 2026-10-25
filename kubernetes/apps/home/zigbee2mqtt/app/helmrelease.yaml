@@ -75,6 +75,8 @@ spec:
                 memory: 1Gi
 
     defaultPodOptions:
+      annotations:
+        fluentbit.io/parser: level_tsbracket
       labels:
         ingress.home.arpa/gateway-internal: allow
         egress.home.arpa/mqtt: allow

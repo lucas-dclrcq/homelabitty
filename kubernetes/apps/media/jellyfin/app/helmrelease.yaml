@@ -96,6 +96,8 @@ spec:
                 memory: 16Gi
 
     defaultPodOptions:
+      annotations:
+        fluentbit.io/parser: level_bracket
       labels:
         ingress.home.arpa/gateway-external: allow
         ingress.home.arpa/prometheus: allow

@@ -9,3 +9,6 @@ spec:
   chartRef:
     kind: OCIRepository
     name: reflector
+  values:
+    podAnnotations:
+      fluentbit.io/parser: level_bracket

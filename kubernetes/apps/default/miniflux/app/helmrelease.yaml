@@ -11,6 +11,8 @@ spec:
     name: *app
   values:
     defaultPodOptions:
+      annotations:
+        fluentbit.io/parser: level_logfmt
       securityContext:
         runAsNonRoot: true
         runAsUser: 65534

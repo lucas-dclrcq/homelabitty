@@ -64,6 +64,8 @@ spec:
                   - "ALL"
 
     defaultPodOptions:
+      annotations:
+        fluentbit.io/parser: level_python
       labels:
         ingress.home.arpa/gateway-internal: allow
         egress.home.arpa/kubedns: allow

@@ -50,6 +50,8 @@ spec:
                 memory: 500Mi
 
     defaultPodOptions:
+      annotations:
+        fluentbit.io/parser: level_logfmt
       labels:
         ingress.home.arpa/gateway-internal: allow
         ingress.home.arpa/prometheus: allow

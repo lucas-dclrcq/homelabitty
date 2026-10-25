@@ -32,6 +32,8 @@ spec:
                         protocol: TCP
 
     defaultPodOptions:
+      annotations:
+        fluentbit.io/parser: level_python
       automountServiceAccountToken: false
       enableServiceLinks: false
       securityContext:

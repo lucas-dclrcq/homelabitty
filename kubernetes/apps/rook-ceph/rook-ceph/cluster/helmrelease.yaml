@@ -34,6 +34,11 @@ spec:
       bdev_async_discard = true
       osd_class_update_on_start = false
     cephClusterSpec:
+      # Every ceph daemon logs "... log [DBG] : ..."; see
+      # kubernetes/apps/observability/fluent-bit/README.md
+      annotations:
+        all:
+          fluentbit.io/parser: level_bracket
       crashCollector:
         disable: false
       security:

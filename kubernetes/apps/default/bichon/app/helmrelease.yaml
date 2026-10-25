@@ -11,6 +11,8 @@ spec:
   interval: 30m
   values:
     defaultPodOptions:
+      annotations:
+        fluentbit.io/parser: level_tsword
       labels:
         ingress.home.arpa/gateway-internal: allow
         egress.home.arpa/internet: allow

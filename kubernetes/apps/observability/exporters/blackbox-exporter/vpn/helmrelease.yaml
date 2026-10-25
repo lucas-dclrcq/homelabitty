@@ -10,6 +10,8 @@ spec:
     name: *app
   interval: 1h
   values:
+    podAnnotations:
+      fluentbit.io/parser: level_logfmt
     fullnameOverride: blackbox-exporter-vpn
     pod:
       labels:

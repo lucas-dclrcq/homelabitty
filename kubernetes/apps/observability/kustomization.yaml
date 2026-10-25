@@ -12,6 +12,7 @@ resources:
   - ./prometheus-pushgateway/ks.yaml
   - ./grafana/ks.yaml
   - ./victoria-logs/ks.yaml
+  - ./fluent-bit/ks.yaml
   - ./kromgo/ks.yaml
   - ./keda/ks.yaml
   - ./silence-operator/ks.yaml

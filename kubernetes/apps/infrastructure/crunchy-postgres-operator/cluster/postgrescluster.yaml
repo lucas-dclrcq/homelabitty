@@ -58,6 +58,8 @@ spec:
   instances:
     - name: postgres
       metadata:
+        annotations:
+          fluentbit.io/parser: level_python
         labels:
           app.kubernetes.io/name: crunchy-postgres
       replicas: &replica 3
@@ -334,6 +336,8 @@ spec:
       port: 5432
       replicas: *replica
       metadata:
+        annotations:
+          fluentbit.io/parser: level_pgbouncer
         labels:
           app.kubernetes.io/name: crunchy-postgres-pgbouncer
       config:

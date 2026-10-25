@@ -62,6 +62,8 @@ spec:
     enableServiceMonitors: true
 
     kubewatch:
+      annotations:
+        fluentbit.io/parser: level_logfmt
       labels:
         egress.home.arpa/apiserver: allow
       resources:

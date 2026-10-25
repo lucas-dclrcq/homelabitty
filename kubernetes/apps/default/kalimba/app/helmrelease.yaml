@@ -100,6 +100,8 @@ spec:
                 memory: 1536Mi # never set limits.cpu
 
     defaultPodOptions:
+      annotations:
+        fluentbit.io/parser: level_python
       labels:
         ingress.home.arpa/gateway-internal: allow
         egress.home.arpa/postgres: allow

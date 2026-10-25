@@ -1,0 +1,258 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: fluent-bit
+spec:
+  interval: 30m
+  chartRef:
+    kind: OCIRepository
+    name: fluent-bit
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  values:
+    fullnameOverride: fluent-bit
+    # The kubernetes filter reads pod metadata from the API to enrich every line
+    podLabels:
+      ingress.home.arpa/prometheus: allow
+      egress.home.arpa/apiserver: allow
+
+    # Talos has no /var/lib/docker, and /etc/machine-id is unused here. Only
+    # /var/log is needed: /var/log/containers/*.log are symlinks into
+    # /var/log/pods, and the tail checkpoint DB lives next to them.
+    daemonSetVolumes:
+      - name: varlog
+        hostPath:
+          path: /var/log
+    daemonSetVolumeMounts:
+      - name: varlog
+        mountPath: /var/log
+
+    resources:
+      requests:
+        cpu: 50m
+        memory: 128Mi
+      limits:
+        memory: 512Mi
+
+    serviceMonitor:
+      enabled: true
+    dashboards:
+      enabled: true
+
+    config:
+      service: |-
+        [SERVICE]
+            daemon off
+            flush {{ .Values.flush }}
+            log_level {{ .Values.logLevel }}
+            parsers_file /fluent-bit/etc/parsers.conf
+            parsers_file /fluent-bit/etc/conf/custom_parsers.conf
+            http_server on
+            http_listen 0.0.0.0
+            http_port {{ .Values.metricsPort }}
+            health_check on
+            storage.path /var/log/fluent-bit/storage
+            storage.sync normal
+            storage.checksum off
+            storage.backlog.mem_limit 64M
+            storage.metrics on
+
+      inputs: |-
+        [INPUT]
+            name tail
+            alias kubernetes
+            tag kubernetes.*
+            path /var/log/containers/*.log
+            # containerd splits lines over 16KB into P/F partials; the built-in
+            # cri multiline parser stitches them back and takes the timestamp
+            # from the runtime, so _time is the line's own time, not ingest time
+            multiline.parser cri
+            db /var/log/fluent-bit/tail.db
+            db.sync normal
+            storage.type filesystem
+            refresh_interval 10
+            skip_long_lines on
+            skip_empty_lines on
+
+      filters: |-
+        [FILTER]
+            name kubernetes
+            alias kubernetes
+            match kubernetes.*
+            kube_tag_prefix kubernetes.var.log.containers.
+            # merge_log is what makes k8s-logging.parser work at all: a pod's
+            # fluentbit.io/parser annotation is tried first, JSON second.
+            # keep_log keeps the raw line around - the level_* parsers only
+            # yield a level, the message itself stays in `log`.
+            merge_log on
+            merge_log_trim on
+            keep_log on
+            k8s-logging.parser on
+            k8s-logging.exclude on
+            labels on
+            annotations off
+            namespace_labels off
+            buffer_size 256k
+
+        # --- field names: reproduce what vlagent wrote, so the 7 days of logs
+        # --- already in victoria-logs and every saved query keep matching.
+        [FILTER]
+            name nest
+            match kubernetes.*
+            operation lift
+            nested_under kubernetes
+            add_prefix kubernetes.
+
+        [FILTER]
+            name nest
+            match kubernetes.*
+            operation lift
+            nested_under kubernetes.labels
+            add_prefix kubernetes.pod_labels.
+
+        [FILTER]
+            name modify
+            match kubernetes.*
+            rename kubernetes.namespace_name kubernetes.pod_namespace
+            rename kubernetes.host kubernetes.pod_node_name
+            rename kubernetes.docker_id kubernetes.container_id
+            rename stream output_stream
+            remove kubernetes.pod_id
+            remove kubernetes.container_hash
+            remove kubernetes.container_image
+            remove logtag
+
+        # --- level normalisation: canonical lowercase names, whatever the app
+        # --- or the parser produced (INFO, inf, I, 30, LOG, ...).
+        [FILTER]
+            name modify
+            match kubernetes.*
+            condition key_value_matches level (?i)^(f|ftl|fatal|panic|pnc|crit|critical|emerg|emergency|alert|60)$
+            set level fatal
+
+        [FILTER]
+            name modify
+            match kubernetes.*
+            condition key_value_matches level (?i)^(e|err|eror|error|severe|50)$
+            set level error
+
+        [FILTER]
+            name modify
+            match kubernetes.*
+            condition key_value_matches level (?i)^(w|wrn|warn|warning|40)$
+            set level warn
+
+        [FILTER]
+            name modify
+            match kubernetes.*
+            condition key_value_matches level (?i)^(i|inf|info|information|notice|log|30)$
+            set level info
+
+        [FILTER]
+            name modify
+            match kubernetes.*
+            condition key_value_matches level (?i)^(d|dbg|debug|20)$
+            set level debug
+
+        [FILTER]
+            name modify
+            match kubernetes.*
+            condition key_value_matches level (?i)^(t|trc|trace|verbose|10)$
+            set level trace
+
+        # --- drop the raw line when merge_log already produced a real message
+        # --- field, otherwise victoria-logs would store both it and _msg.
+        [FILTER]
+            name modify
+            match kubernetes.*
+            condition key_exists msg
+            remove log
+
+        [FILTER]
+            name modify
+            match kubernetes.*
+            condition key_exists message
+            remove log
+
+      customParsers: |-
+        # Level extractors selected per pod with the fluentbit.io/parser
+        # annotation. They deliberately capture nothing but `level`: the
+        # message stays in `log`. A line that does not match is passed through
+        # untouched, which is what continuation lines of a stack trace want.
+        # See ../README.md for the catalogue and which app uses what.
+
+        [PARSER]
+            Name        level_logfmt
+            Format      regex
+            Regex       \blevel=(?<level>[A-Za-z]+)
+
+        [PARSER]
+            Name        level_bracket
+            Format      regex
+            Regex       (?i)\[(?:[^\]]*?\s)?(?<level>trace|trc|debug|dbg|info|inf|notice|warning|warn|wrn|error|err|fatal|ftl|critical|crit)\b[^\]]*\]
+
+        [PARSER]
+            Name        level_tsword
+            Format      regex
+            Regex       (?i)^\S+\s+(?<level>trace|trc|debug|dbg|info|inf|notice|warning|warn|wrn|error|err|fatal|ftl|panic|pnc)\b
+
+        [PARSER]
+            Name        level_python
+            Format      regex
+            Regex       ^\d{4}-\d{2}-\d{2}[ T]\S+.{0,80}?\b(?<level>TRACE|DEBUG|INFO|NOTICE|WARNING|WARN|ERROR|CRITICAL|FATAL|EXCEPTION)\b
+
+        [PARSER]
+            Name        level_klog
+            Format      regex
+            Regex       ^(?<level>[IWEFD])\d{4}
+
+        [PARSER]
+            Name        level_leading
+            Format      regex
+            Regex       (?i)^(?<level>trace|debug|info|notice|warning|warn|error|critical|fatal)\b
+
+        [PARSER]
+            Name        level_tsbracket
+            Format      regex
+            Regex       ^\[[^\]]+\]\s+(?<level>[A-Za-z]+)[:\s]
+
+        [PARSER]
+            Name        level_pgbouncer
+            Format      regex
+            Regex       \[\d+\]\s(?<level>[A-Z]+)\s
+
+        [PARSER]
+            Name        level_nestjs
+            Format      regex
+            Regex       (?:^\[Nest\].*?\s|^\[[^\]]+\]\s+)(?<level>LOG|ERROR|WARN|DEBUG|VERBOSE|FATAL|INFO)\b
+
+        [PARSER]
+            Name        level_gitea
+            Format      regex
+            Regex       \[(?<level>[TDIWEFC])\]\s
+
+      outputs: |-
+        [OUTPUT]
+            name http
+            alias victoria-logs
+            match kubernetes.*
+            host victoria-logs.observability.svc.cluster.local
+            port 9428
+            # _msg_field takes a list and uses the first field that is present,
+            # so structured logs keep their own message and everything else
+            # falls back to the raw line.
+            uri /insert/jsonline?_msg_field=msg,message,log&_time_field=date&_stream_fields=kubernetes.pod_namespace,kubernetes.pod_name,kubernetes.container_name,kubernetes.pod_labels.app.kubernetes.io/name
+            format json_lines
+            json_date_format iso8601
+            json_date_key date
+            compress gzip
+            storage.total_limit_size 10G
+            retry_limit 10
+            log_response_payload off

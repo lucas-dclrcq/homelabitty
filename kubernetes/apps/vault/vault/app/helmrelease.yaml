@@ -16,6 +16,8 @@ spec:
       enabled: true
 
     server:
+      annotations:
+        fluentbit.io/parser: level_bracket
       extraLabels:
         configmap.reloader.stakater.com/reload: vault-config
         ingress.home.arpa/gateway-internal: allow

@@ -60,6 +60,8 @@ spec:
               limits:
                 memory: 2Gi
     defaultPodOptions:
+      annotations:
+        fluentbit.io/parser: level_python
       labels:
         ingress.home.arpa/gateway-external: allow
         egress.home.arpa/gateway-external: allow

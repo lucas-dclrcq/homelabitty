@@ -10,6 +10,8 @@ spec:
     kind: OCIRepository
     name: coredns
   values:
+    podAnnotations:
+      fluentbit.io/parser: level_bracket
     fullnameOverride: coredns
     image:
       repository: mirror.gcr.io/coredns/coredns

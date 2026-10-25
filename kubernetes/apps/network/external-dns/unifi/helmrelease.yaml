@@ -77,3 +77,4 @@ spec:
       egress.home.arpa/router: allow
     podAnnotations:
       secret.reloader.stakater.com/reload: *secret
+      fluentbit.io/parser: level_logfmt

@@ -3,12 +3,12 @@
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: victoria-logs-collector
+  name: fluent-bit
 spec:
-  description: "The node collector ships every pod log to victoria-logs (remoteWrite in ./helmrelease.yaml)"
+  description: "The node collector ships every pod log to victoria-logs (http output in ./helmrelease.yaml)"
   endpointSelector:
     matchLabels:
-      app.kubernetes.io/name: victoria-logs-collector
+      app.kubernetes.io/name: fluent-bit
   egress:
     - toEndpoints:
         - matchLabels:

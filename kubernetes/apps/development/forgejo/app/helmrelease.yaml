@@ -60,6 +60,8 @@ spec:
       enabled: false
 
     gitea:
+      podAnnotations:
+        fluentbit.io/parser: level_gitea
       admin:
         username: ""
       additionalConfigFromEnvs:

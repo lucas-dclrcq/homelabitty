@@ -47,6 +47,8 @@ spec:
 
     synapse:
       enabled: true
+      annotations:
+        fluentbit.io/parser: level_python
       labels:
         ingress.home.arpa/gateway-external: allow
         ingress.home.arpa/gateway-internal: allow
@@ -114,6 +116,8 @@ spec:
 
     matrixAuthenticationService:
       enabled: true
+      annotations:
+        fluentbit.io/parser: level_tsword
       labels:
         ingress.home.arpa/gateway-external: allow
         ingress.home.arpa/prometheus: allow

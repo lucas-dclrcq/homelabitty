@@ -22,6 +22,8 @@ spec:
     keepHistory: false
   values:
     defaultPodOptions:
+      annotations:
+        fluentbit.io/parser: level_bracket
       labels:
         ingress.home.arpa/gateway-external: allow
         egress.home.arpa/postgres: allow

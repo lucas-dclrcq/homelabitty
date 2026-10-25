@@ -97,6 +97,8 @@ spec:
                 memory: 512Mi
 
     defaultPodOptions:
+      annotations:
+        fluentbit.io/parser: level_tsword
       labels:
         ingress.home.arpa/gateway-external: allow
         egress.home.arpa/postgres: allow

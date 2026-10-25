@@ -26,6 +26,8 @@ spec:
               type: GatewayNamespace
     deployment:
       pod:
+        annotations:
+          fluentbit.io/parser: level_tsword
         labels:
           # kube-apiserver calls the topology-injector mutating webhook served
           # by the controller; the controller itself watches the kube API and

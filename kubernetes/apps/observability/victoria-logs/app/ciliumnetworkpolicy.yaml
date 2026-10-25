@@ -12,7 +12,7 @@ spec:
   ingress:
     - fromEndpoints:
         - matchLabels:
-            app.kubernetes.io/name: victoria-logs-collector
+            app.kubernetes.io/name: fluent-bit
         - matchLabels:
             app: grafana
       toPorts:

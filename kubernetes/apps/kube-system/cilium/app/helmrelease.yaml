@@ -17,6 +17,8 @@ spec:
     remediation:
       retries: 3
   values:
+    podAnnotations:
+      fluentbit.io/parser: level_logfmt
     autoDirectNodeRoutes: true
     # https://docs.cilium.io/en/stable/network/kubernetes/bandwidth-manager/
     #    bandwidthManager:
@@ -103,6 +105,8 @@ spec:
     # cilium-policy-audit Grafana dashboard stays clean.
     policyAuditMode: true
     operator:
+      podAnnotations:
+        fluentbit.io/parser: level_logfmt
       dashboards:
         enabled: true
       prometheus:
