@@ -23,6 +23,12 @@ update_env() (
 : "${API_SERVER_KEY:?API_SERVER_KEY is required}"
 
 cp /seed/config.yaml "$data/config.yaml"
+
+# On a fresh volume the boot reconciler registers the default gateway down (no prior state),
+# leaving the cron heartbeat probe failing forever. Seed the intent once; later stops persist.
+if [[ ! -f $data/gateway_state.json ]]; then
+  printf '{"gateway_state": "running", "desired_state": "running"}\n' > "$data/gateway_state.json"
+fi
 cp /seed/SOUL.md "$data/SOUL.md"
 
 cat > "$data/.hermes-terminal-env.sh" <<'EOF'
