@@ -26,7 +26,8 @@ spec:
             - port: "9443"
               protocol: TCP
     # LDAP outpost is a LoadBalancer reached straight from the LAN
-    # (remote-node covers the externalTrafficPolicy=Cluster hop)
+    # (remote-node covered the SNATed externalTrafficPolicy=Cluster hop; kept
+    # until the audit dashboard confirms DSR made it unused)
     - fromEntities:
         - world
         - remote-node

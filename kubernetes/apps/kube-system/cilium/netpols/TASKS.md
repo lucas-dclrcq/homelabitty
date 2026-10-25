@@ -243,6 +243,10 @@ broad label — and the only protection against a mislabelled pod.
 - [ ] **`egress.home.arpa/talos`** (`host` + `remote-node` on :50000/:50001) and
       a generic `/host`. We only use `host`/`remote-node` 4 times in total;
       useful the day a pod in an enrolled namespace talks to the Talos API.
+- [ ] **Drop `remote-node` from the LoadBalancer ingress rules** now that
+      Cilium runs in DSR mode: `allow-ingress-world`, authentik LDAP and
+      victoria-logs-ingest. LAN clients should arrive as `world`; confirm on the
+      audit dashboard that no `remote-node` flow hits them, then remove it.
 - [ ] **Multicast**: `/mdns` (224.0.0.251:5353), `/dlna` (239.255.255.250:1900)
       — only if home-assistant / jellyfin discovery needs it.
 
