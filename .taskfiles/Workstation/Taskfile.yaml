@@ -8,7 +8,6 @@ vars:
   GENERIC_BIN_DIR: "{{.ROOT_DIR}}/.bin"
 
 tasks:
-
   direnv:
     desc: Run direnv hooks
     cmd: direnv allow .
@@ -20,7 +19,7 @@ tasks:
     desc: Set up virtual environment
     cmds:
       - "{{.PYTHON_BIN}} -m venv {{.VIRTUAL_ENV}}"
-      - '{{.VIRTUAL_ENV}}/bin/python3 -m pip install --upgrade pip setuptools wheel'
+      - "{{.VIRTUAL_ENV}}/bin/python3 -m pip install --upgrade pip setuptools wheel"
       - '{{.VIRTUAL_ENV}}/bin/python3 -m pip install --upgrade --requirement "{{.PIP_REQUIREMENTS_FILE}}"'
     sources:
       - "{{.PIP_REQUIREMENTS_FILE}}"
@@ -51,7 +50,6 @@ tasks:
     platforms: ["linux/amd64", "linux/arm64"]
     cmds:
       - for:
-          - budimanjojo/talhelper?as=talhelper&type=script
           - cloudflare/cloudflared?as=cloudflared&type=script
           - FiloSottile/age?as=age&type=script
           - fluxcd/flux2?as=flux&type=script

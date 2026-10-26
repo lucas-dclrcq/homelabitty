@@ -1,7 +1,0 @@
----
-machine:
-  time:
-    disabled: false
-    servers:
-      - ntp.lulice.lan
-      - time.cloudflare.com

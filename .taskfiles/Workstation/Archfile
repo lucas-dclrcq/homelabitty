@@ -13,5 +13,4 @@ kustomize
 moreutils
 sops
 stern-bin
-talhelper-bin
 talosctl

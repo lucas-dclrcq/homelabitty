@@ -1,0 +1,119 @@
+---
+machine:
+  type: controlplane
+  # ca merges as a unit; crt must be repeated alongside key
+  ca:
+    crt: {{ certs.os.crt }}
+    key: {{ certs.os.key }}
+  features:
+    kubernetesTalosAPIAccess:
+      enabled: true
+      allowedRoles:
+        - os:admin
+      allowedKubernetesNamespaces:
+        - system-upgrade
+  nodeLabels:
+    node.kubernetes.io/exclude-from-external-load-balancers: ""
+cluster:
+  # ca merges as a unit; crt must be repeated alongside key
+  ca:
+    crt: {{ certs.k8s.crt }}
+    key: {{ certs.k8s.key }}
+  aggregatorCA:
+    crt: {{ certs.k8saggregator.crt }}
+    key: {{ certs.k8saggregator.key }}
+  serviceAccount:
+    key: {{ certs.k8sserviceaccount.key }}
+  etcd:
+    ca:
+      crt: {{ certs.etcd.crt }}
+      key: {{ certs.etcd.key }}
+    extraArgs:
+      listen-metrics-urls: http://0.0.0.0:2381
+    advertisedSubnets:
+      - 192.168.1.0/24
+  coreDNS:
+    disabled: true
+  allowSchedulingOnControlPlanes: true
+---
+apiVersion: v1alpha1
+kind: KubeAuditPolicyConfig
+configuration:
+  apiVersion: audit.k8s.io/v1
+  kind: Policy
+  rules:
+    - level: Metadata
+---
+apiVersion: v1alpha1
+kind: KubeAuthenticationConfig
+configuration:
+  anonymous:
+    conditions:
+      - path: /livez
+      - path: /readyz
+      - path: /healthz
+    enabled: true
+  jwt: []
+---
+apiVersion: v1alpha1
+kind: KubeAuthorizerConfig
+name: node
+type: Node
+---
+apiVersion: v1alpha1
+kind: KubeAuthorizerConfig
+name: rbac
+type: RBAC
+---
+apiVersion: v1alpha1
+kind: KubeEtcdEncryptionConfig
+config:
+  resources:
+    - providers:
+        # The key NAME is part of the stored ciphertext prefix
+        # (k8s:enc:secretbox:v1:key2:...): it must stay `key2` (what the legacy
+        # v1alpha1 path always generated) with the identity fallback, or every
+        # existing Secret becomes unreadable. talhelper's port got this wrong
+        # (key1, no identity).
+        - secretbox:
+            keys:
+              - name: key2
+                secret: {{ secrets.secretboxencryptionsecret }}
+        - identity: {}
+      resources:
+        - secrets
+---
+# PSA is deliberately absent (no KubeAdmissionControlConfig document) so Rook can run
+apiVersion: v1alpha1
+kind: KubeAPIServerConfig
+image: registry.k8s.io/kube-apiserver:v1.36.5
+extraArgs:
+  feature-gates: MutatingAdmissionPolicy=true
+  runtime-config: admissionregistration.k8s.io/v1beta1=true
+certExtraSANs:
+  - 192.168.1.42
+  - 127.0.0.1
+---
+apiVersion: v1alpha1
+kind: KubeControllerManagerConfig
+image: registry.k8s.io/kube-controller-manager:v1.36.5
+extraArgs:
+  bind-address: 0.0.0.0
+---
+apiVersion: v1alpha1
+kind: KubeSchedulerConfig
+image: registry.k8s.io/kube-scheduler:v1.36.5
+config: {}
+extraArgs:
+  bind-address: 0.0.0.0
+---
+apiVersion: v1alpha1
+kind: KubeProxyConfig
+enabled: false
+image: registry.k8s.io/kube-proxy:v1.36.5
+config: {}
+---
+apiVersion: v1alpha1
+kind: Layer2VIPConfig
+name: 192.168.1.42
+link: bond0

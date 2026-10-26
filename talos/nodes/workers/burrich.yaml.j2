@@ -1,0 +1,11 @@
+---
+apiVersion: v1alpha1
+kind: HostnameConfig
+auto: "off"
+hostname: burrich
+---
+apiVersion: v1alpha1
+kind: LinkAliasConfig
+name: bond0-m0
+selector:
+  match: glob("00:00:22:50:26:1e", mac(link.hardware_addr)) && glob("igc", link.driver)

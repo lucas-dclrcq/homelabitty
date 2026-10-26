@@ -40,7 +40,7 @@ Repository layout:
 - kubernetes/apps/<namespace>/<app>/app/helmrelease.yaml: Helm values, most apps use the bjw-s app-template chart
 - kubernetes/apps/<namespace>/<app>/app/ocirepository.yaml: chart source and version
 - kubernetes/components/: shared Kustomize components (volsync, dragonfly, ...)
-- talos/: node configuration (talhelper), not reconciled by Flux
+- talos/: node configuration (minijinja templates), not reconciled by Flux
 - Domains and other non-secret values are hardcoded directly in manifests.
 - Secrets come from Vault through ExternalSecret resources, never commit secret values.
 - *.sops.yaml files are encrypted, never edit them.

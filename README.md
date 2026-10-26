@@ -1,6 +1,5 @@
 <div align="center">
 
-
 <img src="./docs/assets/brand_icon.svg" align="center"/>
 
 ### My Homelab Gitops repository
@@ -12,7 +11,6 @@ CweXUyzPKLgyFwiH
 </div>
 
 <div align="center">
-
 
 [![Talos](https://kromgo.hoohoot.org/badges/talos_version)](https://talos.dev)
 &nbsp;&nbsp;
@@ -44,7 +42,7 @@ CweXUyzPKLgyFwiH
 
 ## 🚀 Bootstrap
 
-1. Setup talos nodes: `task talos:bootstrap`
+1. Setup talos nodes: `just talos apply-node <node> --insecure` for each node, then `talosctl bootstrap`
 2. Push private key: `task flux:github-deploy-key`
 3. Setup Flux : `task flux:bootstrap`
 
@@ -53,39 +51,34 @@ CweXUyzPKLgyFwiH
 ### ⚙️ Updating Talos node configuration
 
 > [!IMPORTANT]
-> Ensure you have updated `talconfig.yaml` and any patches with your updated configuration. In some cases you **not only
-need to apply the configuration but also upgrade talos** to apply new configuration.
+> Node configs are minijinja templates in `talos/` (see `talos/README.md`). In some cases you **not
+> only need to apply the configuration but also upgrade talos** to apply new configuration.
 
 ```sh
-# (Re)generate the Talos config
-task talos:generate-config
-# Apply the config to the node
-task talos:apply-node HOSTNAME=? MODE=?
-# e.g. task talos:apply-config HOSTNAME=k8s-0 MODE=auto
+# Render a node's machine config to stdout
+just talos render-config <node>
+# Apply the config to the node (extra args are passed to talosctl apply-config)
+just talos apply-node <node>
+# e.g. just talos apply-node fitz --dry-run
 ```
 
 ### ⬆️ Updating Talos and Kubernetes versions
 
-> [!IMPORTANT]
-> Ensure the `talosVersion` and `kubernetesVersion` in `talhelper.yaml` are up-to-date with the version you wish to
-> upgrade to.
+Talos and Kubernetes upgrades are performed in-cluster by
+[tuppr](https://github.com/home-operations/tuppr) (`kubernetes/apps/system-upgrade/tuppr/`);
+renovate bumps its versions together with the image pins in `talos/*.yaml.j2`. Manual fallbacks:
 
 ```sh
-# Upgrade node to a newer Talos version
-task talos:upgrade-node NODE=?
-# e.g. task talos:upgrade HOSTNAME=k8s-0
-```
-
-```sh
-# Upgrade cluster to a newer Kubernetes version
-task talos:upgrade-k8s
-# e.g. task talos:upgrade-k8s
+# Upgrade a node to the Talos version pinned in talos/cluster.yaml.j2
+just talos upgrade-node <node>
+# Upgrade the cluster to a newer Kubernetes version
+just talos upgrade-k8s <version>
 ```
 
 ## 🔧 Hardware
 
 | Name      | Device                   | CPU               | OS Disk    | Data Disk(s)                      | RAM  | OS            | Purpose           |
-|-----------|--------------------------|-------------------|------------|-----------------------------------|------|---------------|-------------------|
+| --------- | ------------------------ | ----------------- | ---------- | --------------------------------- | ---- | ------------- | ----------------- |
 | Fitz      | Dell Optiplex 3080 Micro | i5-10500T         | 500GB NVMe | 1TB SSD                           | 32GB | Talos         | K8S Control Plane |
 | Nighteyes | Dell Optiplex 3080 Micro | i5-10500T         | 500GB NVMe | 1TB SSD                           | 32GB | Talos         | K8S Control Plane |
 | Chade     | Dell Optiplex 3080 Micro | i5-10500T         | 500GB NVMe | 1TB SSD                           | 32GB | Talos         | K8S Control Plane |
@@ -100,7 +93,7 @@ task talos:upgrade-k8s
 ## ☁️ Cloud Services
 
 | Service                                   | Use                                                            | Cost                 |
-|-------------------------------------------|----------------------------------------------------------------|----------------------|
+| ----------------------------------------- | -------------------------------------------------------------- | -------------------- |
 | [Pushover](https://pushover.net)          | Alerts & Notifications                                         | 5$ one-time purchase |
 | [Cloudflare](https://www.cloudflare.com/) | Domain                                                         | Free                 |
 | [GitHub](https://github.com/)             | Hosting this repository and continuous integration/deployments | Free                 |
@@ -108,7 +101,7 @@ task talos:upgrade-k8s
 ## 🖥️ Tech Stack
 
 |                                                                                                                                                                   | Name                                                          | Description                                                                                            |
-|:------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------|--------------------------------------------------------------------------------------------------------|
+| :---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
 | <img width="32" src="https://github.com/cncf/artwork/raw/main/projects/kubernetes/icon/color/kubernetes-icon-color.svg">                                          | [Kubernetes](https://kubernetes.io/)                          | An open-source system for automating deployment, scaling, and management of containerized applications |
 | <img width="32" src="https://github.com/cncf/artwork/raw/main/projects/flux/icon/color/flux-icon-color.svg">                                                      | [FluxCD](https://fluxcd.io/)                                  | GitOps tool for deploying applications to Kubernetes                                                   |
 | <img width="32" src="https://www.talos.dev/images/logo.svg">                                                                                                      | [Talos Linux](https://www.talos.dev/)                         | Talos Linux is Linux designed for Kubernetes                                                           |

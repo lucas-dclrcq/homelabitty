@@ -26,14 +26,13 @@ vars:
 env:
   KUBECONFIG: "{{.KUBECONFIG_FILE}}"
   PYTHONDONTWRITEBYTECODE: "1"
-  MINIJINJA_CONFIG_FILE: '{{.ROOT_DIR}}/.minijinja.toml'
+  MINIJINJA_CONFIG_FILE: "{{.ROOT_DIR}}/.minijinja.toml"
   SOPS_AGE_KEY_FILE: "{{.AGE_FILE}}"
   VIRTUAL_ENV: "{{.ROOT_DIR}}/.venv"
 
 includes:
   kubernetes: .taskfiles/Kubernetes
   flux: .taskfiles/Flux
-  talos: .taskfiles/Talos
   sops: .taskfiles/Sops
   workstation: .taskfiles/Workstation
   rook:
@@ -41,7 +40,6 @@ includes:
   nas: .taskfiles/nas
 
 tasks:
-
   default: task --list
 
   init:
