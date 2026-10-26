@@ -42,7 +42,7 @@ spec:
               repository: getmeili/meilisearch
               # Keep this aligned with bookman's docker-compose.yml: the index
               # settings and the Mistral embedder config are version sensitive.
-              tag: v1.55.0
+              tag: v1.56.0
 
             env:
               MEILI_ENV: production
