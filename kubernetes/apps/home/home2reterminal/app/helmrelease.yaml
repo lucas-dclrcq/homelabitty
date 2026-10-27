@@ -20,11 +20,8 @@ spec:
         containers:
           app:
             image:
-              # Built by the home2reterminal repository's Forgejo CI: every push
-              # to main publishes `:latest`. The Harbor `homelab` project is
-              # public, so no pull secret is needed.
               repository: docker.hoohoot.org/homelab/home2reterminal
-              tag: latest
+              tag: latest@sha256:cc48c8058e3b760b0681e688465f4898150926aecb49b763de560e72a1e2d160
 
             env:
               TZ: Europe/Paris
