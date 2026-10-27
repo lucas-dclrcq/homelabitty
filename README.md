@@ -6,8 +6,6 @@
 
 _... managed with Flux, Renovate, and GitHub Actions_ 🤖
 
-CweXUyzPKLgyFwiH
-
 </div>
 
 <div align="center">
