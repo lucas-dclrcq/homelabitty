@@ -67,7 +67,7 @@ generate-talosconfig:
     #!/usr/bin/env bash
     set -euo pipefail
     sops exec-file "{{ secret_file }}" \
-        'talosctl gen config hoohoot https://192.168.1.42:6443 --with-secrets {} --output-types talosconfig -o "{{ talosconfig }}" --force'
+        'talosctl gen config hoohoot https://k8s.lulice.lan:6443 --with-secrets {} --output-types talosconfig -o "{{ talosconfig }}" --force'
     talosctl --talosconfig "{{ talosconfig }}" config endpoint 192.168.1.11 192.168.1.12 192.168.1.13
     talosctl --talosconfig "{{ talosconfig }}" config node 192.168.1.11 192.168.1.12 192.168.1.13 192.168.1.14 192.168.1.15 192.168.1.16
 

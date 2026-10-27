@@ -13,6 +13,31 @@ releases:
     version: 1.18.6
     values:
       - ../values.yaml.gotmpl
+    hooks:
+      - # Wait for the BGP/LB-IPAM CRDs before applying networking.yaml
+        command: kubectl
+        args:
+          - wait
+          - --for=create
+          - crd/ciliumbgpadvertisements.cilium.io
+          - crd/ciliumbgpclusterconfigs.cilium.io
+          - crd/ciliumbgppeerconfigs.cilium.io
+          - crd/ciliumloadbalancerippools.cilium.io
+          - --timeout=2m
+        events: ["postsync"]
+        showlogs: true
+      - 
+        # Bring up BGP and the kube-api VIP: k8s.lulice.lan (the cluster
+        # endpoint) only resolves to a live address once this is applied
+        command: kubectl
+        args:
+          - apply
+          - --namespace={{ .Release.Namespace }}
+          - --server-side
+          - --force-conflicts
+          - --filename=../../kubernetes/apps/{{ .Release.Namespace }}/{{ .Release.Name }}/app/networking.yaml
+        events: ["postsync"]
+        showlogs: true
 
   - name: coredns
     namespace: kube-system

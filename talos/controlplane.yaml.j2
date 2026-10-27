@@ -33,7 +33,8 @@ apiVersion: v1alpha1
 kind: KubeAPIServerConfig
 image: registry.k8s.io/kube-apiserver:v1.36.5
 certExtraSANs:
-  - 192.168.1.42
+  - 192.168.42.42
+  - k8s.lulice.lan
   - 127.0.0.1
 ---
 apiVersion: v1alpha1
@@ -70,11 +71,6 @@ kind: KubeControllerManagerConfig
 image: registry.k8s.io/kube-controller-manager:v1.36.5
 extraArgs:
   bind-address: 0.0.0.0
----
-apiVersion: v1alpha1
-kind: Layer2VIPConfig
-name: 192.168.1.42
-link: bond0
 ---
 apiVersion: v1alpha1
 kind: KubeCoreDNSConfig

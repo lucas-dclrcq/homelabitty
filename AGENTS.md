@@ -87,7 +87,7 @@ Each namespace directory has a `kustomization.yaml` that includes the `common` c
 
 ### Key Infrastructure
 
-- **Cluster**: Talos Linux, 3 control plane + 3 worker nodes, VIP `192.168.1.42`
+- **Cluster**: Talos Linux, 3 control plane + 3 worker nodes, API at `k8s.lulice.lan` (`192.168.42.42`, Cilium BGP LoadBalancer `kube-system/kube-api`)
 - **Storage**: Rook Ceph, NFS (TrueNAS), MinIO, Garage, VolSync backups
 - **Databases**: CrunchyData PGO (PostgreSQL Operator) with pgBackRest
 - **Monitoring**: Prometheus + Grafana + Loki + Alloy (observability namespace)

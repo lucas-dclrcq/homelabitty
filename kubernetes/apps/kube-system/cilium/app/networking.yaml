@@ -67,6 +67,30 @@ spec:
             values:
               - will-match-and-announce-all-services
 ---
+# Kubernetes API VIP: fronts the apiserver static pods (hostNetwork, so the
+# endpoints are the control plane node IPs). externalTrafficPolicy: Local
+# means Cilium only announces the /32 from nodes with a healthy apiserver,
+# and client IPs are preserved in the audit logs. k8s.lulice.lan is a static
+# A record on the UDM (NOT external-dns managed: it must resolve at rebuild
+# time, before external-dns exists).
+apiVersion: v1
+kind: Service
+metadata:
+  name: kube-api
+  namespace: kube-system
+  annotations:
+    lbipam.cilium.io/ips: 192.168.42.42
+spec:
+  type: LoadBalancer
+  externalTrafficPolicy: Local
+  selector:
+    k8s-app: kube-apiserver
+    tier: control-plane
+  ports:
+    - name: https
+      port: 6443
+      targetPort: 6443
+---
 # https://docs.cilium.io/en/latest/network/l2-announcements
 apiVersion: cilium.io/v2alpha1
 kind: CiliumL2AnnouncementPolicy

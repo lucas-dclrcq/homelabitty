@@ -12,11 +12,11 @@ default:
     just --list bootsrap
 
 [doc('Bootstrap Cluster')]
-bootstrap: talos kubernetes kubeconfig wait namespaces resources crds apps
+bootstrap: talos kubernetes (kubeconfig "node") wait namespaces resources crds apps (kubeconfig "cilium")
 
 [doc('Install Talos')]
 talos: (with-banner "Installing Talos")
-    for node in {{nodes}}; do \
+    for node in {{ nodes }}; do \
         if ! output=$(just talos apply-node "${node}" --insecure 2>&1); then \
             if [[ "${output}" == *"certificate required"* ]]; then \
                 just log info "Talos node is already configured, skipping apply of config" "node" "${node}"; \
@@ -28,15 +28,24 @@ talos: (with-banner "Installing Talos")
 
 [doc('Install Kubernetes')]
 kubernetes: (with-banner "Installing Kubernetes")
-    until output=$(talosctl -n "{{controller}}" bootstrap 2>&1 || true) && [[ "${output}" == *"AlreadyExists"* ]]; do \
+    until output=$(talosctl -n "{{ controller }}" bootstrap 2>&1 || true) && [[ "${output}" == *"AlreadyExists"* ]]; do \
         just log info "Talos bootstrap in progress, waiting 5 seconds..."; \
         sleep 5; \
     done
 
+# The generated server address is https://k8s.lulice.lan:6443, which rides the
+# Cilium kube-api LoadBalancer and does not exist until the apps stage brings
+# Cilium up: pass lb=node to rewrite it to the controller's node IP, and
+# re-fetch (lb=cilium) once Cilium is serving the VIP.
 [doc('Fetch Kubeconfig')]
-kubeconfig: (with-banner "Fetching kubeconfig")
-    if ! talosctl -n "{{controller}}" kubeconfig -f --force-context-name main "{{justfile_dir()}}" &>/dev/null; then \
+kubeconfig lb="cilium": (with-banner "Fetching kubeconfig")
+    if ! talosctl -n "{{ controller }}" kubeconfig -f --force-context-name main "{{ justfile_dir() }}" &>/dev/null; then \
         just log fatal "Failed to fetch kubeconfig"; \
+    fi; \
+    if [[ "{{ lb }}" != "cilium" ]]; then \
+        if ! kubectl config set-cluster main --server "https://{{ controller }}:6443" &>/dev/null; then \
+            just log fatal "Failed to point the kubeconfig at the controller node"; \
+        fi; \
     fi
 
 [doc('Wait for nodes to be not-ready')]
@@ -50,7 +59,7 @@ wait: (with-banner "Waiting for nodes to be not-ready")
 
 [doc('Apply Namespaces')]
 namespaces: (with-banner "Applying Namespaces")
-    find "{{kubernetes_dir}}/apps" -mindepth 1 -maxdepth 1 -type d -printf "%f\n" | while IFS= read -r namespace; do \
+    find "{{ kubernetes_dir }}/apps" -mindepth 1 -maxdepth 1 -type d -printf "%f\n" | while IFS= read -r namespace; do \
         if kubectl get namespace "${namespace}" &>/dev/null; then \
             continue; \
         fi; \
@@ -62,7 +71,7 @@ namespaces: (with-banner "Applying Namespaces")
 
 [doc('Apply Resources')]
 resources: (with-banner "Applying Resources")
-    if ! resources=$(op inject -i "{{bootstrap_dir}}/resources.yaml") || [[ -z "${resources}" ]]; then \
+    if ! resources=$(op inject -i "{{ bootstrap_dir }}/resources.yaml") || [[ -z "${resources}" ]]; then \
         just log fatal "Failed to render resources"; \
     fi; \
     if ! echo "${resources}" | kubectl diff -f - &>/dev/null; then \
@@ -73,7 +82,7 @@ resources: (with-banner "Applying Resources")
 
 [doc('Apply CRDs')]
 crds: (with-banner "Applying CRDs")
-    if ! crds=$(helmfile --file "{{bootstrap_dir}}/helmfile.d/00-crds.yaml" template -q | yq ea -e 'select(.kind == "CustomResourceDefinition")') || [[ -z "${crds}" ]]; then \
+    if ! crds=$(helmfile --file "{{ bootstrap_dir }}/helmfile.d/00-crds.yaml" template -q | yq ea -e 'select(.kind == "CustomResourceDefinition")') || [[ -z "${crds}" ]]; then \
         just log fatal "Failed to render CRDs from Helmfile"; \
     fi; \
     if ! echo "${crds}" | kubectl diff --filename - &>/dev/null; then \
@@ -84,10 +93,10 @@ crds: (with-banner "Applying CRDs")
 
 [doc('Apply Apps')]
 apps: (with-banner "Applying Apps")
-    if ! helmfile --file "{{bootstrap_dir}}/helmfile.d/01-apps.yaml" sync --hide-notes; then \
+    if ! helmfile --file "{{ bootstrap_dir }}/helmfile.d/01-apps.yaml" sync --hide-notes; then \
         just log fatal "Failed to apply apps from Helmfile"; \
     fi
 
 [private]
 with-banner msg:
-    just log info "{{msg}}"
+    just log info "{{ msg }}"
