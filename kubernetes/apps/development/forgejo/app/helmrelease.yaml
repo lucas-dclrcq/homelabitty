@@ -9,9 +9,6 @@ spec:
   chartRef:
     kind: OCIRepository
     name: *app
-  # The chart's only pod-label knob (deployment.labels) is also rendered into the
-  # immutable Deployment spec.selector.matchLabels, which would break upgrades of
-  # the existing Deployment; patch the pod template labels only instead.
   postRenderers:
     - kustomize:
         patches:
@@ -121,7 +118,7 @@ spec:
           DISABLE_REGISTRATION: true
           ALLOW_ONLY_EXTERNAL_REGISTRATION: true
           ENABLE_INTERNAL_SIGNIN: false
-          ENABLE_PASSWORD_SIGNIN_FORM: false
+          ENABLE_PASSWORD_SIGNIN_FORM: true
           SHOW_REGISTRATION_BUTTON: false
           ENABLE_NOTIFY_MAIL: true
         service.explore:
