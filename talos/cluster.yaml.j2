@@ -8,7 +8,8 @@ machine:
     crt: {{ certs.os.crt }}
     key: ""
   certSANs:
-    - 192.168.1.42
+    - 192.168.42.42
+    - k8s.lulice.lan
     - 127.0.0.1 # KubePrism
   kubelet:
     image: ghcr.io/siderolabs/kubelet:v1.36.5
@@ -57,7 +58,10 @@ cluster:
   secret: {{ cluster.secret }}
   # Cannot move to KubeClusterConfig until .cluster.serviceAccount moves to KubeServiceAccountConfig
   controlPlane:
-    endpoint: https://192.168.1.42:6443
+    # Static A record on the UDM -> 192.168.42.42, the Cilium kube-api
+    # LoadBalancer (kube-system/kube-api). In-cluster components go through
+    # KubePrism (127.0.0.1:7445) and never depend on this endpoint.
+    endpoint: https://k8s.lulice.lan:6443
   clusterName: hoohoot
   token: {{ secrets.bootstraptoken }}
   ca:
