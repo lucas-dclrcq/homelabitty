@@ -7,7 +7,7 @@ metadata:
 spec:
   kubernetes:
     # renovate: datasource=docker depName=ghcr.io/siderolabs/kubelet
-    version: v1.37.1
+    version: v1.37.2
   healthChecks:
     # No kopiur backup in flight (Snapshot only: standing populator Restores
     # sit Reconciling=True by design and would block forever).
