@@ -1,0 +1,71 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app brrpolice
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  values:
+    controllers:
+      brrpolice:
+        containers:
+          app:
+            image:
+              repository: ghcr.io/zariel/brrpolice
+              tag: v0.15.2@sha256:243b80bb8a809a069031f4edf3f31791252af89a38da9a13783bba18ce5f7df6
+            env:
+              BRRPOLICE_HTTP__PORT: &port 80
+              BRRPOLICE_LOGGING__LEVEL: info
+              # No credentials: qBittorrent whitelists the pod CIDR (AuthSubnetWhitelist)
+              BRRPOLICE_QBITTORRENT__BASE_URL: http://qbittorrent.downloads.svc.cluster.local:8080
+              TZ: Europe/Paris
+            probes:
+              liveness:
+                enabled: true
+                spec:
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 5
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /readyz
+                    port: *port
+                  timeoutSeconds: 5
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 128Mi
+    defaultPodOptions:
+      labels:
+        ingress.home.arpa/prometheus: allow
+        egress.home.arpa/qbittorrent: allow
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1026
+        runAsGroup: 1500
+        fsGroup: 1500
+        fsGroupChangePolicy: OnRootMismatch
+    service:
+      app:
+        ports:
+          http:
+            port: *port
+    serviceMonitor:
+      app:
+        endpoints:
+          - port: http
+    persistence:
+      data:
+        existingClaim: brrpolice
