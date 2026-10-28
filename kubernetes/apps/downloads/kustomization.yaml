@@ -9,6 +9,7 @@ components:
 resources:
   - ./sabnzbd/ks.yaml
   - ./qbittorrent/ks.yaml
+  - ./brrpolice/ks.yaml
   - ./droppedneedle/ks.yaml
   - ./lidarr/ks.yaml
   - ./recyclarr/ks.yaml
