@@ -69,6 +69,13 @@ spec:
                     - key: node-role.kubernetes.io/control-plane
                       operator: Exists
         mon: *placement
+        # tuppr taints every node it considers outdated. Rook treats any untolerated
+        # taint as disqualifying the node for OSDs, PreferNoSchedule included, and then
+        # declines to update the existing OSD deployments as well.
+        osd:
+          tolerations:
+            - key: tuppr.home-operations.com/outdated
+              operator: Exists
       resources:
         mgr:
           requests:
