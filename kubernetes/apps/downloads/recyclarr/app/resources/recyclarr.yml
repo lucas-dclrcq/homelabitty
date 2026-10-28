@@ -31,6 +31,19 @@ sonarr:
           enabled: true
         upgrade:
           allowed: false
+      # x265-only variant of FR-MULTi-VO-WEB-1080p, used to re-grab existing
+      # series as x265 to save space. x265 (HD) scores 5000 and the minimum
+      # score is 3000, above anything a non-x265 release can reach (~2500), so
+      # only x265 releases are accepted. Upgrades are allowed so a search
+      # replaces the existing (lower scoring) x264 files.
+      - trash_id: 4c48f506c1116a3a57ae33f12346bd15 # [French MULTi.VO] HD Bluray + WEB (1080p)
+        name: FR-MULTi-VO-WEB-1080p-x265
+        min_format_score: 3000
+        reset_unmatched_scores:
+          enabled: true
+        upgrade:
+          allowed: true
+          until_score: 10000
     custom_formats:
       # Optional
       - trash_ids:
@@ -43,6 +56,7 @@ sonarr:
         assign_scores_to:
           - name: WEB-1080p
           - name: FR-MULTi-VO-WEB-1080p
+          - name: FR-MULTi-VO-WEB-1080p-x265
       # Prefer x265 (better size/quality ratio). Score kept below the language
       # weight (101) so language preference still wins; codec only breaks ties.
       - trash_ids:
@@ -54,6 +68,8 @@ sonarr:
             score: 50
           - name: FR-MULTi-VF-WEB-1080p
             score: 50
+          - name: FR-MULTi-VO-WEB-1080p-x265
+            score: 5000
       - trash_ids:
           - 9b64dff695c2115facf1b6ea59c9bd07 # x265 (no HDR/DV)
         assign_scores_to:
@@ -63,11 +79,15 @@ sonarr:
             score: 50
           - name: FR-MULTi-VF-WEB-1080p
             score: 50
+          - name: FR-MULTi-VO-WEB-1080p-x265
+            score: 0
       # Block FanSUB
       - trash_ids:
           - 84f0acbda9c0c9de783894fb66df25aa # FanSUB
         assign_scores_to:
           - name: FR-MULTi-VO-WEB-1080p
+            score: -10000
+          - name: FR-MULTi-VO-WEB-1080p-x265
             score: -10000
           - name: FR-MULTi-VF-WEB-1080p
             score: -10000
@@ -80,6 +100,8 @@ sonarr:
         assign_scores_to:
           - name: FR-MULTi-VO-WEB-1080p
             score: 101
+          - name: FR-MULTi-VO-WEB-1080p-x265
+            score: 101
           - name: FR-MULTi-VF-WEB-1080p
             score: 101
       - trash_ids:
@@ -89,6 +111,8 @@ sonarr:
           - 0ce1e39a4676c6692ce47935278dac76 # VFB
         assign_scores_to:
           - name: FR-MULTi-VO-WEB-1080p
+            score: 0
+          - name: FR-MULTi-VO-WEB-1080p-x265
             score: 0
           - name: FR-MULTi-VF-WEB-1080p
             score: 0
