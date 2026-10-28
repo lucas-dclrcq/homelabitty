@@ -21,7 +21,7 @@ spec:
           app:
             image:
               repository: docker.hoohoot.org/homelab/home2reterminal
-              tag: latest@sha256:394850963b60bf250c45ef7aff5a3751fcfd4651321b75ecc97f418d8c444e49
+              tag: latest@sha256:a59a904f2edebb5e9431c68002e5287cdc29125c875fdf27a79802f2ad924c81
 
             env:
               TZ: Europe/Paris
