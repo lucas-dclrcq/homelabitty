@@ -9,4 +9,4 @@ default:
 
 [doc('Run playbook')]
 apply:
-    ansible-playbook {{ansible_dir}}/playbook.yaml -i {{ansible_dir}}/inventory
+    ansible-playbook {{ ansible_dir }}/playbook.yaml -i {{ ansible_dir }}/inventory
