@@ -23,61 +23,28 @@ spec:
   # Rook v1.20 no longer deploys the CSI drivers; the admin owns them through this chart.
   # The release name must stay "ceph-csi-drivers" so Helm adopts the OperatorConfig and
   # Driver CRs that the Rook v1.19 operator pre-stamped for this release.
-  # Values reproduce the CR specs Rook generated, so the drivers keep their current shape.
+  #
+  # Shared settings live in driverSpecDefaults: the operator merges them field by field
+  # into each Driver, so a Driver only needs to carry what differs. The chart defaults
+  # that would silently regress what Rook was running are set per driver instead:
+  # grpcTimeout (chart 30s, live 150s), snapshotPolicy (chart "none" for rbd, which drops
+  # the csi-snapshotter sidecar entirely) and controllerPlugin.replicas (chart 1, live 2).
   values:
-    # CephConnection and ClientProfile CRs stay owned by the Rook operator
-    cephConnections: []
-    clientProfiles: []
     operatorConfig:
       name: ceph-csi-operator-config
       namespace: rook-ceph
       driverSpecDefaults:
         clusterName: rook-ceph
-        cephFsClientType: kernel
-        fsGroupPolicy: File
-        snapshotPolicy: volumeSnapshot
-        grpcTimeout: 150
-        deployCsiAddons: false
-        enableMetadata: false
-        generateOMapInfo: false
         imageSet:
           name: rook-csi-operator-image-set-configmap
         log:
           rotation:
             enabled: false
         nodePlugin:
-          enableSeLinuxHostMount: false
-          imagePullPolicy: IfNotPresent
-          kubeletDirPath: /var/lib/kubelet
           priorityClassName: system-node-critical
-        controllerPlugin:
-          deploymentStrategy:
-            type: Recreate
-          hostNetwork: true
-          imagePullPolicy: IfNotPresent
-          priorityClassName: system-cluster-critical
-          replicas: 2
-    drivers:
-      rbd:
-        name: rook-ceph.rbd.csi.ceph.com
-        enabled: true
-        clusterName: rook-ceph
-        cephFsClientType: kernel
-        fsGroupPolicy: File
-        snapshotPolicy: volumeSnapshot
-        grpcTimeout: 150
-        deployCsiAddons: false
-        enableMetadata: false
-        generateOMapInfo: false
-        imageSet:
-          name: rook-csi-operator-image-set-configmap
-        log:
-          rotation:
-            enabled: false
-        nodePlugin:
-          enableSeLinuxHostMount: false
           kubeletDirPath: /var/lib/kubelet
-          priorityClassName: system-node-critical
+          updateStrategy:
+            type: RollingUpdate
           resources:
             plugin:
               limits:
@@ -91,10 +58,11 @@ spec:
               requests:
                 cpu: 50m
                 memory: 128Mi
-          updateStrategy:
-            type: RollingUpdate
         controllerPlugin:
           priorityClassName: system-cluster-critical
+          deploymentStrategy:
+            type: Recreate
+          hostNetwork: true
           replicas: 2
           resources:
             attacher:
@@ -132,44 +100,28 @@ spec:
               requests:
                 cpu: 100m
                 memory: 128Mi
-      cephfs:
-        name: rook-ceph.cephfs.csi.ceph.com
+    drivers:
+      rbd:
+        name: rook-ceph.rbd.csi.ceph.com
         enabled: true
-        clusterName: rook-ceph
-        cephFsClientType: kernel
-        fsGroupPolicy: File
-        snapshotPolicy: volumeGroupSnapshot
         grpcTimeout: 150
-        deployCsiAddons: false
-        enableMetadata: false
-        generateOMapInfo: false
-        imageSet:
-          name: rook-csi-operator-image-set-configmap
+        snapshotPolicy: volumeGroupSnapshot
         log:
           rotation:
             enabled: false
-        nodePlugin:
-          enableSeLinuxHostMount: false
-          kubeletDirPath: /var/lib/kubelet
-          priorityClassName: system-node-critical
-          resources:
-            plugin:
-              limits:
-                memory: 1Gi
-              requests:
-                cpu: 250m
-                memory: 512Mi
-            registrar:
-              limits:
-                memory: 256Mi
-              requests:
-                cpu: 50m
-                memory: 128Mi
-          updateStrategy:
-            type: RollingUpdate
         controllerPlugin:
-          priorityClassName: system-cluster-critical
           replicas: 2
+      cephfs:
+        name: rook-ceph.cephfs.csi.ceph.com
+        enabled: true
+        grpcTimeout: 150
+        snapshotPolicy: volumeGroupSnapshot
+        log:
+          rotation:
+            enabled: false
+        controllerPlugin:
+          replicas: 2
+          # cephfs asks for cpu on the plugin container, the shared rbd shape does not
           resources:
             attacher:
               limits:
