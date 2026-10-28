@@ -41,6 +41,16 @@ spec:
           daemon:
             keyRotationPolicy: KeyGeneration
             keyGeneration: 2
+          # The CSI and rbd-mirror keys are the last ones still on the insecure aes
+          # cipher. aes256k needs kernel 7.0 support, which Talos backported in v1.14.
+          csi:
+            keyRotationPolicy: KeyGeneration
+            keyGeneration: 2
+            keyType: aes256k
+          rbdMirrorPeer:
+            keyRotationPolicy: KeyGeneration
+            keyGeneration: 2
+            keyType: aes256k
       dashboard:
         enabled: true
         urlPrefix: /
