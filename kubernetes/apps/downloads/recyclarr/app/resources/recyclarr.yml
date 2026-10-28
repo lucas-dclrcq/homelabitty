@@ -44,6 +44,16 @@ sonarr:
         upgrade:
           allowed: true
           until_score: 10000
+      # Same x265-only approach as above, for original-language-only series
+      # (variant of WEB-1080p; non-x265 releases peak around 1900).
+      - trash_id: 72dae194fc92bf828f32cde7744e51a1 # WEB-1080p
+        name: WEB-1080p-x265
+        min_format_score: 3000
+        reset_unmatched_scores:
+          enabled: true
+        upgrade:
+          allowed: true
+          until_score: 10000
     custom_formats:
       # Optional
       - trash_ids:
@@ -55,6 +65,7 @@ sonarr:
           - 1b3994c551cbb92a2c781af061f4ab44 # Scene
         assign_scores_to:
           - name: WEB-1080p
+          - name: WEB-1080p-x265
           - name: FR-MULTi-VO-WEB-1080p
           - name: FR-MULTi-VO-WEB-1080p-x265
       # Prefer x265 (better size/quality ratio). Score kept below the language
@@ -70,6 +81,8 @@ sonarr:
             score: 50
           - name: FR-MULTi-VO-WEB-1080p-x265
             score: 5000
+          - name: WEB-1080p-x265
+            score: 5000
       - trash_ids:
           - 9b64dff695c2115facf1b6ea59c9bd07 # x265 (no HDR/DV)
         assign_scores_to:
@@ -80,6 +93,8 @@ sonarr:
           - name: FR-MULTi-VF-WEB-1080p
             score: 50
           - name: FR-MULTi-VO-WEB-1080p-x265
+            score: 0
+          - name: WEB-1080p-x265
             score: 0
       # Block FanSUB
       - trash_ids:
@@ -120,6 +135,8 @@ sonarr:
           - ae575f95ab639ba5d15f663bf019e3e8 # Language: Not Original
         assign_scores_to:
           - name: WEB-1080p
+            score: -10000
+          - name: WEB-1080p-x265
             score: -10000
   # Dedicated anime instance: anime quality definition (wide-open size
   # limits) + anime-oriented profiles, kept apart from the regular series
