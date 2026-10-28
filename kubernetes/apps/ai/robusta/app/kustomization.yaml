@@ -6,7 +6,7 @@ resources:
   - ./externalsecret.yaml
   - ./litellmteam.yaml
   - ./litellmvirtualkey.yaml
-  - ./helmrepository.yaml
+  - ./ocirepository.yaml
   - ./helmrelease.yaml
   - ./ciliumnetworkpolicy.yaml
 configMapGenerator:

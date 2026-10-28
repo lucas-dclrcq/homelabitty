@@ -53,7 +53,7 @@ Each namespace directory has a `kustomization.yaml` that includes the `common` c
 
 **ks.yaml** (Flux Kustomization): defines app name, namespace, path, dependencies, components, and `postBuild.substitute` vars. Uses YAML anchors (`&app`, `&namespace`) for DRY naming.
 
-**helmrelease.yaml**: most apps use the [bjw-s app-template](https://github.com/bjw-s-labs/helm-charts) chart via OCI. Chart source is an OCIRepository resource rather than a HelmRepository.
+**helmrelease.yaml**: most apps use the [bjw-s app-template](https://github.com/bjw-s-labs/helm-charts) chart via OCI. Chart sources are always `OCIRepository` resources — never `HelmRepository`. Charts only published as classic Helm repos are proxied through [ocharted](https://github.com/home-operations/charts/tree/main/charts/ocharted) as `oci://ocharted.hoohoot.org/<repo-host>/<repo-path>/<chart>`.
 
 **Variable substitution**: domains and other non-secret values (timezone, UID/GID, load balancer IPs, hostnames) are hardcoded directly in manifests. The `APP` variable is set per-app in `ks.yaml`. Flux substitution is only used for genuinely secret values sourced from Vault-backed secrets. App credentials must go through Vault via ExternalSecret.
 
