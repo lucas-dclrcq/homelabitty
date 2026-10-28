@@ -115,6 +115,12 @@ spec:
         name: rook-ceph.cephfs.csi.ceph.com
         enabled: true
         grpcTimeout: 150
+        # requireMsgr2 leaves the mons on 3300 only, and the kernel cephfs client defaults
+        # to msgr1. Rook v1.19 added this option itself; the chart does not, so without it
+        # every new mount fails with "no mds is up". rbd picks ms_mode up on its own.
+        # The chart writes an empty map per driver, so this cannot live in driverSpecDefaults.
+        kernelMountOptions:
+          ms_mode: prefer-crc
         snapshotPolicy: volumeGroupSnapshot
         log:
           rotation:
