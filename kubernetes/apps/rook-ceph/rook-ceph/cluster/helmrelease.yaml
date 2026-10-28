@@ -38,11 +38,14 @@ spec:
         disable: false
       security:
         cephx:
+          # Refuse the legacy aes cipher for auth and key creation. Every key is on
+          # aes256k; a daemon key left on aes would lock Rook out (RADOS EACCES).
+          allowedCiphers:
+            - aes256k
           daemon:
             keyRotationPolicy: KeyGeneration
             keyGeneration: 2
-          # The CSI and rbd-mirror keys are the last ones still on the insecure aes
-          # cipher. aes256k needs kernel 7.0 support, which Talos backported in v1.14.
+          # aes256k needs kernel 7.0 support, which Talos backported in v1.14.
           csi:
             keyRotationPolicy: KeyGeneration
             keyGeneration: 2
