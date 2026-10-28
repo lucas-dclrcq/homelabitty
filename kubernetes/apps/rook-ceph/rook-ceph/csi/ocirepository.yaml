@@ -11,5 +11,5 @@ spec:
     operation: copy
   ref:
     # Keep in sync with the ceph-csi-operator subchart bundled in rook-ceph
-    tag: 1.0.4
+    tag: 1.1.0
   url: oci://ocharted.hoohoot.org/ceph.github.io/ceph-csi-operator/ceph-csi-drivers
