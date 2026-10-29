@@ -14,6 +14,5 @@ resources:
   - ./reflector/ks.yaml
   - ./node-feature-discovery/ks.yaml
   - ./intel-gpu-resource-driver/ks.yaml
-  - ./generic-device-plugin/ks.yaml
   - ./multus/ks.yaml
   - ./snapshot-controller/ks.yaml
