@@ -90,7 +90,7 @@ schematic-id:
 
 [private]
 machine-image:
-    just talos template "{{ talos_dir }}/cluster.yaml.j2" -D "schematic=$(just talos schematic-id)" | yq -r -e 'select(document_index == 0) | .machine.install.image'
+    just talos template "{{ talos_dir }}/cluster.yaml.j2" -D "schematic=$(just talos schematic-id)" | yq -r -e 'select(.kind == "UnattendedInstallConfig") | .installer.image'
 
 [private]
 template file *args:
