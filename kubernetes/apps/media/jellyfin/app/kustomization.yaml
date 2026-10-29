@@ -11,3 +11,4 @@ resources:
   - ./servicemonitor.yaml
   - ./grafanadashboard.yaml
   - ./ciliumclusterwidenetworkpolicy.yaml
+  - ./resourceclaimtemplate.yaml

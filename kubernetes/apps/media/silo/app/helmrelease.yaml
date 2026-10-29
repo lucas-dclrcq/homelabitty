@@ -66,15 +66,18 @@ spec:
               capabilities: { drop: ["ALL"] }
 
             resources:
+              claims:
+                - name: gpu
               requests:
-                gpu.intel.com/i915: 1
                 cpu: 100m
                 memory: 1Gi
               limits:
-                gpu.intel.com/i915: 1
                 memory: 6Gi
 
     defaultPodOptions:
+      resourceClaims:
+        - name: gpu
+          resourceClaimTemplateName: silo-gpu
       labels:
         ingress.home.arpa/gateway-external: allow
         ingress.home.arpa/prometheus: allow

@@ -1,0 +1,25 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app intel-gpu-resource-driver
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  values:
+    # Talos only watches a single CDI spec directory, so both the static and the
+    # dynamic specs have to be written there (`cdi_spec_dirs = ['/run/cdi']` in
+    # /etc/cri/conf.d/cri.toml).
+    cdi:
+      staticPath: /run/cdi
+      dynamicPath: /run/cdi
+    kubeletPlugin:
+      # Health monitoring needs xpumd (Intel XPU Manager), which is not deployed
+      # here. Without it the plugin has no source for device details, so let it
+      # query the GPUs directly instead.
+      healthMonitoring:
+        enabled: false
+      privileged: true

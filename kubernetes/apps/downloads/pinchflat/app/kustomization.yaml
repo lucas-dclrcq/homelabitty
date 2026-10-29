@@ -8,3 +8,4 @@ resources:
   - ./helmrelease.yaml
   - ./grafanadashboard.yaml
   - ./probes.yaml
+  - ./resourceclaimtemplate.yaml
