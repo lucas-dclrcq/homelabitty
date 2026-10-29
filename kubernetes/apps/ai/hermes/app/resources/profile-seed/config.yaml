@@ -41,6 +41,37 @@ privacy:
 approvals:
   mode: smart
 
+# MCP servers proxied by the LiteLLM gateway; access is granted through the hermes LiteLLM team
+mcp_servers:
+  github:
+    url: http://litellm.ai.svc.cluster.local:4000/github/mcp
+    headers: &litellm
+      x-litellm-api-key: "Bearer ${LITELLM_API_KEY}"
+  grafana:
+    url: http://litellm.ai.svc.cluster.local:4000/grafana/mcp
+    headers: *litellm
+  homeassistant:
+    url: http://litellm.ai.svc.cluster.local:4000/homeassistant/mcp
+    headers: *litellm
+  kubernetes:
+    url: http://litellm.ai.svc.cluster.local:4000/kubernetes/mcp
+    headers: *litellm
+  kubesearch:
+    url: http://litellm.ai.svc.cluster.local:4000/kubesearch/mcp
+    headers: *litellm
+  trilium:
+    url: http://litellm.ai.svc.cluster.local:4000/trilium/mcp
+    headers: *litellm
+  truenas:
+    url: http://litellm.ai.svc.cluster.local:4000/truenas/mcp
+    headers: *litellm
+  unifi:
+    url: http://litellm.ai.svc.cluster.local:4000/unifi/mcp
+    headers: *litellm
+  vault:
+    url: http://litellm.ai.svc.cluster.local:4000/vault/mcp
+    headers: *litellm
+
 toolsets:
   - hermes-cli
   - kanban

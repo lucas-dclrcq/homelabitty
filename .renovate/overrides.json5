@@ -14,5 +14,11 @@
       matchPackageNames: ["ghcr.io/renovatebot/renovate"],
       schedule: ["on monday"],
     },
+    {
+      description: "Limit hermes-webui image updates to once per week",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["ghcr.io/nesquena/hermes-webui"],
+      schedule: ["on monday"],
+    },
   ],
 }
