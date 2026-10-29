@@ -152,9 +152,12 @@ spec:
                   - name: DOCKER_TLS_CERTDIR
                     value: /certs
                 resources:
+                  # Requests, not just limits: at 256Mi the scheduler treats a CI
+                  # job pod as nearly free and packs it onto a node with no
+                  # headroom, turning a container OOM into a node-level one.
                   requests:
-                    cpu: 100m
-                    memory: 256Mi
+                    cpu: 500m
+                    memory: 1Gi
                   limits:
                     memory: 4Gi
                 volumeMounts:
@@ -183,12 +186,20 @@ spec:
                 image: ghcr.io/bjw-s-labs/forgejo-runner:ubuntu-24.04@sha256:8b7a25c7b3235c27e97df1cbb8411c1d12d2676e739265b5fbb66bb55f72dbf6
                 imagePullPolicy: IfNotPresent
                 name: main
+                # `main` runs the build itself, not the service containers (those
+                # live in the dind sidecar). For a Quarkus+Quinoa `mvn verify` that
+                # means the Maven JVM, a forked surefire JVM and the whole Node
+                # frontend build/test run concurrently here; 2Gi got the job
+                # SIGKILLed (exit 137) as the dev services came up.
                 resources:
                   limits:
-                    memory: 2Gi
+                    memory: 8Gi
                   requests:
-                    cpu: 100m
-                    memory: 256Mi
+                    cpu: "1"
+                    memory: 2Gi
+                    # Image pulls + buildx layers land on node disk via the
+                    # docker-storage emptyDir; make that visible to the scheduler.
+                    ephemeral-storage: 20Gi
                 volumeMounts:
                   - name: docker-certs
                     mountPath: /certs
