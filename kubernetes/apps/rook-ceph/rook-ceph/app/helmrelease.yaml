@@ -27,4 +27,4 @@ spec:
       requests:
         memory: 128Mi # unchangable
         cpu: 100m # unchangable
-      limits: {}
+      limits: ~ # chart defaults to 512Mi; `{}` coalesces and does NOT remove it
