@@ -9,7 +9,7 @@ spec:
   alias: kubernetes
   transport: http
   workload:
-    image: quay.io/containers/kubernetes_mcp_server:v0.0.69
+    image: quay.io/containers/kubernetes_mcp_server:v0.1.0
     args:
       - "--config"
       - "/etc/kubernetes-mcp-server/config.toml"
