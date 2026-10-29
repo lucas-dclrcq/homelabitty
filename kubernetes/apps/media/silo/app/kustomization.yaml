@@ -9,3 +9,4 @@ resources:
   - ./helmrelease.yaml
   - ./servicemonitor.yaml
   - ./probes.yaml
+  - ./resourceclaimtemplate.yaml

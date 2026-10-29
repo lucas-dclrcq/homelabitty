@@ -87,15 +87,18 @@ spec:
                   periodSeconds: 10
 
             resources:
+              claims:
+                - name: gpu
               requests:
-                gpu.intel.com/i915: 1
                 cpu: 100m
                 memory: 4Gi
               limits:
-                gpu.intel.com/i915: 1
                 memory: 16Gi
 
     defaultPodOptions:
+      resourceClaims:
+        - name: gpu
+          resourceClaimTemplateName: jellyfin-gpu
       labels:
         ingress.home.arpa/gateway-external: allow
         ingress.home.arpa/prometheus: allow
