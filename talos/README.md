@@ -43,7 +43,7 @@ Two conventions keep the layers honest:
 ## Schematics
 
 The schematic defines the Image Factory build (system extensions, kernel args). It is POSTed to the
-factory to get a content-addressed ID, which is templated into `machine.install.image` and used by
+factory to get a content-addressed ID, which is templated into the `UnattendedInstallConfig` installer image and used by
 `download-image` and `upgrade-node`. All nodes share the same schematic.
 
 ## Gotchas
