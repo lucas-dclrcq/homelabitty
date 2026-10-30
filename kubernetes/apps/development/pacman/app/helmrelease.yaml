@@ -66,7 +66,7 @@ spec:
           concurrencyPolicy: Forbid
           successfulJobsHistory: 5
           failedJobsHistory: 5
-          backoffLimit: 0
+          backoffLimit: 1
         containers:
           rsync:
             image:
@@ -82,26 +82,50 @@ spec:
                 LOG=/tmp/rsync.log
                 START=$(date +%s)
 
-                # --exclude='.*' skips upstream's in-flight temp files (e.g.
-                # .extra.files.tar.gz.dI031r), which are mode 0600 on the mirror
-                # and make rsync fail with "Permission denied (13)" -> exit 23
-                # whenever we sync while upstream is mid-update.
-                rsync -rtlvH --safe-links --delete-after --delete-excluded \
-                  --delay-updates --no-motd --stats --itemize-changes \
-                  --timeout=600 --contimeout=60 \
-                  --exclude='.*' --exclude='iso/' --exclude='*-debug/' \
-                  --exclude='sources/' \
-                  rsync://ftp.halifax.rwth-aachen.de/archlinux/ /srv/repo/ >"$LOG" 2>&1
-                RC=$?
-                cat "$LOG"
+                # Upstream mirrors, tried in order until one completes a full pass.
+                # ftp.halifax.rwth-aachen.de is not used anymore: since 2026-10-29 it
+                # refuses rsync connections from this network (ECONNREFUSED on 873,
+                # while HTTPS on 443 to the same IP keeps working).
+                MIRRORS="rsync://frankfurt.mirror.pkgbuild.com/packages/
+                rsync://ftp.fau.de/archlinux/
+                rsync://mirror.ubrco.de/archlinux/"
 
-                # rsync exit 24 = "some files vanished before they could be
-                # transferred"; expected when mirroring an actively-updating
-                # upstream repo. Treat as success.
-                if [ "$RC" -eq 24 ]; then
-                  echo "rsync exit 24 (vanished source files) treated as success"
-                  RC=0
-                fi
+                RC=1
+                ATTEMPTS=0
+                USED=none
+                for MIRROR in $MIRRORS; do
+                  ATTEMPTS=$((ATTEMPTS + 1))
+                  echo "=== syncing from $MIRROR (attempt $ATTEMPTS)"
+
+                  # --exclude='.*' skips upstream's in-flight temp files (e.g.
+                  # .extra.files.tar.gz.dI031r), which are mode 0600 on the mirror
+                  # and make rsync fail with "Permission denied (13)" -> exit 23
+                  # whenever we sync while upstream is mid-update.
+                  # --delete-after keeps the tree consistent when an attempt dies
+                  # half-way and the next mirror takes over.
+                  rsync -rtlvH --safe-links --delete-after --delete-excluded \
+                    --delay-updates --no-motd --stats --itemize-changes \
+                    --timeout=300 --contimeout=20 \
+                    --exclude='.*' --exclude='iso/' --exclude='*-debug/' \
+                    --exclude='sources/' \
+                    "$MIRROR" /srv/repo/ >"$LOG" 2>&1
+                  RC=$?
+                  cat "$LOG"
+
+                  # rsync exit 24 = "some files vanished before they could be
+                  # transferred"; expected when mirroring an actively-updating
+                  # upstream repo. Treat as success.
+                  if [ "$RC" -eq 24 ]; then
+                    echo "rsync exit 24 (vanished source files) treated as success"
+                    RC=0
+                  fi
+
+                  if [ "$RC" -eq 0 ]; then
+                    USED="$MIRROR"
+                    break
+                  fi
+                  echo "=== $MIRROR failed with rsync exit $RC, trying next mirror"
+                done
 
                 END=$(date +%s)
                 [ "$RC" -eq 0 ] && SUCCESS=1 || SUCCESS=0
@@ -112,7 +136,7 @@ spec:
                 BYTES=$(parse_num 'Total transferred file size'); BYTES=${BYTES:-0}
                 RECEIVED=$(parse_num 'Total bytes received'); RECEIVED=${RECEIVED:-0}
 
-                cat <<EOF | curl -sf --max-time 30 --data-binary @- "$PUSHGW" || echo "pushgateway push failed"
+                cat <<EOF | curl -sf -X PUT --max-time 30 --data-binary @- "$PUSHGW" || echo "pushgateway push failed"
                 # TYPE pacman_sync_success gauge
                 pacman_sync_success $SUCCESS
                 # TYPE pacman_sync_duration_seconds gauge
@@ -125,6 +149,10 @@ spec:
                 pacman_sync_bytes_transferred $BYTES
                 # TYPE pacman_sync_bytes_received gauge
                 pacman_sync_bytes_received $RECEIVED
+                # TYPE pacman_sync_attempts gauge
+                pacman_sync_attempts $ATTEMPTS
+                # TYPE pacman_sync_upstream_info gauge
+                pacman_sync_upstream_info{mirror="$USED"} 1
                 EOF
 
                 exit $RC
