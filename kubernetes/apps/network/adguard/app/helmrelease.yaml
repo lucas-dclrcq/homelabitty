@@ -1,0 +1,97 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app adguard
+spec:
+  interval: 30m
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  values:
+    controllers:
+      adguard:
+        containers:
+          app:
+            image:
+              repository: docker.io/adguard/adguardhome
+              tag: v0.107.79@sha256:aba9e3bf0613be3ba3755e1fc311b126e2c24bec25e18b6483894a88283074f0
+            env:
+              TZ: "Europe/Paris"
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - "ALL"
+                add:
+                  - "NET_BIND_SERVICE"
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 512Mi
+    defaultPodOptions:
+      labels:
+        ingress.home.arpa/world: allow
+        ingress.home.arpa/gateway-internal: allow
+        egress.home.arpa/internet: allow
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1026
+        runAsGroup: 1500
+        fsGroup: 1500
+        fsGroupChangePolicy: OnRootMismatch
+        sysctls:
+          - name: net.ipv4.ip_unprivileged_port_start
+            value: "53"
+    service:
+      app:
+        controller: adguard
+        primary: true
+        ports:
+          http:
+            primary: true
+            port: &port 3000
+      dns:
+        controller: adguard
+        type: LoadBalancer
+        annotations:
+          io.cilium/lb-ipam-ips: "192.168.42.53"
+        externalTrafficPolicy: Local
+        ports:
+          dns-udp:
+            port: 53
+            protocol: UDP
+          dns-tcp:
+            port: 53
+            protocol: TCP
+    route:
+      app:
+        hostnames:
+          - "{{ .Release.Name }}.hoohoot.xyz"
+        parentRefs:
+          - name: internal
+            namespace: network
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: *port
+    persistence:
+      data:
+        existingClaim: *app
+        globalMounts:
+          - path: /opt/adguardhome/conf
+            subPath: conf
+          - path: /opt/adguardhome/work
+            subPath: work
+      tmp:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
