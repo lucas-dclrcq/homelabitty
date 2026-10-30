@@ -1,0 +1,13 @@
+---
+id: homelab-manager
+url: http://homelab-manager.default.svc.cluster.local
+as_token: { { .JOHNNY_AS_TOKEN } }
+hs_token: { { .JOHNNY_HS_TOKEN } }
+sender_localpart: johnny
+rate_limited: false
+namespaces:
+  users:
+    - regex: ^@bot:hoohoot\.org$
+      exclusive: true
+  aliases: []
+  rooms: []
