@@ -8,16 +8,20 @@ kind: CiliumNetworkPolicy
 metadata:
   name: authentik-outposts
 spec:
-  description: "authentik outposts (proxy + LDAP): talk back to authentik over its public URL, serve LAN LDAP clients and the external gateway"
+  description: "authentik outposts (proxy + LDAP): talk back to authentik over its public URL, serve LAN LDAP clients and both gateways"
   endpointSelector:
     matchLabels:
       app: authentik-outpost
   ingress:
-    # proxy outpost backs SecurityPolicy ext-auth on the external gateway
+    # proxy outpost backs SecurityPolicy ext-auth on both gateways
     - fromEndpoints:
         - matchLabels:
             app.kubernetes.io/name: envoy
             gateway.envoyproxy.io/owning-gateway-name: external
+            io.kubernetes.pod.namespace: network
+        - matchLabels:
+            app.kubernetes.io/name: envoy
+            gateway.envoyproxy.io/owning-gateway-name: internal
             io.kubernetes.pod.namespace: network
       toPorts:
         - ports:

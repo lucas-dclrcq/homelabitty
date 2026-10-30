@@ -1,0 +1,10 @@
+# Seed copied to the volume only when no config exists yet: AdGuard Home owns
+# and rewrites this file afterwards (UI changes, schema migrations). It skips
+# the first-run setup wizard, which refuses to start unless running as root.
+# No users: the UI is protected by authentik forward-auth on the route.
+http:
+  address: 0.0.0.0:3000
+dns:
+  bind_hosts:
+    - 0.0.0.0
+  port: 53

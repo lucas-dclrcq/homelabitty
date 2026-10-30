@@ -1,0 +1,28 @@
+---
+apiVersion: authentik.starry.blue/v1alpha1
+kind: AuthentikApplication
+metadata:
+  name: adguard
+spec:
+  slug: adguard
+  name: AdGuard Home
+  group: Network
+  adopt: IfMatch
+  provider:
+    flows:
+      authorization:
+        slug: default-provider-authorization-implicit-consent
+      invalidation:
+        slug: default-provider-invalidation-flow
+    proxy:
+      forwardAuthSingle:
+        externalHost: https://adguard.hoohoot.xyz
+      interceptHeaderAuth: true
+      accessTokenValidity: hours=24
+      refreshTokenValidity: days=30
+      outpost:
+        name: Oauth2 Proxy Outpost
+  access:
+    rules:
+      - group:
+          name: Hoohoot Users
