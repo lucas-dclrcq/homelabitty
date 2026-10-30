@@ -1445,6 +1445,194 @@ spec:
           ],
           "title": "Statut des syncs (1=OK / 0=ÉCHEC)",
           "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "$datasource"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 8,
+            "x": 0,
+            "y": 62
+          },
+          "id": 28,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "textMode": "name"
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "$datasource"
+              },
+              "expr": "max by (mirror) (pacman_sync_upstream_info{job=\"pacman-sync\"})",
+              "instant": true,
+              "legendFormat": "{{mirror}}",
+              "refId": "A"
+            }
+          ],
+          "title": "Miroir amont utilisé",
+          "type": "stat"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "$datasource"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "decimals": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "yellow",
+                    "value": 2
+                  },
+                  {
+                    "color": "red",
+                    "value": 3
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 8,
+            "x": 0,
+            "y": 66
+          },
+          "id": 29,
+          "options": {
+            "colorMode": "background",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "textMode": "auto"
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "$datasource"
+              },
+              "expr": "max(pacman_sync_attempts{job=\"pacman-sync\"})",
+              "instant": true,
+              "legendFormat": "tentatives",
+              "refId": "A"
+            }
+          ],
+          "title": "Tentatives dernier sync (1 = miroir primaire)",
+          "type": "stat"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "$datasource"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "custom": {
+                "drawStyle": "line",
+                "lineInterpolation": "step",
+                "fillOpacity": 10,
+                "showPoints": "always",
+                "pointSize": 5,
+                "lineWidth": 2,
+                "axisCenteredZero": false
+              },
+              "color": {
+                "mode": "palette-classic"
+              },
+              "min": 0,
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 16,
+            "x": 8,
+            "y": 62
+          },
+          "id": 30,
+          "options": {
+            "legend": {
+              "displayMode": "table",
+              "placement": "bottom",
+              "calcs": [
+                "lastNotNull",
+                "max"
+              ]
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "$datasource"
+              },
+              "expr": "max(pacman_sync_attempts{job=\"pacman-sync\"})",
+              "legendFormat": "tentatives",
+              "refId": "A"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "$datasource"
+              },
+              "expr": "max(pacman_sync_success{job=\"pacman-sync\"})",
+              "legendFormat": "statut (1=OK)",
+              "refId": "B"
+            }
+          ],
+          "title": "Basculements de miroir et statut par sync",
+          "type": "timeseries"
         }
       ],
       "refresh": "1m",
