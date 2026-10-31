@@ -1,0 +1,140 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app mindwtr
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  values:
+    defaultPodOptions:
+      labels:
+        ingress.home.arpa/gateway-external: allow
+
+    controllers:
+      # Sync server + REST API, the only service the native apps need
+      cloud:
+        pod:
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            runAsNonRoot: true
+            fsGroup: 1000
+            fsGroupChangePolicy: "OnRootMismatch"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/dongdongbh/mindwtr-cloud
+              tag: 1.3.7@sha256:502a3c945faa06a3810484c28b4fda4350e36924c8782923b3ad74539a87509e
+            env:
+              MINDWTR_CLOUD_CORS_ORIGIN: https://mindwtr.hoohoot.org
+            envFrom:
+              - secretRef:
+                  name: mindwtr-secret
+            probes:
+              liveness: &cloud-probe
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health
+                    port: &cloud-port 8787
+              readiness:
+                <<: *cloud-probe
+                spec:
+                  httpGet:
+                    path: /ready
+                    port: *cloud-port
+              startup:
+                <<: *cloud-probe
+                spec:
+                  httpGet:
+                    path: /health
+                    port: *cloud-port
+                  failureThreshold: 30
+                  periodSeconds: 2
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop: ["ALL"]
+            resources:
+              requests:
+                cpu: 10m
+                memory: 64Mi
+              limits:
+                memory: 512Mi
+
+      # Optional web/PWA build served by nginx; same origin as the cloud API
+      # so the web app auto-detects the sync endpoint
+      web:
+        containers:
+          app:
+            image:
+              repository: ghcr.io/dongdongbh/mindwtr-app
+              tag: 1.3.7@sha256:972a101e16452009fc721dd31a4ec80139b74768d8107271745ee7083223004f
+            probes:
+              liveness: &web-probe
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: &web-port 5173
+              readiness: *web-probe
+            resources:
+              requests:
+                cpu: 10m
+                memory: 16Mi
+              limits:
+                memory: 128Mi
+
+    service:
+      cloud:
+        controller: cloud
+        ports:
+          http:
+            port: *cloud-port
+      web:
+        controller: web
+        ports:
+          http:
+            port: *web-port
+
+    route:
+      app:
+        hostnames:
+          - "{{ .Release.Name }}.hoohoot.org"
+        parentRefs:
+          - name: external
+            namespace: network
+        rules:
+          - matches:
+              - path:
+                  type: PathPrefix
+                  value: /v1
+              - path:
+                  type: Exact
+                  value: /health
+              - path:
+                  type: Exact
+                  value: /ready
+            backendRefs:
+              - identifier: cloud
+                port: *cloud-port
+          - matches:
+              - path:
+                  type: PathPrefix
+                  value: /
+            backendRefs:
+              - identifier: web
+                port: *web-port
+
+    persistence:
+      data:
+        existingClaim: *app
+        advancedMounts:
+          cloud:
+            app:
+              - path: /app/cloud_data
