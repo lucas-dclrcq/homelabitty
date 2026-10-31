@@ -40,7 +40,7 @@ spec:
             image:
               repository: axllent/mailpit
               # Keep aligned with bookman's docker-compose.yml.
-              tag: v1.32.0
+              tag: v1.33.0
             env:
               TZ: Europe/Paris
               # A sink only: never relay, forward or auto-send. Mailpit relays
