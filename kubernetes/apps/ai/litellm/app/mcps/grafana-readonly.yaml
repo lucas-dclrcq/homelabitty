@@ -1,0 +1,39 @@
+---
+# Read-only view of the Grafana MCP server (metrics, VictoriaLogs, dashboards, alert
+# rules) for the robusta-holmes remediation agent. Write tools and the raw
+# grafana_api_request tool are left out.
+apiVersion: litellm.home-operations.com/v1alpha1
+kind: LiteLLMMCPServer
+metadata:
+  name: grafana-readonly-mcp
+spec:
+  proxyRef: litellm
+  proxyNamespace: ai
+  alias: grafana-readonly
+  transport: http
+  url: http://grafana-mcp.ai.svc.cluster.local:8000/mcp
+  params:
+    allowed_tools:
+      - list_datasources
+      - get_datasource
+      - check_datasources_health
+      - query_prometheus
+      - query_prometheus_histogram
+      - list_prometheus_metric_names
+      - list_prometheus_metric_metadata
+      - list_prometheus_label_names
+      - list_prometheus_label_values
+      - query_loki_logs
+      - query_loki_stats
+      - query_loki_patterns
+      - list_loki_label_names
+      - list_loki_label_values
+      - search_tempo_traces
+      - get_tempo_trace
+      - search_dashboards
+      - get_dashboard_summary
+      - get_dashboard_panel_queries
+      - get_dashboard_property
+      - get_annotations
+      - alerting_rules_read
+      - alerting_silences_read

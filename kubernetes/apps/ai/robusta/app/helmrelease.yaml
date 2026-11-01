@@ -15,14 +15,9 @@ spec:
     globalConfig:
       prometheus_url: http://vmsingle-vmks.observability.svc.cluster.local:8428
       alertmanager_url: http://vmalertmanager-vmks.observability.svc.cluster.local:9093
-      # VictoriaMetrics does not expose Prometheus flags
       check_prometheus_flags: false
-      # Disable the "View Graph" link the bundled default_enricher adds to every alert.
-      # It points at an internal cluster URL and, because it enriches the finding after
-      # holmes_remediate already added it, logs a spurious "Updating a finding" warning.
       alert_generator_link: false
 
-    # Only Holmes investigation results are sent; raw alerts already go through Alertmanager
     sinksConfig:
       - pushover_sink:
           name: pushover
@@ -48,7 +43,7 @@ spec:
               severities: ["critical", "error"]
               repository: lucas-dclrcq/homelabitty
               base_branch: main
-              model: deepseek-v4-pro
+              model: deepseek-flash
               rate_limit_seconds: 21600
 
     enablePrometheusStack: false
@@ -70,8 +65,6 @@ spec:
         ingress.home.arpa/prometheus: allow
         egress.home.arpa/apiserver: allow
         egress.home.arpa/internet-https: allow
-        # Alertmanager webhooks in, vmsingle/alertmanager/holmes/litellm out:
-        # see ./ciliumnetworkpolicy.yaml
       sendAdditionalTelemetry: false
       additional_env_vars:
         - name: PYTHONPATH
@@ -98,18 +91,12 @@ spec:
 
     enableHolmesGPT: true
     holmes:
-      # No egress.home.arpa/internet* on purpose: the internet toolset is disabled to
-      # limit exfiltration, so Holmes only needs the kube API plus the explicit
-      # peers in ./ciliumnetworkpolicy.yaml (litellm, vmsingle).
       commonLabels:
         egress.home.arpa/apiserver: allow
       sentryDSN: ""
       enableTelemetry: false
       extraEnvVarsSecrets:
         - robusta-holmes-litellm
-      # Grant Holmes read access to the VictoriaMetrics operator CRDs so it can inspect
-      # alert rules (VMRule/VMAlert) when investigating. The chart's built-in crdPermissions
-      # cover common operators but not VictoriaMetrics.
       customClusterRoleRules:
         - apiGroups:
             - operator.victoriametrics.com
@@ -123,10 +110,6 @@ spec:
             - watch
 
       modelList:
-        deepseek-v4-pro:
-          model: openai/deepseek-v4-pro
-          api_base: http://litellm.ai.svc.cluster.local:4000
-          api_key: envRef:LITELLM_API_KEY
         deepseek-flash:
           model: openai/deepseek-flash
           api_base: http://litellm.ai.svc.cluster.local:4000
@@ -137,10 +120,8 @@ spec:
           enabled: true
         kubernetes/logs:
           enabled: true
-        # Robusta SaaS data source, not used
         robusta:
           enabled: false
-        # Disabled to limit exfiltration if an alert carries a prompt injection
         internet:
           enabled: false
         prometheus/metrics:
@@ -151,15 +132,17 @@ spec:
 
       mcp_servers:
         github:
-          description: GitHub, proxied through the LiteLLM MCP gateway
+          description: GitHub (read the repository, open pull requests), proxied through the LiteLLM MCP gateway
           config:
-            url: http://litellm.ai.svc.cluster.local:4000/github/mcp
+            url: http://litellm.ai.svc.cluster.local:4000/github-remediation/mcp
             mode: streamable-http
             headers:
               x-litellm-api-key: "Bearer {{ env.LITELLM_API_KEY }}"
           llm_instructions: >-
             Use GitHub to read the GitOps manifests of the cluster (repository lucas-dclrcq/homelabitty)
-            and to open remediation pull requests. Never merge pull requests or push to the main branch.
+            and to open remediation pull requests. The repository is PUBLIC: never write secrets,
+            credentials, tokens or personal data in a branch, commit or pull request.
+            Never merge pull requests or push to the main branch.
         kubesearch:
           description: kubesearch.dev, search how other homelab clusters configure Helm charts
           config:
@@ -170,6 +153,28 @@ spec:
           llm_instructions: >-
             Use kubesearch to find how other Flux homelab repositories configure a chart before proposing
             value changes.
+        grafana:
+          description: Grafana (read-only), VictoriaMetrics, VictoriaLogs and Tempo history, dashboards and alert rules
+          config:
+            url: http://litellm.ai.svc.cluster.local:4000/grafana-readonly/mcp
+            mode: streamable-http
+            headers:
+              x-litellm-api-key: "Bearer {{ env.LITELLM_API_KEY }}"
+          llm_instructions: >-
+            Use Grafana to search historical logs in the VictoriaLogs datasource (pods that already restarted
+            or were deleted), to read the alert rule and dashboards related to the alert, and to query
+            traces. Prefer narrow queries with a namespace or pod selector and a short time range.
+        konflate:
+          description: konflate, rendered Kubernetes diffs of the open pull requests of the GitOps repository
+          config:
+            url: http://litellm.ai.svc.cluster.local:4000/konflate/mcp
+            mode: streamable-http
+            headers:
+              x-litellm-api-key: "Bearer {{ env.LITELLM_API_KEY }}"
+          llm_instructions: >-
+            After opening a pull request, use konflate to check its rendered diff and caution lint and
+            mention any warning in your answer. Also use it to check whether an open pull request
+            (for example a Renovate update) already touches the failing workload.
 
       resources:
         requests:
