@@ -9,23 +9,14 @@ spec:
   chartRef:
     kind: OCIRepository
     name: unifi-dns
-  install:
-    remediation:
-      retries: -1
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      strategy: rollback
-      retries: 3
   values:
     fullnameOverride: *app
-    logLevel: debug
     provider:
       name: webhook
       webhook:
         image:
-          repository: ghcr.io/kashalls/external-dns-unifi-webhook
-          tag: v0.9.0@sha256:22f4106f44a0b9ac3c97cf29bbfef93026c1164492152dc797a1d6dc86ddfbb5
+          repository: ghcr.io/home-operations/external-dns-unifi-webhook
+          tag: 0.10.14@sha256:2d56637e230de7eaeda83388a79ec633c94910e77503141bc6a1a5492eecdd7e
         env:
           - name: UNIFI_HOST
             value: https://192.168.1.1
@@ -39,14 +30,6 @@ spec:
               secretKeyRef:
                 name: *secret
                 key: EXTERNAL_DNS_UNIFI_PASS
-          - name: LOG_LEVEL
-            value: "debug"
-        livenessProbe:
-          httpGet:
-            path: /healthz
-            port: http-webhook
-          initialDelaySeconds: 30
-          timeoutSeconds: 5
         readinessProbe:
           httpGet:
             path: /readyz
@@ -55,7 +38,6 @@ spec:
           timeoutSeconds: 5
     extraArgs:
       - --ignore-ingress-tls-spec
-      - --exclude-domains=mcp.hoohoot.org
     triggerLoopOnEvent: true
     policy: sync
     sources:
@@ -73,7 +55,6 @@ spec:
     podLabels:
       ingress.home.arpa/prometheus: allow
       egress.home.arpa/apiserver: allow
-      # UNIFI_HOST (https://192.168.1.1), nothing else outside the cluster
       egress.home.arpa/router: allow
     podAnnotations:
       secret.reloader.stakater.com/reload: *secret
