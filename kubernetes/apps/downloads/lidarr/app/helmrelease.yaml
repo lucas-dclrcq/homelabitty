@@ -32,6 +32,13 @@ spec:
         egress.home.arpa/sabnzbd: allow
         egress.home.arpa/slskd: allow
         egress.home.arpa/homelab-manager: allow
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1026
+        runAsGroup: 1500
+        fsGroup: 1500
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile: { type: RuntimeDefault }
 
     controllers:
       lidarr:
@@ -41,8 +48,8 @@ spec:
         containers:
           app:
             image:
-              repository: ghcr.io/hotio/lidarr
-              tag: pr-plugins-3.1.1.4901@sha256:b274cfbabfced9836351f09c4d443b526f452fe39b374a6274cc5d37bcad9ccb
+              repository: ghcr.io/home-operations/lidarr
+              tag: 3.2.0.5144@sha256:25b09e80e76d9680a3e0802c9f87e456925b1224ad3b726eae5bb0914dcc074b
 
             env:
               TZ: Europe/Paris
@@ -53,12 +60,15 @@ spec:
               LIDARR__LOG__DBENABLED: "False"
               LIDARR__LOG_LEVEL: info
               LIDARR__SERVER__PORT: &port 8686
-              PUID: "1026"
-              PGID: "1500"
 
             envFrom:
               - secretRef:
                   name: lidarr-secret
+
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
 
             resources:
               requests:
