@@ -6,4 +6,5 @@ namespace: security
 components:
   - ../../components/common
 resources:
+  - ./policy-reporter/ks.yaml
   - ./trivy/ks.yaml

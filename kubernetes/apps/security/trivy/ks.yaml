@@ -10,6 +10,11 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  healthChecks:
+    - apiVersion: helm.toolkit.fluxcd.io/v2
+      kind: HelmRelease
+      name: trivy-operator
+      namespace: *namespace
   path: ./kubernetes/apps/security/trivy/operator
   prune: true
   sourceRef:

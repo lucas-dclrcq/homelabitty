@@ -1,0 +1,64 @@
+---
+# yaml-language-server: $schema=https://schemas.iac.gg/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: policy-reporter
+  namespace: security
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: policy-reporter
+  interval: 1h
+  values:
+    # No persistence: the core keeps its SQLite cache in an emptyDir and
+    # rebuilds it from the PolicyReports on every start.
+    metrics:
+      enabled: true
+
+    resources:
+      requests:
+        cpu: 10m
+        memory: 128Mi
+      limits:
+        memory: 512Mi
+
+    monitoring:
+      enabled: true
+      grafana:
+        dashboards:
+          enabled: true
+        grafanaDashboard:
+          # The chart ships the dashboards as ConfigMaps; this wraps them in
+          # GrafanaDashboard CRs for the grafana-operator instance.
+          enabled: true
+          folder: Security
+          allowCrossNamespaceImport: true
+          matchLabels:
+            dashboards: null # chart default, no such Grafana instance here
+            grafana.internal/instance: grafana
+
+    ui:
+      enabled: true
+      podLabels:
+        ingress.home.arpa/gateway-internal: allow
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+        limits:
+          memory: 256Mi
+
+    plugin:
+      # Enriches the "Trivy Vulnerability" results with CVE details (CVSS,
+      # affected versions, fixes) pulled from the local Trivy DB and CVEAWG.
+      trivy:
+        enabled: true
+        github:
+          disable: true # unauthenticated GitHub API is rate limited to 60/h
+        resources:
+          requests:
+            cpu: 10m
+            memory: 128Mi
+          limits:
+            memory: 1Gi

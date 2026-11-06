@@ -1,0 +1,47 @@
+---
+# yaml-language-server: $schema=https://schemas.iac.gg/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: trivy-operator-polr-adapter
+  namespace: security
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: trivy-operator-polr-adapter
+  interval: 1h
+  values:
+    # Trivy Operator only emits its own aquasecurity.github.io CRs. Policy
+    # Reporter reads wgpolicyk8s.io (Cluster)PolicyReports, so this adapter
+    # translates one into the other — and ships the CRDs nothing else owns.
+    crds:
+      install: true
+
+    adapters:
+      # Mirrors the scanners enabled on the trivy-operator HelmRelease; the
+      # others produce no reports, so mapping them would only add watches.
+      vulnerabilityReports:
+        enabled: true
+      configAuditReports:
+        enabled: true
+      rbacAssessmentReports:
+        enabled: true
+      clusterVulnerabilityReports:
+        enabled: false
+      complianceReports:
+        enabled: false
+      exposedSecretReports:
+        enabled: false
+      infraAssessmentReports:
+        enabled: false
+      clusterInfraAssessmentReports:
+        enabled: false
+      cisKubeBenchReports:
+        enabled: false
+
+    resources:
+      requests:
+        cpu: 10m
+        memory: 128Mi
+      limits:
+        memory: 512Mi
