@@ -22,9 +22,5 @@ spec:
   uninstall:
     keepHistory: false
   values:
-    monitoring: true
     customPodLabels:
       egress.home.arpa/apiserver: allow
-    install:
-      clusterLabels:
-        app.kubernetes.io/name: pgo
