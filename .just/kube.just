@@ -44,3 +44,7 @@ kopiur state:
 [private]
 render-local-ks ns ks:
     flate build ks --namespace "{{ ns }}" --output yaml "{{ ks }}"
+
+[doc('Test that every Kustomization and HelmRelease renders')]
+test *args:
+    flate test all {{ args }}
