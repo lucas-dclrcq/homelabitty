@@ -54,7 +54,7 @@ spec:
               # digest and the kubelet then defaults to `IfNotPresent`, so no
               # `pullPolicy` is needed.
               repository: docker.hoohoot.org/bookman/bookman
-              tag: latest@sha256:54ec0d8440517389d15035fab6b6134927f79118f7e54553a33d3bd747bf1158
+              tag: latest@sha256:2ac6f8836b9f0cbf9a1e123b368889fd62340ded0b5ac9e9f9f9ef93b6afc03b
 
             env:
               TZ: Europe/Paris
