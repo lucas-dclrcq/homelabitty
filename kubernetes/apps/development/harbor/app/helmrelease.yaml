@@ -75,6 +75,9 @@ spec:
       enabled: true
       podLabels: *netpolLabels
 
+    notary:
+      enabled: false
+
     metrics:
       enabled: true
 

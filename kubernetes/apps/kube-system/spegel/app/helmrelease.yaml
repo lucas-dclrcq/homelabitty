@@ -4,14 +4,22 @@ kind: HelmRelease
 metadata:
   name: spegel
 spec:
+  interval: 30m
   chartRef:
     kind: OCIRepository
     name: spegel
-  interval: 1h
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  valuesFrom:
+    - kind: ConfigMap
+      name: spegel-helm-values
   values:
+    grafanaDashboard:
+      enabled: true
     serviceMonitor:
       enabled: true
-    spegel:
-      appendMirrors: true
-      containerdSock: /run/containerd/containerd.sock
-      containerdRegistryConfigPath: /etc/cri/conf.d/hosts
