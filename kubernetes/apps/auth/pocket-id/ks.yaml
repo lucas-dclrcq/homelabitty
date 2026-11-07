@@ -1,0 +1,30 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &app pocket-id
+  namespace: &namespace auth
+spec:
+  targetNamespace: *namespace
+  commonMetadata:
+    labels:
+      # Also what every PocketIDUser/PocketIDOIDCClient instanceSelector
+      # matches on, here and in other namespaces.
+      app.kubernetes.io/name: *app
+  dependsOn:
+    - name: pocket-id-operator
+      namespace: auth
+    - name: external-secrets-stores
+      namespace: external-secrets
+  path: ./kubernetes/apps/auth/pocket-id/app
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+    namespace: flux-system
+  # Unusual for an app here, but apps/default/echo-server dependsOn this one:
+  # waiting on the instance's Ready condition keeps it from cutting over to a
+  # SecurityPolicy whose identity provider is not serving yet.
+  wait: true
+  interval: 1h

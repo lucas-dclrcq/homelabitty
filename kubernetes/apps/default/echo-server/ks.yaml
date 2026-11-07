@@ -10,8 +10,13 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  components:
-    - ../../../../components/security-policy/forward-auth
+  # No security-policy/forward-auth component: this app authenticates against
+  # pocket-id instead of the authentik proxy outpost, through the SecurityPolicy
+  # in ./app/securitypolicy.yaml. The dependency is on the pocket-id
+  # Kustomization for the pocketid.internal CRDs and the instance behind them.
+  dependsOn:
+    - name: pocket-id
+      namespace: auth
   path: ./kubernetes/apps/default/echo-server/app
   prune: true
   sourceRef:
@@ -20,6 +25,3 @@ spec:
     namespace: flux-system
   wait: false
   interval: 1h
-  postBuild:
-    substitute:
-      APP: *app

@@ -1,0 +1,18 @@
+---
+# SecurityPolicies that authenticate with pocket-id point their OIDC token
+# endpoint at this Service rather than at id.hoohoot.org, so the exchange stays
+# in-cluster instead of hairpinning back through the external gateway. The
+# cross-namespace backendRef needs this grant.
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: ReferenceGrant
+metadata:
+  name: allow-security-policy-pocket-id
+spec:
+  from:
+    - group: gateway.envoyproxy.io
+      kind: SecurityPolicy
+      namespace: default
+  to:
+    - group: ""
+      kind: Service
+      name: pocket-id

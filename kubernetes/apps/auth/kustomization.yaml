@@ -8,3 +8,5 @@ components:
 resources:
   - ./authentik-operator/ks.yaml
   - ./authentik/ks.yaml
+  - ./pocket-id-operator/ks.yaml
+  - ./pocket-id/ks.yaml
