@@ -9,3 +9,4 @@ resources:
   - ./ciliumnetworkpolicy.yaml
   - ./probes.yaml
   - ./users
+  - ./groups

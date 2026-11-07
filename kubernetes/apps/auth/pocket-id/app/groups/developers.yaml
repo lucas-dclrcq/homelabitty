@@ -1,0 +1,10 @@
+---
+apiVersion: pocketid.internal/v1alpha1
+kind: PocketIDUserGroup
+metadata:
+  name: developers
+spec:
+  friendlyName: "Developers"
+  users:
+    userRefs:
+      - name: lucasd
