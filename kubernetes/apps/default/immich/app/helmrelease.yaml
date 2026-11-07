@@ -161,3 +161,9 @@ spec:
                 subPath: geocoding
               - path: /usr/src/app/.transformers_cache
                 subPath: transformers
+              - path: /tmp
+                subPath: tmp
+          machine-learning:
+            main:
+              - path: /tmp
+                subPath: mlTmp
