@@ -20,12 +20,25 @@ spec:
     adapters:
       # Mirrors the scanners enabled on the trivy-operator HelmRelease; the
       # others produce no reports, so mapping them would only add watches.
+      #
+      # timeout is the per-controller CacheSyncTimeout, in minutes. Since
+      # controller-runtime 0.23 a cache only counts as synced once the event
+      # handler has drained every initial event, and this adapter does its
+      # GET+CREATE/UPDATE of each PolicyReport inside that handler, against a
+      # client left at client-go's default 5 QPS. So startup has to write out
+      # every report before any controller starts, and the four controllers
+      # share one token bucket: ~1000 source reports needs ~8min, not the 2min
+      # default, or the process exits 1 and crashloops forever.
       vulnerabilityReports:
         enabled: true
+        timeout: 15
       configAuditReports:
         enabled: true
+        timeout: 15
+      # Also governs clusterRbacAssessmentReports, which has no key of its own.
       rbacAssessmentReports:
         enabled: true
+        timeout: 15
       clusterVulnerabilityReports:
         enabled: false
       complianceReports:
