@@ -16,12 +16,8 @@ spec:
           reloader.stakater.com/auto: "true"
         pod:
           labels:
+            egress.home.arpa/gateway-external: allow
             ingress.home.arpa/gateway-internal: allow
-          hostAliases:
-            - ip: 82.66.210.4
-              hostnames:
-                - matrix.hoohoot.org
-                - sso.hoohoot.org
           securityContext:
             fsGroup: 10000
             fsGroupChangePolicy: OnRootMismatch

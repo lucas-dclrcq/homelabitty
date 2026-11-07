@@ -5,7 +5,7 @@ kind: CiliumNetworkPolicy
 metadata:
   name: hermes
 spec:
-  description: "Hermes agent: LiteLLM + SearXNG in-namespace, Matrix + Authentik via the WAN address, an allowlist of package/code hosts for its shell"
+  description: "Hermes agent: LiteLLM + SearXNG in-namespace, Matrix + Authentik via the external gateway (egress.home.arpa/gateway-external), an allowlist of package/code hosts for its shell"
   endpointSelector:
     matchLabels:
       app.kubernetes.io/name: hermes
@@ -34,13 +34,6 @@ spec:
       toPorts:
         - ports:
             - port: "8080"
-              protocol: TCP
-    # Authentik and Matrix through the public WAN address (hostAliases in helmrelease.yaml)
-    - toCIDR:
-        - 82.66.210.4/32
-      toPorts:
-        - ports:
-            - port: "443"
               protocol: TCP
     # Allowlisted hosts for tool installs (mise, pip, uv) and code browsing
     - toFQDNs:
