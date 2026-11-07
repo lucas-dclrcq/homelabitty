@@ -86,6 +86,9 @@ spec:
                   failureThreshold: 180
                   periodSeconds: 10
 
+            securityContext:
+              readOnlyRootFilesystem: true
+
             resources:
               claims:
                 - name: gpu
@@ -184,6 +187,15 @@ spec:
           jellyfin:
             jellyfin:
               - path: /media
+      tmp:
+        enabled: true
+        type: emptyDir
+        advancedMounts:
+          jellyfin:
+            jellyfin:
+              - path: /tmp
+              - path: /var/tmp
+                subPath: var
       transcode:
         enabled: true
         type: emptyDir

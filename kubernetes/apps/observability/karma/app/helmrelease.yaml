@@ -42,6 +42,8 @@ spec:
               tag: v0.134
             env:
               CONFIG_FILE: &config /config/config.yaml
+            securityContext:
+              readOnlyRootFilesystem: true
             resources:
               requests:
                 cpu: 100m

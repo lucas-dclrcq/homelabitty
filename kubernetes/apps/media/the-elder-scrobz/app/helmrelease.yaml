@@ -36,6 +36,8 @@ spec:
             envFrom:
               - secretRef:
                   name: the-elder-scrobz-secret
+            securityContext:
+              readOnlyRootFilesystem: true
             resources:
               requests:
                 cpu: 12m

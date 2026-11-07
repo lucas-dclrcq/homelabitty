@@ -75,6 +75,9 @@ spec:
               startup:
                 enabled: false
 
+            securityContext:
+              readOnlyRootFilesystem: true
+
             resources:
               requests:
                 cpu: 10m

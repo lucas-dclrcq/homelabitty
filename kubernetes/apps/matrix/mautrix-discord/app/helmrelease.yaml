@@ -78,6 +78,9 @@ spec:
               readiness:
                 enabled: true
 
+            securityContext:
+              readOnlyRootFilesystem: true
+
             resources:
               requests:
                 cpu: 10m

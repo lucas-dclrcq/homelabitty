@@ -78,6 +78,8 @@ spec:
             envFrom:
               - secretRef:
                   name: immich-secret
+            securityContext:
+              readOnlyRootFilesystem: true
       machine-learning:
         strategy: RollingUpdate
         annotations:
@@ -93,6 +95,8 @@ spec:
                   name: immich-secret
             env:
               MPLCONFIGDIR: "/cache/matplotlib"
+            securityContext:
+              readOnlyRootFilesystem: true
 
     service:
       server:
