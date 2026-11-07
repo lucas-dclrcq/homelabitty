@@ -57,6 +57,7 @@ spec:
                   periodSeconds: 2
             securityContext:
               allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
               capabilities:
                 drop: ["ALL"]
             resources:
@@ -138,3 +139,9 @@ spec:
           cloud:
             app:
               - path: /app/cloud_data
+      tmp:
+        type: emptyDir
+        advancedMounts:
+          cloud:
+            app:
+              - path: /tmp

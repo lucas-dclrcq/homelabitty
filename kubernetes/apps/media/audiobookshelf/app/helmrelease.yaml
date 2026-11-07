@@ -53,6 +53,9 @@ spec:
                     port: *port
               readiness: *probes
 
+            securityContext:
+              readOnlyRootFilesystem: true
+
             resources:
               requests:
                 cpu: 50m
@@ -88,6 +91,12 @@ spec:
     persistence:
       config:
         existingClaim: *app
+      tmp:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
+          - path: /var/tmp
+            subPath: var
       audiobooks:
         type: nfs
         server: "truenas.lulice.lan"

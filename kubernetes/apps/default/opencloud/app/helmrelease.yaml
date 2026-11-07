@@ -42,6 +42,8 @@ spec:
               HREF_PATTERN: &issuerBase "https://sso.hoohoot.org/application/o/"
               HREF_REPLACEMENT: *issuerBase
               DEFAULT_SUFFIX: opencloud
+            securityContext:
+              readOnlyRootFilesystem: true
             resources:
               requests:
                 cpu: 5m
@@ -111,6 +113,8 @@ spec:
                   timeoutSeconds: 5
                   failureThreshold: 5
               readiness: *ocProbes
+            securityContext:
+              readOnlyRootFilesystem: true
             resources:
               requests:
                 cpu: 100m
@@ -145,6 +149,8 @@ spec:
         existingClaim: *app
         globalMounts:
           - path: /etc/opencloud
+      tmp:
+        type: emptyDir
       data:
         type: nfs
         server: "truenas.lulice.lan"

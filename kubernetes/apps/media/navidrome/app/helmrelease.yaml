@@ -89,6 +89,9 @@ spec:
               startup:
                 enabled: false
 
+            securityContext:
+              readOnlyRootFilesystem: true
+
     defaultPodOptions:
       labels:
         ingress.home.arpa/gateway-external: allow
@@ -158,6 +161,14 @@ spec:
           main:
             main:
               - path: /config
+      tmp:
+        type: emptyDir
+        advancedMounts:
+          main:
+            main:
+              - path: /tmp
+              - path: /var/tmp
+                subPath: var
       media:
         type: nfs
         server: "truenas.lulice.lan"

@@ -52,6 +52,7 @@ spec:
 
             securityContext:
               allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
 
             resources:
@@ -91,3 +92,5 @@ spec:
         existingClaim: *app
         globalMounts:
           - path: *storage_path
+      tmp:
+        type: emptyDir

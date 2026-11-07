@@ -43,6 +43,9 @@ spec:
                 enabled: true
                 type: HTTP
 
+            securityContext:
+              readOnlyRootFilesystem: true
+
             resources:
               requests:
                 memory: 50Mi
@@ -69,3 +72,5 @@ spec:
         existingClaim: *app
         globalMounts:
           - path: /var/lib/rustical
+      tmp:
+        type: emptyDir

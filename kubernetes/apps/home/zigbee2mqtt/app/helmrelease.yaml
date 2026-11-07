@@ -67,6 +67,7 @@ spec:
 
             securityContext:
               privileged: true
+              readOnlyRootFilesystem: true
 
             resources:
               requests:
@@ -104,6 +105,8 @@ spec:
     persistence:
       config:
         existingClaim: zigbee2mqtt
+      tmp:
+        type: emptyDir
       usb:
         enabled: true
         type: hostPath

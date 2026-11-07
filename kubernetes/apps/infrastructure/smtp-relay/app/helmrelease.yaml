@@ -50,6 +50,9 @@ spec:
               - secretRef:
                   name: smtp-relay-secret
 
+            securityContext:
+              readOnlyRootFilesystem: true
+
             resources:
               requests:
                 cpu: 10m
@@ -84,6 +87,11 @@ spec:
             scrapeTimeout: 10s
 
     persistence:
+      # maddy's state_dir/runtime_dir already point at /dev/shm (the `data`
+      # volume below), so nothing is written to the root filesystem.
+      tmp:
+        enabled: true
+        type: emptyDir
       config:
         enabled: true
         type: configMap
