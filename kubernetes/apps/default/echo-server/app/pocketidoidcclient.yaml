@@ -1,0 +1,27 @@
+---
+# Replaces the AuthentikApplication this app used to carry: echo-server is the
+# one app authenticating against pocket-id, as a trial run of the operator.
+# Everything else still goes through the authentik forward-auth component.
+#
+# The operator mints the credentials into the Secret below, under the key names
+# envoy gateway expects (client-id / client-secret), in this namespace, so
+# ./securitypolicy.yaml can reference it without a ReferenceGrant.
+apiVersion: pocketid.internal/v1alpha1
+kind: PocketIDOIDCClient
+metadata:
+  name: echo-server
+spec:
+  name: Echo Server
+  description: Gateway-level OIDC test target
+  instanceSelector:
+    matchLabels:
+      app.kubernetes.io/name: pocket-id
+  launchUrl: https://echo-server.hoohoot.org
+  callbackUrls:
+    - https://echo-server.hoohoot.org/oauth2/callback
+  pkceEnabled: true
+  secret:
+    name: echo-server-oidc
+    keys:
+      clientID: client-id
+      clientSecret: client-secret

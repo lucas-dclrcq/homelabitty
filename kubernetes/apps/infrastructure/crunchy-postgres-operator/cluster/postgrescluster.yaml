@@ -124,6 +124,11 @@ spec:
         - "sso"
       password:
         type: AlphaNumeric
+    - name: "pocketid"
+      databases:
+        - "pocketid"
+      password:
+        type: AlphaNumeric
     - name: "synapse"
       databases:
         - "synapse"

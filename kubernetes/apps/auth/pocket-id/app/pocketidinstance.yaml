@@ -1,0 +1,51 @@
+---
+apiVersion: pocketid.internal/v1alpha1
+kind: PocketIDInstance
+metadata:
+  name: pocket-id
+spec:
+  appUrl: https://id.hoohoot.org
+
+  encryptionKey:
+    valueFrom:
+      secretKeyRef:
+        name: pocket-id-secret
+        key: encryption-key
+
+  # Postgres on the main crunchy cluster holds the data, and `database` keeps
+  # the uploads (client logos, profile pictures) there too, so the pod is
+  # stateless: no PVC to back up, pgBackRest already covers it.
+  databaseUrl:
+    valueFrom:
+      secretKeyRef:
+        name: pocket-id-secret
+        key: database-url
+  fileBackend: database
+
+  annotations:
+    reloader.stakater.com/auto: "true"
+
+  labels:
+    # gateway-external: the HTTPRoute below, and the OIDC token exchange, which
+    # the external gateway sends straight to this Service (see
+    # apps/default/echo-server/app/securitypolicy.yaml).
+    # internet-https: pocket-id downloads the client logos the operator points
+    # it at from the dashboard-icons CDN.
+    ingress.home.arpa/gateway-external: allow
+    egress.home.arpa/postgres: allow
+    egress.home.arpa/internet-https: allow
+
+  route:
+    enabled: true
+    hostnames:
+      - id.hoohoot.org
+    parentRefs:
+      - name: external
+        namespace: network
+
+  resources:
+    requests:
+      cpu: 10m
+      memory: 128Mi
+    limits:
+      memory: 512Mi

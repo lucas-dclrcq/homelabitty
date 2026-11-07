@@ -1,0 +1,47 @@
+---
+# The operator drives pocket-id through its ClusterIP Service on :1411 with the
+# static API key. Both ends sit in `auth`, and the baseline grants nothing
+# same-namespace, so each direction needs naming.
+#
+# The pod labels are the operator's own (internal/controller/instance:
+# app.kubernetes.io/name=pocket-id, app.kubernetes.io/instance=<cr name>), not
+# the ks commonMetadata ones, which only land on the custom resources.
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: pocket-id
+spec:
+  description: "pocket-id accepts the operator's API calls"
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: pocket-id
+      app.kubernetes.io/instance: pocket-id
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: pocket-id-operator
+      toPorts:
+        - ports:
+            - port: "1411"
+              protocol: TCP
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: pocket-id-operator
+spec:
+  description: "The matching egress half: pocket-id-operator reconciles instances, users and OIDC clients over the pocket-id API"
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: pocket-id-operator
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: pocket-id
+            app.kubernetes.io/instance: pocket-id
+      toPorts:
+        - ports:
+            - port: "1411"
+              protocol: TCP
