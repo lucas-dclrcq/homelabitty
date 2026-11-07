@@ -122,5 +122,10 @@ telemetry:
 gateway:
   multiplex_profiles: true
 
+matrix:
+  require_mention: true
+  session_scope: room
+  auto_thread: true
+
 streaming:
   enabled: true
