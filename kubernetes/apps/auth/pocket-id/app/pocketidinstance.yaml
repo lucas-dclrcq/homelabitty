@@ -36,7 +36,7 @@ spec:
 
   emailNotifications:
     oneTimeAccessAsAdmin: true
-    oneTimeAccessAsUnauthenticated: false
+    oneTimeAccessAsUnauthenticated: true
 
   route:
     enabled: true
