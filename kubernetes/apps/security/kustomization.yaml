@@ -5,6 +5,8 @@ kind: Kustomization
 namespace: security
 components:
   - ../../components/common
+  - ../../components/netpol-baseline
 resources:
+  - ./pocket-id/ks.yaml
   - ./policy-reporter/ks.yaml
   - ./trivy/ks.yaml

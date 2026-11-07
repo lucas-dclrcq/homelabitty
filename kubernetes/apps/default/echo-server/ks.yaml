@@ -16,7 +16,7 @@ spec:
   # Kustomization for the pocketid.internal CRDs and the instance behind them.
   dependsOn:
     - name: pocket-id
-      namespace: auth
+      namespace: security
   path: ./kubernetes/apps/default/echo-server/app
   prune: true
   sourceRef:

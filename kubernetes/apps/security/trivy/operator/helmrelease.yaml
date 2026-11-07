@@ -17,6 +17,10 @@ spec:
     operator:
       annotations:
         reloader.stakater.com/auto: "true"
+      # `security` is enrolled in netpol-baseline (default-deny both ways).
+      podLabels:
+        ingress.home.arpa/prometheus: allow
+        egress.home.arpa/apiserver: allow
       vulnerabilityScannerScanOnlyCurrentRevisions: true
       configAuditScannerScanOnlyCurrentRevisions: true
       scanJobTTL: 300s
@@ -34,6 +38,10 @@ spec:
       metricsVulnIdEnabled: false
 
     trivy:
+      # The server downloads the vulnerability DB from the registry and keeps it
+      # on its PVC; the scan jobs never fetch it themselves in client/server mode.
+      podLabels:
+        egress.home.arpa/internet-https: allow
       additionalVulnerabilityReportFields: Links,CVSS,Target,Class,PackagePath,PackageType
       slow: true
       ignoreUnfixed: true
@@ -57,6 +65,11 @@ spec:
 
     trivyOperator:
       scanJobCompressLogs: false
+      # scanJobsInSameNamespace is left at its default (false), so every scan job
+      # runs here in `security` and is caught by the baseline. The jobs pull image
+      # manifests and layers straight from the registry, then hand the package
+      # list to trivy-service:4954 (./ciliumnetworkpolicy.yaml names that hop).
+      scanJobPodTemplateLabels: "egress.home.arpa/internet-https=allow,app.kubernetes.io/component=trivy-scan-job"
 
     compliance:
       specs: []

@@ -11,6 +11,14 @@ spec:
     name: policy-reporter
   interval: 1h
   values:
+    # The `security` namespace is enrolled in netpol-baseline, so every pod here
+    # is default-deny both ways. The core watches (Cluster)PolicyReports on the
+    # API server and is scraped by vmagent; its peers inside the namespace are
+    # named in ./ciliumnetworkpolicy.yaml.
+    podLabels:
+      ingress.home.arpa/prometheus: allow
+      egress.home.arpa/apiserver: allow
+
     # No persistence: the core keeps its SQLite cache in an emptyDir and
     # rebuilds it from the PolicyReports on every start.
     metrics:
@@ -42,6 +50,7 @@ spec:
       enabled: true
       podLabels:
         ingress.home.arpa/gateway-internal: allow
+        egress.home.arpa/apiserver: allow
       resources:
         requests:
           cpu: 10m
@@ -56,6 +65,11 @@ spec:
         enabled: true
         github:
           disable: true # unauthenticated GitHub API is rate limited to 60/h
+        podLabels:
+          egress.home.arpa/apiserver: allow
+          # The plugin keeps its own copy of the Trivy vulnerability DB under
+          # /db, pulled from the registry on start and refreshed from there.
+          egress.home.arpa/internet-https: allow
         resources:
           requests:
             cpu: 10m

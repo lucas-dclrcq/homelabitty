@@ -41,8 +41,8 @@ Workflow to reach enforcement:
 The `netpol-baseline` component (`kubernetes/components/netpol-baseline`)
 stamps a `baseline` CiliumNetworkPolicy into every enrolled namespace (ai,
 auth, default, development, downloads, home, infrastructure, matrix, media,
-network, observability, vault). **Enrolling a namespace means including the
-component** from `kubernetes/apps/<ns>/kustomization.yaml`:
+network, observability, security, vault). **Enrolling a namespace means
+including the component** from `kubernetes/apps/<ns>/kustomization.yaml`:
 
 ```yaml
 components:

@@ -1,0 +1,90 @@
+---
+# policy-reporter is three pods in one namespace, and the baseline grants
+# nothing same-namespace, so every hop between them has to be named. All three
+# listen on :8080.
+#
+#   ui     -> core    the dashboard reads results through the core API
+#   ui     -> plugin  CVE detail panels are served by the plugin directly
+#   core   -> plugin  the core resolves "Trivy Vulnerability" results
+#   plugin -> core    `core.host` in the plugin config (it registers itself)
+#
+# Ingress from the internal gateway, API server egress and the vmagent scrape
+# come from vocabulary labels on ./helmrelease.yaml instead.
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: policy-reporter
+spec:
+  description: "policy-reporter core accepts the UI and the trivy plugin, and calls the plugin back"
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: policy-reporter
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: policy-reporter-ui
+        - matchLabels:
+            app.kubernetes.io/name: policy-reporter-trivy-plugin
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: policy-reporter-trivy-plugin
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: policy-reporter-ui
+spec:
+  description: "The policy-reporter dashboard calls the core and the trivy plugin"
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: policy-reporter-ui
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: policy-reporter
+        - matchLabels:
+            app.kubernetes.io/name: policy-reporter-trivy-plugin
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: policy-reporter-trivy-plugin
+spec:
+  description: "The trivy plugin accepts the core and the UI, and registers itself with the core"
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: policy-reporter-trivy-plugin
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: policy-reporter
+        - matchLabels:
+            app.kubernetes.io/name: policy-reporter-ui
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: policy-reporter
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP

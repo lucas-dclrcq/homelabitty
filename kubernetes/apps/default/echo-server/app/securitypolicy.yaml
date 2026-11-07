@@ -8,13 +8,13 @@ spec:
     provider:
       issuer: https://id.hoohoot.org
       authorizationEndpoint: https://id.hoohoot.org/authorize
-      tokenEndpoint: http://pocket-id.auth.svc.cluster.local:1411/api/oidc/token
+      tokenEndpoint: http://pocket-id.security.svc.cluster.local:1411/api/oidc/token
       endSessionEndpoint: https://id.hoohoot.org/api/oidc/end-session
       backendRefs:
         - group: ""
           kind: Service
           name: pocket-id
-          namespace: auth
+          namespace: security
           port: 1411
     clientIDRef:
       name: echo-server-oidc

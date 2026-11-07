@@ -11,6 +11,12 @@ spec:
     name: trivy-operator-polr-adapter
   interval: 1h
   values:
+    # `security` is enrolled in netpol-baseline (default-deny both ways). The
+    # adapter only ever talks to the API server: it watches the trivy CRs and
+    # writes the wgpolicyk8s ones back.
+    podLabels:
+      egress.home.arpa/apiserver: allow
+
     # Trivy Operator only emits its own aquasecurity.github.io CRs. Policy
     # Reporter reads wgpolicyk8s.io (Cluster)PolicyReports, so this adapter
     # translates one into the other — and ships the CRDs nothing else owns.

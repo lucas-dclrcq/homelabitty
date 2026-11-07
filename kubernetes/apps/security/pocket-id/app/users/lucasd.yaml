@@ -29,7 +29,7 @@ spec:
         email: '{{ index . "email" }}'
   dataFrom:
     - extract:
-        key: auth/pocket-id/users/lucasd
+        key: security/pocket-id/users/lucasd
       sourceRef:
         storeRef:
           kind: ClusterSecretStore
