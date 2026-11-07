@@ -1,0 +1,38 @@
+apiVersion: pocketid.internal/v1alpha1
+kind: PocketIDUser
+metadata:
+  name: lucasd
+spec:
+  admin: true
+  instanceSelector:
+    matchLabels:
+      app.kubernetes.io/name: pocket-id
+  userInfoSecretRef:
+    name: pocket-id-user-lucasd
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: pocket-id-user-lucasd
+spec:
+  secretStoreRef:
+    kind: ClusterSecretStore
+    name: hashicorp-vault
+  target:
+    name: pocket-id-user-lucasd
+    creationPolicy: Owner
+    deletionPolicy: "Delete"
+    template:
+      engineVersion: v2
+      data:
+        username: '{{ index . "username" }}'
+        firstName: '{{ index . "firstname" }}'
+        lastName: '{{ index . "lastname" }}'
+        email: '{{ index . "email" }}'
+  dataFrom:
+    - extract:
+        key: auth/pocket-id/users/lucasd
+      sourceRef:
+        storeRef:
+          kind: ClusterSecretStore
+          name: hashicorp-vault

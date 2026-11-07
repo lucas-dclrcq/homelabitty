@@ -1,0 +1,25 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app pocket-id-operator
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  values:
+    operator:
+      labels:
+        ingress.home.arpa/prometheus: allow
+        egress.home.arpa/apiserver: allow
+        egress.home.arpa/internet-https: allow
+
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+
+    instance:
+      enabled: false
