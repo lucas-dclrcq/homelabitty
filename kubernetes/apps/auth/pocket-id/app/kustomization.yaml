@@ -5,7 +5,7 @@ kind: Kustomization
 resources:
   - ./externalsecret.yaml
   - ./pocketidinstance.yaml
-  - ./pocketiduser.yaml
   - ./referencegrant.yaml
   - ./ciliumnetworkpolicy.yaml
   - ./probes.yaml
+  - ./users
