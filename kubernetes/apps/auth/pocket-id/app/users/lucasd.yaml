@@ -4,9 +4,7 @@ metadata:
   name: lucasd
 spec:
   admin: true
-  instanceSelector:
-    matchLabels:
-      app.kubernetes.io/name: pocket-id
+  locale: en
   userInfoSecretRef:
     name: pocket-id-user-lucasd
 ---
