@@ -22,10 +22,12 @@ spec:
     - --primary_port_http_enabled=true
   # Dragonfly runs as root in-container and mounts no volumes; the operator
   # already sets fsGroup pod-wide, so only the container context is missing.
+  # SETUID/SETGID stay: the entrypoint setpriv's down to dfly (999) at startup.
   containerSecurityContext:
     allowPrivilegeEscalation: false
     capabilities:
       drop: ["ALL"]
+      add: ["SETUID", "SETGID"]
   resources:
     requests:
       cpu: ${DRAGONFLY_REQUESTS_CPU:=100m}

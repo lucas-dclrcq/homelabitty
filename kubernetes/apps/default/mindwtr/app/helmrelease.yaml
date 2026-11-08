@@ -81,10 +81,13 @@ spec:
             image:
               repository: ghcr.io/dongdongbh/mindwtr-app
               tag: 1.3.8@sha256:44aa7a31c403baa5ff70fa1f70593d994064af62527a68e4c94664dd33bde1ef
+            # nginx starts its master as root to chown /var/cache/nginx before
+            # spawning workers as uid 101, so it keeps CHOWN/SETUID/SETGID.
             securityContext:
               allowPrivilegeEscalation: false
               capabilities:
                 drop: ["ALL"]
+                add: ["CHOWN", "SETUID", "SETGID"]
             probes:
               liveness: &web-probe
                 enabled: true
