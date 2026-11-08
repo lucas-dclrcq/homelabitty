@@ -34,8 +34,19 @@ spec:
       labels:
         ingress.home.arpa/gateway-external: allow
         egress.home.arpa/internet: allow
+
+      # The sync CronJob pins its rsync container to runAsUser: 0, so the shared
+      # default cannot assert runAsNonRoot; the nginx controller sets its own below.
+      securityContext:
+        seccompProfile: { type: RuntimeDefault }
     controllers:
       pacman:
+        pod:
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 101
+            runAsGroup: 101
+            seccompProfile: { type: RuntimeDefault }
         annotations:
           reloader.stakater.com/auto: "true"
         containers:

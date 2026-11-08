@@ -16,6 +16,11 @@ spec:
         egress.home.arpa/postgres: allow
         egress.home.arpa/internet: allow
         egress.home.arpa/lan: allow
+
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+        seccompProfile: { type: RuntimeDefault }
     controllers:
       semaphore:
         annotations:

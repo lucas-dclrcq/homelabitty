@@ -19,6 +19,12 @@ spec:
         egress.home.arpa/gateway-external: allow
         egress.home.arpa/internet: allow
 
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 100
+        runAsGroup: 101
+        seccompProfile: { type: RuntimeDefault }
+
     controllers:
       the-elder-scrobz:
         annotations:

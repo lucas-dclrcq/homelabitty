@@ -20,6 +20,12 @@ spec:
     - ${DRAGONFLY_ARG_LOCK_ON_HASHTAGS:=--lock_on_hashtags}
     - --default_lua_flags=${DRAGONFLY_ARGS_DEFAULT_LUA_FLAGS:=}
     - --primary_port_http_enabled=true
+  # Dragonfly runs as root in-container and mounts no volumes; the operator
+  # already sets fsGroup pod-wide, so only the container context is missing.
+  containerSecurityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop: ["ALL"]
   resources:
     requests:
       cpu: ${DRAGONFLY_REQUESTS_CPU:=100m}
@@ -28,8 +34,8 @@ spec:
       memory: ${DRAGONFLY_LIMITS_MEMORY:=512Mi}
   topologySpreadConstraints:
     - maxSkew: 1
-      topologyKey: 'kubernetes.io/hostname'
-      whenUnsatisfiable: 'DoNotSchedule'
+      topologyKey: "kubernetes.io/hostname"
+      whenUnsatisfiable: "DoNotSchedule"
       labelSelector:
         matchLabels:
           app.kubernetes.io/part-of: dragonfly

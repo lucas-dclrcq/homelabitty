@@ -29,6 +29,11 @@ spec:
         ingress.home.arpa/world: allow
         ingress.home.arpa/prometheus: allow
         egress.home.arpa/internet: allow
+
+      # Declared for KSV-0118. This workload runs as root in-container, so the
+      # effective UID is deliberately left unchanged here.
+      securityContext:
+        seccompProfile: { type: RuntimeDefault }
     controllers:
       smtp-relay:
         strategy: RollingUpdate

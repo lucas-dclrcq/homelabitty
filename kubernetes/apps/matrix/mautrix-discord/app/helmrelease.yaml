@@ -57,6 +57,11 @@ spec:
         egress.home.arpa/gateway-external: allow
         egress.home.arpa/internet-https: allow
 
+      # Declared for KSV-0118. The entrypoint starts as root and drops to uid
+      # 1337 itself, so runAsNonRoot is not asserted pod-wide.
+      securityContext:
+        seccompProfile: { type: RuntimeDefault }
+
     controllers:
       mautrix-discord:
         type: statefulset

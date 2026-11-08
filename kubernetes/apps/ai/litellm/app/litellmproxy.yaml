@@ -14,6 +14,11 @@ spec:
     egress.home.arpa/internet-https: allow
     egress.home.arpa/gateway-external: allow
 
+  # Declared for KSV-0118. The proxy runs as root in-container, so the effective
+  # UID is deliberately left unchanged here.
+  podSecurityContext:
+    seccompProfile: { type: RuntimeDefault }
+
   applyMode: api
   apiAccess:
     masterKeyRef:
