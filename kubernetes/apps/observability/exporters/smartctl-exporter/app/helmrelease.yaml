@@ -14,6 +14,9 @@ spec:
 
     podLabels:
       ingress.home.arpa/prometheus: allow
+      # require-run-as-non-root-user exception: the exporter reads /dev/sda and
+      # /dev/nvme0n1 directly, the chart runs it as root
+      policy.home.arpa/run-as-root: allow
 
     image:
       registry: quay.io

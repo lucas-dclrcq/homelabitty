@@ -5,6 +5,7 @@ namespace: default
 components:
   - ../../components/common
   - ../../components/netpol-baseline
+  - ../../components/policy-baseline
 resources:
   - ./echo-server/ks.yaml
   - ./miniflux/ks.yaml

@@ -72,6 +72,14 @@ spec:
                 memory: 128Mi
       sync:
         type: cronjob
+        pod:
+          # pod.labels replaces defaultPodOptions.labels instead of merging, so
+          # the inherited netpol labels are restated here. Only this controller
+          # gets the exception; the nginx one above runs as 101.
+          labels:
+            policy.home.arpa/run-as-root: allow
+            ingress.home.arpa/gateway-external: allow
+            egress.home.arpa/internet: allow
         cronjob:
           schedule: "*/30 * * * *"
           concurrencyPolicy: Forbid

@@ -6,6 +6,7 @@ namespace: ai
 components:
   - ../../components/common
   - ../../components/netpol-baseline
+  - ../../components/policy-baseline
 resources:
   - ./headroom/ks.yaml
   - ./searxng/ks.yaml

@@ -5,6 +5,7 @@ namespace: auth
 components:
   - ../../components/common
   - ../../components/netpol-baseline
+  - ../../components/policy-baseline
 resources:
   - ./authentik-operator/ks.yaml
   - ./authentik/ks.yaml

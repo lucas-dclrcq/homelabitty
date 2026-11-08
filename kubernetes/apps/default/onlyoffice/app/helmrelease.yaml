@@ -14,6 +14,9 @@ spec:
       labels:
         ingress.home.arpa/gateway-external: allow
         egress.home.arpa/gateway-external: allow
+        # require-run-as-non-root-user exception: see the pod securityContext
+        # below, the all-in-one image needs root in-container
+        policy.home.arpa/run-as-root: allow
 
     controllers:
       onlyoffice:

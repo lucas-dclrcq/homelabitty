@@ -6,6 +6,7 @@ namespace: infrastructure
 components:
   - ../../components/common
   - ../../components/netpol-baseline
+  - ../../components/policy-baseline
 resources:
   - ./crunchy-postgres-operator/ks.yaml
   - ./mosquitto/ks.yaml
