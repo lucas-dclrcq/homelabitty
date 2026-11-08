@@ -11,11 +11,11 @@ live objects, and image signature verification.
 
 ## Where things live
 
-|                         |                                                                                                       |
-| ----------------------- | ----------------------------------------------------------------------------------------------------- |
-| The policies            | `policies/`, one file per policy, each holding its `ValidatingAdmissionPolicy` **and** its binding    |
-| Namespace enrolment     | `kubernetes/components/policy-baseline`, included from each enrolled namespace's `kustomization.yaml` |
-| Per-workload exceptions | a label on the pod template of the workload that needs it                                             |
+|                         |                                                                                                         |
+| ----------------------- | ------------------------------------------------------------------------------------------------------- |
+| The policies            | `policies/`, one file per policy, each holding its `ValidatingAdmissionPolicy` **and** its binding      |
+| Namespace enrolment     | `kubernetes/components/policy-baseline`, included from each enrolled namespace's `kustomization.yaml`   |
+| Per-workload exceptions | a label on the pod template of the workload that needs it, subtracted by the binding's `objectSelector` |
 
 ## Enrolment
 
@@ -42,8 +42,22 @@ thought about.
 
 ## Exceptions
 
-Granted per workload, by labelling the **pod template** — not the workload's
-own metadata, which is a different label set:
+Granted per workload, by labelling the **pod template**, and subtracted by the
+binding rather than by the policy:
+
+```yaml
+objectSelector:
+    matchExpressions:
+        - key: policy.home.arpa/run-as-root
+          operator: NotIn
+          values: ["allow"]
+```
+
+`NotIn` also matches pods carrying no such label at all, so an exception
+expression only ever subtracts — it can never accidentally narrow the policy to
+the labelled pods.
+
+In the workload:
 
 ```yaml
 defaultPodOptions:
@@ -61,21 +75,31 @@ declares `pod.labels`, the exception goes there, next to the netpol labels.
 
 ## Writing a policy
 
-Three things the native API does not give you, and that every policy here has
-to handle by hand:
+**Match Pods, nothing else.** Matching the workload controllers as well would
+catch a bad Deployment at apply time, which is what Kyverno's autogen does and
+what the native API has no equivalent for. It is not worth it here:
 
-- **No autogen.** Kyverno derives controller rules from a Pod rule. Here the
-  `matchConstraints` have to list Deployments, StatefulSets, DaemonSets, Jobs
-  and CronJobs explicitly, otherwise a bad Deployment is admitted and only its
-  Pods are refused later — visible in a ReplicaSet event and nowhere in Flux.
-  ReplicaSets are left out: the Deployment and the Pod rules already cover
-  every path that creates one.
-- **`matchConditions` cannot read `variables`.** Only `validations`,
-  `auditAnnotations` and `messageExpression` can. Since exceptions belong in
-  `matchConditions`, the walk down to the pod template (`object.metadata` for a
-  Pod, `object.spec.jobTemplate.spec.template.metadata` for a CronJob,
-  `object.spec.template.metadata` otherwise) is spelled out in each condition.
-- **`cel.bind` is not available**, so there is no way to factor that walk out.
+- It would force the exception mechanism into CEL. A binding's `objectSelector`
+  reads the labels of the **admitted object**, which for a Deployment are the
+  Deployment's own, not `spec.template.metadata.labels`. Charts label the pod
+  template, so the selector would see nothing and every policy would have to
+  re-implement the walk down to the pod template in `matchConditions` — which
+  cannot read `variables`, and cannot be factored out either since `cel.bind`
+  is not available on the apiserver.
+- Pod is the rule that cannot be bypassed. A controller rule says nothing about
+  a bare Pod.
+- What is lost is small. A refusal on a controller-managed workload still
+  carries the full policy message, on the Deployment's own status:
+
+    ```
+    ReplicaFailure=FailedCreate: pods "x-f96c9bb56-2qfc9" is forbidden:
+    ValidatingAdmissionPolicy 'require-run-as-non-root-user' ... denied request:
+    Running as root is not allowed, these containers set runAsUser: 0 -> app.
+    ```
+
+    The HelmRelease fails its readiness check and `kubectl describe deploy` names
+    the policy and the container. Only the apply-time rejection is lost. Pod
+    Security Admission makes exactly the same trade-off.
 
 Test a policy before pushing it — a `Deny` binding that is wrong refuses real
 workloads. Create a throwaway namespace carrying the enrolment label, apply the
