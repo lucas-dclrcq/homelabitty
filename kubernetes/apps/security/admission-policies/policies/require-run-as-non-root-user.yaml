@@ -5,22 +5,12 @@ kind: ValidatingAdmissionPolicy
 metadata:
   name: require-run-as-non-root-user
   annotations:
-    # Pod Security Standards (Restricted). Ported from the Kyverno policy of
-    # the same name: https://github.com/kyverno/policies/tree/main/pod-security-vpol/restricted/require-run-as-non-root-user
     policy.home.arpa/description: >-
       runAsUser must be unset or greater than zero, at the pod level and on
       every container. An unset runAsUser is allowed on purpose: the UID then
       comes from the image's USER line, which this policy cannot see.
 spec:
   failurePolicy: Fail
-  # Pods only. Matching the workload controllers too would catch a bad
-  # Deployment at apply time, but it would also push the exception mechanism
-  # into CEL: a binding's objectSelector reads the labels of the admitted
-  # object, which for a Deployment are the Deployment's own, not the pod
-  # template's. Pod is also the rule that cannot be bypassed — a controller
-  # rule says nothing about a bare Pod. Same trade-off Pod Security Admission
-  # makes, and the same consequence: a refusal on a controller-managed
-  # workload surfaces as a ReplicaFailure on the ReplicaSet, not in Flux.
   matchConstraints:
     resourceRules:
       - apiGroups: [""]
@@ -28,8 +18,6 @@ spec:
         operations: ["CREATE", "UPDATE"]
         resources: ["pods"]
   variables:
-    # A container without runAsUser inherits the pod-level value, which the
-    # first validation already covers; 1 is the "not root" stand-in here.
     - name: rootContainers
       expression: >-
         (object.spec.containers +
@@ -63,25 +51,14 @@ spec:
   policyName: require-run-as-non-root-user
   validationActions: ["Deny"]
   matchResources:
-    # Enrolment is opt-in per namespace, through
-    # kubernetes/components/policy-baseline. System namespaces never carry the
-    # label, so nothing there can be refused by accident.
     namespaceSelector:
       matchLabels:
         policy.home.arpa/admission: enforce
-    # Exceptions. NotIn also matches pods that carry no such label at all, so
-    # these two expressions only ever subtract.
     objectSelector:
       matchExpressions:
-        # The opt-out, set on the workload's pod template.
         - key: policy.home.arpa/run-as-root
           operator: NotIn
           values: ["allow"]
-        # Kopiur movers are root by necessity (NFS squashes everything else,
-        # see the kopiur migration notes) and the operator spawns them at
-        # backup time, so there is no manifest in this repo to carry the
-        # opt-out label. The carve-out rides on the label kopiur stamps on
-        # everything it creates.
         - key: app.kubernetes.io/managed-by
           operator: NotIn
           values: ["kopiur"]
