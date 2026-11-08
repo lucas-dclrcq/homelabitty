@@ -1,0 +1,91 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/admissionregistration.k8s.io/validatingadmissionpolicy_v1.json
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: require-run-as-non-root-user
+  annotations:
+    policy.home.arpa/description: >-
+      runAsUser must be unset or greater than zero, at the pod level and on
+      every container. An unset runAsUser is allowed on purpose: the UID then
+      comes from the image's USER line, which this policy cannot see.
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+      - apiGroups: [""]
+        apiVersions: ["v1"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["pods"]
+      - apiGroups: ["apps"]
+        apiVersions: ["v1"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["daemonsets", "deployments", "statefulsets"]
+      - apiGroups: ["batch"]
+        apiVersions: ["v1"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["cronjobs", "jobs"]
+
+  matchConditions:
+    - name: exclude-exempted-pods
+      expression: >-
+        (request.kind.kind == 'Pod'
+          ? object.metadata
+          : request.kind.kind == 'CronJob'
+            ? object.spec.jobTemplate.spec.template.metadata
+            : object.spec.template.metadata
+        ).?labels.orValue({})[?'policy.home.arpa/run-as-root'].orValue('') != 'allow'
+    - name: exclude-kopiur-movers
+      expression: >-
+        (request.kind.kind == 'Pod'
+          ? object.metadata
+          : request.kind.kind == 'CronJob'
+            ? object.spec.jobTemplate.spec.template.metadata
+            : object.spec.template.metadata
+        ).?labels.orValue({})[?'app.kubernetes.io/managed-by'].orValue('') != 'kopiur'
+
+  variables:
+    - name: podSpec
+      expression: >-
+        request.kind.kind == 'Pod'
+          ? object.spec
+          : request.kind.kind == 'CronJob'
+            ? object.spec.jobTemplate.spec.template.spec
+            : object.spec.template.spec
+    - name: rootContainers
+      expression: >-
+        (variables.podSpec.containers +
+         variables.podSpec.?initContainers.orValue([]) +
+         variables.podSpec.?ephemeralContainers.orValue([])
+        ).filter(c, c.?securityContext.?runAsUser.orValue(1) == 0).map(c, c.name)
+
+  validations:
+    - expression: variables.podSpec.?securityContext.?runAsUser.orValue(1) != 0
+      message: >-
+        Running as root is not allowed: spec.securityContext.runAsUser must be
+        unset or greater than zero. Label the pod template with
+        policy.home.arpa/run-as-root: allow to opt out.
+      reason: Forbidden
+    - expression: variables.rootContainers.size() == 0
+      message: >-
+        Running as root is not allowed: securityContext.runAsUser must be unset
+        or greater than zero on every container. Label the pod template with
+        policy.home.arpa/run-as-root: allow to opt out.
+      messageExpression: >-
+        'Running as root is not allowed, these containers set runAsUser: 0 -> ' +
+        variables.rootContainers.join(', ') +
+        '. Label the pod template with policy.home.arpa/run-as-root: allow to opt out.'
+      reason: Forbidden
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/admissionregistration.k8s.io/validatingadmissionpolicybinding_v1.json
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicyBinding
+metadata:
+  name: require-run-as-non-root-user
+spec:
+  policyName: require-run-as-non-root-user
+  validationActions: ["Deny"]
+  matchResources:
+    namespaceSelector:
+      matchLabels:
+        policy.home.arpa/admission: enforce

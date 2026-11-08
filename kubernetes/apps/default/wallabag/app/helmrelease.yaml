@@ -22,6 +22,9 @@ spec:
         pod:
           enableServiceLinks: false
           labels:
+            # require-run-as-non-root-user exception: the upstream image runs
+            # its entrypoint as root (defaultPodOptions.securityContext above)
+            policy.home.arpa/run-as-root: allow
             ingress.home.arpa/gateway-external: allow
             egress.home.arpa/kubedns: allow
             egress.home.arpa/postgres: allow

@@ -6,6 +6,7 @@ namespace: downloads
 components:
   - ../../components/common
   - ../../components/netpol-baseline
+  - ../../components/policy-baseline
 resources:
   - ./sabnzbd/ks.yaml
   - ./qbittorrent/ks.yaml

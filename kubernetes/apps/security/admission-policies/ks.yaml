@@ -1,0 +1,26 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &app admission-policies
+  namespace: security
+  labels:
+    # The policies are hardcoded CEL; without this label an accidental ${VAR}
+    # in an expression would be silently replaced by an empty string.
+    substitution.flux.home.arpa/disabled: "true"
+spec:
+  # no targetNamespace: ValidatingAdmissionPolicy and its binding are
+  # cluster-scoped (the per-namespace enrolment lives in
+  # components/policy-baseline, included by each enrolled namespace)
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
+  path: ./kubernetes/apps/security/admission-policies/policies
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+    namespace: flux-system
+  wait: true
+  interval: 1h
