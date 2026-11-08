@@ -13,10 +13,19 @@ spec:
   failurePolicy: Fail
   matchConstraints:
     resourceRules:
+      # runAsUser is immutable on a Pod, so a plain UPDATE can never introduce
+      # root; matching it would only block metadata patches (finalizer removal,
+      # label changes) on pods that predate the policy.
       - apiGroups: [""]
         apiVersions: ["v1"]
-        operations: ["CREATE", "UPDATE"]
+        operations: ["CREATE"]
         resources: ["pods"]
+      # `kubectl debug` adds ephemeral containers through this subresource, not
+      # through an UPDATE of the pod itself.
+      - apiGroups: [""]
+        apiVersions: ["v1"]
+        operations: ["UPDATE"]
+        resources: ["pods/ephemeralcontainers"]
   variables:
     - name: rootContainers
       expression: >-
