@@ -16,6 +16,7 @@ live objects, and image signature verification.
 | The policies            | `policies/`, one file per policy, each holding its `ValidatingAdmissionPolicy` **and** its binding      |
 | Namespace enrolment     | `kubernetes/components/policy-baseline`, included from each enrolled namespace's `kustomization.yaml`   |
 | Per-workload exceptions | a label on the pod template of the workload that needs it, subtracted by the binding's `objectSelector` |
+| Monitoring              | the "Admission Policies" Grafana dashboard, `policies/grafanadashboard.yaml`                            |
 
 ## Enrolment
 
