@@ -30,6 +30,8 @@ spec:
                       - port: "9091"
                         protocol: TCP
 
+    # Controllers that set pod.labels add to these instead of replacing them.
+    defaultPodOptionsStrategy: merge
     defaultPodOptions:
       labels:
         ingress.home.arpa/gateway-external: allow
@@ -73,13 +75,11 @@ spec:
       sync:
         type: cronjob
         pod:
-          # pod.labels replaces defaultPodOptions.labels instead of merging, so
-          # the inherited netpol labels are restated here. Only this controller
-          # gets the exception; the nginx one above runs as 101.
+          # Merged with defaultPodOptions.labels (defaultPodOptionsStrategy:
+          # merge). Only this controller gets the exception; the nginx one
+          # above runs as 101.
           labels:
             policy.home.arpa/run-as-root: allow
-            ingress.home.arpa/gateway-external: allow
-            egress.home.arpa/internet: allow
         cronjob:
           schedule: "*/30 * * * *"
           concurrencyPolicy: Forbid
