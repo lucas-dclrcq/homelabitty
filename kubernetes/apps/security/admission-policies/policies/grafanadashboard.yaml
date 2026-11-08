@@ -1,0 +1,522 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: admission-policies
+  # the Flux Kustomization has no targetNamespace (the policies are
+  # cluster-scoped), so the namespace of this one namespaced object is explicit
+  namespace: security
+spec:
+  allowCrossNamespaceImport: true
+  instanceSelector:
+    matchLabels:
+      grafana.internal/instance: grafana
+  json: >-
+    {
+      "annotations": { "list": [] },
+      "description": "Native ValidatingAdmissionPolicy decisions, from the apiserver metrics. The per-policy series only exist for non-admit decisions (deny, warn, audit) and reset when an apiserver restarts.",
+      "editable": false,
+      "fiscalYearStartMonth": 0,
+      "graphTooltip": 1,
+      "links": [],
+      "panels": [
+        {
+          "collapsed": false,
+          "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+          "id": 1,
+          "title": "Overview",
+          "type": "row"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "$datasource" },
+          "description": "Requests refused by a policy (enforcement action deny) in the selected range.",
+          "fieldConfig": {
+            "defaults": {
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "green", "value": null },
+                  { "color": "red", "value": 1 }
+                ]
+              },
+              "unit": "short"
+            }
+          },
+          "gridPos": { "h": 4, "w": 4, "x": 0, "y": 1 },
+          "id": 2,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+            "textMode": "auto"
+          },
+          "targets": [
+            {
+              "datasource": { "type": "prometheus", "uid": "$datasource" },
+              "expr": "round(sum(increase(apiserver_validating_admission_policy_check_total{enforcement_action=\"deny\", policy=~\"$policy\"}[$__range]))) or vector(0)",
+              "legendFormat": "Denied",
+              "refId": "A"
+            }
+          ],
+          "title": "Denied (Range)",
+          "type": "stat"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "$datasource" },
+          "description": "Requests admitted but flagged by a binding in warn or audit mode, i.e. what a policy would refuse once switched to deny.",
+          "fieldConfig": {
+            "defaults": {
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "green", "value": null },
+                  { "color": "yellow", "value": 1 }
+                ]
+              },
+              "unit": "short"
+            }
+          },
+          "gridPos": { "h": 4, "w": 4, "x": 4, "y": 1 },
+          "id": 3,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+            "textMode": "auto"
+          },
+          "targets": [
+            {
+              "datasource": { "type": "prometheus", "uid": "$datasource" },
+              "expr": "round(sum(increase(apiserver_validating_admission_policy_check_total{enforcement_action=~\"warn|audit\", policy=~\"$policy\"}[$__range]))) or vector(0)",
+              "legendFormat": "Warned / audited",
+              "refId": "A"
+            }
+          ],
+          "title": "Warned / Audited (Range)",
+          "type": "stat"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "$datasource" },
+          "description": "Decisions whose error type is not invalid_error (a validation that evaluated to false): the policy itself failed to compile or evaluate. With failurePolicy Fail these requests are refused regardless of their content, so the policy is broken.",
+          "fieldConfig": {
+            "defaults": {
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "green", "value": null },
+                  { "color": "red", "value": 1 }
+                ]
+              },
+              "unit": "short"
+            }
+          },
+          "gridPos": { "h": 4, "w": 4, "x": 8, "y": 1 },
+          "id": 4,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+            "textMode": "auto"
+          },
+          "targets": [
+            {
+              "datasource": { "type": "prometheus", "uid": "$datasource" },
+              "expr": "round(sum(increase(apiserver_validating_admission_policy_check_total{error_type!=\"invalid_error\", policy=~\"$policy\"}[$__range]))) or vector(0)",
+              "legendFormat": "Errors",
+              "refId": "A"
+            }
+          ],
+          "title": "Policy Errors (Range)",
+          "type": "stat"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "$datasource" },
+          "description": "Requests going through the ValidatingAdmissionPolicy admission plugin, across all three apiservers.",
+          "fieldConfig": {
+            "defaults": {
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [{ "color": "text", "value": null }]
+              },
+              "unit": "reqps"
+            }
+          },
+          "gridPos": { "h": 4, "w": 4, "x": 12, "y": 1 },
+          "id": 5,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+            "textMode": "auto"
+          },
+          "targets": [
+            {
+              "datasource": { "type": "prometheus", "uid": "$datasource" },
+              "expr": "sum(rate(apiserver_admission_controller_admission_duration_seconds_count{name=\"ValidatingAdmissionPolicy\"}[$__rate_interval]))",
+              "legendFormat": "Admissions/s",
+              "refId": "A"
+            }
+          ],
+          "title": "Admission Rate",
+          "type": "stat"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "$datasource" },
+          "description": "p99 time the ValidatingAdmissionPolicy plugin adds to a request, all policies included.",
+          "fieldConfig": {
+            "defaults": {
+              "decimals": 1,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "green", "value": null },
+                  { "color": "yellow", "value": 0.05 },
+                  { "color": "red", "value": 0.25 }
+                ]
+              },
+              "unit": "s"
+            }
+          },
+          "gridPos": { "h": 4, "w": 4, "x": 16, "y": 1 },
+          "id": 6,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+            "textMode": "auto"
+          },
+          "targets": [
+            {
+              "datasource": { "type": "prometheus", "uid": "$datasource" },
+              "expr": "histogram_quantile(0.99, sum by (le) (rate(apiserver_admission_controller_admission_duration_seconds_bucket{name=\"ValidatingAdmissionPolicy\"}[$__rate_interval])))",
+              "legendFormat": "p99",
+              "refId": "A"
+            }
+          ],
+          "title": "Plugin Latency p99",
+          "type": "stat"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "$datasource" },
+          "description": "Requests rejected by the plugin, including policies not managed in this repo (e.g. the Gateway API safe-upgrades policy shipped with its CRDs).",
+          "fieldConfig": {
+            "defaults": {
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "green", "value": null },
+                  { "color": "red", "value": 1 }
+                ]
+              },
+              "unit": "short"
+            }
+          },
+          "gridPos": { "h": 4, "w": 4, "x": 20, "y": 1 },
+          "id": 7,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+            "textMode": "auto"
+          },
+          "targets": [
+            {
+              "datasource": { "type": "prometheus", "uid": "$datasource" },
+              "expr": "round(sum(increase(apiserver_admission_controller_admission_duration_seconds_count{name=\"ValidatingAdmissionPolicy\", rejected=\"true\"}[$__range]))) or vector(0)",
+              "legendFormat": "Rejected",
+              "refId": "A"
+            }
+          ],
+          "title": "All VAP Rejections (Range)",
+          "type": "stat"
+        },
+        {
+          "collapsed": false,
+          "gridPos": { "h": 1, "w": 24, "x": 0, "y": 5 },
+          "id": 8,
+          "title": "Decisions - the metrics do not name the workload: find it with kubectl get events -A --field-selector reason=FailedCreate",
+          "type": "row"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "$datasource" },
+          "description": "Non-admit decisions per interval, by policy and enforcement action.",
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "palette-classic" },
+              "custom": {
+                "drawStyle": "bars",
+                "fillOpacity": 80,
+                "lineWidth": 1,
+                "showPoints": "never",
+                "stacking": { "group": "A", "mode": "normal" }
+              },
+              "decimals": 0,
+              "unit": "short"
+            }
+          },
+          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 6 },
+          "id": 9,
+          "options": {
+            "legend": { "calcs": ["sum"], "displayMode": "table", "placement": "bottom", "showLegend": true },
+            "tooltip": { "mode": "multi", "sort": "desc" }
+          },
+          "targets": [
+            {
+              "datasource": { "type": "prometheus", "uid": "$datasource" },
+              "expr": "round(sum by (policy, enforcement_action) (increase(apiserver_validating_admission_policy_check_total{policy=~\"$policy\"}[$__interval]))) > 0",
+              "interval": "5m",
+              "legendFormat": "{{policy}} ({{enforcement_action}})",
+              "refId": "A"
+            }
+          ],
+          "title": "Policy Decisions",
+          "type": "timeseries"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "$datasource" },
+          "description": "Requests through the ValidatingAdmissionPolicy plugin by operation, split by whether they were rejected.",
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "palette-classic" },
+              "custom": { "fillOpacity": 10, "lineWidth": 1, "showPoints": "never" },
+              "unit": "reqps"
+            },
+            "overrides": [
+              {
+                "matcher": { "id": "byRegexp", "options": ".*rejected" },
+                "properties": [{ "id": "color", "value": { "fixedColor": "red", "mode": "fixed" } }]
+              }
+            ]
+          },
+          "gridPos": { "h": 8, "w": 12, "x": 12, "y": 6 },
+          "id": 10,
+          "options": {
+            "legend": { "calcs": ["mean", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true },
+            "tooltip": { "mode": "multi", "sort": "desc" }
+          },
+          "targets": [
+            {
+              "datasource": { "type": "prometheus", "uid": "$datasource" },
+              "expr": "sum by (operation) (rate(apiserver_admission_controller_admission_duration_seconds_count{name=\"ValidatingAdmissionPolicy\", rejected=\"false\"}[$__rate_interval]))",
+              "legendFormat": "{{operation}}",
+              "refId": "A"
+            },
+            {
+              "datasource": { "type": "prometheus", "uid": "$datasource" },
+              "expr": "sum by (operation) (rate(apiserver_admission_controller_admission_duration_seconds_count{name=\"ValidatingAdmissionPolicy\", rejected=\"true\"}[$__rate_interval])) > 0",
+              "legendFormat": "{{operation}} rejected",
+              "refId": "B"
+            }
+          ],
+          "title": "Admissions by Operation",
+          "type": "timeseries"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "$datasource" },
+          "description": "Every non-admit decision in the selected range. error_type invalid_error means a validation evaluated to false (the expected denial); anything else means the policy failed to compile or evaluate.",
+          "fieldConfig": {
+            "defaults": {
+              "custom": { "align": "auto", "cellOptions": { "type": "auto" }, "inspect": false },
+              "thresholds": { "mode": "absolute", "steps": [{ "color": "text", "value": null }] }
+            },
+            "overrides": [
+              {
+                "matcher": { "id": "byName", "options": "Count" },
+                "properties": [
+                  { "id": "custom.cellOptions", "value": { "mode": "gradient", "type": "gauge" } },
+                  { "id": "color", "value": { "mode": "continuous-GrYlRd" } },
+                  { "id": "decimals", "value": 0 },
+                  { "id": "custom.width", "value": 200 }
+                ]
+              }
+            ]
+          },
+          "gridPos": { "h": 8, "w": 24, "x": 0, "y": 14 },
+          "id": 11,
+          "options": {
+            "cellHeight": "sm",
+            "footer": { "countRows": false, "fields": "", "reducer": ["sum"], "show": false },
+            "showHeader": true,
+            "sortBy": [{ "desc": true, "displayName": "Count" }]
+          },
+          "targets": [
+            {
+              "datasource": { "type": "prometheus", "uid": "$datasource" },
+              "expr": "round(sum by (policy, policy_binding, enforcement_action, error_type) (increase(apiserver_validating_admission_policy_check_total{policy=~\"$policy\"}[$__range]))) > 0",
+              "format": "table",
+              "instant": true,
+              "refId": "A"
+            }
+          ],
+          "title": "Decisions in Range",
+          "transformations": [
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": { "Time": true },
+                "indexByName": { "policy": 0, "policy_binding": 1, "enforcement_action": 2, "error_type": 3, "Value": 4 },
+                "renameByName": {
+                  "policy": "Policy",
+                  "policy_binding": "Binding",
+                  "enforcement_action": "Action",
+                  "error_type": "Error type",
+                  "Value": "Count"
+                }
+              }
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "collapsed": false,
+          "gridPos": { "h": 1, "w": 24, "x": 0, "y": 22 },
+          "id": 12,
+          "title": "Cost",
+          "type": "row"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "$datasource" },
+          "description": "Time the ValidatingAdmissionPolicy plugin adds to each request, by operation.",
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "palette-classic" },
+              "custom": { "fillOpacity": 10, "lineWidth": 1, "showPoints": "never" },
+              "unit": "s"
+            }
+          },
+          "gridPos": { "h": 8, "w": 8, "x": 0, "y": 23 },
+          "id": 13,
+          "options": {
+            "legend": { "calcs": ["mean", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true },
+            "tooltip": { "mode": "multi", "sort": "desc" }
+          },
+          "targets": [
+            {
+              "datasource": { "type": "prometheus", "uid": "$datasource" },
+              "expr": "histogram_quantile(0.99, sum by (le, operation) (rate(apiserver_admission_controller_admission_duration_seconds_bucket{name=\"ValidatingAdmissionPolicy\"}[$__rate_interval])))",
+              "legendFormat": "p99 {{operation}}",
+              "refId": "A"
+            },
+            {
+              "datasource": { "type": "prometheus", "uid": "$datasource" },
+              "expr": "histogram_quantile(0.5, sum by (le, operation) (rate(apiserver_admission_controller_admission_duration_seconds_bucket{name=\"ValidatingAdmissionPolicy\"}[$__rate_interval])))",
+              "legendFormat": "p50 {{operation}}",
+              "refId": "B"
+            }
+          ],
+          "title": "Plugin Latency",
+          "type": "timeseries"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "$datasource" },
+          "description": "Evaluation time of a single policy. Only recorded for non-admit decisions, so this stays empty while nothing is refused.",
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "palette-classic" },
+              "custom": { "drawStyle": "points", "pointSize": 6, "showPoints": "always" },
+              "unit": "s"
+            }
+          },
+          "gridPos": { "h": 8, "w": 8, "x": 8, "y": 23 },
+          "id": 14,
+          "options": {
+            "legend": { "calcs": ["max"], "displayMode": "table", "placement": "bottom", "showLegend": true },
+            "tooltip": { "mode": "multi", "sort": "desc" }
+          },
+          "targets": [
+            {
+              "datasource": { "type": "prometheus", "uid": "$datasource" },
+              "expr": "sum by (policy) (rate(apiserver_validating_admission_policy_check_duration_seconds_sum{policy=~\"$policy\"}[$__rate_interval])) / sum by (policy) (rate(apiserver_validating_admission_policy_check_duration_seconds_count{policy=~\"$policy\"}[$__rate_interval]))",
+              "legendFormat": "{{policy}}",
+              "refId": "A"
+            }
+          ],
+          "title": "Policy Check Duration (mean)",
+          "type": "timeseries"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "$datasource" },
+          "description": "CEL compile and evaluation time in the apiserver. Shared with CRD validation rules, so it bounds the cost of the policies rather than isolating it.",
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "palette-classic" },
+              "custom": { "fillOpacity": 10, "lineWidth": 1, "showPoints": "never" },
+              "unit": "s"
+            }
+          },
+          "gridPos": { "h": 8, "w": 8, "x": 16, "y": 23 },
+          "id": 15,
+          "options": {
+            "legend": { "calcs": ["mean", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true },
+            "tooltip": { "mode": "multi", "sort": "desc" }
+          },
+          "targets": [
+            {
+              "datasource": { "type": "prometheus", "uid": "$datasource" },
+              "expr": "histogram_quantile(0.99, sum by (le) (rate(apiserver_cel_evaluation_duration_seconds_bucket[$__rate_interval])))",
+              "legendFormat": "evaluation p99",
+              "refId": "A"
+            },
+            {
+              "datasource": { "type": "prometheus", "uid": "$datasource" },
+              "expr": "histogram_quantile(0.99, sum by (le) (rate(apiserver_cel_compilation_duration_seconds_bucket[$__rate_interval])))",
+              "legendFormat": "compilation p99",
+              "refId": "B"
+            }
+          ],
+          "title": "CEL Cost",
+          "type": "timeseries"
+        }
+      ],
+      "schemaVersion": 39,
+      "tags": ["kubernetes", "security", "policy", "admission"],
+      "templating": {
+        "list": [
+          {
+            "current": { "selected": false, "text": "Prometheus", "value": "prometheus" },
+            "hide": 0,
+            "includeAll": false,
+            "multi": false,
+            "name": "datasource",
+            "options": [],
+            "query": "prometheus",
+            "refresh": 1,
+            "type": "datasource"
+          },
+          {
+            "allValue": ".*",
+            "current": { "selected": true, "text": "All", "value": "$__all" },
+            "datasource": { "type": "prometheus", "uid": "$datasource" },
+            "definition": "label_values(apiserver_validating_admission_policy_check_total, policy)",
+            "hide": 0,
+            "includeAll": true,
+            "multi": true,
+            "name": "policy",
+            "options": [],
+            "query": "label_values(apiserver_validating_admission_policy_check_total, policy)",
+            "refresh": 2,
+            "sort": 1,
+            "type": "query"
+          }
+        ]
+      },
+      "time": { "from": "now-24h", "to": "now" },
+      "timepicker": {},
+      "timezone": "",
+      "title": "Admission Policies",
+      "uid": "admission-policies",
+      "version": 1
+    }
