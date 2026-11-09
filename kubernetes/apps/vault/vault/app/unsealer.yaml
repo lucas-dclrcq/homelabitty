@@ -45,14 +45,21 @@ spec:
               addr() { echo "http://vault-$${1}.vault-internal:8200"; }
               log() { echo "[$(date '+%Y-%m-%d %H:%M:%S')] $${*}"; }
 
-              pod_status() { VAULT_ADDR="$(addr "$${1}")" vault status -format=json 2>/dev/null; }
+              # Seal state is polled over plain HTTP rather than with `vault
+              # status`: the CLI is a ~550 MB binary that gets paged back in
+              # from disk on every exec (its page cache is charged to this
+              # container's small cgroup, so it can never stay warm). Six
+              # execs per interval pinned the node at ~600 major faults/s and
+              # ~100 MB/s of NVMe reads. The CLI is now only used for the rare
+              # write paths (unseal, raft join, init, snapshot restore).
+              pod_status() { wget -qO- "$(addr "$${1}")/v1/sys/seal-status" 2>/dev/null; }
 
               unseal_pod() {
                 log "Unsealing vault-$${1}..."
                 for key in $${VAULT_UNSEAL_KEYS}; do
                   VAULT_ADDR="$(addr "$${1}")" vault operator unseal "$${key}" >/dev/null 2>&1 || true
                 done
-                if pod_status "$${1}" | grep -q '"sealed": false'; then
+                if pod_status "$${1}" | grep -q '"sealed":false'; then
                   log "vault-$${1} unsealed"
                 else
                   log "WARNING: vault-$${1} still sealed after unseal attempt"
@@ -77,7 +84,7 @@ spec:
                 tmp_token="$(echo "$${init_out}" | awk '/^Initial Root Token:/ {print $NF}')"
                 vault operator unseal "$${tmp_key}" >/dev/null || { log "DR: temp unseal failed"; return 1; }
                 tries=0
-                until vault status -format=json 2>/dev/null | grep -q '"sealed": false'; do
+                until pod_status 0 | grep -q '"sealed":false'; do
                   tries=$((tries + 1))
                   [ "$${tries}" -gt 30 ] && { log "DR: vault-0 stuck sealed after temp init"; return 1; }
                   sleep 2
@@ -95,12 +102,12 @@ spec:
                 reachable=0
                 i=0
                 while [ "$${i}" -lt "$${REPLICAS}" ]; do
-                  # `vault status` exits 2 when the pod is sealed; without
+                  # wget exits non-zero when the pod is unreachable; without
                   # `|| true` the `sh -e` shell dies before it can unseal.
                   s="$(pod_status "$${i}")" || true
                   if [ -n "$${s}" ]; then
                     reachable=$((reachable + 1))
-                    echo "$${s}" | grep -q '"initialized": false' && uninit=$((uninit + 1))
+                    echo "$${s}" | grep -q '"initialized":false' && uninit=$((uninit + 1))
                   fi
                   i=$((i + 1))
                 done
@@ -111,20 +118,20 @@ spec:
 
                 i=0
                 while [ "$${i}" -lt "$${REPLICAS}" ]; do
-                  # `vault status` exits 2 when the pod is sealed; without
+                  # wget exits non-zero when the pod is unreachable; without
                   # `|| true` the `sh -e` shell dies before it can unseal.
                   s="$(pod_status "$${i}")" || true
                   if [ -z "$${s}" ]; then
                     i=$((i + 1))
                     continue
                   fi
-                  if echo "$${s}" | grep -q '"initialized": false'; then
+                  if echo "$${s}" | grep -q '"initialized":false'; then
                     # Lost its raft data but the cluster is alive: rejoin via
                     # any unsealed peer, then unseal.
                     leader=""
                     j=0
                     while [ "$${j}" -lt "$${REPLICAS}" ]; do
-                      if [ "$${j}" -ne "$${i}" ] && pod_status "$${j}" | grep -q '"sealed": false'; then
+                      if [ "$${j}" -ne "$${i}" ] && pod_status "$${j}" | grep -q '"sealed":false'; then
                         leader="$${j}"
                         break
                       fi
@@ -135,7 +142,7 @@ spec:
                       VAULT_ADDR="$(addr "$${i}")" vault operator raft join "$(addr "$${leader}")" >/dev/null 2>&1 || true
                       unseal_pod "$${i}"
                     fi
-                  elif echo "$${s}" | grep -q '"sealed": true'; then
+                  elif echo "$${s}" | grep -q '"sealed":true'; then
                     unseal_pod "$${i}"
                   fi
                   i=$((i + 1))
@@ -147,7 +154,7 @@ spec:
               cpu: 10m
               memory: 32Mi
             limits:
-              memory: 64Mi
+              memory: 256Mi
           volumeMounts:
             - name: snapshots
               mountPath: /snapshots
