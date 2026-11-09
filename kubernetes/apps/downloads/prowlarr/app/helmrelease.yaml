@@ -75,6 +75,7 @@ spec:
         egress.home.arpa/sonarr: allow
         egress.home.arpa/radarr: allow
         egress.home.arpa/lidarr: allow
+        egress.home.arpa/qbittorrent: allow
       securityContext:
         runAsNonRoot: true
         runAsUser: 568

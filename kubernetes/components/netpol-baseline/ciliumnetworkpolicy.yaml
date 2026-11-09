@@ -12,6 +12,7 @@ spec:
   ingress:
     - fromEntities:
         - host
+        - remote-node
   egress:
     - toEndpoints:
         - matchLabels:

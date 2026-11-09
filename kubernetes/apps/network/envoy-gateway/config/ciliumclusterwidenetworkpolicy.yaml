@@ -195,6 +195,9 @@ spec:
             app: source-controller
             io.kubernetes.pod.namespace: flux-system
         - matchLabels:
+            app.kubernetes.io/name: konflate
+            io.kubernetes.pod.namespace: flux-system
+        - matchLabels:
             app: authentik-outpost
             io.kubernetes.pod.namespace: auth
 ---

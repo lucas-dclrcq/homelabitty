@@ -43,3 +43,28 @@ spec:
               protocol: TCP
             - port: "6636"
               protocol: TCP
+---
+# The outposts are scraped on 9300 (ak-outpost-*-metrics, ../../../observability
+# ServiceMonitors) but cannot carry `ingress.home.arpa/prometheus`: authentik
+# creates their Deployments and no chart value sets pod labels. vmagent's half
+# is named in the VictoriaMetrics stack's clusterwide policy.
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: allow-ingress-prometheus-outposts
+spec:
+  description: "The authentik outposts accept vmagent on their metrics port; they are operator-created and carry no label of ours"
+  endpointSelector:
+    matchLabels:
+      app: authentik-outpost
+      io.kubernetes.pod.namespace: auth
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: vmagent
+            io.kubernetes.pod.namespace: observability
+      toPorts:
+        - ports:
+            - port: "9300"
+              protocol: TCP

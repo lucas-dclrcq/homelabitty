@@ -52,6 +52,8 @@ spec:
 
     kubewatch:
       labels:
+        # the chart names this deployment `robusta-forwarder`
+        ingress.home.arpa/prometheus: allow
         egress.home.arpa/apiserver: allow
       resources:
         requests:

@@ -21,6 +21,9 @@ spec:
     - fromEndpoints:
         - matchLabels:
             app.kubernetes.io/component: trivy-scan-job
+        # the operator probes the server itself before dispatching a scan
+        - matchLabels:
+            app.kubernetes.io/name: trivy-operator
       toPorts:
         - ports:
             - port: "4954"
@@ -36,6 +39,25 @@ spec:
   endpointSelector:
     matchLabels:
       app.kubernetes.io/component: trivy-scan-job
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: trivy-server
+      toPorts:
+        - ports:
+            - port: "4954"
+              protocol: TCP
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: trivy-operator
+spec:
+  description: "The operator talks to trivy-server directly too, not only through the scan jobs"
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: trivy-operator
   egress:
     - toEndpoints:
         - matchLabels:

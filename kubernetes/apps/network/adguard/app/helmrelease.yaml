@@ -54,6 +54,9 @@ spec:
     defaultPodOptions:
       labels:
         ingress.home.arpa/gateway-internal: allow
+        # adguard-dns is a LoadBalancer with externalTrafficPolicy=Local, so a
+        # LAN client keeps its own address and lands as reserved:world.
+        ingress.home.arpa/world: allow
         egress.home.arpa/internet: allow
       securityContext:
         runAsNonRoot: true
