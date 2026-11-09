@@ -5,17 +5,12 @@ kind: CiliumNetworkPolicy
 metadata:
   name: homelab-manager
 spec:
-  description: "Aggregates the Jellyfin/Matrix/authentik APIs and ships OTLP traces; every target is addressed by its in-cluster Service (see ./externalsecret.yaml). The *arr apps are opened by the egress.home.arpa/{sonarr,radarr,lidarr} labels."
+  description: "Aggregates the authentik API and ships OTLP traces; every target is addressed by its in-cluster Service (see ./externalsecret.yaml). Jellyfin, Matrix and the *arr apps are opened by the egress.home.arpa/{jellyfin,matrix-synapse,sonarr,radarr,lidarr} labels."
   endpointSelector:
     matchLabels:
       app: homelab-manager
   ingress:
-    # nana posts notifications to /api/notifications/nana, the operator syncs
-    # the app's catalogue from its CRs
     - fromEndpoints:
-        - matchLabels:
-            app.kubernetes.io/name: nana
-            io.kubernetes.pod.namespace: media
         - matchLabels:
             app.kubernetes.io/name: homelab-manager
             app.kubernetes.io/component: operator
@@ -24,23 +19,6 @@ spec:
             - port: "8080"
               protocol: TCP
   egress:
-    - toEndpoints:
-        - matchLabels:
-            app.kubernetes.io/name: jellyfin
-            io.kubernetes.pod.namespace: media
-      toPorts:
-        - ports:
-            - port: "8096"
-              protocol: TCP
-    # MATRIX_BASE_URL: the Service in front of the matrix-stack HAProxy
-    - toEndpoints:
-        - matchLabels:
-            app.kubernetes.io/name: haproxy
-            io.kubernetes.pod.namespace: matrix
-      toPorts:
-        - ports:
-            - port: "8008"
-              protocol: TCP
     # AUTHENTIK_BASE_URL uses the in-cluster Service, not the public hostname
     - toEndpoints:
         - matchLabels:

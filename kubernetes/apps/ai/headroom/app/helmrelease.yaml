@@ -12,25 +12,6 @@ spec:
     global:
       createDefaultServiceAccount: false
 
-    rawResources:
-      netpol:
-        manifest:
-          apiVersion: cilium.io/v2
-          kind: CiliumNetworkPolicy
-          spec:
-            description: "headroom is only called by the LiteLLM proxy (headroomguardrail.yaml)"
-            endpointSelector:
-              matchLabels:
-                app.kubernetes.io/name: headroom
-            ingress:
-              - fromEndpoints:
-                  - matchLabels:
-                      app.kubernetes.io/name: litellm
-                toPorts:
-                  - ports:
-                      - port: "8787"
-                        protocol: TCP
-
     defaultPodOptions:
       automountServiceAccountToken: false
       enableServiceLinks: false

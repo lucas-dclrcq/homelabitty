@@ -103,3 +103,51 @@ spec:
         - matchLabels:
             app.kubernetes.io/name: vmagent
             k8s:io.kubernetes.pod.namespace: observability
+---
+# Paired vocabulary for egress.home.arpa/alertmanager, owned by the stack that
+# runs Alertmanager: the first policy opens the consumer's egress, the second
+# opens vmalertmanager's ingress from pods carrying the label. The Alertmanager
+# API has several readers (karma today; grafana and silence-operator still name
+# it in their own CiliumNetworkPolicy and can migrate onto the label), which is
+# why this is a pair and not one more entry in the `vmalertmanager` whitelist.
+# The gossip port 9094 stays out: that is replica-to-replica traffic, not an
+# API call, and it is covered by `./ciliumnetworkpolicy.yaml`.
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: allow-egress-alertmanager
+spec:
+  description: "Pods labeled egress.home.arpa/alertmanager=allow may reach the Alertmanager API on 9093"
+  endpointSelector:
+    matchLabels:
+      egress.home.arpa/alertmanager: allow
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: vmalertmanager
+            io.kubernetes.pod.namespace: observability
+      toPorts:
+        - ports:
+            - port: "9093"
+              protocol: TCP
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: allow-ingress-alertmanager
+spec:
+  description: "Service side of egress.home.arpa/alertmanager: vmalertmanager accepts 9093 from consumers carrying the label"
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: vmalertmanager
+      io.kubernetes.pod.namespace: observability
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            egress.home.arpa/alertmanager: allow
+      toPorts:
+        - ports:
+            - port: "9093"
+              protocol: TCP

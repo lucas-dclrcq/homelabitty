@@ -9,6 +9,7 @@ resources:
   - ./ocirepository.yaml
   - ./helmrelease.yaml
   - ./ciliumnetworkpolicy.yaml
+  - ./ciliumclusterwidenetworkpolicy.yaml
   - ./httproute.yaml
   - ./prometheusrule.yaml
   - ./grafanadashboard.yaml

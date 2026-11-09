@@ -14,41 +14,17 @@ spec:
     global:
       createDefaultServiceAccount: false
 
-    rawResources:
-      netpol:
-        manifest:
-          apiVersion: cilium.io/v2
-          kind: CiliumNetworkPolicy
-          spec:
-            description: "Mail sink: only BookMan submits to the SMTP listener (the 8025 web UI comes in through the external gateway)"
-            endpointSelector:
-              matchLabels:
-                app.kubernetes.io/name: bookman-mailpit
-            ingress:
-              - fromEndpoints:
-                  - matchLabels:
-                      app.kubernetes.io/name: bookman
-                toPorts:
-                  - ports:
-                      - port: "1025"
-                        protocol: TCP
-
     controllers:
       bookman-mailpit:
         containers:
           app:
             image:
               repository: axllent/mailpit
-              # Keep aligned with bookman's docker-compose.yml.
               tag: v1.33.1
             env:
               TZ: Europe/Paris
-              # A sink only: never relay, forward or auto-send. Mailpit relays
-              # nothing unless a relay is explicitly configured, and none is.
               MP_DISABLE_VERSION_CHECK: "true"
             probes:
-              # The SMTP port is what BookMan talks to; if it answers, the
-              # process (and therefore the UI) is up.
               liveness:
                 enabled: true
                 custom: true
@@ -95,7 +71,6 @@ spec:
       enableServiceLinks: false
       securityContext:
         runAsNonRoot: true
-        # The image runs as root by default; the binary needs no privileges.
         runAsUser: 1000
         runAsGroup: 1000
         fsGroup: 1000
@@ -104,9 +79,6 @@ spec:
           type: RuntimeDefault
 
     persistence:
-      # Mailpit's default database is a temporary SQLite file under $TMPDIR
-      # (deleted on exit), copied from the compose service, which has no
-      # volume either. This is a throwaway mail sink, not a mail archive.
       tmp:
         type: emptyDir
         globalMounts:
@@ -123,9 +95,6 @@ spec:
 
     route:
       app:
-        # External gateway: the UI is public, so it is gated by Authentik
-        # forward-auth (see the `security-policy/forward-auth` component in
-        # `ks.yaml`). BookMan reaches SMTP over the cluster service instead.
         hostnames:
           - "bookman-mail.hoohoot.org"
         parentRefs:

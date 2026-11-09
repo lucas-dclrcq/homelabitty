@@ -1,0 +1,24 @@
+---
+# Ingress half of the BookMan -> Mailpit flow; the egress half is in
+# `../app/ciliumnetworkpolicy.yaml`. Deliberately not the
+# `egress.home.arpa/smtp` vocabulary label: that one points at the real
+# smtp-relay, and this sink exists precisely so BookMan's campaign mail never
+# reaches it.
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: bookman-mailpit
+spec:
+  description: "Mail sink: only BookMan submits to the SMTP listener (the 8025 web UI comes in through the external gateway)"
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: bookman-mailpit
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: bookman
+      toPorts:
+        - ports:
+            - port: "1025"
+              protocol: TCP

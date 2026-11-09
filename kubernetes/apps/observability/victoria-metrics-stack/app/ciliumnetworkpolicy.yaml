@@ -115,7 +115,7 @@ kind: CiliumNetworkPolicy
 metadata:
   name: vmalertmanager
 spec:
-  description: "Alertmanager: gossip between replicas, alerts in from vmalert/Flux notifications, webhook out to the Robusta runner (alertmanagerconfig.yaml)"
+  description: "Alertmanager: gossip between replicas, alerts in from vmalert/Flux notifications, webhook out to the Robusta runner (alertmanagerconfig.yaml). API readers that carry egress.home.arpa/alertmanager are handled by the pair in ./ciliumclusterwidenetworkpolicy.yaml"
   endpointSelector:
     matchLabels:
       app.kubernetes.io/name: vmalertmanager
@@ -125,8 +125,6 @@ spec:
             app.kubernetes.io/name: vmalertmanager
         - matchLabels:
             app.kubernetes.io/name: vmalert
-        - matchLabels:
-            app.kubernetes.io/name: karma
         - matchLabels:
             app: grafana
         - matchLabels:

@@ -1,0 +1,63 @@
+---
+# No vocabulary label: the runner, its CI job pods and Forgejo itself are one
+# stack, and the Actions cache proxy is reachable by nothing else. The Forgejo
+# ingress half is in `apps/development/forgejo/app/ciliumnetworkpolicy.yaml`,
+# which names both `forgejo-runner` and `forgejo-runner-instance`.
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: forgejo-runner
+spec:
+  description: "The runner registers and long-polls jobs against forgejo-http.development.svc:3000, and serves its Actions cache proxy to the job pods it spawns"
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: forgejo-runner
+  ingress:
+    # Job pods fetch from the cache proxy at ACTIONS_CACHE_URL, which
+    # is this pod's IP on cache.proxy_port (pinned in runner.yaml).
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: forgejo-runner-instance
+      toPorts:
+        - ports:
+            - port: "45001"
+              protocol: TCP
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: forgejo
+      toPorts:
+        - ports:
+            - port: "3000"
+              protocol: TCP
+---
+# The k8s plugin spawns one Job pod per CI job, labelled from
+# plugins.k8s.options.labels in ./helmrelease.yaml. The vocabulary labels there
+# cover the internet and the external gateway; these two peers are in-cluster
+# and need naming. Audit sweep 2026-10-22: 1 557 AUDIT flows.
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: forgejo-runner-task
+spec:
+  description: "CI job pods reach the runner's Actions cache proxy and clone/call the Forgejo API over forgejo-http.development.svc:3000"
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: forgejo-runner-instance
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: forgejo-runner
+      toPorts:
+        - ports:
+            - port: "45001"
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: forgejo
+      toPorts:
+        - ports:
+            - port: "3000"
+              protocol: TCP

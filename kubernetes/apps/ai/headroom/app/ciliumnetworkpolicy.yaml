@@ -1,0 +1,22 @@
+---
+# No vocabulary label: headroom is a single-consumer guardrail sidecar service,
+# not a shared peer. The matching egress half is in litellm's own policy
+# (`apps/ai/litellm/app/ciliumnetworkpolicy.yaml`).
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: headroom
+spec:
+  description: "headroom is only called by the LiteLLM proxy (headroomguardrail.yaml)"
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: headroom
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: litellm
+      toPorts:
+        - ports:
+            - port: "8787"
+              protocol: TCP

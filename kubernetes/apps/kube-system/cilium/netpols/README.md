@@ -16,9 +16,12 @@ Flows are opened in one of two ways:
   [Where the policies live](#where-the-policies-live).
 - **A policy shipped with the app** — a CiliumNetworkPolicy that names the
   peers directly. Use it for everything else: same-namespace components, and
-  one-off cross-namespace calls. It lives next to the app (`rawResources` in
-  the HelmRelease values for app-template charts, a `ciliumnetworkpolicy.yaml`
-  in the app directory otherwise) so it is pruned together with the app.
+  one-off cross-namespace calls. It lives next to the app, as a
+  `ciliumnetworkpolicy.yaml` listed in the app's `kustomization.yaml`, so it is
+  pruned together with the app. **Never** as `rawResources` inside the
+  HelmRelease: a policy buried in Helm values is invisible to a `grep` for the
+  kind, is not rendered by `kustomize build`, and cannot be read next to the
+  pair it mirrors.
 
 ## Current state: AUDIT MODE
 
@@ -91,7 +94,7 @@ reviewed in the same diff:
 | a service's label pair (both halves)    | the owning app, `kubernetes/apps/<ns>/<app>/app/ciliumclusterwidenetworkpolicy.yaml` |
 | external destinations (CIDR labels)     | `netpols/destinations/` — no owning app                                              |
 | entity-backed labels (apiserver, world) | `netpols/platform/` — no owning app                                                  |
-| an app's own peers                      | the app (`rawResources` in the HelmRelease, or `ciliumnetworkpolicy.yaml`)           |
+| an app's own peers                      | the app, `kubernetes/apps/<ns>/<app>/app/ciliumnetworkpolicy.yaml`                   |
 
 So this catalog holds only what **no single app owns**: the CIDR destinations
 and the two entity-backed labels (the API server, and `world`/`remote-node` for
@@ -120,6 +123,7 @@ operator-managed pods that cannot carry our labels with their operator
 | `egress.home.arpa/smtp`             | smtp-relay :2525 (+ matching ingress)                                                                                                                           |
 | `egress.home.arpa/vault`            | vault :8200 (+ matching ingress)                                                                                                                                |
 | `egress.home.arpa/ldap`             | authentik's LDAP outpost :3389/:6636 (apps authenticating over LDAP rather than OIDC)                                                                           |
+| `egress.home.arpa/alertmanager`     | vmalertmanager :9093, the Alertmanager API (karma)                                                                                                              |
 | `egress.home.arpa/apiserver`        | kube-apiserver (operators, patroni, controllers)                                                                                                                |
 | `egress.home.arpa/gateway-external` | external envoy pods — needed for **OIDC hairpin** (app calls `auth.<domain>` which resolves to the gateway LB) and any call to a public hostname of the cluster |
 | `egress.home.arpa/gateway-internal` | internal envoy pods — calls to internal hostnames (blackbox probes of `*.hoohoot.xyz`)                                                                          |
@@ -132,6 +136,10 @@ operator-managed pods that cannot carry our labels with their operator
 | `egress.home.arpa/slskd`            | slskd API :80                                                                                                                                                   |
 | `egress.home.arpa/jellyfin`         | Jellyfin :8096 (the *arr apps' library refresh)                                                                                                                 |
 | `egress.home.arpa/homelab-manager`  | homelab-manager API :8080 (the *arr apps' webhook notifications)                                                                                                |
+| `egress.home.arpa/navidrome`        | Navidrome :8080, the Subsonic API (droppedneedle)                                                                                                               |
+| `egress.home.arpa/home-assistant`   | Home Assistant :8123, the REST API (bambuddy, the litellm MCP server)                                                                                           |
+| `egress.home.arpa/matrix-synapse`   | the Matrix client-server API :8008, i.e. the matrix-stack HAProxy front (the four mautrix bridges, homelab-manager)                                             |
+| `egress.home.arpa/pushgateway`      | prometheus-pushgateway :9091 (batch jobs pushing run metrics: pacman-sync)                                                                                      |
 
 kopiur mover Jobs (`<app>-<timestamp>`) are not labelled by us: the policy
 shipped by `kopiur-system/kopiur/app` selects them on
@@ -140,10 +148,12 @@ shipped by `kopiur-system/kopiur/app` selects them on
 Most of these are **paired**: one clusterwide policy opens the consumer's
 egress, a second one opens the service's ingress from pods carrying that same
 label, so labelling the consumer is enough. That covers
-`postgres`/`mqtt`/`smtp`/`vault`/`ldap`, `gateway-external`/`gateway-internal`
-(the envoy pods accept hairpin calls from pods carrying the label) and the whole
-downloads stack
-(`sonarr`/`radarr`/`lidarr`/`prowlarr`/`qbittorrent`/`sabnzbd`/`slskd`).
+`postgres`/`mqtt`/`smtp`/`vault`/`ldap`/`alertmanager`,
+`gateway-external`/`gateway-internal` (the envoy pods accept hairpin calls from
+pods carrying the label), the whole downloads stack
+(`sonarr`/`radarr`/`lidarr`/`prowlarr`/`qbittorrent`/`sabnzbd`/`slskd`) and the
+media/home services reached across namespaces
+(`jellyfin`/`navidrome`/`home-assistant`/`homelab-manager`/`matrix-synapse`/`pushgateway`).
 
 Both halves of a pair live in **one file, in the owning app's directory**:
 `kubernetes/apps/downloads/sonarr/app/ciliumclusterwidenetworkpolicy.yaml`
@@ -188,13 +198,14 @@ Three things to know about CIDR rules in Cilium:
 
 ### Ingress labels (put on the _receiving_ pod)
 
-| Pod label (`=allow`)                 | Accepts ingress from                                                                              |
-| ------------------------------------ | ------------------------------------------------------------------------------------------------- |
-| `ingress.home.arpa/gateway-external` | external envoy gateway (HTTPRoute/TCPRoute)                                                       |
-| `ingress.home.arpa/gateway-internal` | internal envoy gateway                                                                            |
-| `ingress.home.arpa/prometheus`       | vmagent (ServiceMonitor/PodMonitor scraping)                                                      |
-| `ingress.home.arpa/apiserver`        | kube-apiserver (admission webhooks)                                                               |
-| `ingress.home.arpa/world`            | outside the cluster (LoadBalancer services used from the LAN: mosquitto, smtp-relay, forgejo ssh) |
+| Pod label (`=allow`)                  | Accepts ingress from                                                                              |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `ingress.home.arpa/gateway-external`  | external envoy gateway (HTTPRoute/TCPRoute)                                                       |
+| `ingress.home.arpa/gateway-internal`  | internal envoy gateway                                                                            |
+| `ingress.home.arpa/prometheus`        | vmagent (ServiceMonitor/PodMonitor scraping)                                                      |
+| `ingress.home.arpa/apiserver`         | kube-apiserver (admission webhooks)                                                               |
+| `ingress.home.arpa/world`             | outside the cluster (LoadBalancer services used from the LAN: mosquitto, smtp-relay, forgejo ssh) |
+| `ingress.home.arpa/matrix-appservice` | Synapse's appservice transaction pushes, on 29318/29319/29334 (the four mautrix bridges)          |
 
 The gateway labels are the **single source of truth for the data plane**: the
 envoy pods' own egress is `toEndpoints: ingress.home.arpa/gateway-<name>`
@@ -206,12 +217,14 @@ backend that is not labelled is simply unreachable through its route.
 Everything the vocabulary does not cover. Both sides of a flow need a rule,
 since both ends are default-deny:
 
-- same-namespace components — `ai/litellm` ↔ its MCP servers, `development/harbor`
-  and `development/temporal` meshes, `matrix` (HAProxy/Synapse/MAS/Valkey),
-  `vault` raft peers, `infrastructure` (crunchy replication/pgBackRest), the
+- same-namespace components — `ai/litellm` ↔ its MCP servers and the `headroom`
+  guardrail, `development/harbor` and `development/temporal` meshes,
+  `development/forgejo-runner` ↔ its CI job pods, `default/bookman` ↔ its
+  Meilisearch/Mailpit, `default/immich` server ↔ machine-learning,
+  `media/nana` ↔ FlareSolverr, `matrix` (HAProxy/Synapse/MAS/Valkey), `vault`
+  raft peers, `infrastructure` (crunchy replication/pgBackRest), the
   `observability` stack
-- one-off cross-namespace calls — `default/kalimba` → Temporal,
-  `development/pacman` → the Pushgateway, `downloads/droppedneedle` → Navidrome
+- one-off cross-namespace calls — `default/kalimba` → Temporal
 - **anything addressed by entity rather than by pod or CIDR** — no vocabulary
   label exposes `host`/`remote-node`/`kube-apiserver`, so a pod that talks to a
   node by address names the entity in its own policy: `allow-egress-vmagent`
@@ -222,6 +235,15 @@ When a service has several consumers, prefer a label pair over a bespoke
 policy: that is what the downloads stack does. The pair is still shipped by the
 service's own directory — it is a clusterwide policy keyed on a label, not a
 CiliumNetworkPolicy naming each consumer, so consumers stay decoupled.
+
+The test is the **consumer list**, not the number of namespaces. A policy that
+enumerates peers by name is a pair waiting to happen: `matrix-stack` used to
+list its four bridges twice, once per direction, and now keys on
+`egress.home.arpa/matrix-synapse` / `ingress.home.arpa/matrix-appservice`
+instead — a fifth bridge is two pod labels and no policy edit. Conversely, a
+flow whose consumer set is "exactly one, and structurally so" (a sidecar, a
+guardrail, a controller of the same release) stays a CiliumNetworkPolicy: a
+label there would be vocabulary nobody else can use.
 
 Dragonfly is handled by the component that creates it:
 `kubernetes/components/dragonfly/ciliumnetworkpolicy.yaml` ships the instance's
@@ -241,31 +263,41 @@ defaultPodOptions:
         egress.home.arpa/internet: allow # it calls the internet
 ```
 
-2. A policy for anything else it talks to, including its own sidecars and
-   co-located services. For an app-template chart:
+2. If a shared peer it needs has no label yet but will have several consumers,
+   add the **pair** rather than a bespoke policy — one
+   `ciliumclusterwidenetworkpolicy.yaml` in the _service's_ directory holding
+   both halves (see `media/jellyfin/app/` for the canonical shape). The
+   consumer then only ever gains a label.
+
+3. A policy for what is left: its own sidecars and co-located services, and
+   one-off calls with a single consumer. A `ciliumnetworkpolicy.yaml` in the
+   app's directory, added to its `kustomization.yaml`:
 
 ```yaml
-rawResources:
-    netpol:
-        manifest:
-            apiVersion: cilium.io/v2
-            kind: CiliumNetworkPolicy
-            spec:
-                description: "<what this opens and why>"
-                endpointSelector:
-                    matchLabels:
-                        app.kubernetes.io/name: myapp
-                egress:
-                    - toEndpoints:
-                          - matchLabels:
-                                app.kubernetes.io/name: mysidecar
-                      toPorts:
-                          - ports:
-                                - port: "8080"
-                                  protocol: TCP
+# kubernetes/apps/<ns>/<app>/app/ciliumnetworkpolicy.yaml
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+    name: myapp
+spec:
+    description: "<what this opens and why>"
+    endpointSelector:
+        matchLabels:
+            app.kubernetes.io/name: myapp
+    egress:
+        - toEndpoints:
+              - matchLabels:
+                    app.kubernetes.io/name: mysidecar
+          toPorts:
+              - ports:
+                    - port: "8080"
+                      protocol: TCP
 ```
 
 and the mirror `ingress` rule on the peer. DNS needs no rule.
+
+Do **not** put the policy in `rawResources` in the HelmRelease: see the second
+bullet at the top of this file.
 
 ## Flipping to enforcement
 

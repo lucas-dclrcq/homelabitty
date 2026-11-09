@@ -58,15 +58,8 @@ spec:
         - ports:
             - port: "10428"
               protocol: TCP
-    # URL-mode MCP servers (mcps/homeassistant.yaml, mcps/konflate.yaml)
-    - toEndpoints:
-        - matchLabels:
-            app.kubernetes.io/name: home-assistant
-            io.kubernetes.pod.namespace: home
-      toPorts:
-        - ports:
-            - port: "8123"
-              protocol: TCP
+    # URL-mode MCP server (mcps/konflate.yaml); the Home Assistant one is
+    # opened by the egress.home.arpa/home-assistant label in ./litellmproxy.yaml
     - toEndpoints:
         - matchLabels:
             app.kubernetes.io/name: konflate

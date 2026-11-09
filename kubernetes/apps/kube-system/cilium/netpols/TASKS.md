@@ -229,6 +229,51 @@ broad label — and the only protection against a mislabelled pod.
       still accepting the rest.
 - [ ] **`egressDeny`** towards the IoT VLAN for everything but home-assistant.
 
+## Phase 4.5 — `rawResources` eviction — **DONE (2026-11-09)**
+
+Nineteen HelmReleases shipped their CiliumNetworkPolicy as `rawResources.netpol`
+inside the Helm values. All of them are now real manifests, and where the flow
+had (or could have) more than one consumer, a vocabulary pair instead.
+
+- [x] **Six new label pairs**, each owned by the service: `/alertmanager`
+      (victoria-metrics-stack), `/navidrome`, `/home-assistant`, `/pushgateway`,
+      and the two halves of the Matrix appservice contract
+      (`egress.home.arpa/matrix-synapse`, `ingress.home.arpa/matrix-appservice`,
+      both in `matrix/matrix-stack/app/`).
+
+      The Matrix one is the clearest win: `matrix-stack`'s own policy listed its
+      four bridges by name, twice, once per direction. A fifth bridge is now two
+      pod labels. The cost is that a label cannot carry a port, so a labelled
+      bridge accepts all three appservice ports (29318/29319/29334) from Synapse
+      rather than only its own — no wider than the egress half, which already
+      allowed all three to every bridge.
+
+- [x] **Three flows folded onto labels that already existed**: seerr and
+      homelab-manager onto `/jellyfin`, nana onto `/homelab-manager`. Each had a
+      bespoke rule _and_ a pair covering the same flow; the bespoke halves
+      (including jellyfin's whole `rawResources` block, karma's entry in the
+      `vmalertmanager` whitelist, bambuddy's and litellm's home-assistant rules)
+      are gone, so one mechanism is left per flow.
+
+- [x] **Seven `ciliumnetworkpolicy.yaml` files** for what a label would not fit —
+      a single consumer that is structurally single (a sidecar, a guardrail, a
+      controller of the same release): headroom ← litellm, bookman ↔
+      Meilisearch/Mailpit, immich server ↔ ML, nana ↔ FlareSolverr,
+      forgejo-runner ↔ Forgejo and its CI job pods.
+
+- [ ] **Soak.** Every pair above is new vocabulary, so a consumer that was
+      covered by the old inline policy and did not get the label is now audited
+      instead. Check the dashboard for `seerr`, `homelab-manager`, `nana`,
+      `droppedneedle`, `pacman-sync`, `bambuddy`, `litellm`, `karma` and the four
+      `mautrix-*` before reading it as clean. `pacman-sync` is the one to watch:
+      its label sits on the CronJob controller's `pod.labels`, which only merges
+      because the release sets `defaultPodOptionsStrategy: merge`.
+
+- [ ] **Two consumers left on bespoke rules** for the same Alertmanager API that
+      now has a pair: `observability/grafana/instance` and
+      `observability/silence-operator/operator`. Migrating them is one label and
+      one rule deletion each.
+
 ## Phase 5 — quality-of-life refactors
 
 - [ ] **Valued labels for per-instance granularity.** They use
@@ -261,7 +306,7 @@ which **7 794 are not policy gaps at all** — see "stale pod IPs" below. The
 
 - [x] **authentik outposts → the external gateway** (156). The outposts' egress
       half already existed (`authentik-outposts` CNP, keyed on the `app:
-authentik-outpost` label authentik stamps on them), but
+  authentik-outpost` label authentik stamps on them), but
       `allow-ingress-gateway-external-from-cluster` only accepts pods carrying
       `egress.home.arpa/gateway-external`, which an operator-made Deployment
       cannot. Added as a second named exception next to Flux source-controller.

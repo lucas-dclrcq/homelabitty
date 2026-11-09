@@ -13,25 +13,6 @@ spec:
     global:
       createDefaultServiceAccount: false
 
-    rawResources:
-      netpol:
-        manifest:
-          apiVersion: cilium.io/v2
-          kind: CiliumNetworkPolicy
-          spec:
-            description: "Search index is only queried by BookMan"
-            endpointSelector:
-              matchLabels:
-                app.kubernetes.io/name: bookman-meilisearch
-            ingress:
-              - fromEndpoints:
-                  - matchLabels:
-                      app.kubernetes.io/name: bookman
-                toPorts:
-                  - ports:
-                      - port: "7700"
-                        protocol: TCP
-
     controllers:
       bookman-meilisearch:
         annotations:
@@ -117,9 +98,8 @@ spec:
     persistence:
       data:
         enabled: true
-        existingClaim: *app # created by the kopiur component
+        existingClaim: *app
         globalMounts:
-          # The image's WORKDIR, where `data.ms` lives.
           - path: /meili_data
       tmp:
         type: emptyDir
@@ -135,10 +115,6 @@ spec:
 
     route:
       app:
-        # The SPA queries Meilisearch straight from the browser, so it needs
-        # its own public origin (the Meilisearch JS client only accepts an
-        # absolute base URL at a host root). Meilisearch answers with
-        # permissive CORS, so the cross-origin call from the app works.
         hostnames:
           - "bookman-meili.hoohoot.org"
         parentRefs:

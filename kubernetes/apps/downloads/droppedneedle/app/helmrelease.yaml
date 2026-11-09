@@ -21,30 +21,11 @@ spec:
   uninstall:
     keepHistory: false
   values:
-    rawResources:
-      netpol:
-        manifest:
-          apiVersion: cilium.io/v2
-          kind: CiliumNetworkPolicy
-          spec:
-            description: "droppedneedle reads the Navidrome library (media namespace); SABnzbd is opened by the egress.home.arpa/sabnzbd label"
-            endpointSelector:
-              matchLabels:
-                app.kubernetes.io/name: droppedneedle
-            egress:
-              - toEndpoints:
-                  - matchLabels:
-                      app.kubernetes.io/name: navidrome
-                      io.kubernetes.pod.namespace: media
-                toPorts:
-                  - ports:
-                      - port: "8080"
-                        protocol: TCP
-
     defaultPodOptions:
       labels:
         ingress.home.arpa/gateway-external: allow
         egress.home.arpa/internet: allow
+        egress.home.arpa/navidrome: allow
         egress.home.arpa/sabnzbd: allow
       securityContext:
         seccompProfile: { type: RuntimeDefault }
@@ -81,10 +62,6 @@ spec:
                 memory: 4Gi
 
             probes:
-              # The /health endpoint becomes unresponsive during the (long) library
-              # scan since the app blocks its worker while scanning tens of thousands
-              # of tracks. Keep probes tolerant so the scan is not interrupted (which
-              # otherwise SIGTERMs the pod mid-scan and CrashLoopBackOffs it).
               liveness: &probes
                 enabled: true
                 custom: true

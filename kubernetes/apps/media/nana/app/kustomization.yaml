@@ -9,3 +9,4 @@ resources:
   - ./grafanadashboard.yaml
   - ./probes.yaml
   - ./servicemonitor.yaml
+  - ./ciliumnetworkpolicy.yaml

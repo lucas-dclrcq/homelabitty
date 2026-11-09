@@ -1,0 +1,44 @@
+---
+# Paired vocabulary for egress.home.arpa/navidrome, owned by navidrome: the
+# first policy opens the consumer's egress, the second opens navidrome's
+# ingress from pods carrying that label. Labelling the consumer is enough,
+# from any namespace (droppedneedle in downloads).
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: allow-egress-navidrome
+spec:
+  description: "Pods labeled egress.home.arpa/navidrome=allow may reach the Navidrome Subsonic API on 8080"
+  endpointSelector:
+    matchLabels:
+      egress.home.arpa/navidrome: allow
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: navidrome
+            io.kubernetes.pod.namespace: media
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: allow-ingress-navidrome
+spec:
+  description: "Service side of egress.home.arpa/navidrome: Navidrome accepts 8080 from consumers carrying the label"
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: navidrome
+      io.kubernetes.pod.namespace: media
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            egress.home.arpa/navidrome: allow
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP

@@ -1,0 +1,31 @@
+---
+# No vocabulary label: Meilisearch and Mailpit are BookMan's own backing
+# services, deployed from this app's `ks.yaml` and used by nothing else. The
+# ingress halves ship with each of them
+# (`../meilisearch/ciliumnetworkpolicy.yaml`, `../mailpit/ciliumnetworkpolicy.yaml`),
+# since they are separate Flux Kustomizations and must be pruned separately.
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: bookman
+spec:
+  description: "BookMan's in-namespace backing services: Meilisearch (MEILI_URL) and the Mailpit sink it sends campaign mail to"
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: bookman
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: bookman-meilisearch
+      toPorts:
+        - ports:
+            - port: "7700"
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: bookman-mailpit
+      toPorts:
+        - ports:
+            - port: "1025"
+              protocol: TCP

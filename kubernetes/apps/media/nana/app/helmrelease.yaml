@@ -11,54 +11,6 @@ spec:
     name: app-template
     namespace: flux-system
   values:
-    rawResources:
-      netpol-app:
-        manifest:
-          apiVersion: cilium.io/v2
-          kind: CiliumNetworkPolicy
-          spec:
-            description: "nana solves Cloudflare challenges through its FlareSolverr sidecar controller and posts notifications to homelab-manager"
-            endpointSelector:
-              matchLabels:
-                app.kubernetes.io/name: nana
-                app.kubernetes.io/controller: nana
-            egress:
-              - toEndpoints:
-                  - matchLabels:
-                      app.kubernetes.io/name: nana
-                      app.kubernetes.io/controller: flaresolverr
-                toPorts:
-                  - ports:
-                      - port: "8191"
-                        protocol: TCP
-              - toEndpoints:
-                  - matchLabels:
-                      app: homelab-manager
-                      io.kubernetes.pod.namespace: default
-                toPorts:
-                  - ports:
-                      - port: "8080"
-                        protocol: TCP
-      netpol-flaresolverr:
-        manifest:
-          apiVersion: cilium.io/v2
-          kind: CiliumNetworkPolicy
-          spec:
-            description: "FlareSolverr is only called by nana itself"
-            endpointSelector:
-              matchLabels:
-                app.kubernetes.io/name: nana
-                app.kubernetes.io/controller: flaresolverr
-            ingress:
-              - fromEndpoints:
-                  - matchLabels:
-                      app.kubernetes.io/name: nana
-                      app.kubernetes.io/controller: nana
-                toPorts:
-                  - ports:
-                      - port: "8191"
-                        protocol: TCP
-
     controllers:
       nana:
         annotations:
@@ -129,8 +81,6 @@ spec:
               TZ: Europe/Paris
               LOG_LEVEL: info
               BROWSER_POOL_SIZE: "1"
-              # Overriding the image user leaves HOME=/ (unwritable), which makes
-              # Chromium's crashpad handler fail to launch.
               HOME: /tmp
 
             probes:
@@ -174,6 +124,7 @@ spec:
         ingress.home.arpa/prometheus: allow
         egress.home.arpa/postgres: allow
         egress.home.arpa/gateway-external: allow
+        egress.home.arpa/homelab-manager: allow
         egress.home.arpa/internet: allow
       securityContext:
         runAsNonRoot: true
@@ -221,8 +172,6 @@ spec:
             app:
               - path: /downloads
 
-      # Not mounted into flaresolverr: an emptyDir survives container restarts and
-      # a stale /tmp/.X99-lock would then make every Xvfb restart fail.
       tmp:
         type: emptyDir
         advancedMounts:

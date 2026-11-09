@@ -1,0 +1,98 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: allow-egress-matrix-synapse
+spec:
+  description: "Pods labeled egress.home.arpa/matrix-synapse=allow may reach the Matrix client-server API on 8008, which is the HAProxy front (matrix-synapse.matrix.svc)"
+  endpointSelector:
+    matchLabels:
+      egress.home.arpa/matrix-synapse: allow
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/part-of: matrix-stack
+            app.kubernetes.io/component: matrix-stack-ingress
+            io.kubernetes.pod.namespace: matrix
+      toPorts:
+        - ports:
+            - port: "8008"
+              protocol: TCP
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: allow-ingress-matrix-synapse
+spec:
+  description: "Service side of egress.home.arpa/matrix-synapse: HAProxy accepts 8008 from consumers carrying the label"
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/part-of: matrix-stack
+      app.kubernetes.io/component: matrix-stack-ingress
+      io.kubernetes.pod.namespace: matrix
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            egress.home.arpa/matrix-synapse: allow
+      toPorts:
+        - ports:
+            - port: "8008"
+              protocol: TCP
+---
+# The three ports are the union of the appservice ports Synapse is configured
+# with (`resources/registration.yaml` of each bridge: whatsapp 29318,
+# facebook/instagram 29319, discord 29334). The label cannot carry a port, so a
+# labelled bridge accepts all three from Synapse instead of only its own. That
+# is no wider than what already was: the egress half below has always allowed
+# all three to every bridge, and Synapse is the only peer either rule names.
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: allow-egress-matrix-appservice
+spec:
+  description: "Synapse pushes transactions to pods labeled ingress.home.arpa/matrix-appservice=allow on their appservice port"
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/part-of: matrix-stack
+      app.kubernetes.io/component: matrix-server
+      io.kubernetes.pod.namespace: matrix
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            ingress.home.arpa/matrix-appservice: allow
+      toPorts:
+        - ports:
+            - port: "29318"
+              protocol: TCP
+            - port: "29319"
+              protocol: TCP
+            - port: "29334"
+              protocol: TCP
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: allow-ingress-matrix-appservice
+spec:
+  description: "Service side of ingress.home.arpa/matrix-appservice: a bridge accepts its appservice port from Synapse, and from Synapse alone"
+  endpointSelector:
+    matchLabels:
+      ingress.home.arpa/matrix-appservice: allow
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/part-of: matrix-stack
+            app.kubernetes.io/component: matrix-server
+            io.kubernetes.pod.namespace: matrix
+      toPorts:
+        - ports:
+            - port: "29318"
+              protocol: TCP
+            - port: "29319"
+              protocol: TCP
+            - port: "29334"
+              protocol: TCP

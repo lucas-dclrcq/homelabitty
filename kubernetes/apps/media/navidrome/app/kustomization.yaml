@@ -8,3 +8,4 @@ resources:
   - ./securitypolicy.yaml
   - ./grafanadashboard.yaml
   - ./probes.yaml
+  - ./ciliumclusterwidenetworkpolicy.yaml

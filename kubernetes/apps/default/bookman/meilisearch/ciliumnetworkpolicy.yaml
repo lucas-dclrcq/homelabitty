@@ -1,0 +1,21 @@
+---
+# Ingress half of the BookMan <-> Meilisearch flow; the egress half is in
+# `../app/ciliumnetworkpolicy.yaml`.
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: bookman-meilisearch
+spec:
+  description: "Search index is only queried by BookMan"
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: bookman-meilisearch
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: bookman
+      toPorts:
+        - ports:
+            - port: "7700"
+              protocol: TCP

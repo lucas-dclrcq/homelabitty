@@ -13,6 +13,8 @@ spec:
     egress.home.arpa/postgres: allow
     egress.home.arpa/internet-https: allow
     egress.home.arpa/gateway-external: allow
+    # URL-mode MCP server, mcps/homeassistant.yaml
+    egress.home.arpa/home-assistant: allow
 
   # Declared for KSV-0118. The proxy runs as root in-container, so the effective
   # UID is deliberately left unchanged here.

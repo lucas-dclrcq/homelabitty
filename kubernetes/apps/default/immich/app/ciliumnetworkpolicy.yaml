@@ -1,0 +1,44 @@
+---
+# No vocabulary label: both ends are controllers of the same release, so the
+# flow is named directly rather than opened to anything carrying a label.
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: immich-server
+spec:
+  description: "immich-server runs inference requests against the machine-learning controller (IMMICH_MACHINE_LEARNING_URL)"
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: immich
+      app.kubernetes.io/controller: server
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: immich
+            app.kubernetes.io/controller: machine-learning
+      toPorts:
+        - ports:
+            - port: "3003"
+              protocol: TCP
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: immich-machine-learning
+spec:
+  description: "The ML service is only ever called by immich-server"
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: immich
+      app.kubernetes.io/controller: machine-learning
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: immich
+            app.kubernetes.io/controller: server
+      toPorts:
+        - ports:
+            - port: "3003"
+              protocol: TCP

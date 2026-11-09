@@ -21,44 +21,15 @@ spec:
   uninstall:
     keepHistory: false
   values:
-    rawResources:
-      netpol:
-        manifest:
-          apiVersion: cilium.io/v2
-          kind: CiliumNetworkPolicy
-          spec:
-            description: "Appservice bridge: Synapse pushes transactions in on 29334, the bridge calls the client-server API back through matrix-synapse.matrix.svc:8008 (HAProxy)"
-            endpointSelector:
-              matchLabels:
-                app.kubernetes.io/name: mautrix-discord
-            ingress:
-              - fromEndpoints:
-                  - matchLabels:
-                      app.kubernetes.io/part-of: matrix-stack
-                      app.kubernetes.io/component: matrix-server
-                toPorts:
-                  - ports:
-                      - port: "29334"
-                        protocol: TCP
-            egress:
-              - toEndpoints:
-                  - matchLabels:
-                      app.kubernetes.io/part-of: matrix-stack
-                      app.kubernetes.io/component: matrix-stack-ingress
-                toPorts:
-                  - ports:
-                      - port: "8008"
-                        protocol: TCP
-
     defaultPodOptions:
       labels:
         ingress.home.arpa/gateway-external: allow
+        ingress.home.arpa/matrix-appservice: allow
+        egress.home.arpa/matrix-synapse: allow
         egress.home.arpa/postgres: allow
         egress.home.arpa/gateway-external: allow
         egress.home.arpa/internet-https: allow
 
-      # Declared for KSV-0118. The entrypoint starts as root and drops to uid
-      # 1337 itself, so runAsNonRoot is not asserted pod-wide.
       securityContext:
         seccompProfile: { type: RuntimeDefault }
 

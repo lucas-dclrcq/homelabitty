@@ -1,0 +1,45 @@
+---
+# No vocabulary label: FlareSolverr is a sidecar controller of this release and
+# answers nana alone. nana's other in-cluster peer, homelab-manager, is opened
+# by the `egress.home.arpa/homelab-manager` label on the pod instead.
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: nana
+spec:
+  description: "nana solves Cloudflare challenges through its FlareSolverr sidecar controller"
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: nana
+      app.kubernetes.io/controller: nana
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: nana
+            app.kubernetes.io/controller: flaresolverr
+      toPorts:
+        - ports:
+            - port: "8191"
+              protocol: TCP
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: nana-flaresolverr
+spec:
+  description: "FlareSolverr is only called by nana itself"
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: nana
+      app.kubernetes.io/controller: flaresolverr
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: nana
+            app.kubernetes.io/controller: nana
+      toPorts:
+        - ports:
+            - port: "8191"
+              protocol: TCP

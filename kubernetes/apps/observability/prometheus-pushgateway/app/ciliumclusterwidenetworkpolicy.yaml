@@ -1,0 +1,44 @@
+---
+# Paired vocabulary for egress.home.arpa/pushgateway, owned by the Pushgateway:
+# the first policy opens the consumer's egress, the second opens the
+# Pushgateway's ingress from pods carrying that label. Labelling the batch job
+# is enough, from any namespace (the pacman-sync CronJob in development).
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: allow-egress-pushgateway
+spec:
+  description: "Pods labeled egress.home.arpa/pushgateway=allow may push run metrics to the Pushgateway on 9091"
+  endpointSelector:
+    matchLabels:
+      egress.home.arpa/pushgateway: allow
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: prometheus-pushgateway
+            io.kubernetes.pod.namespace: observability
+      toPorts:
+        - ports:
+            - port: "9091"
+              protocol: TCP
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: allow-ingress-pushgateway
+spec:
+  description: "Service side of egress.home.arpa/pushgateway: the Pushgateway accepts 9091 from pushers carrying the label"
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: prometheus-pushgateway
+      io.kubernetes.pod.namespace: observability
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            egress.home.arpa/pushgateway: allow
+      toPorts:
+        - ports:
+            - port: "9091"
+              protocol: TCP

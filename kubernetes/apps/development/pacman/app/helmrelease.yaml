@@ -10,27 +10,6 @@ spec:
     kind: OCIRepository
     name: *app
   values:
-    rawResources:
-      netpol:
-        manifest:
-          apiVersion: cilium.io/v2
-          kind: CiliumNetworkPolicy
-          spec:
-            description: "The pacman-sync CronJob pushes its run metrics to the Pushgateway in the observability namespace"
-            endpointSelector:
-              matchLabels:
-                app.kubernetes.io/name: pacman
-            egress:
-              - toEndpoints:
-                  - matchLabels:
-                      app.kubernetes.io/name: prometheus-pushgateway
-                      io.kubernetes.pod.namespace: observability
-                toPorts:
-                  - ports:
-                      - port: "9091"
-                        protocol: TCP
-
-    # Controllers that set pod.labels add to these instead of replacing them.
     defaultPodOptionsStrategy: merge
     defaultPodOptions:
       labels:
@@ -75,11 +54,9 @@ spec:
       sync:
         type: cronjob
         pod:
-          # Merged with defaultPodOptions.labels (defaultPodOptionsStrategy:
-          # merge). Only this controller gets the exception; the nginx one
-          # above runs as 101.
           labels:
             policy.home.arpa/run-as-root: allow
+            egress.home.arpa/pushgateway: allow
         cronjob:
           schedule: "*/30 * * * *"
           concurrencyPolicy: Forbid
