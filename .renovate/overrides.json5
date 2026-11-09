@@ -9,6 +9,14 @@
       versioning: "regex:^ig-v(?<major>\\d+)\\.(?<minor>\\d+)(?:\\.(?<patch>\\d+))?$",
     },
     {
+      description: "Track silo-server build- prefixed tags",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["ghcr.io/silo-server/silo-server"],
+      versioning: "regex:^build-(?<major>\\d+)$",
+      // Several builds are published per day; batch them into one daily update
+      schedule: ["before 6am"],
+    },
+    {
       description: "Limit renovate image updates to once per week",
       matchDatasources: ["docker"],
       matchPackageNames: ["ghcr.io/renovatebot/renovate"],
