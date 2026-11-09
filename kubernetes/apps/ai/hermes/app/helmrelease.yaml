@@ -17,6 +17,7 @@ spec:
         pod:
           labels:
             egress.home.arpa/gateway-external: allow
+            egress.home.arpa/internet-https: allow
             ingress.home.arpa/gateway-internal: allow
           securityContext:
             fsGroup: 10000

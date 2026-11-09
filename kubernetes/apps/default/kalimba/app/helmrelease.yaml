@@ -80,7 +80,7 @@ spec:
         ingress.home.arpa/gateway-internal: allow
         egress.home.arpa/postgres: allow
         egress.home.arpa/gateway-external: allow
-        egress.home.arpa/internet-https: allow
+        egress.home.arpa/internet: allow
         egress.home.arpa/temporal: allow
       automountServiceAccountToken: false
       enableServiceLinks: false
