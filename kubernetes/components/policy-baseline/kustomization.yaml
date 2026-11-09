@@ -5,7 +5,7 @@
 # kubernetes/apps/security/admission-policies selects on that label. The
 # system namespaces (kube-system, flux-system, rook-ceph, cert-manager,
 # external-secrets, kopiur-system, openebs-system, system-upgrade) deliberately
-# do not include it — same list as netpol-baseline. See
+# do not include it — same list as netpols/platform/system-namespaces.yaml. See
 # kubernetes/apps/security/admission-policies/README.md.
 # yaml-language-server: $schema=https://json.schemastore.org/kustomization
 apiVersion: kustomize.config.k8s.io/v1alpha1

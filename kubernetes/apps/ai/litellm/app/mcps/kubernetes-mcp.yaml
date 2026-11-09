@@ -18,7 +18,6 @@ spec:
     serviceAccountName: kubernetes-mcp
     automountServiceAccountToken: true
     podLabels:
-      egress.home.arpa/kubedns: allow
       egress.home.arpa/apiserver: allow
     volumes:
       - name: config

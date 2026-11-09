@@ -18,14 +18,9 @@ spec:
             - port: "80"
               protocol: TCP
   egress:
-    - toEndpoints:
-        - matchLabels:
-            io.kubernetes.pod.namespace: kube-system
-            k8s-app: kube-dns
-      toPorts:
-        - ports:
-            - port: "53"
-              protocol: UDP
+    # kube-dns comes from the cluster-wide baseline (see
+    # ../../../kube-system/cilium/netpols/README.md) — a local L4 port-53 rule
+    # here would shadow the L7 DNS half for any pod labelled dns.home.arpa/l7.
     - toEndpoints:
         - matchLabels:
             postgres-operator.crunchydata.com/cluster: postgres-16

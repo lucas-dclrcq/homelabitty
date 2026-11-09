@@ -63,7 +63,6 @@ spec:
     defaultPodOptions:
       labels:
         ingress.home.arpa/gateway-internal: allow
-        egress.home.arpa/kubedns: allow
         egress.home.arpa/postgres: allow
         egress.home.arpa/mqtt: allow
         # rustical (CalDAV) is served by the external gateway.

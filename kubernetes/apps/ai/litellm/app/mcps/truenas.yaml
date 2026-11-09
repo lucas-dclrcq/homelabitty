@@ -18,7 +18,6 @@ spec:
     path: /mcp
     automountServiceAccountToken: false
     podLabels:
-      egress.home.arpa/kubedns: allow
       egress.home.arpa/nas: allow
     env:
       - name: TRUENAS_MCP_TARGET

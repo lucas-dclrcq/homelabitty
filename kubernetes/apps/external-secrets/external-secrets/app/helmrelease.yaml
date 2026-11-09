@@ -27,7 +27,6 @@ spec:
     podLabels:
       egress.home.arpa/vault: allow
       egress.home.arpa/apiserver: allow
-      egress.home.arpa/kubedns: allow
     serviceMonitor:
       enabled: true
       interval: 1m

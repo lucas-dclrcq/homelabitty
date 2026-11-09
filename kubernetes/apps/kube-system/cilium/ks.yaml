@@ -29,9 +29,9 @@ metadata:
     # policy would be silently replaced by an empty string.
     substitution.flux.home.arpa/disabled: "true"
 spec:
-  # no targetNamespace: everything in netpols/ is cluster-scoped (the
-  # per-namespace baseline lives in components/netpol-baseline, included by
-  # each enrolled namespace's kustomization)
+  # no targetNamespace: everything in netpols/ is cluster-scoped, the
+  # default-deny baseline included (netpols/platform/baseline.yaml plus the
+  # kube-dns pair shipped with coredns)
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app

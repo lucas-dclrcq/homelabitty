@@ -1,7 +1,7 @@
 ---
 # Data-plane egress for the two gateways.
 #
-# Inside the enrolled namespaces this mirrors the ingress vocabulary exactly: a
+# This mirrors the ingress vocabulary exactly: a
 # backend that already carries ingress.home.arpa/gateway-<name>=allow (which it
 # must, or the route would not work) is reachable, and nothing else is. The
 # second rule of each policy covers the handful of backends that live in

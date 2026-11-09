@@ -16,8 +16,13 @@ spec:
           reloader.stakater.com/auto: "true"
         pod:
           labels:
+            # Opts into Cilium's DNS proxy: without it the toFQDNs allowlist in
+            # ciliumnetworkpolicy.yaml is programmed from an empty cache and
+            # opens nothing. Deliberately no egress.home.arpa/internet-https —
+            # that label would hand the agent the whole internet on 443 and
+            # make the allowlist decorative.
+            dns.home.arpa/l7: "true"
             egress.home.arpa/gateway-external: allow
-            egress.home.arpa/internet-https: allow
             ingress.home.arpa/gateway-internal: allow
           securityContext:
             fsGroup: 10000

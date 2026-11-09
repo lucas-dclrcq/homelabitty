@@ -39,31 +39,25 @@ Workflow to reach enforcement:
    `cilium hubble observe --verdict AUDIT -f` (or hubble UI).
 4. When the dashboard stays clean, flip `policyAuditMode` to `false`.
 
-## Layer 1 — baseline (per-namespace default deny)
+## Layer 1 — baseline (cluster-wide default deny)
 
-The `netpol-baseline` component (`kubernetes/components/netpol-baseline`)
-stamps a `baseline` CiliumNetworkPolicy into every enrolled namespace (ai,
-auth, default, development, downloads, home, infrastructure, matrix, media,
-network, observability, security, vault). **Enrolling a namespace means
-including the component** from `kubernetes/apps/<ns>/kustomization.yaml`:
+Three CiliumClusterwideNetworkPolicies select **every Cilium-managed endpoint
+in the cluster**. There is no enrolment step and no namespace list: a new
+namespace is policed from the moment it gets its first pod.
 
-```yaml
-components:
-    - ../../components/common
-    - ../../components/netpol-baseline
-```
-
-The directory's `namespace:` transformer stamps the CNP's namespace, so the
-component itself ships the policy without one.
-
-The baseline selects **all pods** with
-`enableDefaultDeny` on both directions and re-opens exactly two things:
-
-- **DNS** to kube-dns (egress)
-- **the host and remote-node entities** (ingress)
+| Policy                       | Lives in                         | Selects                   | Opens                        |
+| ---------------------------- | -------------------------------- | ------------------------- | ---------------------------- |
+| `baseline-ingress`           | `netpols/platform/baseline.yaml` | everything                | host + remote-node (ingress) |
+| `baseline-egress-kubedns`    | `kube-system/coredns/app/`       | `dns.home.arpa/l7` ∉ true | kube-dns:53, L4 (egress)     |
+| `baseline-egress-kubedns-l7` | `kube-system/coredns/app/`       | `dns.home.arpa/l7` = true | kube-dns:53, L7 DNS (egress) |
 
 Everything else — **traffic between two pods of the same namespace included** —
 has to be named by another policy.
+
+The two egress halves are **mutually exclusive and jointly exhaustive**
+(`NotIn` also matches pods carrying no such label), so every endpoint is
+selected by exactly one of them. That is what arms egress default-deny
+cluster-wide; `baseline-ingress` does the same for the other direction.
 
 The host rule is not a grant, it is the switch. Cilium enters default-deny for
 a direction only when a rule that selects the endpoint **has a section for that
@@ -83,13 +77,40 @@ label, because the caller sat on a different node. Node-sourced traffic is
 infrastructure wherever the node is.
 
 Check it per endpoint with
-`cilium-dbg endpoint list` — enrolled pods must read `audit-both` (or `both`
-once enforced), never `audit-egress`.
+`cilium-dbg endpoint list` — every pod must read `audit-both` (or `both` once
+enforced), never `audit-egress`.
 
-System namespaces (kube-system, flux-system, rook-ceph, cert-manager,
-external-secrets, kopiur-system, openebs-system, system-upgrade) are **not**
-enrolled on purpose — they do not include the component: pods there are
-unconstrained unless a clusterwide policy happens to select them.
+### The DNS proxy half
+
+`dns.home.arpa/l7: "true"` on a pod template routes that pod's DNS through
+Cilium's in-agent DNS proxy (`rules.dns: matchPattern "*"`), which observes the
+answers and fills the FQDN cache. **Only that cache programs `toFQDNs` rules**,
+so a `toFQDNs` policy on a pod without the label opens nothing at all, silently
+— the symptom is an empty `cilium-dbg fqdn cache list`.
+
+The split exists because the two halves would otherwise collide: a plain L4
+allow on port 53 selecting the same pod shadows the L7 rules (_"if a layer 4
+rule is specified in the policy, and a similar layer 4 rule with layer 7 rules
+is also specified, then the layer 7 portions of the latter rule will have no
+effect"_) and the proxy never engages. Never add a second L4 port-53 allow for
+a pod carrying the label.
+
+It is opt-in rather than cluster-wide so only the pods that need FQDN policies
+pay the proxy's userspace hop — and so only their DNS resolution depends on the
+local Cilium agent being up. Carriers today: `ai/hermes`.
+
+### The namespaces still exempt
+
+`system-namespaces-allow-all` (`netpols/platform/system-namespaces.yaml`) is an
+`allow-all` for the namespaces whose flows nobody has written down yet:
+kube-system, flux-system, rook-ceph, cert-manager, external-secrets,
+kopiur-system, openebs-system, system-upgrade.
+
+**That list is a backlog, not a design.** Shrink it one namespace at a time:
+drop the entry, watch the audit dashboard, add the rules the audited flows ask
+for. Removing the last entry deletes the file. Note that most of rook-ceph and
+half of kube-system run `hostNetwork`, so those pods are not Cilium-managed
+endpoints and no policy applies to them at all.
 
 ## Where the policies live
 
@@ -98,10 +119,11 @@ reviewed in the same diff:
 
 | Policy                                  | Lives in                                                                             |
 | --------------------------------------- | ------------------------------------------------------------------------------------ |
-| per-namespace default-deny baseline     | `kubernetes/components/netpol-baseline` (a component each ns includes)               |
+| cluster-wide default-deny baseline      | `netpols/platform/baseline.yaml` + the kube-dns pair under `coredns`                 |
 | a service's label pair (both halves)    | the owning app, `kubernetes/apps/<ns>/<app>/app/ciliumclusterwidenetworkpolicy.yaml` |
 | external destinations (CIDR labels)     | `netpols/destinations/` — no owning app                                              |
 | entity-backed labels (apiserver, world) | `netpols/platform/` — no owning app                                                  |
+| the namespaces still exempt             | `netpols/platform/system-namespaces.yaml` — a backlog to shrink                      |
 | an app's own peers                      | the app, `kubernetes/apps/<ns>/<app>/app/ciliumnetworkpolicy.yaml`                   |
 
 So this catalog holds only what **no single app owns**: the CIDR destinations
@@ -125,7 +147,6 @@ operator-managed pods that cannot carry our labels with their operator
 | `egress.home.arpa/router`           | the UniFi gateway alone, `192.168.1.1:443`                                                                                                                      |
 | `egress.home.arpa/iot`              | the IoT VLAN `192.168.30.0/24` (appliances, Bambu printer, robot vacuum)                                                                                        |
 | `egress.home.arpa/world`            | **last resort** — everything outside the cluster at once (internet + LAN + every VLAN). No app carries it                                                       |
-| `egress.home.arpa/kubedns`          | kube-dns:53 (already in baseline; for pods in non-enrolled namespaces)                                                                                          |
 | `egress.home.arpa/postgres`         | crunchy pods (instances + pgbouncer) :5432                                                                                                                      |
 | `egress.home.arpa/mqtt`             | mosquitto :1883 (+ matching ingress on mosquitto)                                                                                                               |
 | `egress.home.arpa/smtp`             | smtp-relay :2525 (+ matching ingress)                                                                                                                           |

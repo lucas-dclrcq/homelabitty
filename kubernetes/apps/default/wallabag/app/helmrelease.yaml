@@ -26,7 +26,6 @@ spec:
             # its entrypoint as root (defaultPodOptions.securityContext above)
             policy.home.arpa/run-as-root: allow
             ingress.home.arpa/gateway-external: allow
-            egress.home.arpa/kubedns: allow
             egress.home.arpa/postgres: allow
             egress.home.arpa/smtp: allow
             egress.home.arpa/internet: allow

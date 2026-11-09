@@ -11,7 +11,7 @@ spec:
     name: trivy-operator-polr-adapter
   interval: 1h
   values:
-    # `security` is enrolled in netpol-baseline (default-deny both ways). The
+    # Every namespace is default-deny both ways (netpols/platform/baseline.yaml). The
     # adapter only ever talks to the API server: it watches the trivy CRs and
     # writes the wgpolicyk8s ones back.
     podLabels:

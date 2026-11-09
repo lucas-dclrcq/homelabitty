@@ -5,7 +5,6 @@ kind: Kustomization
 namespace: security
 components:
   - ../../components/common
-  - ../../components/netpol-baseline
   - ../../components/policy-baseline
 resources:
   - ./admission-policies/ks.yaml

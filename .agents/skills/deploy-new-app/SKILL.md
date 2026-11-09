@@ -179,7 +179,6 @@ spec:
                     labels:
                         ingress.home.arpa/gateway-external: allow # for external routes (CiliumNetworkPolicy)
                         ingress.home.arpa/prometheus: allow # if a ServiceMonitor/Probe scrapes it
-                        egress.home.arpa/kubedns: allow
                         egress.home.arpa/world: allow
                 containers:
                     app:

@@ -11,7 +11,7 @@ spec:
     name: policy-reporter
   interval: 1h
   values:
-    # The `security` namespace is enrolled in netpol-baseline, so every pod here
+    # The cluster is default-deny both ways, so every pod here
     # is default-deny both ways. The core watches (Cluster)PolicyReports on the
     # API server and is scraped by vmagent; its peers inside the namespace are
     # named in ./ciliumnetworkpolicy.yaml.
