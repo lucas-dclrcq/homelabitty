@@ -4,7 +4,6 @@ kind: Kustomization
 namespace: auth
 components:
   - ../../components/common
-  - ../../components/netpol-baseline
   - ../../components/policy-baseline
 resources:
   - ./authentik-operator/ks.yaml

@@ -4,8 +4,8 @@ Improvements drawn from a comparison with
 [JJGadgets/Biohazard](https://github.com/JJGadgets/Biohazard/tree/main/kube/deploy/core/_networking/cilium/netpols)
 (2026-10-21). We already share the same `*.home.arpa/<thing>: allow` vocabulary,
 but their split of **external destinations** is far finer than ours, while our
-**structure** (explicit per-namespace default-deny, intra-namespace closed,
-audit-mode rollout) is more rigorous than theirs.
+**structure** (cluster-wide default-deny, intra-namespace closed, audit-mode
+rollout) is more rigorous than theirs.
 
 See `README.md` for the current architecture.
 
@@ -31,11 +31,11 @@ sooner) says flip right after phase 0. To be arbitrated.
       UDP+TCP. Pods outside enrolled namespaces carrying
       `egress.home.arpa/kubedns: allow` therefore have no TCP fallback
       (truncated responses > 512 B, EDNS). → add `protocol: TCP`. **DONE
-      (2026-11-09)**.
-      _File_: `kube-system/coredns/app/ciliumclusterwidenetworkpolicy.yaml`
+      (2026-11-09)**. Moot since phase 1: the label and its policy are gone,
+      every pod gets `protocol: ANY` from the baseline.
 
 - [ ] **kopiur movers**: they carry `app.kubernetes.io/managed-by: kopiur`, run
-      in enrolled namespaces (`default`, `media`, …) and are selected by **no**
+      in policed namespaces (`default`, `media`, …) and are selected by **no**
       policy → they inherit the baseline default-deny with only DNS open. This
       is probably harmless (the repository is an inline NFS volume mounted by
       the kubelet, so it lives in the host netns and not in the pod's Cilium
@@ -47,55 +47,71 @@ sooner) says flip right after phase 0. To be arbitrated.
       `volsync-mover`
       (`endpointSelector: app.kubernetes.io/created-by: volsync`).
 
-- [ ] **Same question for the other ephemeral pods** in enrolled namespaces:
+- [ ] **Same question for the other ephemeral pods** in policed namespaces:
       pgBackRest jobs (`infrastructure`), Helm hooks, app CronJobs.
       The Biohazard pattern is consistently a CCNP on the operator label
       (`app.kubernetes.io/managed-by: <operator>`).
 
-## Phase 1 — DNS L7 opt-in _(hard prerequisite for any FQDN policy)_
+## Phase 1 — cluster-wide baseline + DNS L7 opt-in — **DONE (2026-11-09)**
 
-- [ ] **Split the baseline DNS rule into mutually exclusive L4 / L7 halves.**
+_(hard prerequisite for any FQDN policy)_
 
-      Today the baseline (`components/netpol-baseline`) opens port 53 to
-      kube-dns as a **plain L4 rule** for
-      every pod in every enrolled namespace. The Cilium docs are explicit:
-      > _"If a layer 4 rule is specified in the policy, and a similar layer 4
-      > rule with layer 7 rules is also specified, then the layer 7 portions of
-      > the latter rule will have no effect."_
+The baseline used to be a Kustomize component stamped into 13 enrolled
+namespaces, and its port 53 rule was **plain L4**. The Cilium docs are explicit:
 
-      and
-      > _"`toFQDNs` rules do nothing if there is no L7 DNS rule covering the
-      > endpoint."_
+> _"If a layer 4 rule is specified in the policy, and a similar layer 4 rule
+> with layer 7 rules is also specified, then the layer 7 portions of the latter
+> rule will have no effect."_
 
-      So as things stand, **a `toFQDNs` policy would be silently inoperative**:
-      the DNS proxy is never engaged and the FQDN cache stays empty.
+and
 
-      The Biohazard setup (`cluster-default-kube-dns.yaml`): two policies with
-      mutually exclusive `matchExpressions` on a `dns.home.arpa/l7` label, one
-      with `rules.dns`, one without. Opt-in, so we don't pay the DNS proxy's
-      userspace hop for the whole cluster.
+> _"`toFQDNs` rules do nothing if there is no L7 DNS rule covering the
+> endpoint."_
 
-      ```yaml
-      # pods WITHOUT the label → plain L4 (current behaviour)
-      endpointSelector:
-        matchExpressions:
-          - { key: dns.home.arpa/l7, operator: NotIn, values: ["true"] }
-      # pods WITH the label → same rule + rules.dns
-      endpointSelector:
-        matchExpressions:
-          - { key: dns.home.arpa/l7, operator: In, values: ["true"] }
-      ```
+So `ai/hermes`' `toFQDNs` allowlist was **silently inoperative**: the DNS proxy
+never engaged and `cilium-dbg fqdn cache list` was empty on all six agents.
 
-      _Files_: `components/netpol-baseline/ciliumnetworkpolicy.yaml` (or a dedicated
-      CCNP replacing the baseline's DNS rule),
-      `kube-system/coredns/app/ciliumclusterwidenetworkpolicy.yaml`
+- [x] **Baseline moved from a per-namespace component to three CCNPs.**
+      `components/netpol-baseline` is deleted and its include removed from the
+      13 namespace kustomizations. Default-deny is now armed on **every**
+      Cilium-managed endpoint in the cluster: ingress by
+      `netpols/platform/baseline.yaml`, egress by the kube-dns pair shipped
+      with `kube-system/coredns/app`. New namespaces are policed by default
+      instead of being invisible holes.
 
-- [ ] **Validate on a single app** before going further:
-      `cilium-dbg policy get` must show the DNS parser on the endpoint,
-      `hubble observe --type l7 --protocol dns` must see the queries go through,
-      and `cilium-dbg fqdn cache list` must fill up.
+- [x] **DNS rule split into mutually exclusive L4 / L7 halves** on a
+      `dns.home.arpa/l7` pod label, the Biohazard pattern (`NotIn` / `In`,
+      where `NotIn` also matches pods with no such label, so the two halves
+      partition the cluster). Opt-in, so we don't pay the DNS proxy's userspace
+      hop — nor tie DNS resolution to the local agent — for the whole cluster.
+
+- [x] **`egress.home.arpa/kubedns` retired.** Every pod now gets kube-dns:53
+      from the baseline, so the label was redundant — and worse, an L4-only
+      allow that would have shadowed the L7 half on any pod carrying both. The
+      policy and its 12 carriers are gone.
+
+- [x] **`system-namespaces-allow-all`** (`netpols/platform/`) keeps the eight
+      namespaces that run pods but have no policies yet (kube-system,
+      flux-system, rook-ceph, cert-manager, external-secrets, kopiur-system,
+      openebs-system, system-upgrade) from losing everything but DNS on the
+      flip. **It is a backlog to shrink, one namespace at a time.**
+
+- [x] **`ai/hermes` is the first carrier** of `dns.home.arpa/l7`, and lost
+      `egress.home.arpa/internet-https` in the same move — that label handed it
+      the whole internet on 443 and made its own `toFQDNs` allowlist
+      decorative.
+
+- [ ] **Validate on hermes before labelling anything else**: `cilium-dbg
+      endpoint get <id>` must show an `l7-parser: dns` on port 53, `hubble
+      observe --type l7 --protocol dns` must see the queries go through, and
+      `cilium-dbg fqdn cache list` must fill up.
       Mind the Alpine/musl `Refused` + resolv.conf `search` trap (documented
       upstream) if we ever move to a restrictive `matchPattern` instead of `*`.
+
+- [ ] **Watch the audit dashboard for the newly policed endpoints**: the
+      `reserved:health` (cilium-health) and `reserved:ingress` identities are
+      now selected by the baseline like any other endpoint. Nothing suggests a
+      problem, but it was never exercised before this change.
 
 ## Phase 2 — split `egress.home.arpa/world` — **DONE (2026-10-21)**
 

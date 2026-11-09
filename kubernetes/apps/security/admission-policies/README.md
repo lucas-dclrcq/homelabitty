@@ -29,7 +29,8 @@ components:
     - ../../components/policy-baseline
 ```
 
-Enrolled, mirroring `netpol-baseline`: ai, auth, default, development,
+Enrolled — the complement of the network-policy exemption list
+(`kube-system/cilium/netpols/platform/system-namespaces.yaml`): ai, auth, default, development,
 downloads, home, infrastructure, matrix, media, network, observability,
 security, vault. The system namespaces (kube-system, flux-system, rook-ceph,
 cert-manager, external-secrets, kopiur-system, openebs-system, system-upgrade)

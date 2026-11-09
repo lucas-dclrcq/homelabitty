@@ -17,7 +17,7 @@ spec:
     operator:
       annotations:
         reloader.stakater.com/auto: "true"
-      # `security` is enrolled in netpol-baseline (default-deny both ways).
+      # Every namespace is default-deny both ways (netpols/platform/baseline.yaml).
       podLabels:
         ingress.home.arpa/prometheus: allow
         egress.home.arpa/apiserver: allow

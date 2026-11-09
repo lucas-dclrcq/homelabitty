@@ -1,0 +1,38 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: system-namespaces-allow-all
+spec:
+  description: "Escape hatch: the namespaces that are not policed yet. The cluster-wide baseline arms default-deny on every endpoint, so these would otherwise lose all egress but DNS the day policyAuditMode flips."
+  # THIS LIST IS A BACKLOG, NOT A DESIGN. Every entry is a namespace whose
+  # flows nobody has written down yet. Shrink it one namespace at a time:
+  # drop the entry, watch the cilium-policy-audit dashboard, add the rules the
+  # audited flows ask for. Removing the last entry deletes this file.
+  #
+  # Only namespaces that actually run pods are listed. Anything not named here
+  # is policed from the moment it gets its first pod, which is the point: new
+  # namespaces are enrolled by default instead of being invisible holes.
+  #
+  # Note most of rook-ceph and half of kube-system run hostNetwork, so those
+  # pods are not Cilium-managed endpoints and no policy applies to them at all.
+  endpointSelector:
+    matchExpressions:
+      - key: io.kubernetes.pod.namespace
+        operator: In
+        values:
+          - cert-manager
+          - external-secrets
+          - flux-system
+          - kopiur-system
+          - kube-system
+          - openebs-system
+          - rook-ceph
+          - system-upgrade
+  ingress:
+    - fromEntities:
+        - all
+  egress:
+    - toEntities:
+        - all

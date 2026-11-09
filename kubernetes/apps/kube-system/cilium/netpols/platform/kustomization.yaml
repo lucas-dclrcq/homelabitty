@@ -1,13 +1,16 @@
 ---
-# The two vocabulary labels backed by a Cilium *entity* rather than by pods or
-# CIDRs: the API server (webhooks both ways) and `world`/`remote-node` for
-# LoadBalancer services reached from the LAN. Nothing selects a named app, so
-# there is no app directory these could live in. Everything else that used to
-# sit here moved next to its owner (coredns, dragonfly, kopiur, vmagent, the
-# envoy gateways).
+# The cluster-wide baseline (ingress default-deny + the namespaces still
+# exempt from it), and the two vocabulary labels backed by a Cilium *entity*
+# rather than by pods or CIDRs: the API server (webhooks both ways) and
+# `world`/`remote-node` for LoadBalancer services reached from the LAN.
+# Nothing selects a named app, so there is no app directory these could live
+# in. Everything else that used to sit here moved next to its owner (coredns,
+# dragonfly, kopiur, vmagent, the envoy gateways).
 # yaml-language-server: $schema=https://json.schemastore.org/kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - ./apiserver.yaml
+  - ./baseline.yaml
+  - ./system-namespaces.yaml
   - ./world-ingress.yaml

@@ -14,7 +14,6 @@ spec:
     path: /mcp
     automountServiceAccountToken: false
     podLabels:
-      egress.home.arpa/kubedns: allow
       egress.home.arpa/router: allow
     env:
       - name: HOME
