@@ -60,7 +60,7 @@ The baseline selects **all pods** with
 `enableDefaultDeny` on both directions and re-opens exactly two things:
 
 - **DNS** to kube-dns (egress)
-- **the host entity** (ingress)
+- **the host and remote-node entities** (ingress)
 
 Everything else — **traffic between two pods of the same namespace included** —
 has to be named by another policy.
@@ -73,6 +73,14 @@ endpoint's policy map) on every pod that no _other_ policy happens to select —
 and since nothing is denied, audit mode shows nothing at all. `reserved:host`
 is the harmless choice of section content: Cilium allows it unconditionally
 anyway, which is also why kubelet health probes are unaffected.
+
+`remote-node` sits next to it for the same reason. With
+`enable-remote-node-identity` a packet from **another** node is not `host`, it
+is `remote-node`, and the two are not interchangeable: the aggregated API
+services (`keda-operator-metrics-apiserver`) were audited on ingress from
+`reserved:remote-node` with an otherwise correct `ingress.home.arpa/apiserver`
+label, because the caller sat on a different node. Node-sourced traffic is
+infrastructure wherever the node is.
 
 Check it per endpoint with
 `cilium-dbg endpoint list` — enrolled pods must read `audit-both` (or `both`
@@ -198,14 +206,14 @@ Three things to know about CIDR rules in Cilium:
 
 ### Ingress labels (put on the _receiving_ pod)
 
-| Pod label (`=allow`)                  | Accepts ingress from                                                                              |
-| ------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| `ingress.home.arpa/gateway-external`  | external envoy gateway (HTTPRoute/TCPRoute)                                                       |
-| `ingress.home.arpa/gateway-internal`  | internal envoy gateway                                                                            |
-| `ingress.home.arpa/prometheus`        | vmagent (ServiceMonitor/PodMonitor scraping)                                                      |
-| `ingress.home.arpa/apiserver`         | kube-apiserver (admission webhooks)                                                               |
-| `ingress.home.arpa/world`             | outside the cluster (LoadBalancer services used from the LAN: mosquitto, smtp-relay, forgejo ssh) |
-| `ingress.home.arpa/matrix-appservice` | Synapse's appservice transaction pushes, on 29318/29319/29334 (the four mautrix bridges)          |
+| Pod label (`=allow`)                  | Accepts ingress from                                                                                           |
+| ------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `ingress.home.arpa/gateway-external`  | external envoy gateway (HTTPRoute/TCPRoute)                                                                    |
+| `ingress.home.arpa/gateway-internal`  | internal envoy gateway                                                                                         |
+| `ingress.home.arpa/prometheus`        | vmagent (ServiceMonitor/PodMonitor scraping)                                                                   |
+| `ingress.home.arpa/apiserver`         | kube-apiserver (admission webhooks)                                                                            |
+| `ingress.home.arpa/world`             | outside the cluster (LoadBalancer services used from the LAN: adguard DNS, mosquitto, smtp-relay, forgejo ssh) |
+| `ingress.home.arpa/matrix-appservice` | Synapse's appservice transaction pushes, on 29318/29319/29334 (the four mautrix bridges)                       |
 
 The gateway labels are the **single source of truth for the data plane**: the
 envoy pods' own egress is `toEndpoints: ingress.home.arpa/gateway-<name>`
@@ -301,7 +309,8 @@ bullet at the top of this file.
 
 ## Flipping to enforcement
 
-1. `Cilium Policy Audit` dashboard clean for a few days (audit rate = 0).
+1. `Cilium Policy Audit` dashboard clean for a few days — see below, the
+   target is not literally 0.
 2. Set `policyAuditMode: false` in `../app/helmrelease.yaml`.
 3. The `cilium-dropped-flows` dashboard (`cilium-policy-denied`) then shows
    real drops; the audit dashboard's "Real Drops" stat must stay green.
@@ -309,3 +318,28 @@ bullet at the top of this file.
 Rollback at any time: set `policyAuditMode: true` back (agent rollout, no
 traffic interruption), or `kubectl -n kube-system exec ds/cilium -- cilium
 config PolicyAuditMode=true` per node for instant effect without a rollout.
+
+### The audit rate never reaches 0, and that is fine
+
+Two things make the metric read non-zero forever, and neither is a policy gap:
+
+- **Dead pod IPs.** An app that keeps dialling a peer it remembers by address
+  — Temporal's Ringpop ring, Vault's raft peer list — sends to an IP that owns
+  no endpoint any more. Cilium resolves it through the CIDR identity created by
+  `internet`'s `except` list, so the flow is reported as
+  `reserved:world` + `cidr:10.0.0.0/8`. No CNP can select an endpoint that does
+  not exist; under enforcement these are dropped, which is the correct
+  behaviour (the app retries and re-resolves through DNS). Recognise them with
+  `hubble observe --verdict AUDIT -o json`: the destination IP is inside the
+  pod CIDR `10.69.0.0/16` and `kubectl get pods -A -o wide` does not know it.
+- **Label propagation on pod creation.** The first connection of a brand new
+  pod can be audited before its identity carries the labels, which is why
+  correctly labelled workloads still show 1 or 2 events per week.
+
+So the criterion is **no audited flow whose destination is a live endpoint**,
+not a zero on the stat panel.
+
+Also mind that the metric counts **connections, not packets**: a missing label
+on a keepalive HTTP client (karma → Alertmanager) shows up as 2 events a week
+and is just as fatal as one showing 20 000. Rank by distinct source/destination
+pairs, never by volume.

@@ -39,6 +39,18 @@ spec:
         - ports:
             - port: "6379"
               protocol: TCP
+    # the authentik outposts are created by authentik, not by us: no chart value
+    # labels them, so they are named here like the dragonfly instances. The
+    # matching ingress ships with authentik
+    # (apps/auth/authentik/app/ciliumclusterwidenetworkpolicy.yaml).
+    - toEndpoints:
+        - matchLabels:
+            app: authentik-outpost
+            io.kubernetes.pod.namespace: auth
+      toPorts:
+        - ports:
+            - port: "9300"
+              protocol: TCP
     - toEndpoints:
         - matchLabels:
             io.kubernetes.pod.namespace: cert-manager

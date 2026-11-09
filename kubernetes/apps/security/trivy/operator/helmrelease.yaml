@@ -69,7 +69,7 @@ spec:
       # runs here in `security` and is caught by the baseline. The jobs pull image
       # manifests and layers straight from the registry, then hand the package
       # list to trivy-service:4954 (./ciliumnetworkpolicy.yaml names that hop).
-      scanJobPodTemplateLabels: "egress.home.arpa/internet-https=allow,app.kubernetes.io/component=trivy-scan-job"
+      scanJobPodTemplateLabels: "egress.home.arpa/internet-https=allow,egress.home.arpa/gateway-external=allow,app.kubernetes.io/component=trivy-scan-job"
 
     compliance:
       specs: []

@@ -27,10 +27,11 @@ sooner) says flip right after phase 0. To be arbitrated.
 
 ## Phase 0 — hygiene, before anything else
 
-- [ ] **`allow-egress-kubedns` only opens UDP/53** while the baseline opens
+- [x] **`allow-egress-kubedns` only opens UDP/53** while the baseline opens
       UDP+TCP. Pods outside enrolled namespaces carrying
       `egress.home.arpa/kubedns: allow` therefore have no TCP fallback
-      (truncated responses > 512 B, EDNS). → add `protocol: TCP`.
+      (truncated responses > 512 B, EDNS). → add `protocol: TCP`. **DONE
+      (2026-11-09)**.
       _File_: `kube-system/coredns/app/ciliumclusterwidenetworkpolicy.yaml`
 
 - [ ] **kopiur movers**: they carry `app.kubernetes.io/managed-by: kopiur`, run

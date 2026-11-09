@@ -27,6 +27,7 @@ spec:
         egress.home.arpa/internet: allow
         egress.home.arpa/navidrome: allow
         egress.home.arpa/sabnzbd: allow
+        egress.home.arpa/slskd: allow
       securityContext:
         seccompProfile: { type: RuntimeDefault }
 

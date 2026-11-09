@@ -1,0 +1,31 @@
+---
+# AdGuard forwards every LAN query to the UniFi gateway (`upstream_dns:
+# [192.168.42.1]` in the config it owns on its volume), i.e. the router's
+# interface on the routed LoadBalancer VLAN. No vocabulary label covers that
+# address: `egress.home.arpa/internet` carves `192.168/16` out of `0.0.0.0/0`,
+# and `egress.home.arpa/router` is `192.168.1.1:443`. AdGuard is the cluster's
+# only DNS forwarder, so this stays a CiliumNetworkPolicy rather than becoming
+# vocabulary nobody else can use (see ../../../kube-system/cilium/netpols/README.md,
+# "Layer 3").
+#
+# The `bootstrap_dns` resolvers (Quad9) are public addresses already covered by
+# `egress.home.arpa/internet`.
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: adguard
+spec:
+  description: "AdGuard forwards queries upstream to the UniFi gateway on the routed VLAN (192.168.42.1:53)"
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: adguard
+  egress:
+    - toCIDR:
+        - "192.168.42.1/32"
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
