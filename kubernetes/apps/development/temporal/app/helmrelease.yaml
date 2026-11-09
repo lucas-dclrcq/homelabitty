@@ -12,12 +12,8 @@ spec:
   values:
     fullnameOverride: *app
 
-    # Flux, not Helm hooks. With useHelmHooks=false the Job name carries the chart
-    # version and the release revision, so every upgrade renders a brand-new
-    # immutable Job instead of Flux trying to patch a completed one.
     schema:
       useHelmHooks: false
-      # schema setup/update Jobs run migrations directly against Postgres
       podLabels:
         egress.home.arpa/postgres: allow
       resources: &jobResources
@@ -30,7 +26,6 @@ spec:
     server:
       replicaCount: 1
 
-      # applied to all server service pods (frontend/history/matching/worker)
       podLabels:
         egress.home.arpa/postgres: allow
 
@@ -55,8 +50,6 @@ spec:
         persistence:
           defaultStore: default
           visibilityStore: visibility
-          # IMMUTABLE after the first deploy: changing it means wiping both
-          # Temporal databases. 512 is the chart default, kept deliberately.
           numHistoryShards: 512
           datastores:
             default:
@@ -68,10 +61,6 @@ spec:
                 user: temporal
                 existingSecret: temporal-db-secret
                 secretKey: password
-                # Both databases are created and owned by the CrunchyData PGO
-                # `temporal` role (see cluster/postgrescluster.yaml); the role is
-                # not allowed to CREATE DATABASE, so the job must only manage
-                # schema.
                 createDatabase: false
                 maxConns: 10
                 maxIdleConns: 10
@@ -85,13 +74,10 @@ spec:
           create: true
           useHelmHooks: false
           namespace:
-            # `default` is what quarkus-temporal connects to unless told otherwise.
             - name: default
               retention: 7d
 
       frontend:
-        # Ring membership and the kalimba client are whitelisted explicitly in
-        # ./ciliumnetworkpolicy.yaml
         containerSecurityContext: &containerSecurityContext
           allowPrivilegeEscalation: false
           readOnlyRootFilesystem: true
@@ -105,8 +91,6 @@ spec:
       worker:
         containerSecurityContext: *containerSecurityContext
 
-    # The schema Job renders from admintools.image regardless of this flag; only
-    # the long-lived admintools pod is dropped.
     admintools:
       enabled: false
 
@@ -123,7 +107,5 @@ spec:
           type: RuntimeDefault
       containerSecurityContext: *containerSecurityContext
       resources: *jobResources
-      # The chart ships a networking.k8s.io Ingress; this cluster is Gateway API
-      # only, so routing lives in httproute.yaml.
       ingress:
         enabled: false

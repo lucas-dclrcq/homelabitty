@@ -13,40 +13,17 @@ spec:
     global:
       createDefaultServiceAccount: false
 
-    rawResources:
-      netpol:
-        manifest:
-          apiVersion: cilium.io/v2
-          kind: CiliumNetworkPolicy
-          spec:
-            description: "kalimba runs its workflows against the Temporal frontend in the development namespace"
-            endpointSelector:
-              matchLabels:
-                app.kubernetes.io/name: kalimba
-            egress:
-              - toEndpoints:
-                  - matchLabels:
-                      app.kubernetes.io/name: temporal
-                      app.kubernetes.io/component: frontend
-                      io.kubernetes.pod.namespace: development
-                toPorts:
-                  - ports:
-                      - port: "7233"
-                        protocol: TCP
-
     controllers:
       kalimba:
         annotations:
           reloader.stakater.com/auto: "true"
         replicas: 1
-        # Single worker by design: every activity of a sync run must see the
-        # same downloads directory, and the claim is RWO.
         strategy: Recreate
         containers:
           app:
             image:
               repository: docker.hoohoot.org/homelab/kalimba
-              tag: 1.15.1
+              tag: 1.15.2
 
             env:
               TZ: Europe/Paris
@@ -55,7 +32,6 @@ spec:
               QUARKUS_OIDC_AUTH_SERVER_URL: "https://sso.hoohoot.org/application/o/kalimba/"
               QUARKUS_OIDC_CLIENT_ID: &oidcClientId kalimba-frontend
               QUARKUS_OIDC_APPLICATION_TYPE: service
-              # Echoed to the SPA by the public GET /api/v1/config endpoint.
               KALIMBA_OIDC_CLIENT_ID: *oidcClientId
               KALIMBA_DOWNLOADS_DIR: &downloadsDir /var/lib/kalimba/downloads
 
@@ -105,15 +81,13 @@ spec:
         egress.home.arpa/postgres: allow
         egress.home.arpa/gateway-external: allow
         egress.home.arpa/internet-https: allow
-        # Temporal frontend (development namespace): ./ciliumnetworkpolicy below
+        egress.home.arpa/temporal: allow
       automountServiceAccountToken: false
       enableServiceLinks: false
       imagePullSecrets:
         - name: kalimba-pull-secret
       securityContext:
         runAsNonRoot: true
-        # ubi9/openjdk-21-runtime: COPY --chown=185 / USER 185, with /deployments
-        # group-writable for gid 0 (the UBI convention).
         runAsUser: 185
         runAsGroup: 0
         fsGroup: 185
@@ -124,7 +98,7 @@ spec:
     persistence:
       downloads:
         enabled: true
-        existingClaim: *app # created by the kopiur component
+        existingClaim: *app
         globalMounts:
           - path: *downloadsDir
       tmp:
