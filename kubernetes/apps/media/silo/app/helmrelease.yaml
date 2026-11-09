@@ -20,7 +20,7 @@ spec:
           app:
             image:
               repository: ghcr.io/silo-server/silo-server
-              tag: build-1302@sha256:f84ff66c707f70f3a6ba006743161bc468095b66829d60613fe4aa000a7a813c
+              tag: build-1802@sha256:3bb81c098cb37e8686269441d04516c062311a2a57a086e05644cbf334ee3ec6
 
             env:
               TZ: Europe/Paris
