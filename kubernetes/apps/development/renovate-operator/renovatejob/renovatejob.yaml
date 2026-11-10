@@ -8,7 +8,7 @@ spec:
   discoveryFilters:
     - lucas-dclrcq/homelabitty
     - lucas-dclrcq/nana
-  image: ghcr.io/renovatebot/renovate:44.224.1
+  image: ghcr.io/renovatebot/renovate:44.225.1
   parallelism: 1
   provider:
     name: github
