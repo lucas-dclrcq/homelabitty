@@ -28,4 +28,4 @@ spec:
   postBuild:
     substitute:
       APP: *app
-      KOPIUR_CAPACITY: 20Gi
+      KOPIUR_CAPACITY: 50Gi
