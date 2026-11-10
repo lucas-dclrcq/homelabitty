@@ -36,7 +36,7 @@ spec:
           storage-migrate:
             image: &image
               repository: docker.io/rustmailer/bichon
-              tag: &tag 2.3.2
+              tag: &tag 2.4.0
 
             command:
               - /bin/sh
