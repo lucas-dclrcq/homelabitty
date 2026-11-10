@@ -27,21 +27,90 @@ spec:
             runAsNonRoot: true
             fsGroupChangePolicy: OnRootMismatch
 
+        # Bichon ships one-shot storage/index migrations that the server never runs
+        # itself: on a format bump it refuses to serve and listens on the normal
+        # port as a "Bichon Maintenance" 503 page instead. Probes are disabled and
+        # the HelmRelease still reports Ready, so nothing surfaces it but the 503.
+        # Run the migration before the server starts, once per image tag.
+        initContainers:
+          storage-migrate:
+            image: &image
+              repository: docker.io/rustmailer/bichon
+              tag: &tag 2.3.2
+
+            command:
+              - /bin/sh
+              - -c
+              - |
+                set -eu
+                stamp=/data/.migrated-version
+
+                if [ "$(cat "$stamp" 2>/dev/null || true)" = "$BICHON_VERSION" ]; then
+                  echo "storage already migrated for $BICHON_VERSION, nothing to do"
+                  exit 0
+                fi
+
+                if [ ! -d /data/bichon-storage ]; then
+                  # Fresh PVC (or a kopiur restore that has not landed): the server
+                  # lays the store out itself, there is nothing to migrate yet.
+                  echo "no bichon-storage yet, skipping migration"
+                else
+                  # The on-disk storage layout (fjall -> bichon-blob was 1 -> 2) is
+                  # only migratable through bichon-admin's TTY-only menu, which
+                  # cannot be scripted. Fail loudly here rather than let the server
+                  # crash-loop on "Incompatible data format detected".
+                  have=$(cat /data/STORAGE_VERSION 2>/dev/null || echo unknown)
+                  if [ "$have" != "$BICHON_EXPECT_STORAGE_VERSION" ]; then
+                    echo "STORAGE_VERSION is $have, expected $BICHON_EXPECT_STORAGE_VERSION"
+                    echo "run the interactive 'bichon-admin' migration by hand, then bump BICHON_EXPECT_STORAGE_VERSION"
+                    exit 1
+                  fi
+
+                  # Self-gating: without --force this exits early when the index is
+                  # already at the current format, so a tag bump that carries no
+                  # index change costs a few seconds.
+                  bichon-admin reindex --yes
+
+                  # A real rebuild keeps the previous index as a rollback copy;
+                  # keep the newest one only so they do not pile up on the PVC.
+                  ls -1d /data/bichon-indices.old-* 2>/dev/null | sort | head -n -1 | xargs -r rm -rf
+                fi
+
+                printf '%s' "$BICHON_VERSION" > "$stamp"
+
+            env:
+              BICHON_ROOT_DIR: &rootDir /data
+              BICHON_VERSION: *tag
+              BICHON_EXPECT_STORAGE_VERSION: "2"
+
+            envFrom: &envFrom
+              - secretRef:
+                  name: bichon-secret
+
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 2Gi
+
+            securityContext: &securityContext
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
+
         containers:
           app:
-            image:
-              repository: docker.io/rustmailer/bichon
-              tag: 2.3.2
+            image: *image
 
             env:
               BICHON_HTTP_PORT: &httpPort 15630
               BICHON_LOG_LEVEL: info
               BICHON_PUBLIC_URL: https://bichon.hoohoot.xyz
-              BICHON_ROOT_DIR: /data
+              BICHON_ROOT_DIR: *rootDir
 
-            envFrom:
-              - secretRef:
-                  name: bichon-secret
+            envFrom: *envFrom
 
             probes:
               liveness: &probes
@@ -63,12 +132,7 @@ spec:
               limits:
                 memory: 2Gi
 
-            securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities:
-                drop:
-                  - ALL
+            securityContext: *securityContext
     service:
       app:
         ports:
