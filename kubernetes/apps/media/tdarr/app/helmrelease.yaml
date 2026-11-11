@@ -1,0 +1,272 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app tdarr
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  install:
+    remediation:
+      retries: -1
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  values:
+    global:
+      createDefaultServiceAccount: false
+
+    controllers:
+      # Server + web UI + an internal node doing the transcodes on the iGPU (QSV).
+      tdarr:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        # One pod only: the internal node holds the GPU claim and the
+        # transcode cache, and two servers on the same database would clash.
+        strategy: Recreate
+        pod:
+          # app-template trap: pod.labels replaces defaultPodOptions.labels
+          labels:
+            ingress.home.arpa/gateway-internal: allow
+            # community plugins are downloaded from GitHub at startup
+            egress.home.arpa/internet-https: allow
+            # "Notify Radarr or Sonarr" / naming flow plugins
+            egress.home.arpa/sonarr: allow
+            egress.home.arpa/radarr: allow
+          resourceClaims:
+            - name: gpu
+              resourceClaimTemplateName: tdarr-gpu
+          affinity:
+            nodeAffinity:
+              preferredDuringSchedulingIgnoredDuringExecution:
+                - weight: 15
+                  preference:
+                    matchExpressions:
+                      - key: kubernetes.io/hostname
+                        operator: In
+                        values: ["bee", "burrich", "fool"]
+        containers:
+          app:
+            image:
+              repository: ghcr.io/haveagitgat/tdarr
+              tag: 3.07.00@sha256:ce61af20247825024b790d879ad305411c7e07092e88b4cdf5c686e8dafcf8c0
+            env:
+              TZ: Europe/Paris
+              serverIP: 0.0.0.0
+              serverPort: &serverPort 8266
+              webUIPort: &port 8265
+              inContainer: "true"
+              internalNode: "true"
+              nodeName: tdarr-internal
+              ffmpegVersion: "7"
+              openBrowser: "false"
+              UMASK: "002"
+              # Read-only root: s6-overlay keeps its state in /run (an emptyDir)
+              S6_READ_ONLY_ROOT: "1"
+              # One QSV transcode at a time: a single UHD 630 shared with
+              # nothing else (DRA claims are exclusive). Health checks on CPU.
+              transcodegpuWorkers: "1"
+              transcodecpuWorkers: "0"
+              healthcheckgpuWorkers: "0"
+              healthcheckcpuWorkers: "1"
+              auth: "true"
+              seededApiKey:
+                valueFrom:
+                  secretKeyRef:
+                    name: tdarr-secret
+                    key: TDARR_API_KEY
+              apiKey:
+                valueFrom:
+                  secretKeyRef:
+                    name: tdarr-secret
+                    key: TDARR_API_KEY
+
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: *port
+                  periodSeconds: 10
+                  timeoutSeconds: 2
+                  failureThreshold: 3
+              readiness: *probes
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: *port
+                  periodSeconds: 10
+                  failureThreshold: 60
+
+            # Starts as 1026:100 directly (the image skips its PUID/PGID
+            # chown dance when not root): the media tree on TrueNAS is owned
+            # by 1026 with 755 directories, so only that uid can replace files.
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+
+            resources:
+              claims:
+                - name: gpu
+              requests:
+                cpu: 500m
+                memory: 1Gi
+              limits:
+                memory: 8Gi
+
+      # Pushes the files of series/movies tagged "tdarr" in Sonarr/Radarr into
+      # the Tdarr library. See resources/tdarr-sync.py.
+      tdarr-sync:
+        type: cronjob
+        annotations:
+          reloader.stakater.com/auto: "true"
+        cronjob:
+          schedule: "30 1 * * *"
+          concurrencyPolicy: Forbid
+          successfulJobsHistory: 1
+          failedJobsHistory: 1
+          backoffLimit: 1
+        pod:
+          labels:
+            egress.home.arpa/sonarr: allow
+            egress.home.arpa/radarr: allow
+        containers:
+          app:
+            image:
+              repository: docker.io/library/python
+              tag: 3.14.10-alpine3.24@sha256:a18b20ad69e74df6cf6d2e1b1a260d7a1ecf5380fd83b310f83ba88c461cf894
+            command: ["python3", "/app/tdarr-sync.py"]
+            env:
+              TZ: Europe/Paris
+              ARR_TAG: tdarr
+              # Library id from the Tdarr UI (URL /libraries/<id>/...). Empty =
+              # the job only logs what it would queue.
+              TDARR_LIBRARY_ID: ""
+              DRY_RUN: "false"
+              TDARR_URL: http://tdarr.media.svc.cluster.local:8265
+              SONARR_URL: http://sonarr.downloads.svc.cluster.local
+              SONARR_ANIME_URL: http://sonarr-anime.downloads.svc.cluster.local
+              RADARR_URL: http://radarr.downloads.svc.cluster.local
+            envFrom:
+              - secretRef:
+                  name: tdarr-secret
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 128Mi
+
+    defaultPodOptions:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1026
+        runAsGroup: 100
+        fsGroup: 100
+        fsGroupChangePolicy: OnRootMismatch
+        supplementalGroups:
+          - 10000
+        seccompProfile: { type: RuntimeDefault }
+
+    service:
+      app:
+        controller: tdarr
+        ports:
+          http:
+            port: *port
+          server:
+            port: *serverPort
+
+    route:
+      app:
+        hostnames:
+          - "{{ .Release.Name }}.hoohoot.xyz"
+        parentRefs:
+          - name: internal
+            namespace: network
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
+
+    persistence:
+      config:
+        existingClaim: *app
+        advancedMounts:
+          tdarr:
+            app:
+              - path: /app/server
+                subPath: server
+              - path: /app/configs
+                subPath: configs
+      media:
+        type: nfs
+        server: "truenas.lulice.lan"
+        path: /mnt/tank/Media
+        advancedMounts:
+          tdarr:
+            app:
+              # Same path as in Sonarr/Radarr, so the paths they report are
+              # valid here without any translation.
+              - path: /media
+      # Transcode cache: the output is written here, then moved over the
+      # original. Sized for a couple of large movies.
+      cache:
+        type: emptyDir
+        sizeLimit: 200Gi
+        advancedMounts:
+          tdarr:
+            app:
+              - path: /temp
+      logs:
+        type: emptyDir
+        advancedMounts:
+          tdarr:
+            app:
+              - path: /app/logs
+      # The node syncs its plugins from the server into this image directory,
+      # which belongs to uid 1000 in the image.
+      node-plugins:
+        type: emptyDir
+        advancedMounts:
+          tdarr:
+            app:
+              - path: /app/Tdarr_Node/assets/app/plugins
+      run:
+        type: emptyDir
+        medium: Memory
+        sizeLimit: 64Mi
+        advancedMounts:
+          tdarr:
+            app:
+              - path: /run
+      tmp:
+        type: emptyDir
+        advancedMounts:
+          tdarr:
+            app:
+              - path: /tmp
+      sync-script:
+        type: configMap
+        name: tdarr-sync
+        defaultMode: 0555
+        advancedMounts:
+          tdarr-sync:
+            app:
+              - path: /app/tdarr-sync.py
+                subPath: tdarr-sync.py
+                readOnly: true
