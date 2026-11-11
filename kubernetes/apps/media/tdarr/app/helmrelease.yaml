@@ -123,6 +123,78 @@ spec:
               limits:
                 memory: 8Gi
 
+      # A second transcode worker on another machine's iGPU. Each UHD 630 has
+      # one fixed-function HEVC encoder, so throughput only scales by adding
+      # nodes on other hosts, not by raising transcodegpuWorkers above.
+      # The podAntiAffinity keeps it off whichever host runs the server.
+      tdarr-node:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        strategy: Recreate
+        pod:
+          # No egress.home.arpa/* label: the only flow is node -> server, and
+          # both ends live in this app, so it is named in the netpol instead.
+          # Plugins are synced from the server, not fetched from GitHub.
+          resourceClaims:
+            - name: gpu
+              resourceClaimTemplateName: tdarr-gpu
+          affinity:
+            podAntiAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchLabels:
+                      app.kubernetes.io/name: tdarr
+                      app.kubernetes.io/controller: tdarr
+                  topologyKey: kubernetes.io/hostname
+        containers:
+          app:
+            image:
+              repository: ghcr.io/haveagitgat/tdarr_node
+              tag: 3.07.00@sha256:2850292d8a6ff07a722e228139301bac386ced6f9445325c44bc835bdfc74340
+            env:
+              TZ: Europe/Paris
+              inContainer: "true"
+              ffmpegVersion: "7"
+              UMASK: "002"
+              S6_READ_ONLY_ROOT: "1"
+              nodeName: tdarr-external-1
+              serverIP: tdarr.media.svc.cluster.local
+              serverPort: *serverPort
+              # Same split as the internal node: QSV for transcodes, CPU for
+              # health checks.
+              transcodegpuWorkers: "1"
+              transcodecpuWorkers: "0"
+              healthcheckgpuWorkers: "0"
+              healthcheckcpuWorkers: "1"
+              apiKey:
+                valueFrom:
+                  secretKeyRef:
+                    name: tdarr-secret
+                    key: TDARR_API_KEY
+
+            probes:
+              liveness:
+                enabled: false
+              readiness:
+                enabled: false
+              startup:
+                enabled: false
+
+            # Must match the server: it replaces files in the media tree.
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+
+            resources:
+              claims:
+                - name: gpu
+              requests:
+                cpu: 500m
+                memory: 1Gi
+              limits:
+                memory: 8Gi
+
       # Pushes the files of series/movies tagged "tdarr" in Sonarr/Radarr into
       # the Tdarr library. See resources/tdarr-sync.py.
       tdarr-sync:
@@ -213,6 +285,14 @@ spec:
                 subPath: server
               - path: /app/configs
                 subPath: configs
+      # The external node cannot share the config PVC (ceph-block RWO, and it
+      # runs on another host), so it keeps its own throwaway config.
+      node-config:
+        type: emptyDir
+        advancedMounts:
+          tdarr-node:
+            app:
+              - path: /app/configs
       media:
         type: nfs
         server: "truenas.lulice.lan"
@@ -223,6 +303,9 @@ spec:
               # Same path as in Sonarr/Radarr, so the paths they report are
               # valid here without any translation.
               - path: /media
+          tdarr-node:
+            app:
+              - path: /media
       # Transcode cache: the output is written here, then moved over the
       # original. Sized for a couple of large movies.
       cache:
@@ -232,10 +315,16 @@ spec:
           tdarr:
             app:
               - path: /temp
+          tdarr-node:
+            app:
+              - path: /temp
       logs:
         type: emptyDir
         advancedMounts:
           tdarr:
+            app:
+              - path: /app/logs
+          tdarr-node:
             app:
               - path: /app/logs
       # The node syncs its plugins from the server into this image directory,
@@ -246,6 +335,9 @@ spec:
           tdarr:
             app:
               - path: /app/Tdarr_Node/assets/app/plugins
+          tdarr-node:
+            app:
+              - path: /app/Tdarr_Node/assets/app/plugins
       run:
         type: emptyDir
         medium: Memory
@@ -254,10 +346,16 @@ spec:
           tdarr:
             app:
               - path: /run
+          tdarr-node:
+            app:
+              - path: /run
       tmp:
         type: emptyDir
         advancedMounts:
           tdarr:
+            app:
+              - path: /tmp
+          tdarr-node:
             app:
               - path: /tmp
       sync-script:

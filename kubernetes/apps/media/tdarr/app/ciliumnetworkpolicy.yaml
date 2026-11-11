@@ -20,6 +20,39 @@ spec:
         - ports:
             - port: "8265"
               protocol: TCP
+    # External transcode nodes connect out to the server and stay connected;
+    # the server pushes work back over that socket, so nothing is needed in
+    # the other direction.
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: tdarr
+            app.kubernetes.io/controller: tdarr-node
+      toPorts:
+        - ports:
+            - port: "8266"
+              protocol: TCP
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: tdarr-node
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: tdarr
+      app.kubernetes.io/controller: tdarr-node
+  egress:
+    # kube-dns comes from the cluster-wide baseline. The media tree is an NFS
+    # mount handled by the kubelet, so it is not pod traffic.
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: tdarr
+            app.kubernetes.io/controller: tdarr
+      toPorts:
+        - ports:
+            - port: "8266"
+              protocol: TCP
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
 apiVersion: cilium.io/v2
