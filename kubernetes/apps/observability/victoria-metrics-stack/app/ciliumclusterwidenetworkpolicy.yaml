@@ -163,3 +163,48 @@ spec:
         - ports:
             - port: "9093"
               protocol: TCP
+---
+# Paired vocabulary for egress.home.arpa/tracing, owned by the stack that runs
+# VictoriaTraces: the first policy opens the consumer's egress to the OTLP gRPC
+# receiver, the second opens vtsingle's ingress from pods carrying the label.
+# Only OTLP gRPC (4317) is covered; the HTTP API on 10428 (Grafana, litellm's
+# OTLP/HTTP) stays in the `vtsingle` policy of ./ciliumnetworkpolicy.yaml.
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: allow-egress-tracing
+spec:
+  description: "Pods labeled egress.home.arpa/tracing=allow may ship OTLP gRPC traces to VictoriaTraces on 4317"
+  endpointSelector:
+    matchLabels:
+      egress.home.arpa/tracing: allow
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: vtsingle
+            io.kubernetes.pod.namespace: observability
+      toPorts:
+        - ports:
+            - port: "4317"
+              protocol: TCP
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: allow-ingress-tracing
+spec:
+  description: "Service side of egress.home.arpa/tracing: vtsingle accepts OTLP gRPC on 4317 from producers carrying the label"
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: vtsingle
+      io.kubernetes.pod.namespace: observability
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            egress.home.arpa/tracing: allow
+      toPorts:
+        - ports:
+            - port: "4317"
+              protocol: TCP

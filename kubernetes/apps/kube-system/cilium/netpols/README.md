@@ -153,6 +153,7 @@ operator-managed pods that cannot carry our labels with their operator
 | `egress.home.arpa/vault`            | vault :8200 (+ matching ingress)                                                                                                                                |
 | `egress.home.arpa/ldap`             | authentik's LDAP outpost :3389/:6636 (apps authenticating over LDAP rather than OIDC)                                                                           |
 | `egress.home.arpa/alertmanager`     | vmalertmanager :9093, the Alertmanager API (karma)                                                                                                              |
+| `egress.home.arpa/tracing`          | vtsingle :4317, VictoriaTraces OTLP gRPC receiver (+ matching ingress) (rustical, homelab-manager)                                                              |
 | `egress.home.arpa/apiserver`        | kube-apiserver (operators, patroni, controllers)                                                                                                                |
 | `egress.home.arpa/gateway-external` | external envoy pods — needed for **OIDC hairpin** (app calls `auth.<domain>` which resolves to the gateway LB) and any call to a public hostname of the cluster |
 | `egress.home.arpa/gateway-internal` | internal envoy pods — calls to internal hostnames (blackbox probes of `*.hoohoot.xyz`)                                                                          |
@@ -177,7 +178,7 @@ shipped by `kopiur-system/kopiur/app` selects them on
 Most of these are **paired**: one clusterwide policy opens the consumer's
 egress, a second one opens the service's ingress from pods carrying that same
 label, so labelling the consumer is enough. That covers
-`postgres`/`mqtt`/`smtp`/`vault`/`ldap`/`alertmanager`,
+`postgres`/`mqtt`/`smtp`/`vault`/`ldap`/`alertmanager`/`tracing`,
 `gateway-external`/`gateway-internal` (the envoy pods accept hairpin calls from
 pods carrying the label), the whole downloads stack
 (`sonarr`/`radarr`/`lidarr`/`prowlarr`/`qbittorrent`/`sabnzbd`/`slskd`) and the

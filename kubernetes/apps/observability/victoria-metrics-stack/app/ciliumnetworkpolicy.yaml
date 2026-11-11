@@ -51,7 +51,7 @@ kind: CiliumNetworkPolicy
 metadata:
   name: vtsingle
 spec:
-  description: "VictoriaTraces receives OTLP from the instrumented apps (litellm, homelab-manager) and is read by Grafana"
+  description: "VictoriaTraces receives OTLP from the instrumented apps (litellm over OTLP/HTTP) and is read by Grafana. OTLP gRPC producers come in through egress.home.arpa/tracing (./ciliumclusterwidenetworkpolicy.yaml)"
   endpointSelector:
     matchLabels:
       app.kubernetes.io/name: vtsingle
@@ -65,14 +65,6 @@ spec:
       toPorts:
         - ports:
             - port: "10428"
-              protocol: TCP
-    - fromEndpoints:
-        - matchLabels:
-            app: homelab-manager
-            io.kubernetes.pod.namespace: default
-      toPorts:
-        - ports:
-            - port: "4317"
               protocol: TCP
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json

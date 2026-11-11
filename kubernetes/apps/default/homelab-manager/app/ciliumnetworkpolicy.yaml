@@ -5,7 +5,7 @@ kind: CiliumNetworkPolicy
 metadata:
   name: homelab-manager
 spec:
-  description: "Aggregates the authentik API and ships OTLP traces; every target is addressed by its in-cluster Service (see ./externalsecret.yaml). Jellyfin, Matrix and the *arr apps are opened by the egress.home.arpa/{jellyfin,matrix-synapse,sonarr,radarr,lidarr} labels."
+  description: "Aggregates the authentik API; every target is addressed by its in-cluster Service (see ./externalsecret.yaml). Jellyfin, Matrix, the *arr apps and OTLP traces are opened by the egress.home.arpa/{jellyfin,matrix-synapse,sonarr,radarr,lidarr,tracing} labels."
   endpointSelector:
     matchLabels:
       app: homelab-manager
@@ -28,15 +28,6 @@ spec:
       toPorts:
         - ports:
             - port: "9000"
-              protocol: TCP
-    # QUARKUS_OTEL_EXPORTER_OTLP_ENDPOINT
-    - toEndpoints:
-        - matchLabels:
-            app.kubernetes.io/name: vtsingle
-            io.kubernetes.pod.namespace: observability
-      toPorts:
-        - ports:
-            - port: "4317"
               protocol: TCP
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json

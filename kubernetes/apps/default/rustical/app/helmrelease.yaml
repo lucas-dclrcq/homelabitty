@@ -13,6 +13,7 @@ spec:
       labels:
         ingress.home.arpa/gateway-external: allow
         egress.home.arpa/gateway-external: allow
+        egress.home.arpa/tracing: allow
       securityContext:
         runAsUser: 1026
         runAsGroup: 1500
@@ -27,6 +28,9 @@ spec:
             image:
               repository: ghcr.io/lennart-k/rustical
               tag: 0.19.0@sha256:d30533d2b7e36da51d3db4d9132af59534734527e7fbcec7c3a7640094fdceca
+
+            env:
+              RUSTICAL_TRACING__ENDPOINT: http://vtsingle-vmks.observability.svc.cluster.local:4317
 
             envFrom:
               - secretRef:

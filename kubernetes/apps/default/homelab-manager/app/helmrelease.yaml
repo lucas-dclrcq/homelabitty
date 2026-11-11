@@ -27,6 +27,7 @@ spec:
         egress.home.arpa/sonarr: allow
         egress.home.arpa/radarr: allow
         egress.home.arpa/lidarr: allow
+        egress.home.arpa/tracing: allow
       envFrom:
         - secretRef:
             name: homelab-manager-secret
