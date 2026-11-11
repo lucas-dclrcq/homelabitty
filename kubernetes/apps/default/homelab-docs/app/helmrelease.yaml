@@ -64,7 +64,7 @@ spec:
         hostnames:
           - "homelab-docs.hoohoot.org"
         parentRefs:
-          - name: internal
+          - name: external
             namespace: network
         rules:
           - backendRefs:
