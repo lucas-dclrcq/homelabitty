@@ -1,0 +1,44 @@
+---
+# The sync CronJob pushes file paths to Tdarr's API. Both ends live in this
+# app, so the flow is named here rather than through a shared label.
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: tdarr
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: tdarr
+      app.kubernetes.io/controller: tdarr
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: tdarr
+            app.kubernetes.io/controller: tdarr-sync
+      toPorts:
+        - ports:
+            - port: "8265"
+              protocol: TCP
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: tdarr-sync
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: tdarr
+      app.kubernetes.io/controller: tdarr-sync
+  egress:
+    # kube-dns comes from the cluster-wide baseline, Sonarr/Radarr from the
+    # egress.home.arpa/* labels on the pod.
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: tdarr
+            app.kubernetes.io/controller: tdarr
+      toPorts:
+        - ports:
+            - port: "8265"
+              protocol: TCP
