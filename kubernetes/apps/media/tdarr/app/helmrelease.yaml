@@ -150,7 +150,7 @@ spec:
               ARR_TAG: tdarr
               # Library id from the Tdarr UI (URL /libraries/<id>/...). Empty =
               # the job only logs what it would queue.
-              TDARR_LIBRARY_ID: ""
+              TDARR_LIBRARY_ID: "W4NO0TZ"
               DRY_RUN: "false"
               TDARR_URL: http://tdarr.media.svc.cluster.local:8265
               SONARR_URL: http://sonarr.downloads.svc.cluster.local
