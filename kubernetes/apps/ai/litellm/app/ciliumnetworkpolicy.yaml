@@ -10,7 +10,7 @@ spec:
     matchLabels:
       app.kubernetes.io/name: litellm
   ingress:
-    # robusta runner/holmes and hermes use LiteLLM as their LLM gateway, the operator
+    # robusta runner/holmes, hermes and sure (default) use LiteLLM as their LLM gateway, the operator
     # applies the proxy config through the LiteLLM API (applyMode: api)
     - fromEndpoints:
         - matchLabels:
@@ -21,6 +21,9 @@ spec:
             app.kubernetes.io/name: litellm-operator
         - matchLabels:
             app.kubernetes.io/name: hermes
+        - matchLabels:
+            app.kubernetes.io/name: sure
+            io.kubernetes.pod.namespace: default
       toPorts:
         - ports:
             - port: "4000"

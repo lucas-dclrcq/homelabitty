@@ -31,6 +31,18 @@ spec:
               REDIS_URL: redis://sure-dragonfly.default.svc.cluster.local:6379
               OIDC_ISSUER: https://id.hoohoot.org
               OIDC_REDIRECT_URI: https://finances.hoohoot.xyz/auth/openid_connect/callback
+              OPENAI_URI_BASE: http://litellm.ai.svc.cluster.local:4000/v1
+              OPENAI_MODEL: deepseek-flash
+              OPENAI_ACCESS_TOKEN:
+                valueFrom:
+                  secretKeyRef:
+                    name: sure-litellm
+                    key: key
+              LLM_CONTEXT_WINDOW: "65536"
+              LLM_MAX_RESPONSE_TOKENS: "8192"
+              OPENAI_REQUEST_TIMEOUT: "180"
+              RAILS_MAX_THREADS: "5"
+              RAILS_AI_MAX_THREADS: "2"
               OIDC_CLIENT_ID:
                 valueFrom:
                   secretKeyRef:

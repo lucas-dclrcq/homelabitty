@@ -1,0 +1,16 @@
+---
+apiVersion: litellm.home-operations.com/v1alpha1
+kind: LiteLLMVirtualKey
+metadata:
+  name: sure
+spec:
+  proxyRef: litellm
+  proxyNamespace: ai
+  keyAlias: sure
+  secretName: sure-litellm
+  secretKey: key
+  models:
+    - deepseek-flash
+  maxBudget: "10"
+  budgetDuration: 30d
+  maxParallelRequests: 4

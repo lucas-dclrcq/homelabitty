@@ -19,6 +19,8 @@ spec:
       namespace: infrastructure
     - name: pocket-id
       namespace: security
+    - name: litellm
+      namespace: ai
   path: ./kubernetes/apps/default/sure/app
   prune: true
   sourceRef:
