@@ -15,6 +15,7 @@ spec:
     - https://vault.hoohoot.xyz/ui/vault/auth/oidc/oidc/callback
     - https://vault.hoohoot.xyz/oidc/callback
     - http://localhost:8250/oidc/callback
+  pkceEnabled: true
   allowedUserGroups:
     - name: developers
       namespace: security
