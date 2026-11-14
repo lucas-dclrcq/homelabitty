@@ -17,18 +17,20 @@ spec:
     auth.anonymous:
       enabled: "false"
     auth:
-      signout_redirect_url: "https://sso.hoohoot.org/application/o/grafana/end-session/"
+      signout_redirect_url: "https://id.hoohoot.org/api/oidc/end-session"
       oauth_auto_login: "true"
     auth.generic_oauth:
-      name: authentik
+      name: Pocket ID
       enabled: "true"
       client_id: $${AUTH_CLIENT_ID}
       client_secret: $${AUTH_CLIENT_SECRET}
-      scopes: "openid profile email"
-      auth_url: "https://sso.hoohoot.org/application/o/authorize/"
-      token_url: "https://sso.hoohoot.org/application/o/token/"
-      api_url: "https://sso.hoohoot.org/application/o/userinfo/"
-      role_attribute_path: contains(groups, 'Hoohoot Admins') && 'Admin' || contains(groups, 'Hoohoot Developers') && 'Editor' || 'Viewer'
+      scopes: "openid profile email groups"
+      use_pkce: "true"
+      auth_url: "https://id.hoohoot.org/authorize"
+      token_url: "https://id.hoohoot.org/api/oidc/token"
+      api_url: "https://id.hoohoot.org/api/oidc/userinfo"
+      login_attribute_path: preferred_username
+      role_attribute_path: contains(groups, 'admins') && 'Admin' || contains(groups, 'developers') && 'Editor' || 'Viewer'
     log:
       mode: console
     metrics:
@@ -64,13 +66,13 @@ spec:
                 - name: AUTH_CLIENT_ID
                   valueFrom:
                     secretKeyRef:
-                      name: grafana-oauth-secret
-                      key: client_id
+                      name: grafana-oidc
+                      key: client-id
                 - name: AUTH_CLIENT_SECRET
                   valueFrom:
                     secretKeyRef:
-                      name: grafana-oauth-secret
-                      key: client_secret
+                      name: grafana-oidc
+                      key: client-secret
               volumeMounts:
                 - name: grafana-plugins-bundled
                   mountPath: /usr/share/grafana/data/plugins-bundled

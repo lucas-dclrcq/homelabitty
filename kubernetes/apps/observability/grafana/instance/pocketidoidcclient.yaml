@@ -1,0 +1,24 @@
+---
+apiVersion: pocketid.internal/v1alpha1
+kind: PocketIDOIDCClient
+metadata:
+  name: grafana
+spec:
+  name: Grafana
+  description: Dashboards and observability
+  clientID: grafana
+  instanceSelector:
+    matchLabels:
+      app.kubernetes.io/name: pocket-id
+  launchUrl: https://grafana.hoohoot.org
+  callbackUrls:
+    - https://grafana.hoohoot.org/login/generic_oauth
+  pkceEnabled: true
+  allowedUserGroups:
+    - name: users
+      namespace: security
+  secret:
+    name: grafana-oidc
+    keys:
+      clientID: client-id
+      clientSecret: client-secret

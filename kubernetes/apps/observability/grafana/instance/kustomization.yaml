@@ -3,12 +3,10 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - ./authentikapplication.yaml
-  - ./oidc-externalsecret.yaml
+  - ./pocketidoidcclient.yaml
   - ./grafanadatasource.yaml
   - ./grafana.yaml
   - ./ciliumnetworkpolicy.yaml
   - ./httproute.yaml
   - ./servicemonitor.yaml
-  - ./externalsecret.yaml
   - ./probes.yaml

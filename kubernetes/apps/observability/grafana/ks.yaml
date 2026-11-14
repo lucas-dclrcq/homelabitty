@@ -35,10 +35,10 @@ spec:
       app.kubernetes.io/name: *app
   dependsOn:
     - name: grafana
-    - name: external-secrets-stores
-      namespace: external-secrets
     - name: envoy-gateway
       namespace: network
+    - name: pocket-id
+      namespace: security
   path: ./kubernetes/apps/observability/grafana/instance
   prune: true
   sourceRef:
