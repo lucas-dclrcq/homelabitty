@@ -1,0 +1,23 @@
+---
+apiVersion: pocketid.internal/v1alpha1
+kind: PocketIDOIDCClient
+metadata:
+  name: sure
+spec:
+  name: Finances
+  description: Sure personal finance
+  instanceSelector:
+    matchLabels:
+      app.kubernetes.io/name: pocket-id
+  launchUrl: https://finances.hoohoot.xyz
+  callbackUrls:
+    - https://finances.hoohoot.xyz/auth/openid_connect/callback
+  pkceEnabled: true
+  allowedUserGroups:
+    - name: users
+      namespace: security
+  secret:
+    name: sure-oidc
+    keys:
+      clientID: client-id
+      clientSecret: client-secret

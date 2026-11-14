@@ -286,6 +286,11 @@ spec:
         - "silo"
       password:
         type: AlphaNumeric
+    - name: "sure"
+      databases:
+        - "sure"
+      password:
+        type: AlphaNumeric
   backups:
     pgbackrest:
       configuration:

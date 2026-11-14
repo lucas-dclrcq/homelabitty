@@ -1,0 +1,140 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app sure
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  values:
+    controllers:
+      server:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        initContainers:
+          migration:
+            image: &image
+              repository: ghcr.io/we-promise/sure
+              tag: 0.7.6-hotfix.1@sha256:002cde609f3af4b69ba2564c2482f3996e1fe29092dd169962b9b6ed943fcb10
+            command: ["bash", "-lc"]
+            args: ["DISABLE_DATABASE_ENVIRONMENT_CHECK=1 bundle exec rake db:prepare"]
+            env: &env
+              TZ: Europe/Paris
+              RAILS_ENV: production
+              SELF_HOSTED: "true"
+              APP_DOMAIN: finances.hoohoot.xyz
+              RAILS_ASSUME_SSL: "true"
+              ONBOARDING_STATE: open
+              REDIS_URL: redis://sure-dragonfly.default.svc.cluster.local:6379
+              OIDC_ISSUER: https://id.hoohoot.org
+              OIDC_REDIRECT_URI: https://finances.hoohoot.xyz/auth/openid_connect/callback
+              OIDC_CLIENT_ID:
+                valueFrom:
+                  secretKeyRef:
+                    name: &oidc sure-oidc
+                    key: client-id
+              OIDC_CLIENT_SECRET:
+                valueFrom:
+                  secretKeyRef:
+                    name: *oidc
+                    key: client-secret
+            envFrom: &envFrom
+              - secretRef:
+                  name: sure-secret
+            securityContext: &securityContext
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: false
+              capabilities: { drop: ["ALL"] }
+        containers:
+          app:
+            image: *image
+            command: ["bash", "-lc"]
+            args: ["bundle exec puma -b tcp://0.0.0.0:3000"]
+            env: *env
+            envFrom: *envFrom
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /up
+                    port: &port 3000
+                  periodSeconds: 10
+                  timeoutSeconds: 2
+                  failureThreshold: 6
+              readiness: *probes
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /up
+                    port: *port
+                  periodSeconds: 5
+                  failureThreshold: 30
+            securityContext: *securityContext
+            resources:
+              requests:
+                cpu: 50m
+                memory: 512Mi
+              limits:
+                memory: 1Gi
+      worker:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image: *image
+            command: ["bash", "-lc"]
+            args: ["bundle exec sidekiq -C config/sidekiq.yml"]
+            env: *env
+            envFrom: *envFrom
+            securityContext: *securityContext
+            resources:
+              requests:
+                cpu: 50m
+                memory: 512Mi
+              limits:
+                memory: 1Gi
+
+    defaultPodOptions:
+      labels:
+        ingress.home.arpa/gateway-internal: allow
+        egress.home.arpa/postgres: allow
+        egress.home.arpa/gateway-external: allow
+        egress.home.arpa/internet-https: allow
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile: { type: RuntimeDefault }
+
+    service:
+      app:
+        forceRename: *app
+        controller: server
+        ports:
+          http:
+            port: *port
+
+    route:
+      app:
+        annotations:
+          homelab-manager.hoohoot.org/enabled: "true"
+          homelab-manager.hoohoot.org/category: "Misc"
+          homelab-manager.hoohoot.org/description: "Personal finances"
+        hostnames:
+          - finances.hoohoot.xyz
+        parentRefs:
+          - name: internal
+            namespace: network
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port

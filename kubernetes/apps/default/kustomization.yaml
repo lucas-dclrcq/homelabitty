@@ -28,3 +28,4 @@ resources:
   - ./bookman/ks.yaml
   - ./endurain/ks.yaml
   - ./mindwtr/ks.yaml
+  - ./sure/ks.yaml
