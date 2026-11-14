@@ -15,7 +15,7 @@ spec:
         ingress.home.arpa/gateway-internal: allow
         ingress.home.arpa/prometheus: allow
         egress.home.arpa/apiserver: allow
-        # OIDC code exchange against the public authentik hostname (sso.hoohoot.org)
+        # OIDC code exchange against the public pocket-id hostname (id.hoohoot.org)
         egress.home.arpa/gateway-external: allow
     config:
       # applied by the operator to every Renovate discovery/executor Job pod
@@ -33,15 +33,17 @@ spec:
     auth:
       oidc:
         enabled: true
-        issuerUrl: "https://sso.hoohoot.org/application/o/renovate-operator/"
+        issuerUrl: "https://id.hoohoot.org"
         clientId: renovate-operator
         existingSecret: renovate-operator-oidc
         secretKey: client-secret
         redirectScheme: https
+        additionalScopes:
+          - groups
     authorization:
       defaults:
         adminGroups:
-          - Hoohoot Developers
+          - developers
     metrics:
       enabled: true
       serviceMonitor:
