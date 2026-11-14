@@ -1,0 +1,25 @@
+---
+apiVersion: pocketid.internal/v1alpha1
+kind: PocketIDOIDCClient
+metadata:
+  name: vault
+spec:
+  name: Vault
+  description: Secrets management
+  clientID: vault
+  instanceSelector:
+    matchLabels:
+      app.kubernetes.io/name: pocket-id
+  launchUrl: https://vault.hoohoot.xyz
+  callbackUrls:
+    - https://vault.hoohoot.xyz/ui/vault/auth/oidc/oidc/callback
+    - https://vault.hoohoot.xyz/oidc/callback
+    - http://localhost:8250/oidc/callback
+  allowedUserGroups:
+    - name: developers
+      namespace: security
+  secret:
+    name: vault-oidc
+    keys:
+      clientID: client-id
+      clientSecret: client-secret

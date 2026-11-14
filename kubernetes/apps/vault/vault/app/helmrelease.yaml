@@ -24,6 +24,7 @@ spec:
         egress.home.arpa/apiserver: allow
         # database secrets engine against the crunchy cluster
         egress.home.arpa/postgres: allow
+        egress.home.arpa/gateway-external: allow
         # raft peers, unsealer and the snapshot CronJob: ./ciliumnetworkpolicy.yaml
 
       dataStorage:
