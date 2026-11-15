@@ -1,0 +1,132 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: vector-aggregator
+spec:
+  interval: 30m
+  chartRef:
+    kind: OCIRepository
+    name: vector-aggregator
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  values:
+    nameOverride: vector-aggregator
+    fullnameOverride: vector-aggregator
+    role: Stateless-Aggregator
+    replicas: 2
+    podLabels:
+      vector.dev/exclude: "true"
+      ingress.home.arpa/prometheus: allow
+    topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: DoNotSchedule
+    podDisruptionBudget:
+      enabled: true
+      minAvailable: 1
+    serviceHeadless:
+      enabled: false
+    podMonitor:
+      enabled: true
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        memory: 1Gi
+    customConfig:
+      data_dir: /vector-data-dir
+      api:
+        enabled: false
+      sources:
+        senders:
+          type: vector
+          address: 0.0.0.0:6000
+          version: "2"
+          # Without this the source answers the sender as soon as the event is
+          # in the pipeline, so the agent's disk buffer drops what the
+          # elasticsearch sink never managed to write.
+          acknowledgements:
+            enabled: true
+        internal_metrics:
+          type: internal_metrics
+      transforms:
+        split:
+          type: route
+          inputs: [senders]
+          route:
+            pods: exists(.kubernetes)
+        pod_logs:
+          type: remap
+          inputs: [split.pods]
+          source: |
+            # the collector's kubernetesCollector.decolorizeFields=_msg
+            .message = strip_ansi_escape_codes(.message) ?? .message
+            # the collector called stdout/stderr output_stream; keep the name
+            # so saved LogsQL queries keep matching
+            .output_stream = del(.stream)
+            # Vector-only fields the collector never sent
+            del(.file)
+            del(.source_type)
+        host_logs:
+          type: remap
+          inputs: [split._unmatched]
+          source: |
+            .message = strip_ansi_escape_codes(.message) ?? .message
+            # Vector's journald source MOVES _HOSTNAME to `host` (it removes
+            # the original), so putting it back is what keeps _HOSTNAME a
+            # stream field and keeps saved LogsQL queries matching
+            ._HOSTNAME = del(.host)
+            # systemd-journal-upload never sent a source_type
+            del(.source_type)
+      sinks:
+        # VictoriaLogs has no native Vector sink; it accepts the Elasticsearch
+        # bulk protocol on /insert/elasticsearch, which is what upstream
+        # documents: https://docs.victoriametrics.com/victorialogs/data-ingestion/vector/
+        victoria_logs_pods:
+          type: elasticsearch
+          inputs: [pod_logs]
+          endpoints:
+            - http://victoria-logs.observability.svc.cluster.local:9428/insert/elasticsearch/
+          api_version: v8
+          compression: gzip
+          healthcheck:
+            enabled: false
+          query:
+            _msg_field: message
+            _time_field: timestamp
+            _stream_fields: kubernetes.pod_namespace,kubernetes.pod_name,kubernetes.container_name,kubernetes.pod_labels.app.kubernetes.io/name
+          acknowledgements:
+            enabled: true
+          buffer:
+            type: memory
+            max_events: 10000
+        victoria_logs_hosts:
+          type: elasticsearch
+          inputs: [host_logs]
+          endpoints:
+            - http://victoria-logs.observability.svc.cluster.local:9428/insert/elasticsearch/
+          api_version: v8
+          compression: gzip
+          healthcheck:
+            enabled: false
+          query:
+            _msg_field: message
+            _time_field: timestamp
+            _stream_fields: _HOSTNAME,_SYSTEMD_UNIT
+          acknowledgements:
+            enabled: true
+          buffer:
+            type: memory
+            max_events: 10000
+        prom_exporter:
+          type: prometheus_exporter
+          inputs: [internal_metrics]
+          address: 0.0.0.0:9090

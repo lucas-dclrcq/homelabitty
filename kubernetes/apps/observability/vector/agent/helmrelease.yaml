@@ -1,0 +1,91 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: vector-agent
+spec:
+  interval: 30m
+  chartRef:
+    kind: OCIRepository
+    name: vector-agent
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  values:
+    nameOverride: vector-agent
+    fullnameOverride: vector-agent
+    role: Agent
+    podLabels:
+      vector.dev/exclude: "true"
+      ingress.home.arpa/prometheus: allow
+      egress.home.arpa/apiserver: allow
+    defaultVolumes:
+      - name: var-log
+        hostPath:
+          path: /var/log/
+      - name: var-lib
+        hostPath:
+          path: /var/lib/
+    defaultVolumeMounts:
+      - name: var-log
+        mountPath: /var/log/
+        readOnly: true
+      - name: var-lib
+        mountPath: /var/lib
+        readOnly: true
+    service:
+      enabled: false
+    serviceHeadless:
+      enabled: false
+    containerPorts:
+      - name: prom-exporter
+        containerPort: 9090
+        protocol: TCP
+    podMonitor:
+      enabled: true
+    resources:
+      requests:
+        cpu: 50m
+        memory: 256Mi
+      limits:
+        memory: 1Gi
+    customConfig:
+      data_dir: /vector-data-dir
+      api:
+        enabled: false
+      sources:
+        kubernetes_logs:
+          type: kubernetes_logs
+          use_apiserver_cache: true
+          pod_annotation_fields:
+            pod_annotations: ""
+            pod_ips: ""
+            pod_uid: ""
+            pod_owner: ""
+            container_image: ""
+            container_image_id: ""
+          namespace_annotation_fields:
+            namespace_labels: ""
+          node_annotation_fields:
+            node_labels: ""
+        internal_metrics:
+          type: internal_metrics
+      sinks:
+        aggregator:
+          type: vector
+          inputs: [kubernetes_logs]
+          address: http://vector-aggregator.observability.svc.cluster.local:6000
+          version: "2"
+          compression: gzip
+          buffer:
+            type: disk
+            max_size: 10737418240
+        prom_exporter:
+          type: prometheus_exporter
+          inputs: [internal_metrics]
+          address: 0.0.0.0:9090

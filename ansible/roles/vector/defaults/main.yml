@@ -1,0 +1,31 @@
+---
+# Vector ships this host's journal to vector-aggregator in the cluster, which
+# reshapes it and writes it to VictoriaLogs
+# (kubernetes/apps/observability/vector/aggregator).
+#
+# It replaces systemd-journal-upload, which pushed the journald export format
+# straight at victoria-logs. The aggregator speaks the native Vector protocol
+# instead, so this host and the cluster's node agents now take the same path
+# and a change to how a log line is reshaped happens in one place.
+vector_version: 0.61.0
+
+# .deb naming does not match `uname -m`, which is what ansible_architecture
+# reports: a Raspberry Pi OS 64-bit host says aarch64 and needs arm64.
+vector_deb_arch_map:
+  aarch64: arm64
+  armv7l: armhf
+  armv6l: armel
+  x86_64: amd64
+vector_deb_arch: "{{ vector_deb_arch_map[ansible_architecture] }}"
+vector_deb_url: >-
+  https://github.com/vectordotdev/vector/releases/download/v{{ vector_version }}/vector_{{ vector_version }}-1_{{ vector_deb_arch }}.deb
+
+# The scheme is load-bearing: with a bare host:port the vector sink fails every
+# request with "HTTP request failed: client error (Connect)".
+vector_aggregator_address: "http://vector-ingest.hoohoot.xyz:6000"
+
+# Checkpoint of the journal cursor. No sink buffer is configured on purpose:
+# when the aggregator is unreachable the sink blocks, the journald source stops
+# advancing this cursor, and the journal itself is the backlog. A disk buffer
+# would mean writing every log line to the SD card a second time.
+vector_data_dir: /var/lib/vector

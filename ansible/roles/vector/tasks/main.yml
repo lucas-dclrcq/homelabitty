@@ -1,0 +1,121 @@
+---
+# --- retire systemd-journal-upload --------------------------------------
+# The uploader has Restart=always, so leaving it behind means an endless
+# retry loop against an endpoint that no longer exists. Safe to delete these
+# four tasks once every host has run the playbook at least once.
+- name: Stop and disable systemd-journal-upload
+  ansible.builtin.systemd_service:
+    name: systemd-journal-upload.service
+    state: stopped
+    enabled: false
+  failed_when: false
+
+- name: Remove systemd-journal-upload configuration
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - /etc/systemd/journal-upload.conf
+    - /etc/systemd/system/systemd-journal-upload.service.d
+
+- name: Remove the systemd-journal-remote package
+  ansible.builtin.package:
+    name: systemd-journal-remote
+    state: absent
+
+# --- vector -------------------------------------------------------------
+- name: Install Vector
+  ansible.builtin.apt:
+    deb: "{{ vector_deb_url }}"
+  notify: Restart vector
+
+- name: Create the Vector data directory
+  ansible.builtin.file:
+    path: "{{ vector_data_dir }}"
+    state: directory
+    owner: vector
+    group: vector
+    mode: "0755"
+
+- name: Create the Vector drop-in directory
+  ansible.builtin.file:
+    path: /etc/systemd/system/vector.service.d
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Keep Vector retrying when the aggregator is unreachable
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/vector.service.d/override.conf
+    content: |
+      # Managed by Ansible (vector role)
+      #
+      # The packaged unit runs `vector validate` as ExecStartPre WITHOUT
+      # --no-environment, so it healthchecks the sink: a cluster reboot or a
+      # Flux rollout makes the unit refuse to start at all. Validate the
+      # config, not the network.
+      #
+      # It also pairs Restart=always with the default RestartSec (100ms) and
+      # StartLimitBurst=5 over StartLimitInterval=10, so five failures land in
+      # under a second and systemd gives up for good. Back off instead, and
+      # drop the rate limit, the way the journal_upload role used to.
+      [Unit]
+      StartLimitIntervalSec=0
+
+      [Service]
+      ExecStartPre=
+      ExecStartPre=/usr/bin/vector validate --no-environment
+      RestartSec=30
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart vector
+
+# The package ships a default config that listens on :9598 and prints to
+# stdout; replacing it wholesale is simpler than layering on top of it.
+- name: Configure Vector
+  ansible.builtin.copy:
+    dest: /etc/vector/vector.yaml
+    content: |
+      # Managed by Ansible (vector role)
+      data_dir: {{ vector_data_dir }}
+
+      api:
+        enabled: false
+
+      sources:
+        journald:
+          type: journald
+          # Only the running boot. Without it a first start with no checkpoint
+          # replays the whole journal, re-sending what VictoriaLogs already
+          # holds; across a reboot the cursor is picked up from the checkpoint
+          # anyway.
+          current_boot_only: true
+
+      sinks:
+        aggregator:
+          type: vector
+          inputs: [journald]
+          address: {{ vector_aggregator_address }}
+          version: "2"
+          compression: gzip
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart vector
+
+# The package adds the vector user to systemd-journal, which is what reading
+# the journal needs; this only fails loudly if a future package stops doing it.
+- name: Check that vector can read the journal
+  ansible.builtin.command: id -nG vector
+  changed_when: false
+  register: vector_groups
+  failed_when: "'systemd-journal' not in vector_groups.stdout.split()"
+
+- name: Enable and start Vector
+  ansible.builtin.systemd_service:
+    name: vector.service
+    enabled: true
+    state: started
+    daemon_reload: true

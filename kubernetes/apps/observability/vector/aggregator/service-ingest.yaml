@@ -1,0 +1,27 @@
+---
+# LAN-facing ingestion endpoint, used by hosts that are not in the cluster and
+# therefore cannot reach the ClusterIP: today the NTP Pi, which ships its
+# journal with Vector (ansible/roles/vector).
+#
+# 192.168.42.49 is the address the retired victoria-logs-ingest Service used;
+# .50 is already claimed by Forgejo's SSH LoadBalancer.
+# yaml-language-server: $schema=https://json.schemastore.org/kubernetes-definitions.json
+apiVersion: v1
+kind: Service
+metadata:
+  name: vector-ingest
+  annotations:
+    external-dns.kubernetes.io/hostname: "vector-ingest.hoohoot.xyz"
+    io.cilium/lb-ipam-ips: "192.168.42.49"
+spec:
+  type: LoadBalancer
+  externalTrafficPolicy: Cluster
+  selector:
+    app.kubernetes.io/name: vector-aggregator
+    app.kubernetes.io/instance: vector-aggregator
+    app.kubernetes.io/component: Stateless-Aggregator
+  ports:
+    - name: senders
+      port: 6000
+      targetPort: senders
+      protocol: TCP

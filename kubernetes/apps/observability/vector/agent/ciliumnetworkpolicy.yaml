@@ -3,17 +3,17 @@
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: victoria-logs-collector
+  name: vector-agent
 spec:
-  description: "The node collector ships every pod log to victoria-logs (remoteWrite in ./helmrelease.yaml)"
+  description: "The node agent tails every pod log and forwards it to vector-aggregator; it never talks to victoria-logs itself"
   endpointSelector:
     matchLabels:
-      app.kubernetes.io/name: victoria-logs-collector
+      app.kubernetes.io/name: vector-agent
   egress:
     - toEndpoints:
         - matchLabels:
-            app.kubernetes.io/name: victoria-logs-single
+            app.kubernetes.io/name: vector-aggregator
       toPorts:
         - ports:
-            - port: "9428"
+            - port: "6000"
               protocol: TCP

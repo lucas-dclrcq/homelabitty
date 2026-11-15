@@ -1,0 +1,34 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: vector-aggregator
+spec:
+  description: "Takes logs from the node agents and from LAN hosts on vector-ingest, and writes them to victoria-logs"
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: vector-aggregator
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: vector-agent
+      toPorts:
+        - ports:
+            - port: "6000"
+              protocol: TCP
+    - fromEntities:
+        - world
+        - remote-node
+      toPorts:
+        - ports:
+            - port: "6000"
+              protocol: TCP
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: victoria-logs-single
+      toPorts:
+        - ports:
+            - port: "9428"
+              protocol: TCP
