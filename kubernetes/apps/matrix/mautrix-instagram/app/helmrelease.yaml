@@ -32,7 +32,7 @@ spec:
           main:
             image:
               repository: dock.mau.dev/mautrix/meta
-              tag: ig-v26.10
+              tag: ig-v26.11
 
             env:
               TZ: "Europe/Paris"
