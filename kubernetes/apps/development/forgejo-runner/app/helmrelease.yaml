@@ -72,6 +72,10 @@ spec:
                   requests:
                     cpu: 100m
                     memory: 256Mi
+            volumes:
+              - name: shared
+                emptyDir:
+                  sizeLimit: 40Gi
             restartPolicy: Never
           podspec-dind.yaml: |-
             affinity:
@@ -152,6 +156,9 @@ spec:
                 emptyDir: {}
               - name: docker-certs
                 emptyDir: {}
+              - name: shared
+                emptyDir:
+                  sizeLimit: 40Gi
             restartPolicy: Never
     controllers:
       forgejo-runner:
