@@ -32,6 +32,8 @@ spec:
               SILO_METRICS_LISTEN: :9091
               SILO_PLUGIN_CACHE_DIR: /tmp/silo-plugins
               SILO_TRUSTED_PROXIES: 10.69.0.0/16
+              SILO_SEARCH_PROVIDER: meilisearch
+              SILO_MEILISEARCH_URL: http://silo-meilisearch.media.svc.cluster.local:7700
 
             envFrom:
               - secretRef:
