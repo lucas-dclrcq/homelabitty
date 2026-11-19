@@ -17,6 +17,8 @@ spec:
       namespace: external-secrets
     - name: crunchy-postgres-operator
       namespace: infrastructure
+    - name: silo-meilisearch
+      namespace: media
   path: ./kubernetes/apps/media/silo/app
   prune: true
   sourceRef:
@@ -29,3 +31,33 @@ spec:
     substitute:
       APP: *app
       KOPIUR_CAPACITY: 50Gi
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &app silo-meilisearch
+  namespace: &namespace media
+spec:
+  targetNamespace: *namespace
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
+  components:
+    - ../../../../components/kopiur
+  dependsOn:
+    - name: external-secrets-stores
+      namespace: external-secrets
+  path: ./kubernetes/apps/media/silo/meilisearch
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+    namespace: flux-system
+  wait: true
+  timeout: 10m
+  interval: 1h
+  postBuild:
+    substitute:
+      APP: *app
+      KOPIUR_CAPACITY: 10Gi
