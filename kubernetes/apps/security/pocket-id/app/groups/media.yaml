@@ -1,0 +1,15 @@
+---
+apiVersion: pocketid.internal/v1alpha1
+kind: PocketIDUserGroup
+metadata:
+  name: media
+spec:
+  friendlyName: "Media"
+  users:
+    userRefs:
+      - name: lucasd
+      - name: jacquesdurand
+      - name: serge
+      - name: oknozor
+      - name: charles
+      - name: the-gamble

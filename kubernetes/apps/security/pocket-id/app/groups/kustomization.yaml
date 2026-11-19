@@ -6,3 +6,4 @@ resources:
   - ./admin.yaml
   - ./developers.yaml
   - ./users.yaml
+  - ./media.yaml

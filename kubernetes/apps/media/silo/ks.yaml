@@ -17,6 +17,8 @@ spec:
       namespace: external-secrets
     - name: crunchy-postgres-operator
       namespace: infrastructure
+    - name: pocket-id
+      namespace: security
     - name: silo-meilisearch
       namespace: media
   path: ./kubernetes/apps/media/silo/app
