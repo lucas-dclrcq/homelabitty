@@ -3,7 +3,7 @@
   ansible.builtin.package:
     name:
       - gpsd
-      - gpsd-clients   # provides ubxtool, gpsmon, cgps
+      - gpsd-clients # provides ubxtool, gpsmon, cgps
     state: present
 
 - name: Configure gpsd daemon
@@ -16,7 +16,7 @@
       GPSD_OPTIONS="--nowait --badtime --passive --speed 115200"
     owner: root
     group: root
-    mode: '0644'
+    mode: "0644"
   notify: Restart gpsd
 
 - name: Enable and start gpsd
@@ -31,6 +31,12 @@
   register: ubxtool_baud
   changed_when: false
   failed_when: false
+
+- name: Persist the GNSS module configuration to its flash
+  ansible.builtin.command:
+    cmd: ubxtool -p SAVE
+  when: ubxtool_baud.rc == 0
+  changed_when: false
 
 - name: Install chrony
   ansible.builtin.package:
@@ -74,9 +80,7 @@
       #ntsratelimit interval 3 burst 1 leak 2
 
 
-      # Uncomment the following line to turn logging on.
-      #log tracking measurements statistics
-      log rawmeasurements measurements statistics tracking refclocks tempcomp
+      log tracking statistics
 
       # Log files location.
       logdir /var/log/chrony
@@ -91,15 +95,11 @@
       # Stop bad estimates upsetting machine clock.
       maxupdateskew 100.0
 
-      # Use it as reference during chrony startup in case the clock needs a large adjustment.
-      # The 1 indicates that if the system’s error is found to be 1 second or less, a slew will be used to correct it; if the error is above 1 secods, a step will be used.
-      initstepslew 1 time.facebook.com time.google.com
-
       # enables response rate limiting for NTP packets - reduce the response rate for IP addresses sending packets on average more than once per 2 seconds, or sending packets in bursts of more than 16 packets, by up to 75% (with default leak of 2).
       ratelimit interval 1 burst 16 leak 2
 
       # specifies the maximum amount of memory that chronyd is allowed to allocate for logging of client accesses and the state that chronyd as an NTP server needs to support the interleaved mode for its clients.
-      # 1GB
+      # 10MB
       clientloglimit 10000000
 
       # This directive enables kernel synchronisation (every 11 minutes) of the
@@ -129,36 +129,18 @@
       # https://chrony.tuxfamily.org/faq.html#using-pps-refclock
       refclock SHM 0 poll 8 refid GPS precision 1e-1 offset 0.090 delay 0.2 noselect
 
-      # Choose the one with best long term results
-      refclock SHM 1 refid PPS precision 1e-7 prefer
+      # gpsd's PPS (SHM 1) is the same pulse as kPPS, keep it for monitoring only
+      refclock SHM 1 refid PPS precision 1e-7 noselect
       refclock PPS /dev/pps0 lock GPS maxlockage 2 poll 4 refid kPPS precision 1e-7 prefer
-
-      # Compares and saves the SoC temperature with the temperature correlation table bellow, every 30 seconds
-      #tempcomp /sys/class/thermal/thermal_zone0/temp 30 /etc/chrony/chrony.tempcomp
     owner: root
     group: root
-    mode: '0644'
+    mode: "0644"
   notify: Restart chronyd
 
-- name: Create chrony temperature calibration file
-  ansible.builtin.copy:
-    dest: /etc/chrony/chrony.tempcomp
-    content: |
-      20000 0
-      21000 0
-      25000 0
-      30000 0
-      35000 0
-      40000 0
-      45000 0
-      50000 0
-      55000 0
-      60000 0
-      65000 0
-    owner: root
-    group: root
-    mode: '0644'
-  notify: Restart chronyd
+- name: Remove unused chrony temperature calibration file
+  ansible.builtin.file:
+    path: /etc/chrony/chrony.tempcomp
+    state: absent
 
 - name: Enable and start chronyd
   ansible.builtin.systemd_service:
@@ -172,7 +154,7 @@
     state: directory
     owner: root
     group: root
-    mode: '0755'
+    mode: "0755"
 
 - name: Point chrony_exporter at the chronyd unix socket (systemd drop-in)
   ansible.builtin.copy:
@@ -202,5 +184,5 @@
           --web.telemetry-path=/metrics
     owner: root
     group: root
-    mode: '0644'
+    mode: "0644"
   notify: Restart chrony_exporter
