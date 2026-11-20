@@ -21,7 +21,7 @@ spec:
           app:
             image:
               repository: docker.hoohoot.org/bookman/bookman
-              tag: latest@sha256:0cbd2d2e73835876aaa1f68019abc8e68908cb3a28479c8b283499e3c93b4ce8
+              tag: latest@sha256:87f8a314b1b6163d6179742484e66e8980a5d85c48978a3a3554e63520939e71
 
             env:
               TZ: Europe/Paris
