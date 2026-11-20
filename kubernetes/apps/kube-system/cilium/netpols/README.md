@@ -228,14 +228,14 @@ Three things to know about CIDR rules in Cilium:
 
 ### Ingress labels (put on the _receiving_ pod)
 
-| Pod label (`=allow`)                  | Accepts ingress from                                                                                           |
-| ------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| `ingress.home.arpa/gateway-external`  | external envoy gateway (HTTPRoute/TCPRoute)                                                                    |
-| `ingress.home.arpa/gateway-internal`  | internal envoy gateway                                                                                         |
-| `ingress.home.arpa/prometheus`        | vmagent (ServiceMonitor/PodMonitor scraping)                                                                   |
-| `ingress.home.arpa/apiserver`         | kube-apiserver (admission webhooks)                                                                            |
-| `ingress.home.arpa/world`             | outside the cluster (LoadBalancer services used from the LAN: adguard DNS, mosquitto, smtp-relay, forgejo ssh) |
-| `ingress.home.arpa/matrix-appservice` | Synapse's appservice transaction pushes, on 29318/29319/29334 (the four mautrix bridges)                       |
+| Pod label (`=allow`)                  | Accepts ingress from                                                                              |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `ingress.home.arpa/gateway-external`  | external envoy gateway (HTTPRoute/TCPRoute)                                                       |
+| `ingress.home.arpa/gateway-internal`  | internal envoy gateway                                                                            |
+| `ingress.home.arpa/prometheus`        | vmagent (ServiceMonitor/PodMonitor scraping)                                                      |
+| `ingress.home.arpa/apiserver`         | kube-apiserver (admission webhooks)                                                               |
+| `ingress.home.arpa/world`             | outside the cluster (LoadBalancer services used from the LAN: mosquitto, smtp-relay, forgejo ssh) |
+| `ingress.home.arpa/matrix-appservice` | Synapse's appservice transaction pushes, on 29318/29319/29334 (the four mautrix bridges)          |
 
 The gateway labels are the **single source of truth for the data plane**: the
 envoy pods' own egress is `toEndpoints: ingress.home.arpa/gateway-<name>`
