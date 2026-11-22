@@ -34,6 +34,14 @@ spec:
       bdev_async_discard_threads = 1
       osd_class_update_on_start = false
     cephClusterSpec:
+      cephConfig:
+        mgr:
+          # The rook mgr module logs full list_namespaced_pod response bodies into
+          # log_max_recent (daemon default 10000 entries), which grows the mgr until
+          # it hits its memory limit and gets OOMKilled. Bound the ring buffer until
+          # this is fixed upstream.
+          # https://github.com/rook/rook/issues/17786
+          log_max_recent: "100"
       crashCollector:
         disable: false
       security:
