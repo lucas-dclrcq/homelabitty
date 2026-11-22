@@ -10,6 +10,5 @@ resources:
   - ./headroom/ks.yaml
   - ./searxng/ks.yaml
   - ./litellm/ks.yaml
-  - ./robusta/ks.yaml
   - ./hermes/ks.yaml
   - ./kubitus/ks.yaml

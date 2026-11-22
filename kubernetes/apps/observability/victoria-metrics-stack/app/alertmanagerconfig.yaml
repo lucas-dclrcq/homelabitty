@@ -20,14 +20,6 @@ spec:
           - name: alertname
             value: Watchdog
             matchType: =
-      - receiver: robusta
-        continue: true
-        groupBy: ["..."]
-        groupWait: 30s
-        matchers:
-          - name: severity
-            value: critical|error
-            matchType: =~
       - receiver: kubitus
         continue: true
         groupBy: ["..."]
@@ -69,10 +61,6 @@ spec:
         - urlSecret:
             name: &secret alertmanager-secret
             key: ALERTMANAGER_HEARTBEAT_URL
-    - name: robusta
-      webhookConfigs:
-        - url: "http://robusta-runner.ai.svc.cluster.local/api/alerts"
-          sendResolved: true
     - name: kubitus
       webhookConfigs:
         - url: "http://kubitus.ai.svc.cluster.local:8080/api/alertmanager"

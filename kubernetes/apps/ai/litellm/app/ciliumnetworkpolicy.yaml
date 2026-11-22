@@ -10,13 +10,9 @@ spec:
     matchLabels:
       app.kubernetes.io/name: litellm
   ingress:
-    # robusta runner/holmes, hermes, kubitus and sure (default) use LiteLLM as their LLM gateway, the
+    # hermes, kubitus and sure (default) use LiteLLM as their LLM gateway, the
     # operator applies the proxy config through the LiteLLM API (applyMode: api)
     - fromEndpoints:
-        - matchLabels:
-            app: robusta-runner
-        - matchLabels:
-            app: holmes
         - matchLabels:
             app.kubernetes.io/name: litellm-operator
         - matchLabels:

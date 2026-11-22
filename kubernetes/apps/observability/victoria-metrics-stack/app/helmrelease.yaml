@@ -131,7 +131,7 @@ spec:
             # route on the internal gateway (alertmanager.hoohoot.xyz)
             ingress.home.arpa/gateway-internal: allow
             ingress.home.arpa/prometheus: allow
-            # pushover/heartbeat receivers -> internet; the Robusta webhook and
+            # pushover/heartbeat receivers -> internet; the Kubitus webhook and
             # the gossip mesh are in ./ciliumnetworkpolicy.yaml
             egress.home.arpa/internet-https: allow
         externalURL: https://alertmanager.hoohoot.xyz

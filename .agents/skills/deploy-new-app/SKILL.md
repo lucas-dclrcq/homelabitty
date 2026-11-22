@@ -149,7 +149,7 @@ spec:
 - The `tag` is the app-template chart version — check an existing `ocirepository.yaml` for the current value.
 - When the upstream chart is only published as a classic Helm repo (no OCI artifact), do **not** add a `HelmRepository`: use ocharted, which mirrors Helm repos as OCI, and keep the exact same `OCIRepository` shape:
   `url: oci://ocharted.hoohoot.org/<repo-host>/<repo-path>/<chart>` (e.g. `oci://ocharted.hoohoot.org/emberstack.github.io/helm-charts/reflector` for `https://emberstack.github.io/helm-charts`).
-  Auth is bypassed for in-cluster traffic, so no `secretRef` is needed. Example: `kubernetes/apps/ai/robusta/app/ocirepository.yaml`.
+  Auth is bypassed for in-cluster traffic, so no `secretRef` is needed. Example: `kubernetes/apps/development/temporal/app/ocirepository.yaml`.
 
 ### 3c. `kubernetes/apps/<namespace>/<app-name>/app/helmrelease.yaml`
 
