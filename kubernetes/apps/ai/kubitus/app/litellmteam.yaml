@@ -1,0 +1,25 @@
+---
+# LiteLLM team granting the kubitus key access to its MCP servers. Only read-only servers are
+# listed. Neither `github` nor `github-remediation` is: the agent must never hold a write tool
+# on GitHub, because that would bypass Kubitus' own validation and secret scan before a push.
+# Kubitus pushes with its own GITHUB_TOKEN, outside the model's reach. No Vault, UniFi, Home
+# Assistant, Trilium or TrueNAS either (credentials and personal data).
+# The litellm-operator cannot attach mcp_servers directly to a virtual key; keys inherit MCP
+# server access from their team instead.
+apiVersion: litellm.home-operations.com/v1alpha1
+kind: LiteLLMTeam
+metadata:
+  name: kubitus
+spec:
+  proxyRef: litellm
+  proxyNamespace: ai
+  teamID: kubitus
+  # The operator sends `models` unconditionally; match the key's own model allowlist.
+  models:
+    - deepseek-flash
+  mcpServers:
+    - github-readonly
+    - grafana-readonly
+    - konflate
+    - kubernetes
+    - kubesearch

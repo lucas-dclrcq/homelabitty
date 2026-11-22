@@ -1,0 +1,14 @@
+---
+# Working copy of the repository Kubitus operates on. A cache: it is re-cloned if lost,
+# so it is deliberately not backed up (no kopiur component).
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: kubitus-workspace
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: ceph-block
