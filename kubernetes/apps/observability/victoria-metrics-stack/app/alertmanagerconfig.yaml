@@ -28,6 +28,14 @@ spec:
           - name: severity
             value: critical|error
             matchType: =~
+      - receiver: kubitus
+        continue: true
+        groupBy: ["..."]
+        groupWait: 30s
+        matchers:
+          - name: severity
+            value: critical|error
+            matchType: =~
       - receiver: pushover
         continue: true
         matchers:
@@ -65,6 +73,17 @@ spec:
       webhookConfigs:
         - url: "http://robusta-runner.ai.svc.cluster.local/api/alerts"
           sendResolved: true
+    - name: kubitus
+      webhookConfigs:
+        - url: "http://kubitus.ai.svc.cluster.local:8080/api/alertmanager"
+          sendResolved: true
+          maxAlerts: 100
+          httpConfig:
+            authorization:
+              type: Bearer
+              credentials:
+                name: *secret
+                key: KUBITUS_ALERTS_TOKEN
     - name: pushover
       pushoverConfigs:
         - html: true
