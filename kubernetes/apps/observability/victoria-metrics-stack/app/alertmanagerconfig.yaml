@@ -70,7 +70,7 @@ spec:
             authorization:
               type: Bearer
               credentials:
-                name: *secret
+                name: alertmanager-kubitus
                 key: KUBITUS_ALERTS_TOKEN
     - name: pushover
       pushoverConfigs:
