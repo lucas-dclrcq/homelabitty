@@ -74,11 +74,8 @@ spec:
                     name: kubitus-litellm
                     key: key
               JAVA_TOOL_OPTIONS: -XX:MaxRAMPercentage=60
-              # Tokens are counted across every model call of a run, and each call resends the whole
-              # conversation (~20k tokens of prompt and MCP tool schemas, growing as tools answer).
-              # The 300k default stopped every investigation after about 12 calls. 3M is ~70 calls,
-              # about $1 a run; the daily budget ($5) and the LiteLLM key ($6/day) still cap spend.
-              KUBITUS_BUDGET_RUN_MAX_TOKENS: "3000000"
+              KUBITUS_BUDGET_RUN_MAX_TOKENS: "30000000"
+              KUBITUS_BUDGET_RUN_MAX_TOOL_CALLS: "1000"
 
             probes:
               liveness:
