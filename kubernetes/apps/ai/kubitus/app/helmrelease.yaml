@@ -45,8 +45,7 @@ spec:
           app:
             image:
               repository: docker.hoohoot.org/homelab/kubitus
-              # TODO: pin the digest (tag@sha256:...) before the PR.
-              tag: 0.1.0
+              tag: 1.0.1@sha256:33f7f93aa9c69a7b5cf5760f91a449efda30385dcc086e50547533f4ae5f93d9
 
             envFrom:
               - secretRef:
