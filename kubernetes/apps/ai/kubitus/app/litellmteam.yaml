@@ -18,8 +18,8 @@ spec:
   models:
     - deepseek-flash
   mcpServers:
-    - github-readonly
-    - grafana-readonly
+    - github_readonly
+    - grafana_readonly
     - konflate
     - kubernetes
     - kubesearch

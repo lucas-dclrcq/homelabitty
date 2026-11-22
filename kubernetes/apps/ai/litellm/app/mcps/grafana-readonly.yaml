@@ -9,7 +9,8 @@ metadata:
 spec:
   proxyRef: litellm
   proxyNamespace: ai
-  alias: grafana-readonly
+  # LiteLLM refuses a server name with a "-" (POST /v1/mcp/server returns 400).
+  alias: grafana_readonly
   transport: http
   url: http://grafana-mcp.ai.svc.cluster.local:8000/mcp
   params:
