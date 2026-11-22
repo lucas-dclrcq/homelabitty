@@ -54,8 +54,6 @@ spec:
 
             env:
               TZ: Europe/Paris
-              # The image HOME is on the read-only root filesystem; JGit writes its config cache under HOME.
-              HOME: /tmp
               OIDC_AUTH_SERVER_URL: https://id.hoohoot.org
               OIDC_CLIENT_ID:
                 valueFrom:
@@ -127,6 +125,12 @@ spec:
         type: emptyDir
         globalMounts:
           - path: /tmp
+      # The image's HOME (/home/kubitus) sits on the read-only root filesystem, and JGit writes
+      # its config cache under HOME. A dedicated emptyDir keeps that apart from the shared /tmp.
+      home:
+        type: emptyDir
+        globalMounts:
+          - path: /home/kubitus
 
     service:
       app:
