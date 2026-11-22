@@ -10,7 +10,8 @@ metadata:
 spec:
   proxyRef: litellm
   proxyNamespace: ai
-  alias: github-readonly
+  # LiteLLM refuses a server name with a "-" (POST /v1/mcp/server returns 400).
+  alias: github_readonly
   transport: http
   url: http://github-mcp.ai.svc.cluster.local:8082/mcp
   authType: bearer_token

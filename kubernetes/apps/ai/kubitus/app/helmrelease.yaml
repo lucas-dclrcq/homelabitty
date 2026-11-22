@@ -45,7 +45,7 @@ spec:
           app:
             image:
               repository: docker.hoohoot.org/homelab/kubitus
-              tag: 1.0.1@sha256:33f7f93aa9c69a7b5cf5760f91a449efda30385dcc086e50547533f4ae5f93d9
+              tag: 1.0.2@sha256:9dc06bf3a758ef2e9dbb58d9a3e7f560197435945003906fc62f10abc56581cc
 
             envFrom:
               - secretRef:
