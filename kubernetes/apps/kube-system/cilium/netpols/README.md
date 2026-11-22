@@ -166,7 +166,7 @@ operator-managed pods that cannot carry our labels with their operator
 | `egress.home.arpa/slskd`            | slskd API :80                                                                                                                                                   |
 | `egress.home.arpa/jellyfin`         | Jellyfin :8096 (the *arr apps' library refresh)                                                                                                                 |
 | `egress.home.arpa/homelab-manager`  | homelab-manager API :8080 (the *arr apps' webhook notifications)                                                                                                |
-| `egress.home.arpa/navidrome`        | Navidrome :8080, the Subsonic API (droppedneedle)                                                                                                               |
+| `egress.home.arpa/navidrome`        | Navidrome :8080, the Subsonic API                                                                                                               |
 | `egress.home.arpa/home-assistant`   | Home Assistant :8123, the REST API (bambuddy, the litellm MCP server)                                                                                           |
 | `egress.home.arpa/matrix-synapse`   | the Matrix client-server API :8008, i.e. the matrix-stack HAProxy front (the four mautrix bridges, homelab-manager)                                             |
 | `egress.home.arpa/pushgateway`      | prometheus-pushgateway :9091 (batch jobs pushing run metrics: pacman-sync)                                                                                      |
