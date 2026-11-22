@@ -8,7 +8,7 @@ kind: CiliumNetworkPolicy
 metadata:
   name: vmsingle
 spec:
-  description: "Metric readers: vmagent remote-write, vmalert, Grafana, kromgo, Robusta/Holmes (ai) and the Ceph mgr module"
+  description: "Metric readers: vmagent remote-write, vmalert, Grafana, kromgo and the Ceph mgr module"
   endpointSelector:
     matchLabels:
       app.kubernetes.io/name: vmsingle
@@ -22,12 +22,6 @@ spec:
             app: grafana
         - matchLabels:
             app.kubernetes.io/name: kromgo
-        - matchLabels:
-            app: robusta-runner
-            io.kubernetes.pod.namespace: ai
-        - matchLabels:
-            app: holmes
-            io.kubernetes.pod.namespace: ai
         - matchLabels:
             app: rook-ceph-mgr
             io.kubernetes.pod.namespace: rook-ceph
@@ -107,7 +101,7 @@ kind: CiliumNetworkPolicy
 metadata:
   name: vmalertmanager
 spec:
-  description: "Alertmanager: gossip between replicas, alerts in from vmalert/Flux notifications, webhooks out to the Robusta runner and Kubitus (alertmanagerconfig.yaml). API readers that carry egress.home.arpa/alertmanager are handled by the pair in ./ciliumclusterwidenetworkpolicy.yaml"
+  description: "Alertmanager: gossip between replicas, alerts in from vmalert/Flux notifications, webhook out to Kubitus (alertmanagerconfig.yaml). API readers that carry egress.home.arpa/alertmanager are handled by the pair in ./ciliumclusterwidenetworkpolicy.yaml"
   endpointSelector:
     matchLabels:
       app.kubernetes.io/name: vmalertmanager
@@ -121,12 +115,6 @@ spec:
             app: grafana
         - matchLabels:
             app.kubernetes.io/name: silence-operator
-        - matchLabels:
-            app: robusta-runner
-            io.kubernetes.pod.namespace: ai
-        - matchLabels:
-            app: holmes
-            io.kubernetes.pod.namespace: ai
         # Flux Alert providers in the app namespaces post to /api/v2/alerts
         - matchLabels:
             app: notification-controller
@@ -149,14 +137,6 @@ spec:
               protocol: TCP
             - port: "9094"
               protocol: UDP
-    - toEndpoints:
-        - matchLabels:
-            app: robusta-runner
-            io.kubernetes.pod.namespace: ai
-      toPorts:
-        - ports:
-            - port: "5000"
-              protocol: TCP
     - toEndpoints:
         - matchLabels:
             app.kubernetes.io/name: kubitus
