@@ -16,6 +16,7 @@ spec:
     - https://silo.hoohoot.org/api/v2/auth/oauth/5/callback
   logoutCallbackUrls:
     - https://silo.hoohoot.org/login
+  pkceEnabled: true
   allowedUserGroups:
     - name: media
       namespace: security
