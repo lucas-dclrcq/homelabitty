@@ -15,6 +15,20 @@ spec:
     automountServiceAccountToken: false
     podLabels:
       egress.home.arpa/internet-https: allow
+    # The server caches the kubesearch database as /data/repos-<date>.db (written via a .tmp-N
+    # file, then renamed). The rootfs is read-only, so /data needs a writable volume. It is only a
+    # cache, re-downloaded when the pod restarts. /tmp for the same reason.
+    volumes:
+      - name: data
+        emptyDir:
+          sizeLimit: 2Gi
+      - name: tmp
+        emptyDir: {}
+    volumeMounts:
+      - name: data
+        mountPath: /data
+      - name: tmp
+        mountPath: /tmp
     resources:
       requests:
         cpu: 10m
