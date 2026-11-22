@@ -1,0 +1,28 @@
+# Read-only view of the GitHub MCP server for Kubitus: it reads files, code, branches,
+# commits and pull requests so the agent can investigate a repository. Kubitus makes all of
+# its GitHub writes itself, in Java, with its own token, behind its validation and secret
+# scan, so no write tool is exposed to the agent through LiteLLM.
+apiVersion: litellm.home-operations.com/v1alpha1
+kind: LiteLLMMCPServer
+metadata:
+  name: github-readonly-mcp
+spec:
+  proxyRef: litellm
+  proxyNamespace: ai
+  alias: github-readonly
+  transport: http
+  url: http://github-mcp.ai.svc.cluster.local:8082/mcp
+  authType: bearer_token
+  authTokenRef:
+    name: litellm-secret
+    key: GITHUB_TOKEN
+  params:
+    allowed_tools:
+      - get_file_contents
+      - search_code
+      - list_branches
+      - list_commits
+      - get_commit
+      - list_pull_requests
+      - search_pull_requests
+      - pull_request_read

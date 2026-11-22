@@ -5,6 +5,7 @@ kind: Kustomization
 resources:
   - ./github.yaml
   - ./github-remediation.yaml
+  - ./github-readonly.yaml
   - ./konflate.yaml
   - ./kubesearch.yaml
   - ./truenas.yaml
