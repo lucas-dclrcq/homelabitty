@@ -13,6 +13,8 @@ spec:
   launchUrl: https://kubitus.hoohoot.xyz
   callbackUrls:
     - https://kubitus.hoohoot.xyz/oidc/callback
+  logoutCallbackUrls:
+    - https://kubitus.hoohoot.xyz/
   pkceEnabled: true
   allowedUserGroups:
     - name: admins
