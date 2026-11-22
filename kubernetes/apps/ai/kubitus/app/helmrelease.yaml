@@ -54,6 +54,8 @@ spec:
 
             env:
               TZ: Europe/Paris
+              # The image HOME is on the read-only root filesystem; JGit writes its config cache under HOME.
+              HOME: /tmp
               OIDC_AUTH_SERVER_URL: https://id.hoohoot.org
               OIDC_CLIENT_ID:
                 valueFrom:
@@ -74,7 +76,7 @@ spec:
                   secretKeyRef:
                     name: kubitus-litellm
                     key: key
-              JAVA_TOOL_OPTIONS: -XX:MaxRAMPercentage=75
+              JAVA_TOOL_OPTIONS: -XX:MaxRAMPercentage=60
 
             probes:
               liveness:
