@@ -12,3 +12,4 @@ resources:
   - ./litellm/ks.yaml
   - ./robusta/ks.yaml
   - ./hermes/ks.yaml
+  - ./kubitus/ks.yaml

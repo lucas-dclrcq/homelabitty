@@ -1,0 +1,146 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app kubitus
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  values:
+    global:
+      createDefaultServiceAccount: false
+
+    controllers:
+      kubitus:
+        replicas: 1
+        # One working loop and one working copy: never two pods at once.
+        strategy: Recreate
+        annotations:
+          reloader.stakater.com/auto: "true"
+        pod:
+          labels:
+            # Opts into Cilium's DNS proxy: without it the toFQDNs allowlist in
+            # ciliumnetworkpolicy.yaml is programmed from an empty cache and opens
+            # nothing. Deliberately no egress.home.arpa/internet-https — that label
+            # would open the whole internet on 443 and make the allowlist decorative.
+            dns.home.arpa/l7: "true"
+            ingress.home.arpa/gateway-internal: allow
+            egress.home.arpa/postgres: allow
+            # Pocket ID (id.hoohoot.org) is served by the external gateway.
+            egress.home.arpa/gateway-external: allow
+          automountServiceAccountToken: false
+          enableServiceLinks: false
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 10001
+            runAsGroup: 10001
+            fsGroup: 10001
+            fsGroupChangePolicy: OnRootMismatch
+            seccompProfile:
+              type: RuntimeDefault
+        containers:
+          app:
+            image:
+              repository: docker.hoohoot.org/homelab/kubitus
+              # TODO: pin the digest (tag@sha256:...) before the PR.
+              tag: 0.1.0
+
+            envFrom:
+              - secretRef:
+                  name: kubitus-secret
+
+            env:
+              TZ: Europe/Paris
+              OIDC_AUTH_SERVER_URL: https://id.hoohoot.org
+              OIDC_CLIENT_ID:
+                valueFrom:
+                  secretKeyRef:
+                    name: kubitus-oidc
+                    key: client-id
+              OIDC_CLIENT_SECRET:
+                valueFrom:
+                  secretKeyRef:
+                    name: kubitus-oidc
+                    key: client-secret
+              QUARKUS_OIDC_AUTHENTICATION_REDIRECT_PATH: /oidc/callback
+              QUARKUS_OIDC_AUTHENTICATION_RESTORE_PATH_AFTER_REDIRECT: "true"
+              QUARKUS_OIDC_AUTHENTICATION_PKCE_REQUIRED: "true"
+              KUBITUS_PUBLIC_URL: https://kubitus.hoohoot.xyz
+              LITELLM_API_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: kubitus-litellm
+                    key: key
+              JAVA_TOOL_OPTIONS: -XX:MaxRAMPercentage=75
+
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /q/health/live
+                    port: &port 8080
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /q/health/ready
+                    port: *port
+              # Flyway migrations and the initial clone.
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /q/health/started
+                    port: *port
+                  failureThreshold: 30
+                  periodSeconds: 10
+
+            resources:
+              requests:
+                cpu: 50m
+                memory: 512Mi
+              limits:
+                memory: 1536Mi # never set limits.cpu
+
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - "ALL"
+
+    persistence:
+      workspace:
+        existingClaim: kubitus-workspace
+        globalMounts:
+          - path: /data/workspace
+      tmp:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
+
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: *port
+
+    route:
+      app:
+        hostnames:
+          - "{{ .Release.Name }}.hoohoot.xyz"
+        parentRefs:
+          - name: internal
+            namespace: network
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port

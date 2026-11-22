@@ -1,0 +1,20 @@
+---
+# LiteLLM key used by Kubitus for LLM calls and the MCP servers of its team. The cap is a
+# second line of defence, just above Kubitus' own daily budget
+# (kubitus.budget.daily.max-cost-usd=5.00).
+apiVersion: litellm.home-operations.com/v1alpha1
+kind: LiteLLMVirtualKey
+metadata:
+  name: kubitus
+spec:
+  proxyRef: litellm
+  proxyNamespace: ai
+  keyAlias: kubitus
+  teamID: kubitus
+  secretName: kubitus-litellm
+  secretKey: key
+  models:
+    - deepseek-flash
+  maxBudget: "6"
+  budgetDuration: 1d
+  maxParallelRequests: 4

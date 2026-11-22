@@ -1,0 +1,40 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: kubitus
+spec:
+  description: "Kubitus: ingress on 8080 from the internal gateway and from Alertmanager (vmalertmanager, observability); egress to LiteLLM and to github.com / api.github.com only. PostgreSQL and Pocket ID are opened by the pod labels (egress.home.arpa/postgres, egress.home.arpa/gateway-external)"
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: kubitus
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            gateway.envoyproxy.io/owning-gateway-name: internal
+            io.kubernetes.pod.namespace: network
+        - matchLabels:
+            app.kubernetes.io/name: vmalertmanager
+            io.kubernetes.pod.namespace: observability
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP
+  egress:
+    # LiteLLM proxy (models + MCP servers)
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: litellm
+      toPorts:
+        - ports:
+            - port: "4000"
+              protocol: TCP
+    # Clone, fetch, push and pull-request API
+    - toFQDNs:
+        - matchName: github.com
+        - matchName: api.github.com
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
