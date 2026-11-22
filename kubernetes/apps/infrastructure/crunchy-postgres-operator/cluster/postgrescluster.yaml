@@ -291,6 +291,11 @@ spec:
         - "sure"
       password:
         type: AlphaNumeric
+    - name: "kubitus"
+      databases:
+        - "kubitus"
+      password:
+        type: AlphaNumeric
   backups:
     pgbackrest:
       configuration:
