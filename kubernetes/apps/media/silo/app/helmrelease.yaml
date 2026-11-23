@@ -22,7 +22,7 @@ spec:
               repository: ghcr.io/silo-server/silo-server
               # renovate: the plain build-* tags are now the omnibus (s6/PostgreSQL/Redis)
               # image, which needs root; track the base variant published as <sha>-base
-              tag: 3b2b321688ac2fbe812a5a259859a17880c43d71-base
+              tag: 121149c6f5ed4f28ace83b300b346f419d68f425-base@sha256:6c01e631d9e612837e5f2deee36496d05a60c184ff90bf6642d713ab12a2d590
 
             env:
               TZ: Europe/Paris
