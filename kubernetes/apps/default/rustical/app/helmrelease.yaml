@@ -27,7 +27,7 @@ spec:
           app:
             image:
               repository: ghcr.io/lennart-k/rustical
-              tag: 0.19.2@sha256:f9124b07a7dddcba293ed0e31e9bf14ac47a70930bc89fd4f0d3a665205e7b27
+              tag: 0.20.0@sha256:37384724395ef84f0a44791aa5c2dafdd140bf8df0dc34b8864a206df6c67354
 
             env:
               RUSTICAL_TRACING__ENDPOINT: http://vtsingle-vmks.observability.svc.cluster.local:4317
