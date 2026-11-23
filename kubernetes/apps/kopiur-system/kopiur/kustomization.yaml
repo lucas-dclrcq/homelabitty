@@ -1,0 +1,11 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+# The kopiur app Kustomization owns the repository encryption Secret, so that a
+# fresh/disaster-recovery reconcile creates the password before the chart that
+# projects it is installed. Both operands live under this root; the encrypted
+# file itself is untouched.
+resources:
+  - ./repository/secret.sops.yaml
+  - ./app
