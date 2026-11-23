@@ -13,7 +13,7 @@ spec:
     name: litellm-secret
     key: TRUENAS_API_KEY
   workload:
-    image: ghcr.io/cedricziel/truenas-mcp:0.4.2
+    image: ghcr.io/cedricziel/truenas-mcp:0.6.0
     port: 8080
     path: /mcp
     automountServiceAccountToken: false
