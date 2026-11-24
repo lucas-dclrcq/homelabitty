@@ -1,0 +1,16 @@
+---
+apiVersion: litellm.home-operations.com/v1alpha1
+kind: LiteLLMVirtualKey
+metadata:
+  name: homelab-manager
+spec:
+  proxyRef: litellm
+  proxyNamespace: ai
+  keyAlias: homelab-manager
+  secretName: homelab-manager-litellm
+  secretKey: key
+  models:
+    - deepseek-flash
+  maxBudget: "10"
+  budgetDuration: 30d
+  maxParallelRequests: 2

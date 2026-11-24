@@ -28,6 +28,18 @@ spec:
         egress.home.arpa/radarr: allow
         egress.home.arpa/lidarr: allow
         egress.home.arpa/tracing: allow
+      env:
+        - name: REQUESTS_LLM_BASE_URL
+          value: http://litellm.ai.svc.cluster.local:4000/v1
+        - name: REQUESTS_LLM_MODEL
+          value: deepseek-flash
+        - name: REQUESTS_LLM_TIMEOUT
+          value: 120s
+        - name: REQUESTS_LLM_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: homelab-manager-litellm
+              key: key
       envFrom:
         - secretRef:
             name: homelab-manager-secret

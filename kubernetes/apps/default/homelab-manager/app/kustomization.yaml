@@ -5,6 +5,7 @@ kind: Kustomization
 resources:
   - ./authentikapplication.yaml
   - ./oidc-externalsecret.yaml
+  - ./litellmvirtualkey.yaml
   - ./ocirepository.yaml
   - ./externalsecret.yaml
   - ./helmrelease.yaml

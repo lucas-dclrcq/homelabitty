@@ -5,7 +5,7 @@ kind: CiliumNetworkPolicy
 metadata:
   name: homelab-manager
 spec:
-  description: "Aggregates the authentik API; every target is addressed by its in-cluster Service (see ./externalsecret.yaml). Jellyfin, Matrix, the *arr apps and OTLP traces are opened by the egress.home.arpa/{jellyfin,matrix-synapse,sonarr,radarr,lidarr,tracing} labels."
+  description: "Aggregates the authentik API and reaches the LiteLLM proxy for movie requests; every target is addressed by its in-cluster Service (see ./externalsecret.yaml). Jellyfin, Matrix, the *arr apps and OTLP traces are opened by the egress.home.arpa/{jellyfin,matrix-synapse,sonarr,radarr,lidarr,tracing} labels."
   endpointSelector:
     matchLabels:
       app: homelab-manager
@@ -28,6 +28,15 @@ spec:
       toPorts:
         - ports:
             - port: "9000"
+              protocol: TCP
+    # REQUESTS_LLM_BASE_URL: LiteLLM proxy (virtual key from ./litellmvirtualkey.yaml)
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: litellm
+            io.kubernetes.pod.namespace: ai
+      toPorts:
+        - ports:
+            - port: "4000"
               protocol: TCP
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
