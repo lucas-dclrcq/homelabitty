@@ -10,3 +10,4 @@ resources:
   - ./envoy-gateway/ks.yaml
   - ./external-dns/ks.yaml
   - ./nas-services/ks.yaml
+  - ./netbox/ks.yaml

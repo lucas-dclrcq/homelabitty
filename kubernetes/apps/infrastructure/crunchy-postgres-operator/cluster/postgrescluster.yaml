@@ -296,6 +296,11 @@ spec:
         - "kubitus"
       password:
         type: AlphaNumeric
+    - name: "netbox"
+      databases:
+        - "netbox"
+      password:
+        type: AlphaNumeric
   backups:
     pgbackrest:
       configuration:

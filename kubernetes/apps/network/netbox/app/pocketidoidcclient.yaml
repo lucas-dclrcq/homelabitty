@@ -1,0 +1,25 @@
+---
+apiVersion: pocketid.internal/v1alpha1
+kind: PocketIDOIDCClient
+metadata:
+  name: netbox
+spec:
+  name: NetBox
+  description: Network documentation and IPAM
+  clientID: netbox
+  instanceSelector:
+    matchLabels:
+      app.kubernetes.io/name: pocket-id
+  launchUrl: https://netbox.hoohoot.xyz
+  callbackUrls:
+    - https://netbox.hoohoot.xyz/oauth/complete/oidc/
+  pkceEnabled: true
+  allowedUserGroups:
+    - name: users
+      namespace: security
+  # The client secret is not minted by the operator: it is held in Vault,
+  # rendered into netbox-secret by the ExternalSecret and pushed to Pocket ID
+  # from there, so NetBox and Pocket ID always agree on the same value.
+  clientSecretRef:
+    name: netbox-secret
+    key: client-secret
