@@ -1,0 +1,132 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app netbox
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  values:
+    replicaCount: 1
+
+    # Application
+    loginRequired: true
+    timeZone: Europe/Paris
+    allowedHosts:
+      - netbox.hoohoot.xyz
+    csrf:
+      trustedOrigins:
+        - https://netbox.hoohoot.xyz
+    admins: []
+
+    # Everything secret lives in netbox-secret (see externalsecret.yaml):
+    # secret_key, api_token_peppers, db_password, the initial super-user and
+    # the Pocket ID OIDC client secret.
+    existingSecret: netbox-secret
+    superuser:
+      name: admin
+      existingSecret: netbox-secret
+
+    # PostgreSQL: shared Crunchy PGO cluster, per-app database-less user
+    postgresql:
+      enabled: false
+    externalDatabase:
+      host: postgres-16-primary.infrastructure.svc.cluster.local
+      port: 5432
+      database: netbox
+      username: netbox
+      existingSecretName: netbox-secret
+      existingSecretKey: db_password
+
+    # Redis-compatible task queue and cache: the in-namespace Dragonfly
+    # instance created by components/dragonfly (no password, logical DBs 3/4).
+    valkey:
+      enabled: false
+    tasksDatabase:
+      host: netbox-dragonfly.network.svc.cluster.local
+      port: 6379
+      database: 3
+    cachingDatabase:
+      host: netbox-dragonfly.network.svc.cluster.local
+      port: 6379
+      database: 4
+
+    # Network policy vocabulary (see kubernetes/apps/kube-system/cilium/netpols)
+    podLabels: &podLabels
+      ingress.home.arpa/gateway-internal: allow
+      ingress.home.arpa/prometheus: allow
+      egress.home.arpa/postgres: allow
+      # Pocket ID lives behind the external gateway (https://id.hoohoot.org),
+      # so the OIDC token exchange needs this egress.
+      egress.home.arpa/gateway-external: allow
+
+    resourcesPreset: none
+    resources: &resources
+      requests:
+        cpu: 100m
+        memory: 512Mi
+      limits:
+        memory: 1Gi
+
+    worker:
+      enabled: true
+      podLabels: *podLabels
+      resources: *resources
+    housekeeping:
+      enabled: true
+      podLabels: *podLabels
+      resources: *resources
+
+    persistence:
+      enabled: true
+      size: 5Gi
+      storageClass: ceph-block
+
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+
+    httpRoute:
+      enabled: true
+      parentRefs:
+        - name: internal
+          namespace: network
+      hostnames:
+        - netbox.hoohoot.xyz
+
+    # SSO through Pocket ID (OIDC via python-social-auth)
+    remoteAuth:
+      enabled: true
+      backends:
+        - social_core.backends.open_id_connect.OpenIdConnectAuth
+      autoCreateUser: true
+
+    extraConfig:
+      # Only the oidc.yaml key of netbox-secret is loaded as NetBox
+      # configuration; the other keys stay in /run/secrets.
+      - secret:
+          secretName: netbox-secret
+          items:
+            - key: oidc.yaml
+              path: oidc.yaml
+      - values:
+          SOCIAL_AUTH_OIDC_OIDC_ENDPOINT: https://id.hoohoot.org
+          SOCIAL_AUTH_OIDC_SCOPE:
+            - openid
+            - profile
+            - email
+          SOCIAL_AUTH_PIPELINE:
+            - social_core.pipeline.social_auth.social_details
+            - social_core.pipeline.social_auth.social_uid
+            - social_core.pipeline.social_auth.social_user
+            - social_core.pipeline.user.get_username
+            - social_core.pipeline.social_auth.associate_by_email
+            - social_core.pipeline.user.create_user
+            - social_core.pipeline.social_auth.associate_user
+            - netbox.authentication.user_default_groups_handler
+            - social_core.pipeline.social_auth.load_extra_data
+            - social_core.pipeline.user.user_details

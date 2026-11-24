@@ -1,0 +1,18 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: netbox
+spec:
+  interval: 1m
+  module: http_2xx
+  prober:
+    url: blackbox-exporter-lan.observability.svc.cluster.local.:9115
+  targets:
+    staticConfig:
+      static:
+        - "https://netbox.hoohoot.xyz/login/"
+  metricRelabelings:
+    - targetLabel: service
+      replacement: app-endpoint
+      action: replace
