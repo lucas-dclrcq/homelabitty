@@ -62,6 +62,10 @@ spec:
       # so the OIDC token exchange needs this egress.
       egress.home.arpa/gateway-external: allow
 
+    extraEnvs:
+      - name: GRANIAN_WORKERS
+        value: "2"
+
     resourcesPreset: none
     resources: &resources
       requests:
