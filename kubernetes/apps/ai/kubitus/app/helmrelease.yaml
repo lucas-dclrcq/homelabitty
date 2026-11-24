@@ -74,6 +74,9 @@ spec:
                     name: kubitus-litellm
                     key: key
               JAVA_TOOL_OPTIONS: -XX:MaxRAMPercentage=60
+              # Recycle pooled connections so a PostgreSQL failover does not leave the app
+              # pinned to a demoted, read-only instance.
+              QUARKUS_DATASOURCE_JDBC_MAX_LIFETIME: PT5M
               KUBITUS_BUDGET_RUN_MAX_TOKENS: "30000000"
               KUBITUS_BUDGET_RUN_MAX_TOOL_CALLS: "1000"
 
