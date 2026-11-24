@@ -122,6 +122,12 @@ spec:
         podMetadata:
           labels:
             ingress.home.arpa/prometheus: allow
+        ruleNamespaceSelector: {}
+        ruleSelector:
+          matchExpressions:
+            - key: vmalert.home.arpa/datasource
+              operator: NotIn
+              values: ["vlogs"]
 
     alertmanager:
       enabled: true

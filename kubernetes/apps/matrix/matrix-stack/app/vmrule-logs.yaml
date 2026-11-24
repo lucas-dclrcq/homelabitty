@@ -1,0 +1,31 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/operator.victoriametrics.com/vmrule_v1beta1.json
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  name: synapse-logs
+  labels:
+    vmalert.home.arpa/datasource: vlogs
+spec:
+  groups:
+    - name: synapse-logs
+      type: vlogs
+      interval: 1m
+      rules:
+        - alert: SynapseDatabaseReadOnly
+          expr: >-
+            _time:5m kubernetes.pod_namespace:matrix kubernetes.container_name:synapse
+            ~"ReadOnlySqlTransaction|read-only transaction|during recovery"
+            | stats by (kubernetes.pod_name) count() as hits
+            | rename kubernetes.pod_name as pod
+            | filter hits:>0
+          for: 2m
+          labels:
+            severity: critical
+          annotations:
+            summary: >-
+              Synapse {{ $labels.pod }} is writing to a read-only Postgres connection
+            description: >-
+              {{ $labels.pod }} logged {{ $value }} read-only transaction errors in the last 5 minutes.
+              It is pinned to a postgres-16 replica after a Patroni failover and every write fails.
+              Restart it: kubectl -n matrix rollout restart sts/matrix-synapse-main

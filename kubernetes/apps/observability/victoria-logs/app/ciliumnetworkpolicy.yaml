@@ -5,7 +5,7 @@ kind: CiliumNetworkPolicy
 metadata:
   name: victoria-logs
 spec:
-  description: "Log ingestion only ever comes from vector-aggregator; queries arrive through the internal gateway and Grafana"
+  description: "Log ingestion only ever comes from vector-aggregator; queries arrive through the internal gateway, Grafana and the vlogs vmalert"
   endpointSelector:
     matchLabels:
       app.kubernetes.io/name: victoria-logs-single
@@ -15,6 +15,9 @@ spec:
             app.kubernetes.io/name: vector-aggregator
         - matchLabels:
             app: grafana
+        - matchLabels:
+            app.kubernetes.io/name: vmalert
+            app.kubernetes.io/instance: vlogs
       toPorts:
         - ports:
             - port: "9428"

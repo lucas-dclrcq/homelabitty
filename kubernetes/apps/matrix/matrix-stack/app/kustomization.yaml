@@ -12,6 +12,7 @@ resources:
   - ./ciliumclusterwidenetworkpolicy.yaml
   - ./httproute.yaml
   - ./prometheusrule.yaml
+  - ./vmrule-logs.yaml
   - ./grafanadashboard.yaml
   - ./probes.yaml
 configMapGenerator:

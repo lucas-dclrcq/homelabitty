@@ -1,0 +1,20 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: vmalert-vlogs
+spec:
+  description: "The vlogs vmalert evaluates LogsQL rules against VictoriaLogs; Alertmanager egress comes from the vmalert policy in victoria-metrics-stack"
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: vmalert
+      app.kubernetes.io/instance: vlogs
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: victoria-logs-single
+      toPorts:
+        - ports:
+            - port: "9428"
+              protocol: TCP

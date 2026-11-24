@@ -1,0 +1,28 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/operator.victoriametrics.com/vmalert_v1beta1.json
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMAlert
+metadata:
+  name: vlogs
+spec:
+  datasource:
+    url: http://victoria-logs.observability.svc.cluster.local.:9428
+  evaluationInterval: 1m
+  extraArgs:
+    rule.defaultRuleType: vlogs
+  notifiers:
+    - url: http://vmalertmanager-vmks-0.vmalertmanager-vmks.observability.svc.cluster.local.:9093
+  podMetadata:
+    labels:
+      ingress.home.arpa/prometheus: allow
+  selectAllByDefault: false
+  ruleNamespaceSelector: {}
+  ruleSelector:
+    matchLabels:
+      vmalert.home.arpa/datasource: vlogs
+  resources:
+    requests:
+      cpu: 10m
+      memory: 64Mi
+    limits:
+      memory: 256Mi
