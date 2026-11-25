@@ -4,7 +4,7 @@ kind: LiteLLMProxy
 metadata:
   name: litellm
 spec:
-  image: ghcr.io/berriai/litellm:1.110.3
+  image: ghcr.io/berriai/litellm:1.111.0
   replicas: 1
 
   podLabels:
