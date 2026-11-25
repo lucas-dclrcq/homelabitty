@@ -124,6 +124,16 @@
       },
       minimumGroupSize: 2,
     },
+    {
+      description: "Tdarr Group",
+      groupName: "tdarr",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["ghcr.io/haveagitgat/tdarr", "ghcr.io/haveagitgat/tdarr_node"],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+      minimumGroupSize: 2,
+    },
     // Scheduling rules
     {
       description: "High-cadence mise tools monthly",
