@@ -34,12 +34,6 @@ spec:
               SPLITTER_STORAGE_DIR: &receiptsDir /deployments/data/receipts
               # Sure's internal hostname, through the internal gateway.
               SURE_BASE_URL: https://finances.hoohoot.xyz
-              SURE_API_KEY:
-                valueFrom:
-                  secretKeyRef:
-                    name: sure-transaction-splitter-sure-secret
-                    key: SURE_API_KEY
-                    optional: true
               LITELLM_BASE_URL: http://litellm.ai.svc.cluster.local:4000/v1
               LLM_MODEL: deepseek-flash
               LITELLM_API_KEY:
@@ -51,6 +45,10 @@ spec:
             envFrom:
               - secretRef:
                   name: sure-transaction-splitter-secret
+              # SURE_API_KEY. Optional: see ./sure-externalsecret.yaml.
+              - secretRef:
+                  name: sure-transaction-splitter-sure-secret
+                  optional: true
 
             probes:
               liveness:
