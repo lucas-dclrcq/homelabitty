@@ -33,6 +33,7 @@ spec:
               SURE_BASE_URL: https://finances.hoohoot.xyz
               LITELLM_BASE_URL: http://litellm.ai.svc.cluster.local:4000/v1
               LLM_MODEL: deepseek-flash
+              SURE_WRITES_ENABLED: "true"
               LITELLM_API_KEY:
                 valueFrom:
                   secretKeyRef:
