@@ -29,3 +29,4 @@ resources:
   - ./endurain/ks.yaml
   - ./mindwtr/ks.yaml
   - ./sure/ks.yaml
+  - ./sure-transaction-splitter/ks.yaml

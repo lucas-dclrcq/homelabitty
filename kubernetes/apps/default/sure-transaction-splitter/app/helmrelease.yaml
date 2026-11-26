@@ -1,0 +1,141 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app sure-transaction-splitter
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  values:
+    global:
+      createDefaultServiceAccount: false
+
+    controllers:
+      sure-transaction-splitter:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        replicas: 1
+        # The receipts volume is ReadWriteOnce.
+        strategy: Recreate
+        containers:
+          app:
+            image:
+              repository: docker.hoohoot.org/homelab/sure-transaction-splitter
+              tag: 0.0.1
+
+            env:
+              TZ: Europe/Paris
+              # The image starts a bare `java -jar`: without this the heap is
+              # capped at a quarter of the memory limit.
+              JAVA_TOOL_OPTIONS: -XX:MaxRAMPercentage=50
+              SPLITTER_STORAGE_DIR: &receiptsDir /deployments/data/receipts
+              # Sure's internal hostname, through the internal gateway.
+              SURE_BASE_URL: https://finances.hoohoot.xyz
+              SURE_API_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: sure-transaction-splitter-sure-secret
+                    key: SURE_API_KEY
+                    optional: true
+              LITELLM_BASE_URL: http://litellm.ai.svc.cluster.local:4000/v1
+              LLM_MODEL: deepseek-flash
+              LITELLM_API_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: sure-transaction-splitter-litellm
+                    key: key
+
+            envFrom:
+              - secretRef:
+                  name: sure-transaction-splitter-secret
+
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /q/health/live
+                    port: &port 8080
+                  initialDelaySeconds: 30
+                  periodSeconds: 30
+                  failureThreshold: 5
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /q/health/ready
+                    port: *port
+                  initialDelaySeconds: 10
+                  periodSeconds: 10
+                  failureThreshold: 5
+
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - "ALL"
+
+            resources:
+              requests:
+                cpu: 25m
+                memory: 512Mi
+              limits:
+                memory: 1536Mi # never set limits.cpu
+
+    defaultPodOptions:
+      labels:
+        ingress.home.arpa/gateway-internal: allow
+        egress.home.arpa/postgres: allow
+        egress.home.arpa/gateway-internal: allow
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      securityContext:
+        runAsNonRoot: true
+        # eclipse-temurin image: COPY --chown=185 / USER 185.
+        runAsUser: 185
+        runAsGroup: 0
+        fsGroup: 185
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile:
+          type: RuntimeDefault
+
+    persistence:
+      data:
+        enabled: true
+        existingClaim: *app
+        globalMounts:
+          - path: /deployments/data
+      # Uploads in transit, OCR work directories and rendered PDF pages.
+      tmp:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
+
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: *port
+
+    route:
+      app:
+        annotations:
+          homelab-manager.hoohoot.org/enabled: "true"
+          homelab-manager.hoohoot.org/category: "Misc"
+          homelab-manager.hoohoot.org/description: "Receipts to Sure transaction splits"
+        hostnames:
+          - "receipts.hoohoot.xyz"
+        parentRefs:
+          - name: internal
+            namespace: network
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port

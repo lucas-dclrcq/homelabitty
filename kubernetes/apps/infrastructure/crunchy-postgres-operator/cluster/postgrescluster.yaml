@@ -291,6 +291,11 @@ spec:
         - "sure"
       password:
         type: AlphaNumeric
+    - name: "suretransactionsplitter"
+      databases:
+        - "suretransactionsplitter"
+      password:
+        type: AlphaNumeric
     - name: "kubitus"
       databases:
         - "kubitus"
