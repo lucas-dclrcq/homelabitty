@@ -28,11 +28,8 @@ spec:
 
             env:
               TZ: Europe/Paris
-              # The image starts a bare `java -jar`: without this the heap is
-              # capped at a quarter of the memory limit.
               JAVA_TOOL_OPTIONS: -XX:MaxRAMPercentage=50
-              SPLITTER_STORAGE_DIR: &receiptsDir /deployments/data/receipts
-              # Sure's internal hostname, through the internal gateway.
+              SPLITTER_STORAGE_DIR: /deployments/data/receipts
               SURE_BASE_URL: https://finances.hoohoot.xyz
               LITELLM_BASE_URL: http://litellm.ai.svc.cluster.local:4000/v1
               LLM_MODEL: deepseek-flash
@@ -45,10 +42,6 @@ spec:
             envFrom:
               - secretRef:
                   name: sure-transaction-splitter-secret
-              # SURE_API_KEY. Optional: see ./sure-externalsecret.yaml.
-              - secretRef:
-                  name: sure-transaction-splitter-sure-secret
-                  optional: true
 
             probes:
               liveness:
@@ -95,7 +88,6 @@ spec:
       enableServiceLinks: false
       securityContext:
         runAsNonRoot: true
-        # eclipse-temurin image: COPY --chown=185 / USER 185.
         runAsUser: 185
         runAsGroup: 0
         fsGroup: 185
@@ -109,7 +101,6 @@ spec:
         existingClaim: *app
         globalMounts:
           - path: /deployments/data
-      # Uploads in transit, OCR work directories and rendered PDF pages.
       tmp:
         type: emptyDir
         globalMounts:
@@ -124,10 +115,6 @@ spec:
 
     route:
       app:
-        annotations:
-          homelab-manager.hoohoot.org/enabled: "true"
-          homelab-manager.hoohoot.org/category: "Misc"
-          homelab-manager.hoohoot.org/description: "Receipts to Sure transaction splits"
         hostnames:
           - "receipts.hoohoot.xyz"
         parentRefs:

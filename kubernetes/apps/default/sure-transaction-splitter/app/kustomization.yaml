@@ -6,7 +6,6 @@ resources:
   - ./litellmvirtualkey.yaml
   - ./ciliumnetworkpolicy.yaml
   - ./externalsecret.yaml
-  - ./sure-externalsecret.yaml
   - ./ocirepository.yaml
   - ./helmrelease.yaml
   - ./probes.yaml
