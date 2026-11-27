@@ -24,7 +24,7 @@ spec:
           app:
             image:
               repository: docker.hoohoot.org/homelab/sure-transaction-splitter
-              tag: 0.1.0@sha256:284f05a3ff213b161e229b297d0eb376cb7c5042321f7af6e462601060774587
+              tag: 0.2.0@sha256:834e63ea3afff8cd0a3376e425e552df3036cd10a970edfc9dbf436e2bcf360a
 
             env:
               TZ: Europe/Paris
