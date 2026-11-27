@@ -13,7 +13,7 @@ machine:
     - 127.0.0.1 # KubePrism
   # Stays in v1alpha1: KubeletConfig has no extraMounts (needed by OpenEBS hostpath)
   kubelet:
-    image: ghcr.io/siderolabs/kubelet:v1.37.2
+    image: ghcr.io/siderolabs/kubelet:v1.37.3
     extraArgs:
       image-gc-high-threshold: "55"
       image-gc-low-threshold: "50"
