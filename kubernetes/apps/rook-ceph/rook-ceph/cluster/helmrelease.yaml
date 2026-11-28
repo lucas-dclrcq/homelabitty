@@ -42,6 +42,12 @@ spec:
           # this is fixed upstream.
           # https://github.com/rook/rook/issues/17786
           log_max_recent: "100"
+        mon:
+          # The mon sizes its RocksDB/KV cache from the RAM the node reports
+          # (~973MiB on a 31GiB node) instead of from its container limit, so its
+          # resident memory grows ~78MiB/day past the limit and it is OOMKilled
+          # every 2-6 days. Give the memory autotuner an explicit target instead.
+          mon_memory_target: "1073741824"
       crashCollector:
         disable: false
       security:
@@ -106,7 +112,7 @@ spec:
             cpu: 50m
             memory: 1Gi
           limits:
-            memory: 2Gi
+            memory: 4Gi
         osd:
           requests:
             cpu: 500m
